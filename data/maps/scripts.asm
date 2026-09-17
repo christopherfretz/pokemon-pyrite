@@ -502,4 +502,7 @@ INCLUDE "maps/MtMoonPokecenter.asm"
 INCLUDE "maps/Museum1F.asm"
 INCLUDE "maps/Museum2F.asm"
 
+; Kanto hack: Yellow's Route 2 trade house (docs/M2-PEWTER.md, 4f).
+INCLUDE "maps/Route2TradeHouse.asm"
+
 ENDSECTION
