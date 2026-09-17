@@ -1459,7 +1459,13 @@
 	const EVENT_RADIO_TOWER_5F_ULTRA_BALL
 	const EVENT_DARK_CAVE_VIOLET_ENTRANCE_DIRE_HIT
 	const EVENT_BATTLE_TOWER_OPEN_CIVILIANS
-; Unused: next 48 events
+; Kanto hack: Yellow intro beat (docs/M2-INTRO.md)
+	const EVENT_PALLET_TOWN_OAK ; set at NewGame; Oak only appears via the cutscene
+	const EVENT_OAKS_LAB_RIVAL
+	const EVENT_OAKS_LAB_EEVEE_BALL
+	const EVENT_GOT_STARTER_PIKACHU
+	const EVENT_BATTLED_RIVAL_IN_OAKS_LAB
+; Unused: next 43 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800
