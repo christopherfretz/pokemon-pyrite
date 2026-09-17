@@ -517,7 +517,7 @@ ArrangeUsedSprites:
 
 ; There are only two tables, so don't go any further than that.
 	add b
-	jr c, .quit
+	jr c, .overflow
 
 	ld [hl], b
 	ld b, a
@@ -527,6 +527,22 @@ ArrangeUsedSprites:
 	jr nz, .SecondTableLength
 
 .quit
+	ret
+
+.overflow
+; yellowcrystal: out of VRAM. Vanilla leaves the sprite's type byte in the
+; vtile slot, and GetUsedSprites then loads its GFX at that tiny tile number,
+; clobbering the player's graphics. Drop this sprite and every later one.
+	dec hl
+.drop
+	xor a
+	ld [hli], a ; sprite id
+	inc hl      ; vtile
+	dec c
+	jr z, .quit
+	ld a, [hl]
+	and a
+	jr nz, .drop
 	ret
 
 GetSpriteLength:

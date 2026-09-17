@@ -530,15 +530,21 @@ PlayTalkObject:
 	ret
 
 TryObjectEvent:
+	farcall CheckFacingFollower
+	jr c, .follower
 	farcall CheckFacingObject
 	jr c, .IsObject
 	xor a
 	ret
 
+.follower
+; The Pikachu follower has no map object; it gets its own script.
+	ld a, BANK(PikachuFollowerScript)
+	ld hl, PikachuFollowerScript
+	call CallScript
+	ret
+
 .IsObject:
-	ldh a, [hObjectStructIndex]
-	cp FOLLOWER_OBJECT
-	jr z, .nope ; Pikachu follower has no map object; interaction comes later
 	call PlayTalkObject
 	ldh a, [hObjectStructIndex]
 	call GetObjectStruct

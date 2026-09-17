@@ -241,3 +241,99 @@ SpawnFollower:
 	ld b, d
 	ld c, e
 	jp FollowerSnapToPlayer
+
+CheckFacingFollower::
+; Returns carry if the player is facing the (visible, standing) follower.
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	jr z, .no
+	ld a, [wFollowerFlags] ; OBJECT_FLAGS1
+	bit INVISIBLE_F, a
+	jr nz, .no
+	ld a, [wFollowerWalking]
+	cp STANDING
+	jr nz, .no
+	call GetFacingTileCoord
+	ld a, [wFollowerMapX]
+	cp d
+	jr nz, .no
+	ld a, [wFollowerMapY]
+	cp e
+	jr nz, .no
+	scf
+	ret
+.no
+	and a
+	ret
+
+PikachuFollowerScript::
+; Talking to Pikachu (Yellow: it turns, cries and shows how it feels).
+; Happiness-dependent emotions come later; always happy for now.
+	callasm FollowerFacePlayer
+	loademote EMOTE_HAPPY
+	callasm FollowerSpawnEmote
+	cry PIKACHU
+	pause 20
+	callasm FollowerDespawnEmote
+	end
+
+FollowerFacePlayer:
+	ld a, [wPlayerDirection]
+	and %00001100
+	xor %00000100 ; DOWN <-> UP, LEFT <-> RIGHT
+	ld [wFollowerDirection], a
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call HandleObjectStep ; refresh OBJECT_FACING now
+	jp UpdateSprites
+
+FollowerSpawnEmote:
+; Emote objects remember their parent's struct index in hMapObjectIndex.
+; Script `pause`/`cry` only delay frames, so give the new emote object its
+; first step here (MovementFunction_Emote sets it up) and redraw sprites.
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call SpawnEmote
+	call .FindEmote
+	ret nc
+	ldh [hMapObjectIndex], a
+	call HandleObjectStep
+	jp UpdateSprites
+
+.FindEmote:
+; Returns carry, a = index, bc = struct of the emote whose parent is the follower.
+	ld bc, wObject1Struct
+	ld a, 1
+.loop
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	bit EMOTE_OBJECT_F, [hl]
+	jr z, .next
+	ld hl, OBJECT_RANGE
+	add hl, bc
+	ld l, [hl]
+	ld h, a
+	ld a, l
+	cp FOLLOWER_OBJECT
+	ld a, h
+	jr nz, .next
+	scf
+	ret
+.next
+	ld hl, OBJECT_LENGTH
+	add hl, bc
+	ld b, h
+	ld c, l
+	inc a
+	cp FOLLOWER_OBJECT
+	jr nz, .loop
+	and a
+	ret
+
+FollowerDespawnEmote:
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	call DespawnEmote
+	jp UpdateSprites

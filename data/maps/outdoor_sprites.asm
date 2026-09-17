@@ -33,18 +33,10 @@ OutdoorSprites:
 	assert_table_length NUM_MAP_GROUPS
 
 PalletGroupSprites:
-	db SPRITE_SUICUNE
-	db SPRITE_SILVER_TROPHY
-	db SPRITE_FAMICOM
-	db SPRITE_POKEDEX
-	db SPRITE_WILL
-	db SPRITE_KAREN
-	db SPRITE_NURSE
-	db SPRITE_OLD_LINK_RECEPTIONIST
-	db SPRITE_BIG_LAPRAS
-	db SPRITE_BIG_ONIX
-	db SPRITE_SUDOWOODO
-	db SPRITE_BIG_SNORLAX
+; yellowcrystal: vanilla pads this with 12 filler sprites (Suicune, trophies,
+; Will, Karen, ...) that no outdoor map in the group uses; they only served to
+; fill the table and overflowed sprite VRAM. Dropped so the Pikachu follower's
+; reserved tiles fit. Other Kanto groups still carry the padding (see HANDOFF).
 	db SPRITE_TEACHER
 	db SPRITE_FISHER
 	db SPRITE_YOUNGSTER
@@ -81,6 +73,9 @@ ViridianGroupSprites:
 	db SPRITE_SWIMMER_GUY
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
+rept MAX_OUTDOOR_SPRITES - 11
+	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
+endr
 
 PewterGroupSprites:
 	db SPRITE_SUICUNE
