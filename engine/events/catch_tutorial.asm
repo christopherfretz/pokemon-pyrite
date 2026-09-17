@@ -17,13 +17,19 @@ CatchTutorial::
 	dw .DudeTutorial
 
 .DudeTutorial:
+	ld hl, .Dude
+	; fallthrough
+
+.RunTutorial:
+; hl: the catcher's name, shown in place of the player's.
 ; Back up your name to your Mom's name.
+	push hl
 	ld hl, wPlayerName
 	ld de, wMomsName
 	ld bc, NAME_LENGTH
 	call CopyBytes
-; Copy Dude's name to your name
-	ld hl, .Dude
+; Copy the catcher's name to your name
+	pop hl
 	ld de, wPlayerName
 	ld bc, NAME_LENGTH
 	call CopyBytes
@@ -77,5 +83,24 @@ CatchTutorial::
 .Dude:
 	db "DUDE@"
 
+.Oak:
+	db "PROF.OAK@"
+
 .AutoInput:
 	db NO_INPUT, $ff ; end
+
+OakCatchTutorial::
+; Kanto intro (docs/M2-INTRO.md): Prof. Oak catches a wild Pokemon in front
+; of the player, who owns none yet. The map script loads the wild mon first
+; (loadwildmon) and reloads the map afterwards (reloadmap), mirroring the
+; catchtutorial script command. The catcher flag selects Oak's back-pic.
+	ld a, BATTLETYPE_TUTORIAL
+	ld [wBattleType], a
+	ld a, TRUE
+	ld [wCatchTutorialCatcher], a
+	call BufferScreen
+	ld hl, CatchTutorial.Oak
+	call CatchTutorial.RunTutorial
+	xor a
+	ld [wCatchTutorialCatcher], a
+	ret

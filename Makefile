@@ -331,6 +331,7 @@ gfx/overworld/kris_fish.2bpp: tools/gfx += --trim-whitespace
 gfx/sprites/big_onix.2bpp: tools/gfx += --remove-whitespace --remove-xflip
 
 gfx/battle/dude.2bpp: RGBGFXFLAGS += --columns
+gfx/battle/oak_back.2bpp: RGBGFXFLAGS += --columns
 
 gfx/font/unused_bold_font.1bpp: tools/gfx += --trim-whitespace
 

@@ -8995,9 +8995,14 @@ InitBattleDisplay:
 GetTrainerBackpic:
 ; Load the player character's backpic (6x6) into VRAM starting from vTiles2 tile $31.
 
-; Special exception for Dude.
+; Special exception for Dude (or Prof. Oak in the Kanto intro).
 	ld b, BANK(DudeBackpic)
 	ld hl, DudeBackpic
+	ld a, [wCatchTutorialCatcher]
+	and a
+	jr z, .not_oak
+	ld hl, OakBackpic
+.not_oak
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jr z, .Decompress

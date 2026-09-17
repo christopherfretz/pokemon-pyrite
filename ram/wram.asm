@@ -3029,7 +3029,8 @@ wPikaFollowStepType:: db ; STEP_* of the player's last committed step
 
 wCurDay:: db
 
-	ds 1
+; Kanto intro: nonzero while Prof. Oak (not Dude) runs the catch tutorial
+wCatchTutorialCatcher:: db
 
 wObjectFollow_Leader:: db
 wObjectFollow_Follower:: db
