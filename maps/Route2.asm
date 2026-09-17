@@ -1,50 +1,17 @@
 	object_const_def
-	const ROUTE2_BUG_CATCHER1
-	const ROUTE2_BUG_CATCHER2
-	const ROUTE2_BUG_CATCHER3
 	const ROUTE2_POKE_BALL1
 	const ROUTE2_POKE_BALL2
-	const ROUTE2_POKE_BALL3
-	const ROUTE2_POKE_BALL4
 	const ROUTE2_FRUIT_TREE
 
+; Kanto hack: Yellow's Route 2 (docs/M2-ROUTE2.md). Yellow has NO trainers
+; here - the bug catchers all live in Viridian Forest - so Crystal's three
+; Bug Catchers (ROB/ED/DOUG) are gone, and the four GSC itemballs collapse to
+; Yellow's two: HP_UP and MOON_STONE, both south of the Route 2 gate.
+; The hidden items are Crystal's and stay.
 Route2_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-
-TrainerBugCatcherRob:
-	trainer BUG_CATCHER, ROB, EVENT_BEAT_BUG_CATCHER_ROB, BugCatcherRobSeenText, BugCatcherRobBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BugCatcherRobAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBugCatcherEd:
-	trainer BUG_CATCHER, ED, EVENT_BEAT_BUG_CATCHER_ED, BugCatcherEdSeenText, BugCatcherEdBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BugCatcherEdAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBugCatcherDoug:
-	trainer BUG_CATCHER, DOUG, EVENT_BEAT_BUG_CATCHER_DOUG, BugCatcherDougSeenText, BugCatcherDougBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BugCatcherDougAfterBattleText
-	waitbutton
-	closetext
-	end
 
 Route2Sign:
 	jumptext Route2SignText
@@ -52,17 +19,11 @@ Route2Sign:
 Route2DiglettsCaveSign:
 	jumptext Route2DiglettsCaveSignText
 
-Route2DireHit:
-	itemball DIRE_HIT
+Route2HPUp:
+	itemball HP_UP
 
-Route2MaxPotion:
-	itemball MAX_POTION
-
-Route2Carbos:
-	itemball CARBOS
-
-Route2Elixer:
-	itemball ELIXER
+Route2MoonStone:
+	itemball MOON_STONE
 
 Route2FruitTree:
 	fruittree FRUITTREE_ROUTE_2
@@ -78,60 +39,6 @@ Route2HiddenFullRestore:
 
 Route2HiddenRevive:
 	hiddenitem REVIVE, EVENT_ROUTE_2_HIDDEN_REVIVE
-
-BugCatcherRobSeenText:
-	text "My bug #MON are"
-	line "tough. Prepare to"
-	cont "lose!"
-	done
-
-BugCatcherRobBeatenText:
-	text "I was whipped…"
-	done
-
-BugCatcherRobAfterBattleText:
-	text "I'm going to look"
-	line "for stronger bug"
-	cont "#MON."
-	done
-
-BugCatcherEdSeenText:
-	text "If you walk in"
-	line "tall grass wearing"
-
-	para "shorts, do you get"
-	line "nicks and cuts?"
-	done
-
-BugCatcherEdBeatenText:
-	text "Ouch, ouch, ouch!"
-	done
-
-BugCatcherEdAfterBattleText:
-	text "They'll really"
-	line "sting when you"
-	cont "take a bath."
-	done
-
-BugCatcherDougSeenText:
-	text "Why don't girls"
-	line "like bug #MON?"
-	done
-
-BugCatcherDougBeatenText:
-	text "No good!"
-	done
-
-BugCatcherDougAfterBattleText:
-	text "Bug #MON squish"
-	line "like plush toys"
-
-	para "when you squeeze"
-	line "their bellies."
-
-	para "I love how they"
-	line "feel!"
-	done
 
 Route2SignText:
 	text "ROUTE 2"
@@ -165,11 +72,6 @@ Route2_MapEvents:
 	bg_event 11, 30, BGEVENT_ITEM, Route2HiddenRevive
 
 	def_object_events
-	object_event 10, 45, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 5, TrainerBugCatcherRob, -1
-	object_event  6,  4, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBugCatcherEd, -1
-	object_event  0, 40, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBugCatcherDoug, -1
-	object_event  0, 29, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2DireHit, EVENT_ROUTE_2_DIRE_HIT
-	object_event  2, 23, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2MaxPotion, EVENT_ROUTE_2_MAX_POTION
-	object_event 19,  2, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2Carbos, EVENT_ROUTE_2_CARBOS
-	object_event 14, 50, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2Elixer, EVENT_ROUTE_2_ELIXER
+	object_event 10, 45, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2HPUp, EVENT_ROUTE_2_HP_UP
+	object_event 14, 50, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2MoonStone, EVENT_ROUTE_2_MOON_STONE
 	object_event 10, 14, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route2FruitTree, -1

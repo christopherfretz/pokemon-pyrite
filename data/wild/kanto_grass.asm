@@ -198,32 +198,36 @@ KantoGrassWildMons:
 	db 4, HOOTHOOT
 	end_grass_wildmons
 
+; Kanto hack: Yellow's Route 2 table (docs/M2-ROUTE2.md). Yellow rate 25/256
+; ~= 10 percent. Yellow has no time of day, so nite reuses the day column;
+; the L6 NIDORANs take the rare slots on day/nite. No PIKACHU - the starter
+; stays unique.
 	def_grass_wildmons ROUTE_2
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 3, CATERPIE
-	db 3, LEDYBA
-	db 5, PIDGEY
-	db 7, BUTTERFREE
-	db 7, LEDIAN
-	db 4, PIKACHU
-	db 4, PIKACHU
-	; day
-	db 3, CATERPIE
+	db 3, RATTATA
 	db 3, PIDGEY
+	db 4, RATTATA
+	db 4, NIDORAN_M
+	db 4, NIDORAN_F
 	db 5, PIDGEY
-	db 7, BUTTERFREE
-	db 7, PIDGEOTTO
-	db 4, PIKACHU
-	db 4, PIKACHU
+	db 7, PIDGEY
+	; day
+	db 3, RATTATA
+	db 3, PIDGEY
+	db 4, RATTATA
+	db 5, PIDGEY
+	db 6, NIDORAN_M
+	db 6, NIDORAN_F
+	db 7, PIDGEY
 	; nite
-	db 3, HOOTHOOT
-	db 3, SPINARAK
-	db 5, HOOTHOOT
-	db 7, NOCTOWL
-	db 7, ARIADOS
-	db 4, NOCTOWL
-	db 4, NOCTOWL
+	db 3, RATTATA
+	db 3, PIDGEY
+	db 4, RATTATA
+	db 5, PIDGEY
+	db 6, NIDORAN_M
+	db 6, NIDORAN_F
+	db 7, PIDGEY
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_3
