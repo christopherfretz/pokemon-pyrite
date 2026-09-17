@@ -56,6 +56,10 @@ StageBallTilesData:
 	dec c
 	jr nz, .loop1
 	pop af
+; Kanto hack: an empty party (Oak's catch tutorial) must not loop 256 times
+; and trample WRAM past wBattleHUDTiles.
+	and a
+	ret z
 
 	ld de, wBattleHUDTiles
 .loop2

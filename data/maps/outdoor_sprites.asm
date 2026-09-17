@@ -33,12 +33,13 @@ OutdoorSprites:
 	assert_table_length NUM_MAP_GROUPS
 
 PalletGroupSprites:
+	db SPRITE_OAK
 	db SPRITE_COOLTRAINER_F
 	db SPRITE_YOUNGSTER
 	db SPRITE_TEACHER
 	db SPRITE_FISHER
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 5
+rept MAX_OUTDOOR_SPRITES - 6
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

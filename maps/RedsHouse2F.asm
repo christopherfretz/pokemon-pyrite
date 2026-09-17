@@ -2,6 +2,16 @@ RedsHouse2F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, RedsHouse2FInitializeEventsCallback
+
+; Kanto hack: the game starts here instead of New Bark, so run the one-time
+; event initialisation that PlayersHouse2F does in vanilla.
+RedsHouse2FInitializeEventsCallback:
+	checkevent EVENT_INITIALIZED_EVENTS
+	iftrue .Skip
+	jumpstd InitializeEventsScript
+.Skip:
+	endcallback
 
 RedsHouse2FN64Script:
 	jumptext RedsHouse2FN64Text

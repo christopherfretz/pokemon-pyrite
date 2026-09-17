@@ -3,18 +3,129 @@
 	const OAKSLAB_SCIENTIST1
 	const OAKSLAB_SCIENTIST2
 	const OAKSLAB_SCIENTIST3
+	const OAKSLAB_RIVAL
+	const OAKSLAB_EEVEE_BALL
 
 OaksLab_MapScripts:
 	def_scene_scripts
+	scene_script OaksLabNoopScene,  SCENE_OAKSLAB_NOOP
+	scene_script OaksLabIntroScene, SCENE_OAKSLAB_INTRO
 
 	def_callbacks
 
-OaksLabNoopScene: ; unreferenced
+OaksLabNoopScene:
 	end
+
+OaksLabIntroScene:
+	sdefer OaksLabIntroScript
+	end
+
+; Yellow's lab beat (docs/M2-INTRO.md): Oak has just led the player in.
+; The rival (shown because Pallet cleared EVENT_OAKS_LAB_RIVAL) takes the
+; Eevee on the table, the player gets Oak's Pikachu, the rival battles and
+; leaves, and Pikachu refuses its ball and starts following.
+OaksLabIntroScript:
+	applymovement PLAYER, OaksLab_PlayerWalksToOakMovement
+	opentext
+	writetext OaksLabRivalFedUpText
+	waitbutton
+	writetext OaksLabOakChooseMonText
+	waitbutton
+	writetext OaksLabRivalWhatAboutMeText
+	waitbutton
+	writetext OaksLabOakBePatientText
+	waitbutton
+	writetext OaksLabRivalIWantThisText
+	waitbutton
+	closetext
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalToTableMovement
+	disappear OAKSLAB_EEVEE_BALL
+	setevent EVENT_OAKS_LAB_EEVEE_BALL
+	opentext
+	writetext OaksLabRivalSnatchedText
+	waitbutton
+	writetext OaksLabOakWhatAreYouDoingText
+	waitbutton
+	writetext OaksLabRivalIWantThisOneText
+	waitbutton
+	writetext OaksLabOakAllRightThenText
+	waitbutton
+	closetext
+	turnobject PLAYER, UP
+	opentext
+	writetext OaksLabOakGivesPikachuText
+	promptbutton
+	playsound SFX_CAUGHT_MON
+	waitsfx
+	givepoke PIKACHU, 5
+	setevent EVENT_GOT_STARTER_PIKACHU
+	closetext
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalToPlayerMovement
+	turnobject PLAYER, RIGHT
+	playmusic MUSIC_RIVAL_ENCOUNTER
+	opentext
+	writetext OaksLabRivalTakeYouOnText
+	waitbutton
+	closetext
+	winlosstext OaksLabRivalWinText, OaksLabRivalLossText
+	setlasttalked OAKSLAB_RIVAL
+	loadtrainer KANTO_RIVAL, KANTO_RIVAL_1
+	loadvar VAR_BATTLETYPE, BATTLETYPE_CANLOSE
+	startbattle
+	dontrestartmapmusic
+	reloadmap
+	special HealParty
+	turnobject OAKSLAB_RIVAL, LEFT
+	playmusic MUSIC_RIVAL_AFTER
+	opentext
+	writetext OaksLabRivalSmellYouLaterText
+	waitbutton
+	closetext
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalLeavesMovement
+	disappear OAKSLAB_RIVAL
+	setevent EVENT_OAKS_LAB_RIVAL
+	playmapmusic
+	turnobject PLAYER, UP
+	pause 20
+	cry PIKACHU
+	opentext
+	writetext OaksLabOakWhatText
+	waitbutton
+	closetext
+	special EnablePikaFollower
+	opentext
+	writetext OaksLabPikachuDislikesBallsText
+	waitbutton
+	closetext
+	setevent EVENT_BATTLED_RIVAL_IN_OAKS_LAB
+	setscene SCENE_OAKSLAB_NOOP
+	end
+
+OaksLabRivalScript:
+	jumptextfaceplayer OaksLabRivalFedUpText
+
+OaksLabEeveeBallScript:
+	jumptext OaksLabThatsAPokeBallText
 
 Oak:
 	faceplayer
 	opentext
+	checkevent EVENT_GOT_STARTER_PIKACHU
+	iffalse .BeforeIntro
+	; TODO(M2 step 2): the parcel quest replaces this. The vanilla Kanto
+	; logic below is kept for the Johto act.
+	writetext OakYourPokemonCanFightText
+	waitbutton
+	closetext
+	end
+
+.BeforeIntro:
+	writetext OakBusyText
+	waitbutton
+	closetext
+	end
+
+.KantoAct2: ; unreferenced until the Johto act
 	checkevent EVENT_OPENED_MT_SILVER
 	iftrue .CheckPokedex
 	checkevent EVENT_TALKED_TO_OAK_IN_KANTO
@@ -64,6 +175,206 @@ OaksAssistant3Script:
 
 OaksLabBookshelf:
 	jumpstd DifficultBookshelfScript
+
+OaksLab_PlayerWalksToOakMovement:
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	step_end
+
+OaksLab_RivalToTableMovement:
+	step RIGHT
+	step RIGHT
+	turn_head UP
+	step_end
+
+OaksLab_RivalToPlayerMovement:
+	step LEFT
+	step LEFT
+	turn_head LEFT
+	step_end
+
+OaksLab_RivalLeavesMovement:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+OaksLabRivalFedUpText:
+	text "<RIVAL>: Gramps!"
+	line "I'm fed up with"
+	cont "waiting!"
+	done
+
+OaksLabOakChooseMonText:
+	text "OAK: Hmm? <RIVAL>?"
+	line "Why are you here"
+	cont "already?"
+
+	para "I said for you to"
+	line "come by later…"
+
+	para "Ah, whatever!"
+	line "Just wait there."
+
+	para "Look, <PLAYER>! Do"
+	line "you see that ball"
+	cont "on the table?"
+
+	para "It's called a #"
+	line "BALL. It holds a"
+	cont "#MON inside."
+
+	para "You may have it!"
+	line "Go on, take it!"
+	done
+
+OaksLabRivalWhatAboutMeText:
+	text "<RIVAL>: Hey!"
+	line "Gramps! What"
+	cont "about me?"
+	done
+
+OaksLabOakBePatientText:
+	text "OAK: Be patient,"
+	line "<RIVAL>, I'll give"
+	cont "you one later."
+	done
+
+OaksLabRivalIWantThisText:
+	text "<RIVAL>: No way!"
+	line "<PLAYER>, I want"
+	cont "this #MON!"
+	done
+
+OaksLabRivalSnatchedText:
+	text "<RIVAL> snatched"
+	line "the #MON!"
+	done
+
+OaksLabOakWhatAreYouDoingText:
+	text "OAK: <RIVAL>! What"
+	line "are you doing?"
+	done
+
+OaksLabRivalIWantThisOneText:
+	text "<RIVAL>: Gramps, I"
+	line "want this one!"
+	done
+
+OaksLabOakAllRightThenText:
+	text "OAK: But, I… Oh,"
+	line "all right then."
+	cont "That #MON is"
+	cont "yours."
+
+	para "I was going to"
+	line "give you one"
+	cont "anyway…"
+
+	para "<PLAYER>, come over"
+	line "here."
+	done
+
+OaksLabOakGivesPikachuText:
+	text "OAK: <PLAYER>, this"
+	line "is the #MON I"
+	cont "caught earlier."
+
+	para "You can have it."
+	line "I caught it in"
+	cont "the wild and it's"
+	cont "not tame yet."
+	done
+
+OaksLabRivalTakeYouOnText:
+	text "<RIVAL>: Wait"
+	line "<PLAYER>!"
+	cont "Let's check out"
+	cont "our #MON!"
+
+	para "Come on, I'll take"
+	line "you on!"
+	done
+
+OaksLabRivalWinText:
+	text "WHAT?"
+	line "Unbelievable!"
+	cont "I picked the"
+	cont "wrong #MON!"
+	done
+
+OaksLabRivalLossText:
+	text "<RIVAL>: Yeah! Am"
+	line "I great or what?"
+	done
+
+OaksLabRivalSmellYouLaterText:
+	text "<RIVAL>: Okay!"
+	line "I'll make my"
+	cont "#MON fight to"
+	cont "toughen it up!"
+
+	para "<PLAYER>! Gramps!"
+	line "Smell you later!"
+	done
+
+OaksLabOakWhatText:
+	text "OAK: What?"
+	done
+
+OaksLabPikachuDislikesBallsText:
+	text "OAK: Would you"
+	line "look at that!"
+
+	para "It's odd, but it"
+	line "appears that your"
+	cont "PIKACHU dislikes"
+	cont "# BALLs."
+
+	para "You should just"
+	line "keep it with you."
+
+	para "That should make"
+	line "it happy!"
+
+	para "You can talk to it"
+	line "and see how it"
+	cont "feels about you."
+	done
+
+OaksLabThatsAPokeBallText:
+	text "That's a #"
+	line "BALL. There's a"
+	cont "#MON inside!"
+	done
+
+OakYourPokemonCanFightText:
+	text "OAK: If a wild"
+	line "#MON appears,"
+	cont "your #MON can"
+	cont "fight against it!"
+
+	para "Afterward, go on"
+	line "to the next town."
+	done
+
+OakBusyText:
+	text "OAK: Hmm? Oh,"
+	line "<PLAYER>. I'm a bit"
+	cont "busy right now."
+
+	para "Come back a little"
+	line "later."
+	done
 
 OaksLabPoster1:
 	jumptext OaksLabPoster1Text
@@ -286,3 +597,5 @@ OaksLab_MapEvents:
 	object_event  1,  8, SPRITE_SCIENTIST, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, OaksAssistant1Script, -1
 	object_event  8,  9, SPRITE_SCIENTIST, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, OaksAssistant2Script, -1
 	object_event  1,  4, SPRITE_SCIENTIST, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, OaksAssistant3Script, -1
+	object_event  5,  4, SPRITE_BLUE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabRivalScript, EVENT_OAKS_LAB_RIVAL
+	object_event  7,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabEeveeBallScript, EVENT_OAKS_LAB_EEVEE_BALL

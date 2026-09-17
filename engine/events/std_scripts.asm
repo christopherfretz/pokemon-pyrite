@@ -479,6 +479,7 @@ BugContestResults_CopyContestantsToResults:
 
 InitializeEventsScript:
 	setevent EVENT_PALLET_TOWN_OAK ; Kanto hack: Oak appears in Pallet only during the intro cutscene
+	setevent EVENT_OAKS_LAB_RIVAL ; Kanto hack: shown by the Pallet intercept, hidden again when he leaves
 	setevent EVENT_EARLS_ACADEMY_EARL
 	setevent EVENT_RADIO_TOWER_ROCKET_TAKEOVER
 	setevent EVENT_GOLDENROD_CITY_ROCKET_TAKEOVER

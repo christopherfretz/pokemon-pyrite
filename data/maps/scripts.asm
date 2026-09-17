@@ -392,7 +392,6 @@ INCLUDE "maps/Route43Gate.asm"
 INCLUDE "maps/RedsHouse1F.asm"
 INCLUDE "maps/RedsHouse2F.asm"
 INCLUDE "maps/BluesHouse.asm"
-INCLUDE "maps/OaksLab.asm"
 
 
 SECTION "Map Scripts 20", ROMX
@@ -482,6 +481,7 @@ INCLUDE "maps/Route28SteelWingHouse.asm"
 
 SECTION "Map Scripts 25", ROMX
 
+INCLUDE "maps/OaksLab.asm" ; Kanto hack: moved from section 19, which overflowed
 INCLUDE "maps/SilverCaveOutside.asm"
 INCLUDE "maps/Route10North.asm"
 
