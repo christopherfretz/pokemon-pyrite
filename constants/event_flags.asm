@@ -617,10 +617,10 @@
 	const EVENT_BEAT_PSYCHIC_JARED
 	const EVENT_BEAT_PSYCHIC_RODNEY
 ; Firebreather
-	const EVENT_BEAT_FIREBREATHER_OTIS
+	const EVENT_BEAT_BUG_CATCHER_COLTON ; Kanto hack: was EVENT_BEAT_FIREBREATHER_OTIS; Route 3, Yellow's BUG_CATCHER 4
 	const EVENT_BEAT_FIREBREATHER_DICK
 	const EVENT_BEAT_FIREBREATHER_NED
-	const EVENT_BEAT_FIREBREATHER_BURT
+	const EVENT_BEAT_LASS_JANICE ; Kanto hack: was EVENT_BEAT_FIREBREATHER_BURT; Route 3, Yellow's LASS 1
 	const EVENT_BEAT_FIREBREATHER_BILL
 	const EVENT_BEAT_FIREBREATHER_WALT
 	const EVENT_BEAT_FIREBREATHER_RAY
@@ -1012,8 +1012,8 @@
 	const EVENT_BEAT_YOUNGSTER_IAN
 	const EVENT_BEAT_YOUNGSTER_JOEY2
 	const EVENT_BEAT_YOUNGSTER_JOEY3
-	const EVENT_BEAT_YOUNGSTER_WARREN
-	const EVENT_BEAT_YOUNGSTER_JIMMY
+	const EVENT_BEAT_YOUNGSTER_WARREN ; Kanto hack: Route 3, Yellow's YOUNGSTER 1
+	const EVENT_BEAT_YOUNGSTER_JIMMY ; Kanto hack: Route 3, Yellow's YOUNGSTER 2
 	const EVENT_BEAT_YOUNGSTER_OWEN
 	const EVENT_BEAT_YOUNGSTER_JASON
 ; Teacher
@@ -1489,7 +1489,15 @@
 ; Kanto hack: Brock (docs/M2-PEWTER-CITY.md). Crystal's Kanto gym leaders hand
 ; out no TMs, so there is no flag to reuse for Yellow's Brock TM.
 	const EVENT_GOT_TM_FROM_BROCK ; TM_ROLLOUT, standing in for Yellow's TM34 BIDE
-; Unused: next 27 events
+; Kanto hack: Route 3 (docs/M2-MTMOON.md). Four of Yellow's eight trainers
+; reuse Crystal's dead Route 3 flags (YOUNGSTER WARREN/JIMMY keep their names;
+; FIREBREATHER OTIS/BURT were renamed in place above), so Route 3 costs four
+; new flags, not eight.
+	const EVENT_BEAT_BUG_CATCHER_DION ; Route 3, Yellow's BUG_CATCHER 5
+	const EVENT_BEAT_LASS_SALLY ; Route 3, Yellow's LASS 2
+	const EVENT_BEAT_BUG_CATCHER_BRETT ; Route 3, Yellow's BUG_CATCHER 6
+	const EVENT_BEAT_LASS_ROBIN ; Route 3, Yellow's LASS 3
+; Unused: next 23 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

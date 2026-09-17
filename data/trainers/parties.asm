@@ -380,15 +380,15 @@ YoungsterGroup:
 	db 21, RATICATE,   TAIL_WHIP, QUICK_ATTACK, HYPER_FANG, SCARY_FACE
 	db -1 ; end
 
-	; YOUNGSTER (9)
+	; YOUNGSTER (9) - Kanto hack: Route 3, Yellow's YOUNGSTER 1
 	db "WARREN@", TRAINERTYPE_NORMAL
-	db 35, FEAROW
+	db 11, RATTATA
+	db 11, EKANS
 	db -1 ; end
 
-	; YOUNGSTER (10)
+	; YOUNGSTER (10) - Kanto hack: Route 3, Yellow's YOUNGSTER 2
 	db "JIMMY@", TRAINERTYPE_NORMAL
-	db 33, RATICATE
-	db 33, ARBOK
+	db 14, SPEAROW
 	db -1 ; end
 
 	; YOUNGSTER (11)
@@ -793,6 +793,23 @@ LassGroup:
 	db "SARAH@", TRAINERTYPE_NORMAL
 	db  6, NIDORAN_F
 	db  6, NIDORAN_M
+	db -1 ; end
+
+	; LASS (19) - Kanto hack: Route 3, Yellow's LASS 1
+	db "JANICE@", TRAINERTYPE_NORMAL
+	db  9, PIDGEY
+	db  9, PIDGEY
+	db -1 ; end
+
+	; LASS (20) - Kanto hack: Route 3, Yellow's LASS 2
+	db "SALLY@", TRAINERTYPE_NORMAL
+	db 10, RATTATA
+	db 10, NIDORAN_M
+	db -1 ; end
+
+	; LASS (21) - Kanto hack: Route 3, Yellow's LASS 3
+	db "ROBIN@", TRAINERTYPE_NORMAL
+	db 14, JIGGLYPUFF
 	db -1 ; end
 
 JanineGroup:
@@ -1639,6 +1656,27 @@ BugCatcherGroup:
 	db "WESLEY@", TRAINERTYPE_NORMAL
 	db  8, CATERPIE
 	db  8, METAPOD
+	db -1 ; end
+
+	; BUG_CATCHER (24) - Kanto hack: Route 3, Yellow's BUG_CATCHER 4
+	db "COLTON@", TRAINERTYPE_NORMAL
+	db 10, CATERPIE
+	db 10, WEEDLE
+	db 10, CATERPIE
+	db -1 ; end
+
+	; BUG_CATCHER (25) - Kanto hack: Route 3, Yellow's BUG_CATCHER 5
+	db "DION@", TRAINERTYPE_NORMAL
+	db  9, WEEDLE
+	db  9, KAKUNA
+	db  9, CATERPIE
+	db  9, METAPOD
+	db -1 ; end
+
+	; BUG_CATCHER (26) - Kanto hack: Route 3, Yellow's BUG_CATCHER 6
+	db "BRETT@", TRAINERTYPE_NORMAL
+	db 11, CATERPIE
+	db 11, METAPOD
 	db -1 ; end
 
 FisherGroup:
@@ -2530,7 +2568,7 @@ BurglarGroup:
 	db -1 ; end
 
 FirebreatherGroup:
-	; FIREBREATHER (1)
+	; FIREBREATHER (1) - Kanto hack: unused (Crystal's Route 3 is gone)
 	db "OTIS@", TRAINERTYPE_NORMAL
 	db 29, MAGMAR
 	db 32, WEEZING
@@ -2549,7 +2587,7 @@ FirebreatherGroup:
 	db 15, KOFFING
 	db -1 ; end
 
-	; FIREBREATHER (4)
+	; FIREBREATHER (4) - Kanto hack: unused (Crystal's Route 3 is gone)
 	db "BURT@", TRAINERTYPE_NORMAL
 	db 32, KOFFING
 	db 32, SLUGMA

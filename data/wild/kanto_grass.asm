@@ -235,32 +235,38 @@ KantoGrassWildMons:
 	db 9, PIDGEOTTO
 	end_grass_wildmons
 
+; Kanto hack: Yellow's Route 3 table (docs/M2-MTMOON.md). Yellow rate 20/256
+; ~= 8 percent, no time of day, so all three columns are the same. Yellow's
+; ten slots squeeze into Crystal's seven: the duplicated middle SPEAROW 10,
+; SPEAROW 11 and SANDSHREW 10 are dropped, keeping Yellow's order and all
+; four species (SPEAROW/MANKEY/SANDSHREW/RATTATA, L8-12). No EKANS/ARBOK/
+; RATICATE/CLEFAIRY (Crystal's own table) and no PIKACHU.
 	def_grass_wildmons ROUTE_3
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 8 percent, 8 percent, 8 percent ; encounter rates: morn/day/nite
 	; morn
-	db 5, SPEAROW
-	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
-	; day
-	db 5, SPEAROW
-	db 5, RATTATA
-	db 8, EKANS
-	db 10, RATICATE
-	db 10, ARBOK
-	db 10, SANDSHREW
-	db 10, SANDSHREW
-	; nite
-	db 5, RATTATA
+	db  8, SPEAROW
+	db  9, SPEAROW
+	db  9, MANKEY
+	db  8, SANDSHREW
 	db 10, RATTATA
-	db 10, RATICATE
-	db 6, ZUBAT
-	db 5, RATTATA
-	db 6, CLEFAIRY
-	db 6, CLEFAIRY
+	db 12, RATTATA
+	db 12, SPEAROW
+	; day
+	db  8, SPEAROW
+	db  9, SPEAROW
+	db  9, MANKEY
+	db  8, SANDSHREW
+	db 10, RATTATA
+	db 12, RATTATA
+	db 12, SPEAROW
+	; nite
+	db  8, SPEAROW
+	db  9, SPEAROW
+	db  9, MANKEY
+	db  8, SANDSHREW
+	db 10, RATTATA
+	db 12, RATTATA
+	db 12, SPEAROW
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_4
