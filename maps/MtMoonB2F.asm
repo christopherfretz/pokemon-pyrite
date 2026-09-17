@@ -31,8 +31,9 @@
 ; exactly the tile in front of him: a GSC sight range of 1 reproduces the
 ; trigger with no coord_event, and the trainer flag retires it after the battle.
 ;
-; The fossils are SPRITE_ROCK objects (Crystal has no SPRITE_FOSSIL). Taking one
-; makes MIGUEL step into the *other* fossil's column, say his line and claim it,
+; The fossils are SPRITE_FOSSIL objects (Yellow's still prop, ported 2026-09-17;
+; they were SPRITE_ROCK before that). Taking one makes MIGUEL step into the
+; *other* fossil's column, say his line and claim it,
 ; exactly as Yellow's MtMoonB2FMoveSuperNerdScript does: DOME taken -> he steps
 ; RIGHT from (12,8) to (13,8) (the HELIX column), HELIX taken -> he steps UP to
 ; (12,7) (the DOME column). Yellow picks the direction from the player's tile;
@@ -448,7 +449,7 @@ MtMoonB2F_MapEvents:
 	object_event 29, 17, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 4, TrainerGruntM23, -1
 	object_event  9,  3, SPRITE_JESSIE, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FJessieScript, EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN
 	object_event  9,  4, SPRITE_JAMES, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FJamesScript, EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN
-	object_event 12,  6, SPRITE_ROCK, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FDomeFossil, EVENT_MT_MOON_B2F_DOME_FOSSIL
-	object_event 13,  6, SPRITE_ROCK, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FHelixFossil, EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	object_event 12,  6, SPRITE_FOSSIL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FDomeFossil, EVENT_MT_MOON_B2F_DOME_FOSSIL
+	object_event 13,  6, SPRITE_FOSSIL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FHelixFossil, EVENT_MT_MOON_B2F_HELIX_FOSSIL
 	object_event 25, 21, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FHPUp, EVENT_MT_MOON_B2F_HP_UP
 	object_event 29,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FTMDynamicPunch, EVENT_MT_MOON_B2F_TM_DYNAMICPUNCH

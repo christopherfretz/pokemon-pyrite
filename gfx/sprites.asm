@@ -119,3 +119,8 @@ OldManSpriteGFX::              INCBIN "gfx/sprites/old_man.2bpp"
 ; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h)
 JessieSpriteGFX::              INCBIN "gfx/sprites/jessie.2bpp"
 JamesSpriteGFX::               INCBIN "gfx/sprites/james.2bpp"
+
+; Kanto hack: Yellow's still fossil / old amber props (docs/M2-MTMOON.md 5f,
+; docs/M2-PEWTER.md 4d). 16x16 = one 4-tile STILL_SPRITE frame each.
+FossilSpriteGFX::              INCBIN "gfx/sprites/fossil.2bpp"
+OldAmberSpriteGFX::            INCBIN "gfx/sprites/old_amber.2bpp"

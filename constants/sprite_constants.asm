@@ -109,6 +109,8 @@
 	const SPRITE_OLD_MAN            ; 69 (Yellow's Viridian old man)
 	const SPRITE_JESSIE             ; 6a (Yellow's Jessie)
 	const SPRITE_JAMES              ; 6b (Yellow's James)
+	const SPRITE_FOSSIL             ; 6c (Yellow's fossil prop, still)
+	const SPRITE_OLD_AMBER          ; 6d (Yellow's old amber prop, still)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared
