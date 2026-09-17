@@ -210,6 +210,8 @@ Route34IlexForestGate_Blocks:
 Route6SaffronGate_Blocks:
 Route40BattleTowerGate_Blocks:
 Route2Gate_Blocks:
+ViridianForestSouthGate_Blocks:
+ViridianForestNorthGate_Blocks:
 Route29Route46Gate_Blocks:
 Route5SaffronGate_Blocks:
 	INCBIN "maps/NorthSouthGate.blk"
@@ -1045,5 +1047,10 @@ BetaBlank_Blocks: ; unreferenced
 
 GoldenrodDeptStoreRoof_Blocks:
 	INCBIN "maps/GoldenrodDeptStoreRoof.blk"
+
+; Kanto hack: Viridian Forest (docs/M2-FOREST.md). It lives in "Map Blocks 3"
+; because "Map Blocks 1", where the Viridian group's maps are, is full.
+ViridianForest_Blocks:
+	INCBIN "maps/ViridianForest.blk"
 
 ENDSECTION

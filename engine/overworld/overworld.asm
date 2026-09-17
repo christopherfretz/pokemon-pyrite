@@ -378,9 +378,18 @@ LoadSpriteGFX:
 	ld a, [hli]
 	and a
 	jr z, .done
+; Kanto hack: GetSprite returns the sprite's ROM bank in b, clobbering this
+; loop's counter. Vanilla survives it because every vanilla overworld sprite
+; lives in bank $30/$31, so `dec b` never reached 0; our Kanto sprites
+; (Pikachu follower, Kanto rival, old man) landed in bank $01, which ended the
+; loop early and left the next entry's type byte 0. A type of 0 sorts ahead of
+; the player in SortUsedSprites, so that sprite stole vtile $00 and the player
+; was drawn with its graphics (docs/M2-FOREST.md).
+	push bc
 	push hl
 	call .LoadSprite
 	pop hl
+	pop bc
 	ld [hli], a
 	dec b
 	jr nz, .loop

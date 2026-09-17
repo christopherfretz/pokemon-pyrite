@@ -3,11 +3,17 @@
 	const ROUTE2_POKE_BALL2
 	const ROUTE2_FRUIT_TREE
 
-; Kanto hack: Yellow's Route 2 (docs/M2-ROUTE2.md). Yellow has NO trainers
-; here - the bug catchers all live in Viridian Forest - so Crystal's three
+; Kanto hack: Yellow's Route 2 (docs/M2-ROUTE2.md, docs/M2-FOREST.md). Yellow
+; has NO trainers here - the bug catchers all live in Viridian Forest - so
+; Crystal's three
 ; Bug Catchers (ROB/ED/DOUG) are gone, and the four GSC itemballs collapse to
 ; Yellow's two: HP_UP and MOON_STONE, both south of the Route 2 gate.
 ; The hidden items are Crystal's and stay.
+; 4b carved the two Viridian Forest gate doorways into Route2.blk - warps 6
+; (3,27, Pewter half) and 7 (5,33, Viridian half) - and opened the cut trees
+; at (5,8) and (15,18) so the Route 2 gate, Diglett's Cave and the Nugget
+; House are reachable without CUT. The cut trees at (10,40)/(12,46)/(12,50)
+; stay: opening them would let the player skip the forest entirely.
 Route2_MapScripts:
 	def_scene_scripts
 
@@ -60,6 +66,8 @@ Route2_MapEvents:
 	warp_event 16, 27, ROUTE_2_GATE, 1
 	warp_event 17, 27, ROUTE_2_GATE, 2
 	warp_event 12,  7, DIGLETTS_CAVE, 3
+	warp_event  3, 27, VIRIDIAN_FOREST_NORTH_GATE, 1 ; Kanto hack (docs/M2-FOREST.md)
+	warp_event  5, 33, VIRIDIAN_FOREST_SOUTH_GATE, 3 ; Kanto hack (docs/M2-FOREST.md)
 
 	def_coord_events
 

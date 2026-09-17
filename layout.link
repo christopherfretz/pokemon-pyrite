@@ -309,6 +309,9 @@ ROMX $78
 	"Tileset Data 8"
 ROMX $7b
 	"Battle Tower Text"
+	; Kanto hack: Viridian Forest + its gates (docs/M2-FOREST.md). Pinned so
+	; the section does not float into bank $01, which is nearly full.
+	"Map Scripts 26"
 ROMX $7c
 	"Battle Tower Trainer Data"
 ROMX $7d

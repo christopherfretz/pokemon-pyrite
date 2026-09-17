@@ -126,3 +126,20 @@
 	tilecoll WALL, WALL, WALL, WALL ; 7d
 	tilecoll WALL, WALL, WALL, WALL ; 7e
 	tilecoll WALL, WALL, WALL, WALL ; 7f
+; Kanto hack: appended for Viridian Forest (docs/M2-FOREST.md).  $80-$82 are
+; the tree/grass edges Yellow's forest tileset has and Crystal's does not;
+; $83-$85 are the forest's two doorways (GSC warps need a HI_NYBBLE_WARPS
+; collision, Gen 1 warps do not); $86-$88 are tree corners Crystal only had
+; as hedge/fence graphics, which looked wrong inside a forest.  $85 sits on the
+; forest's bottom row, so it is a WARP_CARPET_DOWN, not a DOOR: standing on a
+; DOOR forces a step DOWN that skips the collision check, which would walk the
+; player off the south edge of the map.
+	tilecoll WALL, TALL_GRASS, WALL, TALL_GRASS ; 80
+	tilecoll TALL_GRASS, WALL, TALL_GRASS, WALL ; 81
+	tilecoll WALL, TALL_GRASS, TALL_GRASS, TALL_GRASS ; 82
+	tilecoll WALL, DOOR, WALL, FLOOR ; 83
+	tilecoll DOOR, WALL, WALL, WALL ; 84
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 85
+	tilecoll FLOOR, WALL, WALL, WALL ; 86
+	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 87
+	tilecoll WALL, WALL, FLOOR, WALL ; 88

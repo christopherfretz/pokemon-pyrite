@@ -1383,8 +1383,8 @@
 	const EVENT_ROCK_TUNNEL_B1F_REVIVE
 	const EVENT_ROUTE_2_MOON_STONE ; was EVENT_ROUTE_2_DIRE_HIT
 	const EVENT_ROUTE_2_HP_UP ; was EVENT_ROUTE_2_MAX_POTION
-	const EVENT_ROUTE_2_CARBOS ; unused: Yellow's Route 2 has only two itemballs
-	const EVENT_ROUTE_2_ELIXER ; unused: Yellow's Route 2 has only two itemballs
+	const EVENT_VIRIDIAN_FOREST_POTION_1 ; was the unused EVENT_ROUTE_2_CARBOS
+	const EVENT_VIRIDIAN_FOREST_POTION_2 ; was the unused EVENT_ROUTE_2_ELIXER
 	const EVENT_ROUTE_4_HP_UP
 	const EVENT_ROUTE_12_CALCIUM
 	const EVENT_ROUTE_12_NUGGET
@@ -1475,7 +1475,18 @@
 	const EVENT_ROUTE22_RIVAL ; object hidden; the Route 22 OBJECTS callback derives it
 ; Kanto hack: Viridian's old-man catch tutorial (docs/M2-CATCH.md)
 	const EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO ; his first (failed) demo is done; he stands aside
-; Unused: next 36 events
+; Kanto hack: Viridian Forest (docs/M2-FOREST.md). Its two POTION itemballs
+; reuse the dead EVENT_ROUTE_2_CARBOS/ELIXER flags above, so the forest costs
+; 8 new flags, not 10.
+	const EVENT_BEAT_BUG_CATCHER_SAMMY ; forest trainer 1 (Yellow BUG_CATCHER 1)
+	const EVENT_BEAT_BUG_CATCHER_ELIJAH ; forest trainer 2 (Yellow BUG_CATCHER 2)
+	const EVENT_BEAT_BUG_CATCHER_ANTHONY ; forest trainer 3 (Yellow BUG_CATCHER 3)
+	const EVENT_BEAT_LASS_SARAH ; forest trainer 4 (Yellow LASS 19)
+	const EVENT_BEAT_BUG_CATCHER_WESLEY ; forest trainer 5 (Yellow BUG_CATCHER 15)
+	const EVENT_VIRIDIAN_FOREST_POKE_BALL ; the POKe BALL itemball at (1,31)
+	const EVENT_VIRIDIAN_FOREST_HIDDEN_POTION ; hidden POTION at (1,18)
+	const EVENT_VIRIDIAN_FOREST_HIDDEN_ANTIDOTE ; hidden ANTIDOTE at (16,42)
+; Unused: next 28 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

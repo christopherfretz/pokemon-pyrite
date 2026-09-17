@@ -146,10 +146,13 @@ LoadMetatiles::
 	ld e, l
 	ld d, h
 	; Set hl to the address of the current metatile data ([wTilesetBlocksAddress] + (a) tiles).
-; BUG: LoadMetatiles wraps around past 128 blocks (see docs/bugs_and_glitches.md)
-	add a
+; Kanto hack: pret's documented "LoadMetatiles wraps around past 128 blocks"
+; bug is fixed here (docs/bugs_and_glitches.md).  The vanilla `add a` truncates
+; to 8 bits, so block ids >= $80 alias to id & $7f.  Viridian Forest uses blocks
+; $80-$88 of the Kanto tileset (docs/M2-FOREST.md), so it needs the 16-bit form.
 	ld l, a
 	ld h, 0
+	add hl, hl
 	add hl, hl
 	add hl, hl
 	add hl, hl

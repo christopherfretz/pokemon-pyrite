@@ -191,6 +191,7 @@ DEF KRIS EQU __trainer_class__
 	const DANA3
 	const DANA4
 	const DANA5
+	const SARAH ; Kanto hack: Viridian Forest (Yellow LASS 19)
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -348,6 +349,11 @@ DEF KRIS EQU __trainer_class__
 	const ARNIE4
 	const ARNIE5
 	const WAYNE
+; Kanto hack: Viridian Forest's four bug catchers (Yellow BUG_CATCHER 1/2/3/15)
+	const SAMMY
+	const ELIJAH
+	const ANTHONY
+	const WESLEY
 
 	trainerclass FISHER ; 25
 	const JUSTIN

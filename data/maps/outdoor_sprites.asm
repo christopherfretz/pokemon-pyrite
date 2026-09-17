@@ -44,6 +44,8 @@ rept MAX_OUTDOOR_SPRITES - 6
 endr
 
 ViridianGroupSprites:
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_BUG_CATCHER
 	db SPRITE_YOUNGSTER
 	db SPRITE_GRAMPS
 	db SPRITE_FISHER
@@ -51,7 +53,7 @@ ViridianGroupSprites:
 	db SPRITE_FRUIT_TREE
 	db SPRITE_KANTO_RIVAL
 	db SPRITE_OLD_MAN
-rept MAX_OUTDOOR_SPRITES - 7
+rept MAX_OUTDOOR_SPRITES - 9
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

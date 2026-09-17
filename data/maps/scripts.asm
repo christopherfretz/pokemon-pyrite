@@ -485,4 +485,14 @@ INCLUDE "maps/OaksLab.asm" ; Kanto hack: moved from section 19, which overflowed
 INCLUDE "maps/SilverCaveOutside.asm"
 INCLUDE "maps/Route10North.asm"
 
+
+SECTION "Map Scripts 26", ROMX
+
+; Kanto hack: Viridian Forest and its two gates (docs/M2-FOREST.md). They get
+; their own section because section 11, which holds the rest of the Viridian
+; group's Kanto maps, overflowed.
+INCLUDE "maps/ViridianForest.asm"
+INCLUDE "maps/ViridianForestSouthGate.asm"
+INCLUDE "maps/ViridianForestNorthGate.asm"
+
 ENDSECTION

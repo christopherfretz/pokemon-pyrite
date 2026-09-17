@@ -791,6 +791,12 @@ LassGroup:
 	db 36, GOLDUCK,    DISABLE, SURF, PSYCHIC_M, SCREECH
 	db -1 ; end
 
+	; LASS (18) - Kanto hack: Viridian Forest, Yellow's LASS 19
+	db "SARAH@", TRAINERTYPE_NORMAL
+	db  6, NIDORAN_F
+	db  6, NIDORAN_M
+	db -1 ; end
+
 JanineGroup:
 	; JANINE (1)
 	db "JANINE@", TRAINERTYPE_MOVES
@@ -1611,6 +1617,30 @@ BugCatcherGroup:
 	db "WAYNE@", TRAINERTYPE_NORMAL
 	db  8, LEDYBA
 	db 10, PARAS
+	db -1 ; end
+
+	; BUG_CATCHER (20) - Kanto hack: Viridian Forest, Yellow's BUG_CATCHER 1
+	db "SAMMY@", TRAINERTYPE_NORMAL
+	db  7, CATERPIE
+	db  7, CATERPIE
+	db -1 ; end
+
+	; BUG_CATCHER (21) - Kanto hack: Viridian Forest, Yellow's BUG_CATCHER 2
+	db "ELIJAH@", TRAINERTYPE_NORMAL
+	db  6, METAPOD
+	db  6, CATERPIE
+	db  6, METAPOD
+	db -1 ; end
+
+	; BUG_CATCHER (22) - Kanto hack: Viridian Forest, Yellow's BUG_CATCHER 3
+	db "ANTHONY@", TRAINERTYPE_NORMAL
+	db 10, CATERPIE
+	db -1 ; end
+
+	; BUG_CATCHER (23) - Kanto hack: Viridian Forest, Yellow's BUG_CATCHER 15
+	db "WESLEY@", TRAINERTYPE_NORMAL
+	db  8, CATERPIE
+	db  8, METAPOD
 	db -1 ; end
 
 FisherGroup:

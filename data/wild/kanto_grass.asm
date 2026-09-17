@@ -230,6 +230,39 @@ KantoGrassWildMons:
 	db 7, PIDGEY
 	end_grass_wildmons
 
+; Kanto hack: Yellow's Viridian Forest table (docs/M2-FOREST.md). Yellow rate
+; 25/256 ~= 10 percent, no time of day, so all three columns are the same.
+; Yellow's ten slots squeeze into Crystal's seven: CATERPIE 3/4, METAPOD 4,
+; PIDGEY 4/6, CATERPIE 6 and the 1 percent PIDGEOTTO 9. No PIKACHU - the
+; starter stays unique (Yellow's forest has none either).
+	def_grass_wildmons VIRIDIAN_FOREST
+	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	; morn
+	db 3, CATERPIE
+	db 4, METAPOD
+	db 4, CATERPIE
+	db 4, PIDGEY
+	db 6, CATERPIE
+	db 6, PIDGEY
+	db 9, PIDGEOTTO
+	; day
+	db 3, CATERPIE
+	db 4, METAPOD
+	db 4, CATERPIE
+	db 4, PIDGEY
+	db 6, CATERPIE
+	db 6, PIDGEY
+	db 9, PIDGEOTTO
+	; nite
+	db 3, CATERPIE
+	db 4, METAPOD
+	db 4, CATERPIE
+	db 4, PIDGEY
+	db 6, CATERPIE
+	db 6, PIDGEY
+	db 9, PIDGEOTTO
+	end_grass_wildmons
+
 	def_grass_wildmons ROUTE_3
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
