@@ -812,6 +812,13 @@ LassGroup:
 	db 14, JIGGLYPUFF
 	db -1 ; end
 
+	; LASS (22) - Kanto hack: Route 4, Yellow's LASS 4
+	db "TAMARA@", TRAINERTYPE_NORMAL
+	db 31, PARAS
+	db 31, PARAS
+	db 31, PARASECT
+	db -1 ; end
+
 JanineGroup:
 	; JANINE (1)
 	db "JANINE@", TRAINERTYPE_MOVES

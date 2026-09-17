@@ -1,111 +1,111 @@
 	object_const_def
-	const ROUTE4_YOUNGSTER
 	const ROUTE4_LASS1
 	const ROUTE4_LASS2
 	const ROUTE4_POKE_BALL
 
+; Kanto hack: Yellow's Route 4 (docs/M2-MTMOON.md). The map was re-cut from
+; Yellow in 5b (45x9, south to Route 3, east to Cerulean, the three Mt. Moon
+; doors on the west plateau); 5d replaces Crystal's three trainers, HP_UP
+; itemball and hidden ULTRA_BALL with Yellow's objects. Coordinates, facings
+; and sight ranges are Yellow's (vendor/pokeyellow/data/maps/objects/Route4.asm
+; + scripts/Route4.asm's trainer header + data/events/hidden_events.asm); text
+; is Yellow's, verbatim. Yellow's anonymous LASS 4 gets the GSC name TAMARA;
+; her party is Yellow's L31 PARAS/PARAS/PARASECT as-is (operator decision
+; 2026-09-17) - she guards the east descent and is meant to be fought on the
+; way back from Cerulean.
+;
+; KNOWN GAP, not a bug in this step: TAMARA's ledge plateau (tile rows 2-4,
+; cols 61-79, plus the row-4 corridor out to the east edge) is a one-way drop.
+; In Yellow you can only enter it from Cerulean at Route 4 (89,4); our .blk is
+; byte-for-byte Yellow's, so that is still true here. But Cerulean is still
+; Crystal's map, and our `connection east, CeruleanCity, CERULEAN_CITY, -5`
+; (attributes.asm) maps Route 4 y=4 to Cerulean y=14, which is water on
+; Crystal's west shore. Yellow uses -4 (y=4 -> Cerulean y=12, land) but that
+; would land the main road (y=10/11) in Crystal's water at y=18/19, so no
+; single offset serves both openings against Crystal's Cerulean. The fix is
+; the Cerulean re-cut: with Yellow's Cerulean and offset -4 both openings line
+; up exactly as they do in Yellow. Until then TAMARA is simply unreachable -
+; no soft lock, nothing else on the map depends on her.
+;
+; Item substitutions (docs/M2-MTMOON.md section 2): Yellow's TM04 WHIRLWIND has
+; no GSC equivalent, so the itemball at (57,3) gives TM_ROAR (GSC TM05, the
+; same force-a-switch effect). The hidden item is Yellow's GREAT_BALL at
+; (40,3) - the survey's section 2 claim that Route 4 has no hidden items was
+; wrong, and its "hidden ULTRA_BALL" was Crystal's, not Yellow's.
+;
+; Flags: no new ones. EVENT_BEAT_BIRD_KEEPER_HANK -> EVENT_BEAT_LASS_TAMARA,
+; EVENT_ROUTE_4_HP_UP -> EVENT_ROUTE_4_TM_ROAR and
+; EVENT_ROUTE_4_HIDDEN_ULTRA_BALL -> EVENT_ROUTE_4_HIDDEN_GREAT_BALL, all
+; renamed in place (the flag list is positional, so renaming keeps every later
+; index and existing savestates valid).
 Route4_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-TrainerBirdKeeperHank:
-	trainer BIRD_KEEPER, HANK, EVENT_BEAT_BIRD_KEEPER_HANK, BirdKeeperHankSeenText, BirdKeeperHankBeatenText, 0, .Script
+TrainerLassTamara:
+	trainer LASS, TAMARA, EVENT_BEAT_LASS_TAMARA, LassTamaraSeenText, LassTamaraBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext BirdKeeperHankAfterBattleText
+	writetext LassTamaraAfterBattleText
 	waitbutton
 	closetext
 	end
 
-TrainerPicnickerHope:
-	trainer PICNICKER, HOPE, EVENT_BEAT_PICNICKER_HOPE, PicnickerHopeSeenText, PicnickerHopeBeatenText, 0, .Script
+Route4LassScript:
+	jumptextfaceplayer Route4LassText
 
-.Script:
-	endifjustbattled
-	opentext
-	writetext PicnickerHopeAfterBattleText
-	waitbutton
-	closetext
-	end
+Route4PokecenterSign:
+	jumpstd PokecenterSignScript
 
-TrainerPicnickerSharon:
-	trainer PICNICKER, SHARON, EVENT_BEAT_PICNICKER_SHARON, PicnickerSharonSeenText, PicnickerSharonBeatenText, 0, .Script
+Route4MtMoonSign:
+	jumptext Route4MtMoonSignText
 
-.Script:
-	endifjustbattled
-	opentext
-	writetext PicnickerSharonAfterBattleText
-	waitbutton
-	closetext
-	end
+Route4Sign:
+	jumptext Route4SignText
 
-Route4HPUp:
-	itemball HP_UP
+Route4TMRoar:
+	itemball TM_ROAR
 
-Route4HiddenUltraBall:
-	hiddenitem ULTRA_BALL, EVENT_ROUTE_4_HIDDEN_ULTRA_BALL
+Route4HiddenGreatBall:
+	hiddenitem GREAT_BALL, EVENT_ROUTE_4_HIDDEN_GREAT_BALL
 
-BirdKeeperHankSeenText:
-	text "I'm raising my"
-	line "#MON. Want to"
-	cont "battle with me?"
+Route4LassText:
+	text "Ouch! I tripped"
+	line "over a rocky"
+	cont "#MON, GEODUDE!"
 	done
 
-BirdKeeperHankBeatenText:
-	text "Ack! I lost that"
-	line "one…"
+LassTamaraSeenText:
+	text "I came to get my"
+	line "mushroom #MON!"
 	done
 
-BirdKeeperHankAfterBattleText:
-	text "If you have a"
-	line "specific #MON"
-
-	para "that you want to"
-	line "raise, put it out"
-
-	para "first, then switch"
-	line "it right away."
-
-	para "That's how to do"
-	line "it."
+LassTamaraBeatenText:
+	text "Oh! My cute"
+	line "mushroom #MON!"
 	done
 
-PicnickerHopeSeenText:
-	text "I have a feeling"
-	line "that I can win."
+LassTamaraAfterBattleText:
+	text "There might not"
+	line "be any more"
+	cont "mushrooms here."
 
-	para "Let's see if I'm"
-	line "right!"
+	para "I think I got"
+	line "them all."
 	done
 
-PicnickerHopeBeatenText:
-	text "Aww, you are too"
-	line "strong."
+Route4MtMoonSignText:
+	text "MT.MOON"
+	line "Tunnel Entrance"
 	done
 
-PicnickerHopeAfterBattleText:
-	text "I heard CLEFAIRY"
-	line "appear at MT.MOON."
-
-	para "But where could"
-	line "they be?"
-	done
-
-PicnickerSharonSeenText:
-	text "Um…"
-	line "I…"
-	done
-
-PicnickerSharonBeatenText:
-	text "…"
-	done
-
-PicnickerSharonAfterBattleText:
-	text "……I'll go train"
-	line "some more…"
+Route4SignText:
+	text "ROUTE 4"
+	line "MT.MOON -"
+	cont "CERULEAN CITY"
 	done
 
 Route4_MapEvents:
@@ -119,10 +119,12 @@ Route4_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event 10,  3, BGEVENT_ITEM, Route4HiddenUltraBall
+	bg_event 12,  5, BGEVENT_READ, Route4PokecenterSign
+	bg_event 17,  7, BGEVENT_READ, Route4MtMoonSign
+	bg_event 27,  7, BGEVENT_READ, Route4Sign
+	bg_event 40,  3, BGEVENT_ITEM, Route4HiddenGreatBall
 
 	def_object_events
-	object_event 17,  9, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerBirdKeeperHank, -1
-	object_event  9,  8, SPRITE_LASS, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 4, TrainerPicnickerHope, -1
-	object_event 21,  6, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 4, TrainerPicnickerSharon, -1
-	object_event 26,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route4HPUp, EVENT_ROUTE_4_HP_UP
+	object_event  9,  8, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route4LassScript, -1
+	object_event 63,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerLassTamara, -1
+	object_event 57,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route4TMRoar, EVENT_ROUTE_4_TM_ROAR

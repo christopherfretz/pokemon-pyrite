@@ -196,6 +196,7 @@ DEF KRIS EQU __trainer_class__
 	const JANICE
 	const SALLY
 	const ROBIN
+	const TAMARA ; Kanto hack: Route 4 (Yellow LASS 4)
 
 	trainerclass JANINE ; 1a
 	const JANINE1
