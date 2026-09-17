@@ -195,9 +195,9 @@ ENDM
 	endgroup
 
 	newgroup CERULEAN                                             ;  7
-	map_const CERULEAN_GYM_BADGE_SPEECH_HOUSE,              4,  4 ;  1
-	map_const CERULEAN_POLICE_STATION,                      4,  4 ;  2
-	map_const CERULEAN_TRADE_SPEECH_HOUSE,                  4,  4 ;  3
+	map_const CERULEAN_TRASHED_HOUSE,                       4,  4 ;  1
+	map_const CERULEAN_MELANIES_HOUSE,                      4,  4 ;  2
+	map_const BIKE_SHOP,                                    4,  4 ;  3
 	map_const CERULEAN_POKECENTER_1F,                       5,  4 ;  4
 	map_const CERULEAN_POKECENTER_2F_BETA,                  8,  4 ;  5
 	map_const CERULEAN_GYM,                                 5,  8 ;  6
@@ -209,10 +209,11 @@ ENDM
 	map_const ROUTE_4,                                     45,  9 ; 12
 	map_const ROUTE_9,                                     30,  9 ; 13
 	map_const ROUTE_10_NORTH,                              10,  9 ; 14
-	map_const ROUTE_24,                                    10,  9 ; 15
+	map_const ROUTE_24,                                    10, 18 ; 15
 	map_const ROUTE_25,                                    30,  9 ; 16
 	map_const CERULEAN_CITY,                               20, 18 ; 17
 	map_const MT_MOON_POKECENTER,                           5,  4 ; 18
+	map_const CERULEAN_BADGE_HOUSE,                         4,  4 ; 19
 	endgroup
 
 	newgroup AZALEA                                               ;  8

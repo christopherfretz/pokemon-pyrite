@@ -276,31 +276,46 @@ CeruleanLockedDoorText:
 CeruleanCity_MapEvents:
 	db 0, 0 ; filler
 
+; 6a: Yellow's ten warps, in Yellow's order (docs/M3-CERULEAN.md 1.4).  Warps 8
+; and 10 are the "hole in the back wall" pass-throughs; they sit on metatile $96
+; (FLOOR, FLOOR, FLOOR, LADDER), because GSC only fires a warp on a tile whose
+; collision is in the $7x warp nybble while Gen 1 fires one anywhere.
 	def_warp_events
-	warp_event  7, 15, CERULEAN_GYM_BADGE_SPEECH_HOUSE, 1
-	warp_event 28, 17, CERULEAN_POLICE_STATION, 1
-	warp_event 13, 19, CERULEAN_TRADE_SPEECH_HOUSE, 1
-	warp_event 19, 21, CERULEAN_POKECENTER_1F, 1
-	warp_event 30, 23, CERULEAN_GYM, 1
-	warp_event 25, 29, CERULEAN_MART, 2
+	warp_event 27, 11, CERULEAN_TRASHED_HOUSE, 1
+	warp_event 13, 15, CERULEAN_MELANIES_HOUSE, 1
+	warp_event 19, 17, CERULEAN_POKECENTER_1F, 1
+	warp_event 30, 19, CERULEAN_GYM, 1
+	warp_event 13, 25, BIKE_SHOP, 1
+	warp_event 25, 25, CERULEAN_MART, 1
+	warp_event  4, 11, CERULEAN_BADGE_HOUSE, 2 ; 6k: -> CERULEAN_CAVE_1F, 1
+	warp_event 27,  9, CERULEAN_TRASHED_HOUSE, 3
+	warp_event  9, 11, CERULEAN_BADGE_HOUSE, 2
+	warp_event  9,  9, CERULEAN_BADGE_HOUSE, 1
 
 	def_coord_events
 
+; 6a: moved onto Yellow's six sign tiles (docs/M3-CERULEAN.md 1.4); Crystal's
+; three extra signs keep their text but ride along on nearby wall tiles.  6b
+; replaces the text of all of them with Yellow's.
 	def_bg_events
-	bg_event 23, 23, BGEVENT_READ, CeruleanCitySign
-	bg_event 27, 25, BGEVENT_READ, CeruleanGymSign
-	bg_event 11, 29, BGEVENT_READ, CeruleanBikeShopSign
-	bg_event 25, 17, BGEVENT_READ, CeruleanPoliceSign
-	bg_event 23,  7, BGEVENT_READ, CeruleanCapeSign
-	bg_event 14, 29, BGEVENT_READ, CeruleanLockedDoor
-	bg_event 20, 21, BGEVENT_READ, CeruleanCityPokecenterSign
-	bg_event 26, 29, BGEVENT_READ, CeruleanCityMartSign
+	bg_event 23, 19, BGEVENT_READ, CeruleanCitySign
+	bg_event 27, 21, BGEVENT_READ, CeruleanGymSign
+	bg_event 11, 25, BGEVENT_READ, CeruleanBikeShopSign
+	bg_event 17, 29, BGEVENT_READ, CeruleanPoliceSign
+	bg_event 25,  9, BGEVENT_READ, CeruleanCapeSign
+	bg_event 28, 11, BGEVENT_READ, CeruleanLockedDoor
+	bg_event 20, 17, BGEVENT_READ, CeruleanCityPokecenterSign
+	bg_event 26, 25, BGEVENT_READ, CeruleanCityMartSign
 	bg_event  2, 12, BGEVENT_ITEM, CeruleanCityHiddenBerserkGene
 
+; 6a: four of Crystal's six objects landed on wall/water after the re-cut and
+; moved to the nearest floor tile: CooltrainerM (15,23)->(16,23), Slowpoke
+; (20,24)->(20,23), CooltrainerF (21,24)->(21,23), Youngster (6,12)->(5,12).
+; 6b replaces the whole list with Yellow's.
 	def_object_events
-	object_event 15, 23, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerMScript, -1
+	object_event 16, 23, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerMScript, -1
 	object_event 23, 15, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerdScript, -1
-	object_event 20, 24, SPRITE_SLOWPOKE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCitySlowbro, -1
-	object_event 21, 24, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerFScript, -1
+	object_event 20, 23, SPRITE_SLOWPOKE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCitySlowbro, -1
+	object_event 21, 23, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerFScript, -1
 	object_event 30, 26, SPRITE_FISHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityFisherScript, -1
-	object_event  6, 12, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityYoungsterScript, -1
+	object_event  5, 12, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityYoungsterScript, -1

@@ -125,5 +125,9 @@ Route24_MapEvents:
 
 	def_bg_events
 
+; 6a: Route 24 is now Yellow's 10x18 map.  Crystal's 10x9 map was Yellow's
+; block rows 9-17 shifted one block left, so Crystal's only object moves by
+; (+2, +18): the Rocket (8,7) -> (10,25), on the Nugget Bridge planks.  6h
+; replaces it with Yellow's six bridge trainers and the nugget man.
 	def_object_events
-	object_event  8,  7, SPRITE_ROCKET, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route24RocketScript, EVENT_ROUTE_24_ROCKET
+	object_event 10, 25, SPRITE_ROCKET, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route24RocketScript, EVENT_ROUTE_24_ROCKET

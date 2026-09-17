@@ -268,9 +268,9 @@ INCLUDE "maps/BurnedTowerB1F.asm"
 
 SECTION "Map Scripts 15", ROMX
 
-INCLUDE "maps/CeruleanGymBadgeSpeechHouse.asm"
-INCLUDE "maps/CeruleanPoliceStation.asm"
-INCLUDE "maps/CeruleanTradeSpeechHouse.asm"
+INCLUDE "maps/CeruleanTrashedHouse.asm"
+INCLUDE "maps/CeruleanMelaniesHouse.asm"
+INCLUDE "maps/BikeShop.asm"
 INCLUDE "maps/CeruleanPokecenter1F.asm"
 INCLUDE "maps/CeruleanPokecenter2FBeta.asm"
 INCLUDE "maps/CeruleanGym.asm"
@@ -504,5 +504,10 @@ INCLUDE "maps/Museum2F.asm"
 
 ; Kanto hack: Yellow's Route 2 trade house (docs/M2-PEWTER.md, 4f).
 INCLUDE "maps/Route2TradeHouse.asm"
+
+; Kanto hack: Yellow's fourth Cerulean house (docs/M3-CERULEAN.md, 6a).  The
+; other three reuse Crystal's spare Cerulean house slots, so they stay in
+; "Map Scripts 15".
+INCLUDE "maps/CeruleanBadgeHouse.asm"
 
 ENDSECTION

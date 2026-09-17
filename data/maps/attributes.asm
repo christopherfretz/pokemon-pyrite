@@ -357,22 +357,26 @@ ENDM
 	connection north, CeruleanCity, CERULEAN_CITY, -5
 	connection south, SaffronCity, SAFFRON_CITY, -5
 
+; Kanto hack: Cerulean, Routes 24/25 re-cut from Yellow (docs/M3-CERULEAN.md,
+; 6a).  Every offset below is Yellow's own.  Route 24 is now 10x18 and meets
+; Route 25 east/west, not north/south, and the Route 4 offset is -4, not -5 --
+; that is what puts Route 4's east plateau (Lass TAMARA) back in reach.
 	map_attributes CeruleanCity, CERULEAN_CITY, $0f
-	connection north, Route24, ROUTE_24, 6
+	connection north, Route24, ROUTE_24, 5
 	connection south, Route5, ROUTE_5, 5
-	connection west, Route4, ROUTE_4, 5
-	connection east, Route9, ROUTE_9, 9
+	connection west, Route4, ROUTE_4, 4
+	connection east, Route9, ROUTE_9, 4
 
 	map_attributes Route9, ROUTE_9, $2c
 	connection south, Route10North, ROUTE_10_NORTH, 20
-	connection west, CeruleanCity, CERULEAN_CITY, -9
+	connection west, CeruleanCity, CERULEAN_CITY, -4
 
-	map_attributes Route24, ROUTE_24, $2c
-	connection north, Route25, ROUTE_25, 0
-	connection south, CeruleanCity, CERULEAN_CITY, -6
+	map_attributes Route24, ROUTE_24, $90
+	connection south, CeruleanCity, CERULEAN_CITY, -5
+	connection east, Route25, ROUTE_25, 0
 
-	map_attributes Route25, ROUTE_25, $2c
-	connection south, Route24, ROUTE_24, 0
+	map_attributes Route25, ROUTE_25, $90
+	connection west, Route24, ROUTE_24, 0
 
 	map_attributes Route3, ROUTE_3, $94
 	connection north, Route4, ROUTE_4, 25
@@ -380,7 +384,7 @@ ENDM
 
 	map_attributes Route4, ROUTE_4, $94
 	connection south, Route3, ROUTE_3, -25
-	connection east, CeruleanCity, CERULEAN_CITY, -5
+	connection east, CeruleanCity, CERULEAN_CITY, -4
 
 	map_attributes Route8, ROUTE_8, $2c
 	connection west, SaffronCity, SAFFRON_CITY, -9
@@ -522,9 +526,10 @@ ENDM
 	map_attributes CinnabarPokecenter2FBeta, CINNABAR_POKECENTER_2F_BETA, $00
 	map_attributes Route19FuchsiaGate, ROUTE_19_FUCHSIA_GATE, $00
 	map_attributes SeafoamGym, SEAFOAM_GYM, $09
-	map_attributes CeruleanGymBadgeSpeechHouse, CERULEAN_GYM_BADGE_SPEECH_HOUSE, $00
-	map_attributes CeruleanPoliceStation, CERULEAN_POLICE_STATION, $00
-	map_attributes CeruleanTradeSpeechHouse, CERULEAN_TRADE_SPEECH_HOUSE, $00
+	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
+	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
+	map_attributes BikeShop, BIKE_SHOP, $00
+	map_attributes CeruleanBadgeHouse, CERULEAN_BADGE_HOUSE, $00
 	map_attributes CeruleanPokecenter1F, CERULEAN_POKECENTER_1F, $00
 	map_attributes CeruleanPokecenter2FBeta, CERULEAN_POKECENTER_2F_BETA, $00
 	map_attributes CeruleanGym, CERULEAN_GYM, $00

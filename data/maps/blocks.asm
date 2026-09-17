@@ -91,9 +91,6 @@ PalletTown_Blocks:
 Route25_Blocks:
 	INCBIN "maps/Route25.blk"
 
-Route24_Blocks:
-	INCBIN "maps/Route24.blk"
-
 BetaVioletCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaVioletCity.blk"
 
@@ -154,9 +151,8 @@ MahoganyRedGyaradosSpeechHouse_Blocks:
 BlackthornDragonSpeechHouse_Blocks:
 BlackthornEmysHouse_Blocks:
 MoveDeletersHouse_Blocks:
-CeruleanGymBadgeSpeechHouse_Blocks:
-CeruleanPoliceStation_Blocks:
-CeruleanTradeSpeechHouse_Blocks:
+CeruleanMelaniesHouse_Blocks:
+BikeShop_Blocks:
 BillsHouse_Blocks:
 CharcoalKiln_Blocks:
 LakeOfRageHiddenPowerHouse_Blocks:
@@ -1066,5 +1062,16 @@ Museum1F_Blocks:
 
 Museum2F_Blocks:
 	INCBIN "maps/Museum2F.blk"
+
+
+; Kanto hack: Cerulean (docs/M3-CERULEAN.md, 6a).  Route 24 grew 10x9 ->
+; 10x18 and no longer fits in "Map Blocks 1".  House1Hole is House1 with a
+; hole in the back wall for the two pass-through houses.
+Route24_Blocks:
+	INCBIN "maps/Route24.blk"
+
+CeruleanTrashedHouse_Blocks:
+CeruleanBadgeHouse_Blocks:
+	INCBIN "maps/House1Hole.blk"
 
 ENDSECTION
