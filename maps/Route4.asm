@@ -42,9 +42,6 @@ TrainerPicnickerSharon:
 	closetext
 	end
 
-MtMoonSquareSign:
-	jumptext MtMoonSquareSignText
-
 Route4HPUp:
 	itemball HP_UP
 
@@ -111,23 +108,17 @@ PicnickerSharonAfterBattleText:
 	line "some more…"
 	done
 
-MtMoonSquareSignText:
-	text "MT.MOON SQUARE"
-
-	para "Just go up the"
-	line "stairs."
-	done
-
 Route4_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  5, MOUNT_MOON, 2
+	warp_event 11,  5, MT_MOON_POKECENTER, 1
+	warp_event 18,  5, MT_MOON_1F, 1
+	warp_event 24,  5, MT_MOON_B1F, 8
 
 	def_coord_events
 
 	def_bg_events
-	bg_event  3,  7, BGEVENT_READ, MtMoonSquareSign
 	bg_event 10,  3, BGEVENT_ITEM, Route4HiddenUltraBall
 
 	def_object_events

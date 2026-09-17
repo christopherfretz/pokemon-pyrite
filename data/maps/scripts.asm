@@ -126,7 +126,6 @@ INCLUDE "maps/Route17Route18Gate.asm"
 SECTION "Map Scripts 8", ROMX
 
 INCLUDE "maps/DiglettsCave.asm"
-INCLUDE "maps/MountMoon.asm"
 INCLUDE "maps/UndergroundPath.asm"
 INCLUDE "maps/RockTunnel1F.asm"
 INCLUDE "maps/RockTunnelB1F.asm"
@@ -142,8 +141,6 @@ INCLUDE "maps/FastShipCabins_SE_SSE_CaptainsCabin.asm"
 INCLUDE "maps/FastShipB1F.asm"
 INCLUDE "maps/OlivinePortPassage.asm"
 INCLUDE "maps/VermilionPortPassage.asm"
-INCLUDE "maps/MountMoonSquare.asm"
-INCLUDE "maps/MountMoonGiftShop.asm"
 INCLUDE "maps/TinTowerRoof.asm"
 
 
@@ -494,5 +491,11 @@ SECTION "Map Scripts 26", ROMX
 INCLUDE "maps/ViridianForest.asm"
 INCLUDE "maps/ViridianForestSouthGate.asm"
 INCLUDE "maps/ViridianForestNorthGate.asm"
+
+; Kanto hack: Mt. Moon 1F/B1F/B2F and its Pokemon Center (docs/M2-MTMOON.md).
+INCLUDE "maps/MtMoon1F.asm"
+INCLUDE "maps/MtMoonB1F.asm"
+INCLUDE "maps/MtMoonB2F.asm"
+INCLUDE "maps/MtMoonPokecenter.asm"
 
 ENDSECTION

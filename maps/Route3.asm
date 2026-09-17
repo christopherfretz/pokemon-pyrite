@@ -53,9 +53,6 @@ TrainerFirebreatherBurt:
 	closetext
 	end
 
-Route3MtMoonSquareSign:
-	jumptext Route3MtMoonSquareSignText
-
 FirebreatherOtisSeenText:
 	text "Ah! The weather's"
 	line "as fine as ever."
@@ -123,23 +120,14 @@ FirebreatherBurtAfterBattleText:
 	line "trainer…"
 	done
 
-Route3MtMoonSquareSignText:
-	text "MT.MOON SQUARE"
-
-	para "Just go up the"
-	line "stairs."
-	done
-
 Route3_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 52,  1, MOUNT_MOON, 1
 
 	def_coord_events
 
 	def_bg_events
-	bg_event 49, 13, BGEVENT_READ, Route3MtMoonSquareSign
 
 	def_object_events
 	object_event 26, 12, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerFirebreatherOtis, -1

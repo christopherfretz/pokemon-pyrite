@@ -147,13 +147,15 @@ ENDM
 	map_const DRAGON_SHRINE,                                5,  5 ; 82
 	map_const TOHJO_FALLS,                                 15,  9 ; 83
 	map_const DIGLETTS_CAVE,                               10, 18 ; 84
-	map_const MOUNT_MOON,                                  15,  9 ; 85
-	map_const UNDERGROUND_PATH,                             3, 14 ; 86
-	map_const ROCK_TUNNEL_1F,                              15, 18 ; 87
-	map_const ROCK_TUNNEL_B1F,                             15, 18 ; 88
-	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 89
-	map_const SAFARI_ZONE_BETA,                            10, 18 ; 90
-	map_const VICTORY_ROAD,                                10, 36 ; 91
+	map_const UNDERGROUND_PATH,                             3, 14 ; 85
+	map_const ROCK_TUNNEL_1F,                              15, 18 ; 86
+	map_const ROCK_TUNNEL_B1F,                             15, 18 ; 87
+	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88
+	map_const SAFARI_ZONE_BETA,                            10, 18 ; 89
+	map_const VICTORY_ROAD,                                10, 36 ; 90
+	map_const MT_MOON_1F,                                  20, 18 ; 91
+	map_const MT_MOON_B1F,                                 14, 14 ; 92
+	map_const MT_MOON_B2F,                                 20, 18 ; 93
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4
@@ -204,12 +206,13 @@ ENDM
 	map_const ROUTE_10_POKECENTER_2F_BETA,                  8,  4 ;  9
 	map_const POWER_PLANT,                                 10,  9 ; 10
 	map_const BILLS_HOUSE,                                  4,  4 ; 11
-	map_const ROUTE_4,                                     20,  9 ; 12
+	map_const ROUTE_4,                                     45,  9 ; 12
 	map_const ROUTE_9,                                     30,  9 ; 13
 	map_const ROUTE_10_NORTH,                              10,  9 ; 14
 	map_const ROUTE_24,                                    10,  9 ; 15
 	map_const ROUTE_25,                                    30,  9 ; 16
 	map_const CERULEAN_CITY,                               20, 18 ; 17
+	map_const MT_MOON_POKECENTER,                           5,  4 ; 18
 	endgroup
 
 	newgroup AZALEA                                               ;  8
@@ -304,7 +307,7 @@ ENDM
 	endgroup
 
 	newgroup PEWTER                                               ; 14
-	map_const ROUTE_3,                                     30,  9 ;  1
+	map_const ROUTE_3,                                     35,  9 ;  1
 	map_const PEWTER_CITY,                                 20, 18 ;  2
 	map_const PEWTER_NIDORAN_SPEECH_HOUSE,                  4,  4 ;  3
 	map_const PEWTER_GYM,                                   5,  7 ;  4
@@ -324,9 +327,7 @@ ENDM
 	map_const FAST_SHIP_B1F,                               16,  8 ;  7
 	map_const OLIVINE_PORT_PASSAGE,                        10,  9 ;  8
 	map_const VERMILION_PORT_PASSAGE,                      10,  9 ;  9
-	map_const MOUNT_MOON_SQUARE,                           15,  9 ; 10
-	map_const MOUNT_MOON_GIFT_SHOP,                         4,  4 ; 11
-	map_const TIN_TOWER_ROOF,                              10,  9 ; 12
+	map_const TIN_TOWER_ROOF,                              10,  9 ; 10
 	endgroup
 
 	newgroup INDIGO                                               ; 16

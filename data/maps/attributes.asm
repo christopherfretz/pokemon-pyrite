@@ -374,12 +374,12 @@ ENDM
 	map_attributes Route25, ROUTE_25, $2c
 	connection south, Route24, ROUTE_24, 0
 
-	map_attributes Route3, ROUTE_3, $2c
+	map_attributes Route3, ROUTE_3, $94
+	connection north, Route4, ROUTE_4, 25
 	connection west, PewterCity, PEWTER_CITY, -5
-	connection east, Route4, ROUTE_4, 0
 
-	map_attributes Route4, ROUTE_4, $2c
-	connection west, Route3, ROUTE_3, 0
+	map_attributes Route4, ROUTE_4, $94
+	connection south, Route3, ROUTE_3, -25
 	connection east, CeruleanCity, CERULEAN_CITY, -5
 
 	map_attributes Route8, ROUTE_8, $2c
@@ -494,13 +494,15 @@ ENDM
 	map_attributes MahoganyPokecenter1F, MAHOGANY_POKECENTER_1F, $00
 	map_attributes Route42EcruteakGate, ROUTE_42_ECRUTEAK_GATE, $00
 	map_attributes DiglettsCave, DIGLETTS_CAVE, $09
-	map_attributes MountMoon, MOUNT_MOON, $09
 	map_attributes UndergroundPath, UNDERGROUND_PATH, $00
 	map_attributes RockTunnel1F, ROCK_TUNNEL_1F, $09
 	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $09
 	map_attributes SafariZoneFuchsiaGateBeta, SAFARI_ZONE_FUCHSIA_GATE_BETA, $00
 	map_attributes SafariZoneBeta, SAFARI_ZONE_BETA, $13
 	map_attributes VictoryRoad, VICTORY_ROAD, $1d
+	map_attributes MtMoon1F, MT_MOON_1F, $01
+	map_attributes MtMoonB1F, MT_MOON_B1F, $01
+	map_attributes MtMoonB2F, MT_MOON_B2F, $01
 	map_attributes EcruteakTinTowerEntrance, ECRUTEAK_TIN_TOWER_ENTRANCE, $00
 	map_attributes WiseTriosRoom, WISE_TRIOS_ROOM, $00
 	map_attributes EcruteakPokecenter1F, ECRUTEAK_POKECENTER_1F, $00
@@ -548,6 +550,7 @@ ENDM
 	map_attributes VioletKylesHouse, VIOLET_KYLES_HOUSE, $00
 	map_attributes Route32RuinsOfAlphGate, ROUTE_32_RUINS_OF_ALPH_GATE, $00
 	map_attributes Route32Pokecenter1F, ROUTE_32_POKECENTER_1F, $00
+	map_attributes MtMoonPokecenter, MT_MOON_POKECENTER, $00
 	map_attributes Route35GoldenrodGate, ROUTE_35_GOLDENROD_GATE, $00
 	map_attributes Route35NationalParkGate, ROUTE_35_NATIONAL_PARK_GATE, $00
 	map_attributes Route36RuinsOfAlphGate, ROUTE_36_RUINS_OF_ALPH_GATE, $00
@@ -603,8 +606,6 @@ ENDM
 	map_attributes FastShipB1F, FAST_SHIP_B1F, $00
 	map_attributes OlivinePortPassage, OLIVINE_PORT_PASSAGE, $00
 	map_attributes VermilionPortPassage, VERMILION_PORT_PASSAGE, $00
-	map_attributes MountMoonSquare, MOUNT_MOON_SQUARE, $2d
-	map_attributes MountMoonGiftShop, MOUNT_MOON_GIFT_SHOP, $00
 	map_attributes TinTowerRoof, TIN_TOWER_ROOF, $00
 	map_attributes IndigoPlateauPokecenter1F, INDIGO_PLATEAU_POKECENTER_1F, $00
 	map_attributes WillsRoom, WILLS_ROOM, $00

@@ -97,9 +97,6 @@ Route24_Blocks:
 BetaVioletCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaVioletCity.blk"
 
-Route3_Blocks:
-	INCBIN "maps/Route3.blk"
-
 PewterCity_Blocks:
 	INCBIN "maps/PewterCity.blk"
 
@@ -224,9 +221,6 @@ BetaCherrygroveCity_Blocks: ; unreferenced
 
 CinnabarIsland_Blocks:
 	INCBIN "maps/CinnabarIsland.blk"
-
-Route4_Blocks:
-	INCBIN "maps/Route4.blk"
 
 Route8_Blocks:
 	INCBIN "maps/Route8.blk"
@@ -363,6 +357,7 @@ CianwoodPokecenter1F_Blocks:
 ViridianPokecenter1F_Blocks:
 SaffronPokecenter1F_Blocks:
 CherrygrovePokecenter1F_Blocks:
+MtMoonPokecenter_Blocks:
 	INCBIN "maps/Pokecenter1F.blk"
 
 BetaPewterMuseumOfScience1F_Blocks: ; unreferenced
@@ -700,7 +695,6 @@ BetaRocketHideoutB3F_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaRocketHideoutB3F.blk"
 
 MahoganyMart1F_Blocks:
-MountMoonGiftShop_Blocks:
 	INCBIN "maps/GiftShop.blk"
 
 TeamRocketBaseB1F_Blocks:
@@ -933,9 +927,6 @@ RockTunnelB1F_Blocks:
 DiglettsCave_Blocks:
 	INCBIN "maps/DiglettsCave.blk"
 
-MountMoon_Blocks:
-	INCBIN "maps/MountMoon.blk"
-
 SeafoamGym_Blocks:
 	INCBIN "maps/SeafoamGym.blk"
 
@@ -981,9 +972,6 @@ CopycatsHouse2F_Blocks:
 
 GoldenrodFlowerShop_Blocks:
 	INCBIN "maps/GoldenrodFlowerShop.blk"
-
-MountMoonSquare_Blocks:
-	INCBIN "maps/MountMoonSquare.blk"
 
 WiseTriosRoom_Blocks:
 	INCBIN "maps/WiseTriosRoom.blk"
@@ -1052,5 +1040,23 @@ GoldenrodDeptStoreRoof_Blocks:
 ; because "Map Blocks 1", where the Viridian group's maps are, is full.
 ViridianForest_Blocks:
 	INCBIN "maps/ViridianForest.blk"
+
+; Kanto hack: Mt. Moon and the two routes around it (docs/M2-MTMOON.md).
+; Route 3 (35x9) and Route 4 (45x9) are Yellow's, so they no longer fit in
+; "Map Blocks 1"; the three floors are new.
+Route3_Blocks:
+	INCBIN "maps/Route3.blk"
+
+Route4_Blocks:
+	INCBIN "maps/Route4.blk"
+
+MtMoon1F_Blocks:
+	INCBIN "maps/MtMoon1F.blk"
+
+MtMoonB1F_Blocks:
+	INCBIN "maps/MtMoonB1F.blk"
+
+MtMoonB2F_Blocks:
+	INCBIN "maps/MtMoonB2F.blk"
 
 ENDSECTION
