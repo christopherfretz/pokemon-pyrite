@@ -1059,4 +1059,11 @@ MtMoonB1F_Blocks:
 MtMoonB2F_Blocks:
 	INCBIN "maps/MtMoonB2F.blk"
 
+; Kanto hack: the Pewter Museum (docs/M2-PEWTER.md, 4d).
+Museum1F_Blocks:
+	INCBIN "maps/Museum1F.blk"
+
+Museum2F_Blocks:
+	INCBIN "maps/Museum2F.blk"
+
 ENDSECTION

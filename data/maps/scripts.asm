@@ -498,4 +498,8 @@ INCLUDE "maps/MtMoonB1F.asm"
 INCLUDE "maps/MtMoonB2F.asm"
 INCLUDE "maps/MtMoonPokecenter.asm"
 
+; Kanto hack: the Pewter Museum, 1F and 2F (docs/M2-PEWTER.md, 4d).
+INCLUDE "maps/Museum1F.asm"
+INCLUDE "maps/Museum2F.asm"
+
 ENDSECTION

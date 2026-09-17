@@ -112,7 +112,6 @@ ROMX $24
 	"bank24"
 ROMX $25
 	"Maps"
-	"Events"
 ROMX $26
 	"Map Scripts 11"
 ROMX $27
@@ -314,6 +313,9 @@ ROMX $7b
 	"Map Scripts 26"
 ROMX $7c
 	"Battle Tower Trainer Data"
+	; Kanto hack: the two Pewter Museum maps pushed "Maps" past the end of
+	; bank $25, so the overworld event loop moved here (docs/M2-PEWTER.md, 4d).
+	"Events"
 ROMX $7d
 	"Mobile News Data"
 ROMX $7e

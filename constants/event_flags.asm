@@ -1533,7 +1533,11 @@
 ; clears it and its `disappear` sets it again. 15 free -> 14 free.
 	const EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map
 
-; Unused: next 14 events
+; Kanto hack: the Pewter Museum (docs/M2-PEWTER.md, 4d). 14 free -> 12 free.
+	const EVENT_BOUGHT_MUSEUM_TICKET
+	const EVENT_GOT_OLD_AMBER
+
+; Unused: next 12 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800
