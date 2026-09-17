@@ -1367,7 +1367,7 @@
 
 	const_next 1900
 ; Kanto people
-	const EVENT_ROUTE_24_ROCKET
+	const EVENT_BEAT_ROUTE_24_ROCKET ; Kanto hack (6h): renamed in place.  Crystal's Route 24 Rocket-executive object flag is dead -- 6h deletes that NPC -- so this slot now records the win over Yellow's Nugget Bridge recruiter.  Its two setters (PowerPlant.asm, InitializeEventsScript) were deleted with it.
 	const EVENT_CERULEAN_GYM_ROCKET
 	const EVENT_ROUTE_25_MISTY_BOYFRIEND
 	const EVENT_TRAINERS_IN_CERULEAN_GYM
@@ -1614,7 +1614,25 @@
 ; EVENT_GOT_OLD_AMBER in Museum1F).  516 free -> 515 free.
 	const EVENT_GOT_BULBASAUR_FROM_MELANIE ; Melanie has handed over the L10 BULBASAUR
 
-; Unused: next 515 events
+; Kanto hack: Route 24 / Nugget Bridge (6h, docs/M3-CERULEAN.md).  ONE renamed
+; in place -- EVENT_ROUTE_24_ROCKET -> EVENT_BEAT_ROUTE_24_ROCKET, see the
+; "Kanto people" block above -- plus NINE appended.  Yellow's six bridge
+; trainers each need a beat flag; the NUGGET give needs one of its own so a
+; real loss to the recruiter re-arms the battle without re-gifting the prize
+; (Yellow sets a single EVENT_GOT_NUGGET before the fight, which permanently
+; disarms it on a loss); the TM ball needs the usual itemball hide flag; and
+; DAMIAN's CHARMANDER needs Yellow's EVENT_54F.  515 free -> 506 free.
+	const EVENT_BEAT_CAMPER_ANSEL ; Nugget Bridge, the Jr.Trainer hiding in the west grass
+	const EVENT_BEAT_CAMPER_RUFUS ; Nugget Bridge No. 5
+	const EVENT_BEAT_LASS_NORMA ; Nugget Bridge No. 4
+	const EVENT_BEAT_YOUNGSTER_VICTOR ; Nugget Bridge No. 3
+	const EVENT_BEAT_LASS_PAULINE ; Nugget Bridge No. 2
+	const EVENT_BEAT_BUG_CATCHER_MERLE ; Nugget Bridge No. 1
+	const EVENT_GOT_NUGGET_ON_ROUTE_24 ; the recruiter has handed over the NUGGET
+	const EVENT_ROUTE_24_TM_ZAP_CANNON ; the TM ball at (10,5) has been picked up
+	const EVENT_GOT_CHARMANDER_FROM_DAMIAN ; DAMIAN has handed over the L10 CHARMANDER
+
+; Unused: next 506 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

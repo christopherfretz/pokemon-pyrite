@@ -811,32 +811,36 @@ KantoGrassWildMons:
 	db 7, RATTATA
 	end_grass_wildmons
 
+; Kanto hack (6h): Yellow's Route 24 table, vendor/pokeyellow/data/wild/maps/
+; Route24.asm.  Yellow's rate byte is 25 = `10 percent`; its ten slots fold to
+; seven by dropping the duplicated middle entries (15 PIDGEY, 16 VENONAT,
+; 17 PIDGEY), keeping Yellow's order and relative weights; morn = day = nite.
 	def_grass_wildmons ROUTE_24
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 8, CATERPIE
-	db 10, CATERPIE
-	db 12, METAPOD
-	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
-	; day
-	db 8, CATERPIE
-	db 12, SUNKERN
-	db 10, CATERPIE
-	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
-	; nite
-	db 10, VENONAT
-	db 10, ODDISH
 	db 12, ODDISH
-	db 12, ABRA
-	db 10, BELLSPROUT
-	db 14, GLOOM
-	db 14, GLOOM
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
+	; day
+	db 12, ODDISH
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
+	; nite
+	db 12, ODDISH
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_25

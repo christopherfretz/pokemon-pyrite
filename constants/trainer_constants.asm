@@ -126,6 +126,7 @@ DEF KRIS EQU __trainer_class__
 	const JOEY4
 	const JOEY5
 	const DUSTIN ; Kanto hack: Mt. Moon 1F (Yellow YOUNGSTER 3)
+	const VICTOR ; Kanto hack: Nugget Bridge No. 3 (Yellow YOUNGSTER 4)
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -201,6 +202,9 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Mt. Moon 1F's two lasses (Yellow LASS 5/6)
 	const MELISSA
 	const NADINE
+; Kanto hack: Nugget Bridge No. 4 and No. 2 (Yellow LASS 7/8)
+	const NORMA
+	const PAULINE
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -313,7 +317,7 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_24
 	const GRUNTM_25
 	const GRUNTM_26 ; Kanto hack: Cerulean City Rocket thief (was unused)
-	const GRUNTM_27 ; unused
+	const GRUNTM_27 ; Kanto hack: Nugget Bridge recruiter (was unused)
 	const GRUNTM_28
 	const GRUNTM_29
 	const GRUNTM_30 ; unused
@@ -370,6 +374,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Mt. Moon 1F's two bug catchers (Yellow BUG_CATCHER 7/8)
 	const TRAVIS
 	const NEIL
+	const MERLE ; Kanto hack: Nugget Bridge No. 1 (Yellow BUG_CATCHER 9)
 
 	trainerclass FISHER ; 25
 	const JUSTIN
@@ -633,6 +638,9 @@ DEF KRIS EQU __trainer_class__
 	const TODD4
 	const TODD5
 	const QUENTIN
+; Kanto hack: Nugget Bridge's two Jr.Trainers (Yellow JR_TRAINER_M 2/3)
+	const ANSEL
+	const RUFUS
 
 	trainerclass EXECUTIVEF ; 37
 	const EXECUTIVEF_1

@@ -86,8 +86,13 @@ KantoWaterWildMons:
 	db 10, POLIWHIRL
 	end_water_wildmons
 
+; Kanto hack (6h): Yellow's Route 24 has `def_water_wildmons 0` -- no surfing
+; encounters at all (vendor/pokeyellow/data/wild/maps/Route24.asm).  GSC's
+; def_water_wildmons macro asserts exactly three entries, so the rows stay and
+; the rate goes to 0: GetMapEncounterRate loads the byte into b and
+; `call Random` / `cp b` can never carry when b is 0, so nothing ever spawns.
 	def_water_wildmons ROUTE_24
-	db 4 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here
 	db 10, GOLDEEN
 	db 5, GOLDEEN
 	db 10, SEAKING

@@ -424,6 +424,13 @@ YoungsterGroup:
 	db 10, ZUBAT
 	db -1 ; end
 
+	; YOUNGSTER (16) - Kanto hack: Nugget Bridge No. 3, Yellow's YOUNGSTER 4
+	db "VICTOR@", TRAINERTYPE_NORMAL
+	db 14, RATTATA
+	db 14, EKANS
+	db 14, ZUBAT
+	db -1 ; end
+
 SchoolboyGroup:
 	; SCHOOLBOY (1)
 	db "JACK@", TRAINERTYPE_NORMAL
@@ -840,6 +847,18 @@ LassGroup:
 	; LASS (24) - Kanto hack: Mt. Moon 1F, Yellow's LASS 6
 	db "NADINE@", TRAINERTYPE_NORMAL
 	db 14, CLEFAIRY
+	db -1 ; end
+
+	; LASS (25) - Kanto hack: Nugget Bridge No. 4, Yellow's LASS 7
+	db "NORMA@", TRAINERTYPE_NORMAL
+	db 16, PIDGEY
+	db 16, NIDORAN_F
+	db -1 ; end
+
+	; LASS (26) - Kanto hack: Nugget Bridge No. 2, Yellow's LASS 8
+	db "PAULINE@", TRAINERTYPE_NORMAL
+	db 14, PIDGEY
+	db 14, NIDORAN_F
 	db -1 ; end
 
 JanineGroup:
@@ -1462,9 +1481,10 @@ GruntMGroup:
 	db 17, DROWZEE
 	db -1 ; end
 
-	; GRUNTM (27)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 22, ZUBAT
+	; GRUNTM (27) - Kanto hack: Nugget Bridge recruiter, Yellow's ROCKET 6
+	db "ROCKET@", TRAINERTYPE_NORMAL
+	db 15, EKANS
+	db 15, ZUBAT
 	db -1 ; end
 
 	; GRUNTM (28)
@@ -1730,6 +1750,12 @@ BugCatcherGroup:
 	db 10, CATERPIE
 	db 10, METAPOD
 	db 10, CATERPIE
+	db -1 ; end
+
+	; BUG_CATCHER (29) - Kanto hack: Nugget Bridge No. 1, Yellow's BUG_CATCHER 9
+	db "MERLE@", TRAINERTYPE_NORMAL
+	db 14, CATERPIE
+	db 14, WEEDLE
 	db -1 ; end
 
 FisherGroup:
@@ -3188,6 +3214,17 @@ CamperGroup:
 	db 30, FEAROW
 	db 30, PRIMEAPE
 	db 30, TAUROS
+	db -1 ; end
+
+	; CAMPER (23) - Kanto hack: Nugget Bridge grass hider, Yellow's JR_TRAINER_M 2
+	db "ANSEL@", TRAINERTYPE_NORMAL
+	db 14, RATTATA
+	db 14, EKANS
+	db -1 ; end
+
+	; CAMPER (24) - Kanto hack: Nugget Bridge No. 5, Yellow's JR_TRAINER_M 3
+	db "RUFUS@", TRAINERTYPE_NORMAL
+	db 18, MANKEY
 	db -1 ; end
 
 ExecutiveFGroup:
