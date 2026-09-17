@@ -4,6 +4,12 @@
 ; - ItemDescriptions (see data/items/descriptions.asm)
 ; - ItemAttributes (see data/items/attributes.asm)
 ; - ItemEffects (see engine/items/item_effects.asm)
+;
+; Kanto hack: free ITEM_xx slots are claimed by renaming them in place (see
+; docs/PORTING.md 6.3).  Claimed so far: $19 OAKS_PARCEL, $2d DOME_FOSSIL,
+; $32 HELIX_FOSSIL, $5a OLD_AMBER, $64 BIKE_VOUCHER.  Still free, in order:
+; $78, $87, $88, $89, $8d, $8e, $91, $93, $94, $95, $99, $9a, $9b, $a2, $ab,
+; $b0, $b3, $be, $c3, $dc, $fa  (21 left).
 	const_def
 	const NO_ITEM      ; 00
 	const MASTER_BALL  ; 01
@@ -105,7 +111,7 @@
 	const WHT_APRICORN ; 61
 	const BLACKBELT_I  ; 62
 	const BLK_APRICORN ; 63
-	const ITEM_64      ; 64
+	const BIKE_VOUCHER ; 64 (was ITEM_64; Kanto hack)
 	const PNK_APRICORN ; 65
 	const BLACKGLASSES ; 66
 	const SLOWPOKETAIL ; 67
