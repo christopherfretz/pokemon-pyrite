@@ -3231,8 +3231,11 @@ wFastShipB1FSceneID::                             db
 wMountMoonSquareSceneID::                         db
 wMobileTradeRoomSceneID::                         db
 wMobileBattleRoomSceneID::                        db
+; Kanto hack (docs/M2-INTRO.md)
+wPalletTownSceneID::                              db
+wOaksLabSceneID::                                 db
 
-	ds 49
+	ds 47
 
 ; fight counts
 wJackFightCount::    db
