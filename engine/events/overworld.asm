@@ -278,9 +278,10 @@ FlashFunction:
 	ret
 
 .CheckUseFlash:
-	ld de, ENGINE_ZEPHYRBADGE
+; Kanto hack: FLASH is unlocked by the BOULDERBADGE, as Brock says it is.
+	ld de, ENGINE_BOULDERBADGE
 	farcall CheckBadge
-	jr c, .nozephyrbadge
+	jr c, .nobadge
 	push hl
 	farcall SpecialAerodactylChamber
 	pop hl
@@ -298,7 +299,7 @@ FlashFunction:
 	ld a, JUMPTABLE_EXIT
 	ret
 
-.nozephyrbadge
+.nobadge
 	ld a, JUMPTABLE_EXIT
 	ret
 

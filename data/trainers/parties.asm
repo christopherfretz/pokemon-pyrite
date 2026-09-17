@@ -268,12 +268,10 @@ ChampionGroup:
 
 BrockGroup:
 	; BROCK (1)
+	; Kanto hack: Yellow's BROCK (docs/M2-PEWTER-CITY.md), moves as in Yellow.
 	db "BROCK@", TRAINERTYPE_MOVES
-	db 41, GRAVELER,   DEFENSE_CURL, ROCK_SLIDE, ROLLOUT, EARTHQUAKE
-	db 41, RHYHORN,    FURY_ATTACK, SCARY_FACE, EARTHQUAKE, HORN_DRILL
-	db 42, OMASTAR,    BITE, SURF, PROTECT, SPIKE_CANNON
-	db 44, ONIX,       BIND, ROCK_SLIDE, BIDE, SANDSTORM
-	db 42, KABUTOPS,   SLASH, SURF, ENDURE, GIGA_DRAIN
+	db 10, GEODUDE,    TACKLE, NO_MOVE, NO_MOVE, NO_MOVE
+	db 12, ONIX,       TACKLE, SCREECH, BIDE, NO_MOVE
 	db -1 ; end
 
 MistyGroup:
@@ -3053,8 +3051,11 @@ CamperGroup:
 	db -1 ; end
 
 	; CAMPER (18)
+	; Kanto hack: Yellow's PEWTER GYM JR.TRAINER^M (docs/M2-PEWTER-CITY.md).
+	; Crystal has no JR.TRAINER class, so he stays a CAMPER.
 	db "JERRY@", TRAINERTYPE_NORMAL
-	db 37, SANDSLASH
+	db  9, DIGLETT
+	db  9, SANDSHREW
 	db -1 ; end
 
 	; CAMPER (19)

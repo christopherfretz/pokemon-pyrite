@@ -3237,6 +3237,7 @@ wOaksLabSceneID::                                 db
 wViridianMartSceneID::                            db
 wViridianCitySceneID::                            db
 wRoute22SceneID::                                 db
+wPewterCitySceneID::                              db
 
 	ds 44
 

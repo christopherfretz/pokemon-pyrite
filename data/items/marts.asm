@@ -235,15 +235,16 @@ MartViridian: ; Yellow's Kanto-act stock (docs/M2-PARCEL.md); the Johto act want
 	db BURN_HEAL
 	db -1 ; end
 
+; Kanto hack: Yellow's PEWTER MART stock (docs/M2-PEWTER-CITY.md).
 MartPewter:
 	db 7 ; # items
-	db GREAT_BALL
-	db SUPER_POTION
-	db SUPER_REPEL
+	db POKE_BALL
+	db POTION
+	db ESCAPE_ROPE
 	db ANTIDOTE
-	db PARLYZ_HEAL
-	db AWAKENING
 	db BURN_HEAL
+	db AWAKENING
+	db PARLYZ_HEAL
 	db -1 ; end
 
 MartCerulean:

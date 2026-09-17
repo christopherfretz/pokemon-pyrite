@@ -1486,7 +1486,10 @@
 	const EVENT_VIRIDIAN_FOREST_POKE_BALL ; the POKe BALL itemball at (1,31)
 	const EVENT_VIRIDIAN_FOREST_HIDDEN_POTION ; hidden POTION at (1,18)
 	const EVENT_VIRIDIAN_FOREST_HIDDEN_ANTIDOTE ; hidden ANTIDOTE at (16,42)
-; Unused: next 28 events
+; Kanto hack: Brock (docs/M2-PEWTER-CITY.md). Crystal's Kanto gym leaders hand
+; out no TMs, so there is no flag to reuse for Yellow's Brock TM.
+	const EVENT_GOT_TM_FROM_BROCK ; TM_ROLLOUT, standing in for Yellow's TM34 BIDE
+; Unused: next 27 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800
