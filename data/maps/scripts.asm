@@ -510,4 +510,7 @@ INCLUDE "maps/Route2TradeHouse.asm"
 ; "Map Scripts 15".
 INCLUDE "maps/CeruleanBadgeHouse.asm"
 
+; Kanto hack: the Cerulean Cave stub behind it (docs/M3-CERULEAN.md, 6k).
+INCLUDE "maps/CeruleanCave1F.asm"
+
 ENDSECTION

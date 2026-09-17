@@ -214,6 +214,7 @@ ENDM
 	map_const CERULEAN_CITY,                               20, 18 ; 17
 	map_const MT_MOON_POKECENTER,                           5,  4 ; 18
 	map_const CERULEAN_BADGE_HOUSE,                         4,  4 ; 19
+	map_const CERULEAN_CAVE_1F,                             5,  4 ; 20
 	endgroup
 
 	newgroup AZALEA                                               ;  8

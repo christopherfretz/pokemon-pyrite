@@ -530,6 +530,7 @@ ENDM
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
 	map_attributes BikeShop, BIKE_SHOP, $00
 	map_attributes CeruleanBadgeHouse, CERULEAN_BADGE_HOUSE, $00
+	map_attributes CeruleanCave1F, CERULEAN_CAVE_1F, $01
 	map_attributes CeruleanPokecenter1F, CERULEAN_POKECENTER_1F, $00
 	map_attributes CeruleanPokecenter2FBeta, CERULEAN_POKECENTER_2F_BETA, $00
 	map_attributes CeruleanGym, CERULEAN_GYM, $00

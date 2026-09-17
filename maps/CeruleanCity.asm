@@ -161,6 +161,14 @@ CeruleanCityElectrodeScript:
 CeruleanCityCooltrainerF2Script:
 	jumptextfaceplayer CeruleanCityCooltrainerF2Text
 
+; 6k: Yellow's CERULEANCITY_SUPER_NERD3 is the Cerulean Cave gate.  He has no
+; blocking script at all: he simply STANDS on (4,12), the only tile the cave
+; mouth at (4,11) can be entered from -- (3,11) and (5,11) are cliff -- and
+; Yellow's Hall of Fame script deletes him with
+; `HideObject TOGGLE_CERULEAN_CAVE_GUY` (vendor/pokeyellow/scripts/HallOfFame.asm).
+; Ported literally: his hide flag is EVENT_BEAT_ELITE_FOUR, which Crystal's own
+; hack/maps/HallOfFame.asm already sets, so the gate opens for free when the
+; Kanto league lands and costs no new flag.
 CeruleanCitySuperNerd3Script:
 	jumptextfaceplayer CeruleanCitySuperNerd3Text
 
@@ -632,7 +640,7 @@ CeruleanCity_MapEvents:
 	warp_event 30, 19, CERULEAN_GYM, 1
 	warp_event 13, 25, BIKE_SHOP, 1
 	warp_event 25, 25, CERULEAN_MART, 1
-	warp_event  4, 11, CERULEAN_BADGE_HOUSE, 2 ; 6k: -> CERULEAN_CAVE_1F, 1
+	warp_event  4, 11, CERULEAN_CAVE_1F, 1 ; 6k: the Cerulean Cave mouth on the Surf-only shelf
 	warp_event 27,  9, CERULEAN_TRASHED_HOUSE, 3
 	warp_event  9, 11, CERULEAN_BADGE_HOUSE, 2
 	warp_event  9,  9, CERULEAN_BADGE_HOUSE, 1
@@ -661,7 +669,7 @@ CeruleanCity_MapEvents:
 	object_event 29, 26, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF1Script, -1
 	object_event 28, 26, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityElectrodeScript, -1
 	object_event  9, 27, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF2Script, -1
-	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, -1
+	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, EVENT_BEAT_ELITE_FOUR
 	object_event 30,  8, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityRocketScript, EVENT_CERULEAN_ROCKET_THIEF_HIDDEN
 	object_event 28, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard1Script, EVENT_CERULEAN_GUARD_1_HIDDEN
 	object_event 27, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard2Script, EVENT_CERULEAN_GUARD_2_HIDDEN

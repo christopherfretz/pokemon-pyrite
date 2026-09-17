@@ -1073,6 +1073,12 @@ CeruleanTrashedHouse_Blocks:
 CeruleanBadgeHouse_Blocks:
 	INCBIN "maps/House1Hole.blk"
 
+; Kanto hack: the Cerulean Cave mouth stub (docs/M3-CERULEAN.md, 6k).  One
+; 5x4 cave room behind the champion-gated warp; the real cave is its own
+; milestone (survey 7).
+CeruleanCave1F_Blocks:
+	INCBIN "maps/CeruleanCave1F.blk"
+
 ; Kanto hack: Bill's House (docs/M3-CERULEAN.md, 6j).  Split out of the shared
 ; House1 alias group above: Bill's cutscene needs a cell-separator console and
 ; a bank of machines along the north wall, which House1's living room has not
