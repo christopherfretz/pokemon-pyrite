@@ -115,3 +115,7 @@ PikachuSpriteGFX::             INCBIN "gfx/sprites/pikachu.2bpp"
 ; Kanto hack: Yellow's young rival and Viridian's old man (gambler sheet)
 KantoRivalSpriteGFX::          INCBIN "gfx/sprites/kanto_rival.2bpp"
 OldManSpriteGFX::              INCBIN "gfx/sprites/old_man.2bpp"
+
+; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h)
+JessieSpriteGFX::              INCBIN "gfx/sprites/jessie.2bpp"
+JamesSpriteGFX::               INCBIN "gfx/sprites/james.2bpp"

@@ -105,6 +105,8 @@
 	const MUSIC_SUICUNE_BATTLE               ; 64
 	const MUSIC_BATTLE_TOWER_LOBBY           ; 65
 	const MUSIC_MOBILE_CENTER                ; 66
+; Kanto hack
+	const MUSIC_MEET_JESSIE_JAMES            ; 67 (Yellow's Jessie & James theme)
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for this value (see home/map.asm)

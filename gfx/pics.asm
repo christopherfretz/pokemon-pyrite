@@ -796,3 +796,4 @@ SECTION "Pics 3 Overflow", ROMX
 
 OmastarBackpic:      INCBIN "gfx/pokemon/omastar/back.2bpp.lz"
 KantoRivalPic:       INCBIN "gfx/trainers/kanto_rival.2bpp.lz" ; Yellow's young Blue
+JessieJamesPic:      INCBIN "gfx/trainers/jessie_james.2bpp.lz" ; Yellow's Jessie & James

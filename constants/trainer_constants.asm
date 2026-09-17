@@ -728,7 +728,13 @@ DEF KRIS EQU __trainer_class__
 	const KANTO_RIVAL_1
 	const KANTO_RIVAL_2
 
-	trainerclass MYSTICALMAN ; 44
+; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h).
+; One class, one party id per Yellow encounter: Mt. Moon B2F now, then Rocket
+; Hideout B4F, Pokemon Tower 7F and Silph Co. 11F in later milestones.
+	trainerclass JESSIE_JAMES ; 44
+	const JESSIE_JAMES_1 ; Mt. Moon B2F
+
+	trainerclass MYSTICALMAN ; 45
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

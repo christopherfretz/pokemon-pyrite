@@ -112,4 +112,6 @@ OverworldSprites:
 	overworld_sprite PikachuSpriteGFX, 12, WALKING_SPRITE, PAL_OW_YELLOW
 	overworld_sprite KantoRivalSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BLUE
 	overworld_sprite OldManSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BROWN
+	overworld_sprite JessieSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
+	overworld_sprite JamesSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BLUE
 	assert_table_length NUM_OVERWORLD_SPRITES

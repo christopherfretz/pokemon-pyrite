@@ -1525,8 +1525,15 @@
 ; ones) that the Johto milestone will still want, so this one is APPENDED from
 ; the free pool rather than renamed in place: 16 free -> 15 free.
 	const EVENT_BOUGHT_MAGIKARP ; the Mt. Moon Pokecenter MAGIKARP salesman has been paid
+; Kanto hack: Mt. Moon B2F Jessie & James (5h, docs/M2-MTMOON.md). One APPENDED
+; flag: the pair's object-visibility flag. It is NOT "beaten" (that stays
+; EVENT_BEAT_MT_MOON_B2F_JESSIE_JAMES, renamed in place by 5f); it only says
+; "the two objects are off the map", which is true both before the cutscene and
+; after it. MAPCALLBACK_OBJECTS sets it on every map load, the scene's `appear`
+; clears it and its `disappear` sets it again. 15 free -> 14 free.
+	const EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map
 
-; Unused: next 15 events
+; Unused: next 14 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

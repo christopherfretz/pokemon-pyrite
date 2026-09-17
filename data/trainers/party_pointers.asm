@@ -70,5 +70,6 @@ TrainerGroups:
 	dw OfficerGroup
 	dw GruntFGroup
 	dw KantoRivalGroup
+	dw JessieJamesGroup
 	dw MysticalmanGroup
 	assert_table_length NUM_TRAINER_CLASSES

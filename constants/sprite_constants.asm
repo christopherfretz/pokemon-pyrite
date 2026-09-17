@@ -107,6 +107,8 @@
 	const SPRITE_PIKACHU_FOLLOWER   ; 67
 	const SPRITE_KANTO_RIVAL        ; 68 (Yellow's young Blue)
 	const SPRITE_OLD_MAN            ; 69 (Yellow's Viridian old man)
+	const SPRITE_JESSIE             ; 6a (Yellow's Jessie)
+	const SPRITE_JAMES              ; 6b (Yellow's James)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

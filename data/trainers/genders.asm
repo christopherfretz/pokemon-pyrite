@@ -70,4 +70,5 @@ BTTrainerClassGenders:
 	db MALE   ; OFFICER
 	db FEMALE ; GRUNTF
 	db MALE   ; KANTO_RIVAL
+	db FEMALE ; JESSIE_JAMES (Jessie leads; the class covers both)
 	assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN

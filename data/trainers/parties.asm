@@ -1448,13 +1448,11 @@ GruntMGroup:
 	db 24, MUK
 	db -1 ; end
 
-	; GRUNTM (26) - Kanto hack: Mt. Moon B2F, the plain grunt standing in for
-	; JESSIE & JAMES until 5h. Party is Yellow's OPP_ROCKET $2a (their Mt. Moon
-	; team). Crystal never used this slot; rewritten in place.
+	; GRUNTM (26) - free again since 5h; the Mt. Moon B2F stand-in that used to
+	; live here is now the JESSIE_JAMES class. Vanilla Crystal never used it.
 	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 14, EKANS
-	db 14, MEOWTH
-	db 14, KOFFING
+	db 15, RATTATA
+	db 15, RATTATA
 	db -1 ; end
 
 	; GRUNTM (27)
@@ -3626,6 +3624,15 @@ KantoRivalGroup:
 	db  8, EEVEE
 	db -1 ; end
 
+JessieJamesGroup:
+	; JESSIE_JAMES (1): Mt. Moon B2F (Yellow's OPP_ROCKET $2a)
+	; Name is empty: PlaceEnemysName prints the class name "JESSIE&JAMES" alone.
+	db "@", TRAINERTYPE_NORMAL
+	db 14, EKANS
+	db 14, MEOWTH
+	db 14, KOFFING
+	db -1 ; end
+
 MysticalmanGroup:
 	; MYSTICALMAN (1)
 	db "EUSINE@", TRAINERTYPE_MOVES
@@ -3633,3 +3640,4 @@ MysticalmanGroup:
 	db 23, HAUNTER,    LICK, HYPNOSIS, MEAN_LOOK, CURSE
 	db 25, ELECTRODE,  SCREECH, SONICBOOM, THUNDER, ROLLOUT
 	db -1 ; end
+

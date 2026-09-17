@@ -3,7 +3,8 @@
 	const MTMOONB2F_ROCKET1
 	const MTMOONB2F_ROCKET2
 	const MTMOONB2F_ROCKET3
-	const MTMOONB2F_JESSIE_JAMES
+	const MTMOONB2F_JESSIE
+	const MTMOONB2F_JAMES
 	const MTMOONB2F_DOME_FOSSIL
 	const MTMOONB2F_HELIX_FOSSIL
 	const MTMOONB2F_HP_UP
@@ -45,13 +46,31 @@
 ; a future Cinnabar lab must ask the bag (checkitem DOME_FOSSIL), which is what
 ; Yellow does too.
 ;
-; MTMOONB2F_JESSIE_JAMES is a placeholder: Yellow has JESSIE at (9,3) and JAMES
-; at (9,4) with a scripted encounter triggered from (3,5). 5f ships a single
-; plain GRUNTM on JAMES's tile carrying their Mt. Moon party (Yellow's
-; OPP_ROCKET $2a: EKANS/MEOWTH/KOFFING L14) and their dialogue, so 5h can swap
-; the object pair and the scene in without moving anything else.
+; JESSIE and JAMES (5h) are Yellow's scripted pair: objects at (9,3) and (9,4),
+; both off the map until the player steps on (3,5), which is Yellow's trigger
+; (MtMoonB2FScript_49e15). Yellow's choreography, reproduced beat for beat:
+; play MUSIC_MEET_JESSIE_JAMES, show both, "Stop right there!", exclamation
+; bubble over the player, force the player one step UP to (3,4), JESSIE walks
+; six steps LEFT to (3,3) and faces DOWN, JAMES walks five steps LEFT to (4,4)
+; and faces LEFT, the threat text, the battle, then the blast-off line, a fade
+; to black, both objects gone, and the map music back.
 ;
-; Flags: 5f added NO new events. Eleven dead Crystal flags were renamed in place
+; Yellow's movement bytes look like six/five DOWN steps ($06), but Gen 1's
+; wCurSpriteMovement2 (LEFT, from the objects' STAY/LEFT declaration) overrides
+; the per-step direction, so they really are LEFT steps - which is the only
+; reading that fits the map: JESSIE ends directly above the player and JAMES
+; directly to his right.
+;
+; Losing is a plain GSC white-out: the script never reaches the setevent, so
+; re-entering the map re-arms the whole scene, exactly as Yellow's
+; MtMoonB2FResetScripts does.
+;
+; MAPSETUP_RELOADMAP (what `reloadmapafterbattle` runs) does NOT re-run
+; MAPCALLBACK_OBJECTS, so the pair stays on screen for the post-battle beat
+; even though the callback would otherwise hide them.
+;
+; Flags: 5f added NO new events; 5h adds exactly one
+; (EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN, the pair's visibility flag). Eleven dead Crystal flags were renamed in place
 ; (the list is positional, so renaming keeps every later index - and every
 ; savestate - valid): EVENT_BEAT_ROCKET_GRUNTM_12/20/21/22/23/26/27/30/31,
 ; EVENT_BEAT_SUPER_NERD_JAY and the misspelled EVENT_BEAY_SUPER_NERD_DAVE.
@@ -67,10 +86,14 @@ MtMoonB2F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_OBJECTS, MtMoonB2FFossilCallback
+	callback MAPCALLBACK_OBJECTS, MtMoonB2FObjectsCallback
+
+MtMoonB2FObjectsCallback:
+; JESSIE and JAMES are never on the map at load time: before the cutscene they
+; have not shown up yet, after it they have blasted off.
+	setevent EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN
 
 ; Once either fossil is taken the other is MIGUEL's, so both objects go.
-MtMoonB2FFossilCallback:
 	checkevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	iftrue .HideBoth
 	checkevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
@@ -134,17 +157,88 @@ TrainerGruntM23:
 	closetext
 	end
 
-; 5h replaces this with JESSIE and JAMES and their scripted encounter.
-TrainerGruntM26:
-	trainer GRUNTM, GRUNTM_26, EVENT_BEAT_MT_MOON_B2F_JESSIE_JAMES, MtMoonB2FJessieJamesSeenText, MtMoonB2FJessieJamesBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
+; The (3,5) trigger. The coord_event's scene id is -1 so it matches whatever
+; CheckScenes returns (this map has no scene scripts); the checkevent is what
+; retires it.
+MtMoonB2FJessieJamesScene:
+	checkevent EVENT_BEAT_MT_MOON_B2F_JESSIE_JAMES
+	iftrue .Done
+	turnobject PLAYER, UP
+	playmusic MUSIC_MEET_JESSIE_JAMES
+	showemote EMOTE_SHOCK, PLAYER, 15
+	opentext
+	writetext MtMoonB2FJessieJamesStopText
+	waitbutton
+	closetext
+	applymovement PLAYER, MtMoonB2FPlayerStepUp
+	appear MTMOONB2F_JESSIE
+	appear MTMOONB2F_JAMES
+	applymovement MTMOONB2F_JESSIE, MtMoonB2FJessieApproach
+	turnobject MTMOONB2F_JESSIE, DOWN
+	applymovement MTMOONB2F_JAMES, MtMoonB2FJamesApproach
+	turnobject MTMOONB2F_JAMES, LEFT
+	opentext
+	writetext MtMoonB2FJessieJamesSeenText
+	waitbutton
+	closetext
+	winlosstext MtMoonB2FJessieJamesBeatenText, 0
+	setlasttalked MTMOONB2F_JESSIE
+	loadtrainer JESSIE_JAMES, JESSIE_JAMES_1
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	turnobject MTMOONB2F_JESSIE, DOWN
+	turnobject MTMOONB2F_JAMES, DOWN
+	playmusic MUSIC_MEET_JESSIE_JAMES
 	opentext
 	writetext MtMoonB2FJessieJamesAfterBattleText
 	waitbutton
 	closetext
+	pause 30
+	special FadeOutToBlack
+	special ReloadSpritesNoPalettes
+	disappear MTMOONB2F_JESSIE
+	disappear MTMOONB2F_JAMES
+	pause 15
+	special FadeInFromBlack
+	setevent EVENT_BEAT_MT_MOON_B2F_JESSIE_JAMES
+	playmapmusic
 	end
+
+.Done:
+	end
+
+; Talking to either of them mid-scene is impossible (the scene never yields),
+; but both objects need a script pointer.
+MtMoonB2FJessieScript:
+	jumptextfaceplayer MtMoonB2FJessieJamesSeenText
+
+MtMoonB2FJamesScript:
+	jumptextfaceplayer MtMoonB2FJessieJamesSeenText
+
+; (3,5) -> (3,4). Yellow simulates a PAD_UP press here.
+MtMoonB2FPlayerStepUp:
+	step UP
+	step_end
+
+; JESSIE (9,3) -> (3,3), directly above the player.
+MtMoonB2FJessieApproach:
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step_end
+
+; JAMES (9,4) -> (4,4), directly right of the player.
+MtMoonB2FJamesApproach:
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step_end
 
 MtMoonB2FDomeFossil:
 	opentext
@@ -308,6 +402,10 @@ MtMoonB2FRocket3AfterBattleText:
 	cont "people came."
 	done
 
+MtMoonB2FJessieJamesStopText:
+	text "Stop right there!"
+	done
+
 MtMoonB2FJessieJamesSeenText:
 	text "That fossil is"
 	line "TEAM ROCKET's!"
@@ -337,6 +435,7 @@ MtMoonB2F_MapEvents:
 	warp_event  5,  7, MT_MOON_B1F, 7
 
 	def_coord_events
+	coord_event  3,  5, -1, MtMoonB2FJessieJamesScene
 
 	def_bg_events
 	bg_event 18, 12, BGEVENT_ITEM, MtMoonB2FHiddenMoonStone
@@ -347,7 +446,8 @@ MtMoonB2F_MapEvents:
 	object_event 15, 22, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 4, TrainerGruntM12, -1
 	object_event 29, 11, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 4, TrainerGruntM22, -1
 	object_event 29, 17, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 4, TrainerGruntM23, -1
-	object_event  9,  4, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 5, TrainerGruntM26, -1
+	object_event  9,  3, SPRITE_JESSIE, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FJessieScript, EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN
+	object_event  9,  4, SPRITE_JAMES, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FJamesScript, EVENT_MT_MOON_B2F_JESSIE_JAMES_HIDDEN
 	object_event 12,  6, SPRITE_ROCK, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FDomeFossil, EVENT_MT_MOON_B2F_DOME_FOSSIL
 	object_event 13,  6, SPRITE_ROCK, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FHelixFossil, EVENT_MT_MOON_B2F_HELIX_FOSSIL
 	object_event 25, 21, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FHPUp, EVENT_MT_MOON_B2F_HP_UP

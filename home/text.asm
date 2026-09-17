@@ -358,6 +358,8 @@ PlaceEnemysName::
 	jr z, .rival
 	cp KANTO_RIVAL
 	jr z, .rival
+	cp JESSIE_JAMES
+	jr z, .classonly ; "JESSIE&JAMES" is the whole name; the party name is empty
 
 	ld de, wOTClassName
 	call PlaceString
@@ -376,6 +378,7 @@ PlaceEnemysName::
 	jr PlaceCommandCharacter
 
 .linkbattle
+.classonly
 	ld de, wOTClassName
 	jr PlaceCommandCharacter
 

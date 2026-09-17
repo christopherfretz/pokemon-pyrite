@@ -107,4 +107,7 @@ Music:
 	dba Music_SuicuneBattle
 	dba Music_BattleTowerLobby
 	dba Music_MobileCenter
+
+; Kanto hack
+	dba Music_MeetJessieJames
 	assert_table_length NUM_MUSIC_SONGS
