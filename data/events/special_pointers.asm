@@ -188,3 +188,4 @@ SpecialsPointers::
 	add_special OakCatchTutorial
 	add_special OldManCatchTutorial
 	add_special EnablePikaFollower
+	add_special GetStarterPikachuHappiness

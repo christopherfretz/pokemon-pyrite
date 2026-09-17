@@ -112,6 +112,13 @@
 	const SPRITE_FOSSIL             ; 6c (Yellow's fossil prop, still)
 	const SPRITE_OLD_AMBER          ; 6d (Yellow's old amber prop, still)
 	const SPRITE_CHANSEY            ; 6e (Yellow's Pokemon Center Chansey)
+; Melanie's house (docs/M3-CERULEAN.md 6g).  Crystal already has SPRITE_ODDISH
+; ($85) and SPRITE_BULBASAUR ($93), but those are SpriteMons indexes drawn from
+; the party-menu icons; these three are Yellow's dedicated 16x48 overworld
+; sheets, hence the _OW suffix on the two that collide.
+	const SPRITE_SANDSHREW          ; 6f (Yellow's overworld SANDSHREW)
+	const SPRITE_ODDISH_OW          ; 70 (Yellow's overworld ODDISH)
+	const SPRITE_BULBASAUR_OW       ; 71 (Yellow's overworld BULBASAUR)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

@@ -128,3 +128,12 @@ OldAmberSpriteGFX::            INCBIN "gfx/sprites/old_amber.2bpp"
 ; Kanto hack: Yellow's Pokemon Center CHANSEY (docs/M3-CERULEAN.md 6b).
 ; 16x48 = three 4-tile frames, i.e. a 12-tile STANDING_SPRITE like NurseSpriteGFX.
 ChanseySpriteGFX::             INCBIN "gfx/sprites/chansey.2bpp"
+
+; Kanto hack: Yellow's three Melanie's-house Pokemon (docs/M3-CERULEAN.md 6g).
+; 16x48 each = three 4-tile frames, i.e. 12-tile STANDING_SPRITEs like Chansey.
+; Crystal's own SPRITE_ODDISH/SPRITE_BULBASAUR are SpriteMons entries drawn from
+; the party-menu icons; these are Yellow's dedicated overworld sheets, so the
+; whole room matches the Chansey we ported in 6b.
+SandshrewSpriteGFX::           INCBIN "gfx/sprites/sandshrew.2bpp"
+OddishSpriteGFX::              INCBIN "gfx/sprites/oddish.2bpp"
+BulbasaurSpriteGFX::           INCBIN "gfx/sprites/bulbasaur.2bpp"

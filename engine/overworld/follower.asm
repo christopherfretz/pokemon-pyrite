@@ -406,3 +406,31 @@ EnablePikaFollower::
 	farcall RefreshSprites
 	call SpawnFollower
 	ret
+
+GetStarterPikachuHappiness::
+; Special. Returns the starter Pikachu's happiness byte in wScriptVar, or 0 if
+; it is not in the party at all (Melanie's BULBASAUR gate, docs/M3-CERULEAN.md
+; 6g). Yellow reads its dedicated wPikachuHappiness; our follower IS the starter
+; party mon, so Crystal's MON_HAPPINESS is the same 0-255 number for the same
+; Pokemon, and Yellow's >= 147 threshold carries over unchanged.
+	xor a
+	ld [wScriptVar], a
+	ld a, [wPartyCount]
+	and a
+	ret z
+	ld e, a
+	ld d, 0
+.loop
+	ld c, d
+	call IsStarterPikachuInSlot ; preserves de; hl = that mon's MON_OT_ID + 1
+	jr nc, .next
+	ld bc, MON_HAPPINESS - MON_OT_ID - 1
+	add hl, bc
+	ld a, [hl]
+	ld [wScriptVar], a
+	ret
+.next
+	inc d
+	dec e
+	jr nz, .loop
+	ret

@@ -1607,7 +1607,14 @@
 ; alone and this flag was appended instead.  517 free -> 516 free.
 	const EVENT_GOT_TM_FROM_MISTY ; Misty has handed over TM18 RAIN_DANCE
 
-; Unused: next 516 events
+; Kanto hack: Melanie's house / the BULBASAUR gift (6g, docs/M3-CERULEAN.md).
+; ONE appended flag, Yellow's EVENT_GOT_BULBASAUR_IN_CERULEAN.  It doubles as
+; the Bulbasaur object's hidden flag in the object_event row, so the separate
+; "toggle" visibility flags §6 budgeted for are not needed (same trick as
+; EVENT_GOT_OLD_AMBER in Museum1F).  516 free -> 515 free.
+	const EVENT_GOT_BULBASAUR_FROM_MELANIE ; Melanie has handed over the L10 BULBASAUR
+
+; Unused: next 515 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
