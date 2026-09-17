@@ -301,7 +301,7 @@ InitializeNPCNames:
 	call CopyBytes
 	ret
 
-.Rival:  db "???@"
+.Rival:  db "BLUE@" ; Kanto hack: the Kanto rival is named from the start
 .Red:    db "RED@"
 .Green:  db "GREEN@"
 .Mom:    db "MOM@"

@@ -700,7 +700,11 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTF_4
 	const GRUNTF_5
 
-	trainerclass MYSTICALMAN ; 43
+; Kanto hack: Blue, the Kanto rival (docs/M2-INTRO.md). Named from wRivalName.
+	trainerclass KANTO_RIVAL ; 43
+	const KANTO_RIVAL_1
+
+	trainerclass MYSTICALMAN ; 44
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

@@ -356,6 +356,8 @@ PlaceEnemysName::
 	jr z, .rival
 	cp RIVAL2
 	jr z, .rival
+	cp KANTO_RIVAL
+	jr z, .rival
 
 	ld de, wOTClassName
 	call PlaceString

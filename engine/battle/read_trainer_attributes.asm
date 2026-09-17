@@ -3,6 +3,8 @@ GetTrainerClassName:
 	ld a, c
 	cp RIVAL1
 	jr z, .rival
+	cp KANTO_RIVAL
+	jr z, .rival
 
 	ld [wCurSpecies], a
 	ld a, TRAINER_NAME
@@ -28,6 +30,8 @@ GetOTName:
 	ld hl, wRivalName
 	ld a, c
 	cp RIVAL1
+	jr z, .ok
+	cp KANTO_RIVAL
 	jr z, .ok
 
 	ld [wCurSpecies], a

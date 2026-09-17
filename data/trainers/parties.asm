@@ -3488,6 +3488,12 @@ GruntFGroup:
 	db 18, GLOOM,      ABSORB, SWEET_SCENT, STUN_SPORE, SLEEP_POWDER
 	db -1 ; end
 
+KantoRivalGroup:
+	; KANTO_RIVAL (1): Oak's Lab, Pallet Town
+	db "?@", TRAINERTYPE_NORMAL
+	db  5, EEVEE
+	db -1 ; end
+
 MysticalmanGroup:
 	; MYSTICALMAN (1)
 	db "EUSINE@", TRAINERTYPE_MOVES

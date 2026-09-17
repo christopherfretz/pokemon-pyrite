@@ -69,5 +69,6 @@ TrainerPicPointers::
 	dba_pic BluePic
 	dba_pic OfficerPic
 	dba_pic GruntfPic
+	dba_pic BluePic ; KANTO_RIVAL (placeholder until young Blue is ported)
 	dba_pic MysticalmanPic
 	assert_table_length NUM_TRAINER_CLASSES

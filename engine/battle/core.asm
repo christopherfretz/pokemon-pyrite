@@ -8147,7 +8147,10 @@ InitEnemyTrainer:
 	; RIVAL1's first mon has no held item
 	ld a, [wTrainerClass]
 	cp RIVAL1
+	jr z, .no_item
+	cp KANTO_RIVAL
 	jr nz, .ok
+.no_item
 	xor a
 	ld [wOTPartyMon1Item], a
 

@@ -114,6 +114,8 @@ PlayBattleMusic:
 	ld a, [wOtherTrainerClass]
 	cp RIVAL1
 	jr z, .done
+	cp KANTO_RIVAL
+	jr z, .done
 	cp RIVAL2
 	jr nz, .othertrainer
 

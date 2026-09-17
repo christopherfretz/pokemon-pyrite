@@ -73,7 +73,6 @@ DewgongFrontpic:     INCBIN "gfx/pokemon/dewgong/front.animated.2bpp.lz"
 VictreebelFrontpic:  INCBIN "gfx/pokemon/victreebel/front.animated.2bpp.lz"
 RaichuFrontpic:      INCBIN "gfx/pokemon/raichu/front.animated.2bpp.lz"
 PrimeapeFrontpic:    INCBIN "gfx/pokemon/primeape/front.animated.2bpp.lz"
-OmastarBackpic:      INCBIN "gfx/pokemon/omastar/back.2bpp.lz"
 
 
 SECTION "Pics 4", ROMX
@@ -787,3 +786,10 @@ SECTION "Pics 22", ROMX
 SECTION "Pics 23", ROMX
 
 SECTION "Pics 24", ROMX
+
+
+; Kanto hack: moved out of "Pics 3" (bank shared with TrainerPicPointers,
+; which grew by one class). Floating section; the linker places it.
+SECTION "Pics 3 Overflow", ROMX
+
+OmastarBackpic:      INCBIN "gfx/pokemon/omastar/back.2bpp.lz"
