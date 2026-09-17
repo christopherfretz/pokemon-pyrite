@@ -87,10 +87,8 @@ CeruleanGroupSprites:
 	db SPRITE_SUPER_NERD
 	db SPRITE_POKEFAN_M
 	db SPRITE_ROCKET
-	db SPRITE_FISHER
-	db SPRITE_SLOWPOKE
 	db SPRITE_POKE_BALL
-rept MAX_OUTDOOR_SPRITES - 11
+rept MAX_OUTDOOR_SPRITES - 9
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

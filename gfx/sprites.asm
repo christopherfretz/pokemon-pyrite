@@ -124,3 +124,7 @@ JamesSpriteGFX::               INCBIN "gfx/sprites/james.2bpp"
 ; docs/M2-PEWTER.md 4d). 16x16 = one 4-tile STILL_SPRITE frame each.
 FossilSpriteGFX::              INCBIN "gfx/sprites/fossil.2bpp"
 OldAmberSpriteGFX::            INCBIN "gfx/sprites/old_amber.2bpp"
+
+; Kanto hack: Yellow's Pokemon Center CHANSEY (docs/M3-CERULEAN.md 6b).
+; 16x48 = three 4-tile frames, i.e. a 12-tile STANDING_SPRITE like NurseSpriteGFX.
+ChanseySpriteGFX::             INCBIN "gfx/sprites/chansey.2bpp"

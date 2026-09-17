@@ -1,10 +1,21 @@
+; 6b: Yellow's Cerulean City object list
+; (vendor/pokeyellow/data/maps/objects/CeruleanCity.asm).  Crystal's own six
+; objects and nine bg_events are gone; the seven statics below are Yellow's, on
+; Yellow's tiles.  Yellow's other four objects belong to later sub-steps and are
+; APPENDED at the end of both lists so these indexes never move:
+;   6c: CERULEANCITY_ROCKET (30,8), CERULEANCITY_GUARD1 (28,12),
+;       CERULEANCITY_GUARD2 (27,12)
+;   6d: CERULEANCITY_RIVAL  (20,2)
 	object_const_def
 	const CERULEANCITY_COOLTRAINER_M
-	const CERULEANCITY_SUPER_NERD
-	const CERULEANCITY_SLOWPOKE
-	const CERULEANCITY_COOLTRAINER_F
-	const CERULEANCITY_FISHER
-	const CERULEANCITY_YOUNGSTER
+	const CERULEANCITY_SUPER_NERD1
+	const CERULEANCITY_SUPER_NERD2
+	const CERULEANCITY_COOLTRAINER_F1
+	const CERULEANCITY_ELECTRODE
+	const CERULEANCITY_COOLTRAINER_F2
+	const CERULEANCITY_SUPER_NERD3
+	; 6c appends CERULEANCITY_ROCKET / _GUARD1 / _GUARD2 here
+	; 6d appends CERULEANCITY_RIVAL here
 
 CeruleanCity_MapScripts:
 	def_scene_scripts
@@ -17,111 +28,81 @@ CeruleanCityFlypointCallback:
 	endcallback
 
 CeruleanCityCooltrainerMScript:
+	jumptextfaceplayer CeruleanCityCooltrainerMText
+
+CeruleanCitySuperNerd1Script:
+	jumptextfaceplayer CeruleanCitySuperNerd1Text
+
+CeruleanCitySuperNerd2Script:
+	jumptextfaceplayer CeruleanCitySuperNerd2Text
+
+; Yellow picks one of three lines at random (hRandomAdd thresholds 180/100,
+; i.e. 76/80/100 out of 256); GSC's `random 3` is the same idea.
+CeruleanCityCooltrainerF1Script:
 	faceplayer
 	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .ReturnedMachinePart
-	writetext CeruleanCityCooltrainerMText1
+	random 3
+	ifequal 0, .Punch
+	ifequal 1, .Withdraw
+	writetext CeruleanCityElectrodeSonicboomText
 	waitbutton
 	closetext
 	end
 
-.ReturnedMachinePart:
-	writetext CeruleanCityCooltrainerMText2
+.Punch:
+	writetext CeruleanCityElectrodePunchText
 	waitbutton
 	closetext
 	end
 
-CeruleanCitySuperNerdScript:
-	jumptextfaceplayer CeruleanCitySuperNerdText
-
-CeruleanCitySlowbro:
-	opentext
-	writetext CeruleanCitySlowbroText
-	cry SLOWBRO
+.Withdraw:
+	writetext CeruleanCityElectrodeWithdrawText
 	waitbutton
 	closetext
 	end
 
-CeruleanCityCooltrainerFScript:
-	faceplayer
+; Yellow's "ELECTRODE" gag: a SPRITE_POKE_BALL that talks.  Four lines at
+; random (76/60/60/60 out of 256).
+CeruleanCityElectrodeScript:
 	opentext
-	writetext CeruleanCityCooltrainerFText1
-	waitbutton
-	closetext
-	turnobject CERULEANCITY_COOLTRAINER_F, LEFT
-	opentext
-	writetext CeruleanCityCooltrainerFText2
-	waitbutton
-	closetext
-	opentext
-	writetext CeruleanCitySlowbroText
-	cry SLOWBRO
-	waitbutton
-	closetext
-	opentext
-	writetext CeruleanCityCooltrainerFText3
+	random 4
+	ifequal 0, .Loafing
+	ifequal 1, .TurnedAway
+	ifequal 2, .IgnoredOrders
+	writetext CeruleanCityElectrodeSnoozeText
 	waitbutton
 	closetext
 	end
 
-CeruleanCityFisherScript:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .ReturnedMachinePart
-	checkevent EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM
-	iftrue .MetCeruleanRocket
-.ReturnedMachinePart:
-	writetext CeruleanCityFisherText
+.Loafing:
+	writetext CeruleanCityElectrodeLoafingText
 	waitbutton
 	closetext
 	end
 
-.MetCeruleanRocket:
-	writetext CeruleanCityFisherRocketTipText
+.TurnedAway:
+	writetext CeruleanCityElectrodeTurnedAwayText
 	waitbutton
 	closetext
 	end
 
-CeruleanCityYoungsterScript:
-	faceplayer
-	opentext
-	writetext CeruleanCityYoungsterText1
+.IgnoredOrders:
+	writetext CeruleanCityElectrodeIgnoredOrdersText
 	waitbutton
 	closetext
-	checkevent EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY
-	iffalse .BerserkGenePingsItemfinder
 	end
 
-.BerserkGenePingsItemfinder:
-	waitsfx
-	playsound SFX_SECOND_PART_OF_ITEMFINDER
-	waitsfx
-	playsound SFX_TRANSACTION
-	waitsfx
-	playsound SFX_SECOND_PART_OF_ITEMFINDER
-	waitsfx
-	playsound SFX_TRANSACTION
-	waitsfx
-	playsound SFX_SECOND_PART_OF_ITEMFINDER
-	waitsfx
-	playsound SFX_TRANSACTION
-	waitsfx
-	playsound SFX_SECOND_PART_OF_ITEMFINDER
-	waitsfx
-	playsound SFX_TRANSACTION
-	waitsfx
-	showemote EMOTE_SHOCK, CERULEANCITY_YOUNGSTER, 15
-	turnobject CERULEANCITY_YOUNGSTER, LEFT
-	opentext
-	writetext CeruleanCityYoungsterText2
-	waitbutton
-	closetext
-	end
+CeruleanCityCooltrainerF2Script:
+	jumptextfaceplayer CeruleanCityCooltrainerF2Text
+
+CeruleanCitySuperNerd3Script:
+	jumptextfaceplayer CeruleanCitySuperNerd3Text
 
 CeruleanCitySign:
 	jumptext CeruleanCitySignText
+
+CeruleanCityTrainerTips:
+	jumptext CeruleanCityTrainerTipsText
 
 CeruleanGymSign:
 	jumptext CeruleanGymSignText
@@ -129,108 +110,122 @@ CeruleanGymSign:
 CeruleanBikeShopSign:
 	jumptext CeruleanBikeShopSignText
 
-CeruleanPoliceSign:
-	jumptext CeruleanPoliceSignText
-
-CeruleanCapeSign:
-	jumptext CeruleanCapeSignText
-
-CeruleanLockedDoor:
-	jumptext CeruleanLockedDoorText
-
 CeruleanCityPokecenterSign:
 	jumpstd PokecenterSignScript
 
 CeruleanCityMartSign:
 	jumpstd MartSignScript
 
-CeruleanCityHiddenBerserkGene:
-	hiddenitem BERSERK_GENE, EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY
-
-CeruleanCityCooltrainerMText1:
-	text "KANTO's POWER"
-	line "PLANT?"
-
-	para "It's near the end"
-	line "of ROUTE 9, the"
-
-	para "road that heads"
-	line "east from here."
-
-	para "I think there was"
-	line "an accident of"
-	cont "some sort there."
+CeruleanCityCooltrainerMText:
+	text "You're a trainer"
+	line "too? Collecting,"
+	cont "fighting, it's a"
+	cont "tough life."
 	done
 
-CeruleanCityCooltrainerMText2:
-	text "You're collecting"
-	line "every single kind"
-	cont "of #MON?"
+CeruleanCitySuperNerd1Text:
+	text "That bush in"
+	line "front of the shop"
+	cont "is in the way."
 
-	para "That must be quite"
-	line "a challenge, but"
-	cont "it sounds fun too."
+	para "There might be a"
+	line "way around."
 	done
 
-CeruleanCitySuperNerdText:
-	text "The CAPE in the"
-	line "north is a good"
-
-	para "place for dates."
-	line "Girls like it!"
+CeruleanCitySuperNerd2Text:
+	text "You're making an"
+	line "encyclopedia on"
+	cont "#MON? That"
+	cont "sounds amusing."
 	done
 
-CeruleanCitySlowbroText:
-	text "SLOWBRO: Yarah?"
+CeruleanCityElectrodeSonicboomText:
+	text "OK! ELECTRODE!"
+	line "Use SONICBOOM!"
+	cont "Please ELECTRODE,"
+	cont "pay attention!"
 	done
 
-CeruleanCityCooltrainerFText1:
-	text "My SLOWBRO and I"
-	line "make an awesome"
-	cont "combination!"
+CeruleanCityElectrodePunchText:
+	text "ELECTRODE, TACKLE!"
+	line "No! You blew it"
+	cont "again!"
 	done
 
-CeruleanCityCooltrainerFText2:
-	text "SLOWBRO, show me"
-	line "your CONFUSION!"
+CeruleanCityElectrodeWithdrawText:
+	text "ELECTRODE, SWIFT!"
+	line "No! That's wrong!"
+
+	para "Training #MON"
+	line "is difficult!"
+
+	para "Your #MON's"
+	line "obedience depends"
+	cont "on your abilities"
+	cont "as a trainer!"
 	done
 
-CeruleanCityCooltrainerFText3:
-	text "…"
+CeruleanCityElectrodeSnoozeText:
+	text "ELECTRODE took a"
+	line "snooze…"
 	done
 
-CeruleanCityFisherText:
-	text "I'm a huge fan of"
-	line "CERULEAN GYM's"
-	cont "MISTY."
+CeruleanCityElectrodeLoafingText:
+	text "ELECTRODE is"
+	line "loafing around…"
 	done
 
-CeruleanCityFisherRocketTipText:
-	text "I saw this shady"
-	line "guy go off toward"
-	cont "CERULEAN's CAPE."
+CeruleanCityElectrodeTurnedAwayText:
+	text "ELECTRODE turned"
+	line "away…"
 	done
 
-CeruleanCityYoungsterText1:
-	text "There used to be a"
-	line "cave here that had"
-
-	para "horribly powerful"
-	line "#MON in it."
+CeruleanCityElectrodeIgnoredOrdersText:
+	text "ELECTRODE"
+	line "ignored orders…"
 	done
 
-CeruleanCityYoungsterText2:
-	text "Ayuh?"
+CeruleanCityCooltrainerF2Text:
+	text "I want a bright"
+	line "red BICYCLE!"
 
-	para "My ITEMFINDER is"
-	line "responding…"
+	para "I'll keep it at"
+	line "home, so it won't"
+	cont "get dirty!"
+	done
+
+CeruleanCitySuperNerd3Text:
+	text "This is CERULEAN"
+	line "CAVE! Horribly"
+	cont "strong #MON"
+	cont "live in there!"
+
+	para "The #MON LEAGUE"
+	line "champion is the"
+	cont "only person who"
+	cont "is allowed in!"
 	done
 
 CeruleanCitySignText:
 	text "CERULEAN CITY"
+	line "A Mysterious,"
+	cont "Blue Aura"
+	cont "Surrounds It"
+	done
 
-	para "A Mysterious Blue"
-	line "Aura Surrounds It"
+CeruleanCityTrainerTipsText:
+	text "TRAINER TIPS"
+
+	para "Pressing B Button"
+	line "during evolution"
+	cont "cancels the whole"
+	cont "process."
+	done
+
+CeruleanBikeShopSignText:
+	text "Grass and caves"
+	line "handled easily!"
+	cont "BIKE SHOP"
 	done
 
 CeruleanGymSignText:
@@ -239,38 +234,7 @@ CeruleanGymSignText:
 	cont "LEADER: MISTY"
 
 	para "The Tomboyish"
-	line "Mermaid"
-	done
-
-CeruleanBikeShopSignText:
-	text "There's a notice"
-	line "here…"
-
-	para "The BIKE SHOP has"
-	line "moved to GOLDENROD"
-	cont "CITY in JOHTO…"
-	done
-
-CeruleanPoliceSignText:
-	text "There's a notice"
-	line "here…"
-
-	para "Stamp out thievery"
-	line "and make the city"
-
-	para "a friendlier, more"
-	line "cheerful place!"
-
-	para "CERULEAN POLICE"
-	done
-
-CeruleanCapeSignText:
-	text "CERULEAN CAPE"
-	line "AHEAD"
-	done
-
-CeruleanLockedDoorText:
-	text "It's locked…"
+	line "Mermaid!"
 	done
 
 CeruleanCity_MapEvents:
@@ -293,29 +257,27 @@ CeruleanCity_MapEvents:
 	warp_event  9,  9, CERULEAN_BADGE_HOUSE, 1
 
 	def_coord_events
+	; 6c appends the Rocket break-in trigger at (30,7)/(30,9)
+	; 6d appends the rival trigger at (20,6)/(21,6)
 
-; 6a: moved onto Yellow's six sign tiles (docs/M3-CERULEAN.md 1.4); Crystal's
-; three extra signs keep their text but ride along on nearby wall tiles.  6b
-; replaces the text of all of them with Yellow's.
+; 6b: Yellow's six signs, on Yellow's tiles, in Yellow's order.  Crystal's three
+; extra bg_events (CERULEAN CAPE, the locked door, the hidden BERSERK_GENE at
+; (2,12)) are gone -- Yellow has none of them.
 	def_bg_events
 	bg_event 23, 19, BGEVENT_READ, CeruleanCitySign
-	bg_event 27, 21, BGEVENT_READ, CeruleanGymSign
-	bg_event 11, 25, BGEVENT_READ, CeruleanBikeShopSign
-	bg_event 17, 29, BGEVENT_READ, CeruleanPoliceSign
-	bg_event 25,  9, BGEVENT_READ, CeruleanCapeSign
-	bg_event 28, 11, BGEVENT_READ, CeruleanLockedDoor
-	bg_event 20, 17, BGEVENT_READ, CeruleanCityPokecenterSign
+	bg_event 17, 29, BGEVENT_READ, CeruleanCityTrainerTips
 	bg_event 26, 25, BGEVENT_READ, CeruleanCityMartSign
-	bg_event  2, 12, BGEVENT_ITEM, CeruleanCityHiddenBerserkGene
+	bg_event 20, 17, BGEVENT_READ, CeruleanCityPokecenterSign
+	bg_event 11, 25, BGEVENT_READ, CeruleanBikeShopSign
+	bg_event 27, 21, BGEVENT_READ, CeruleanGymSign
 
-; 6a: four of Crystal's six objects landed on wall/water after the re-cut and
-; moved to the nearest floor tile: CooltrainerM (15,23)->(16,23), Slowpoke
-; (20,24)->(20,23), CooltrainerF (21,24)->(21,23), Youngster (6,12)->(5,12).
-; 6b replaces the whole list with Yellow's.
 	def_object_events
-	object_event 16, 23, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerMScript, -1
-	object_event 23, 15, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerdScript, -1
-	object_event 20, 23, SPRITE_SLOWPOKE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCitySlowbro, -1
-	object_event 21, 23, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerFScript, -1
-	object_event 30, 26, SPRITE_FISHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityFisherScript, -1
-	object_event  5, 12, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityYoungsterScript, -1
+	object_event 31, 20, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerMScript, -1
+	object_event 15, 18, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd1Script, -1
+	object_event  9, 21, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd2Script, -1
+	object_event 29, 26, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF1Script, -1
+	object_event 28, 26, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityElectrodeScript, -1
+	object_event  9, 27, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF2Script, -1
+	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, -1
+	; 6c appends the Rocket thief (30,8) and the two Officer Jennys (28,12)/(27,12)
+	; 6d appends the rival (20,2)

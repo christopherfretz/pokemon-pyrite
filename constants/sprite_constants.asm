@@ -111,6 +111,7 @@
 	const SPRITE_JAMES              ; 6b (Yellow's James)
 	const SPRITE_FOSSIL             ; 6c (Yellow's fossil prop, still)
 	const SPRITE_OLD_AMBER          ; 6d (Yellow's old amber prop, still)
+	const SPRITE_CHANSEY            ; 6e (Yellow's Pokemon Center Chansey)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

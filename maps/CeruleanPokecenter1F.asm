@@ -1,7 +1,13 @@
+; 6b: Yellow's Cerulean Pokemon Center
+; (vendor/pokeyellow/data/maps/objects/CeruleanPokecenter.asm), re-placed on
+; Crystal's 5x4 room the way M2 5g did Mt. Moon's.  Yellow's LINK_RECEPTIONIST
+; is dropped: Crystal's cable club lives on POKECENTER_2F, which the (0,7)
+; staircase already reaches.  Crystal's Magnet Train gym guide is gone.
 	object_const_def
 	const CERULEANPOKECENTER1F_NURSE
+	const CERULEANPOKECENTER1F_CHANSEY
+	const CERULEANPOKECENTER1F_GENTLEMAN
 	const CERULEANPOKECENTER1F_SUPER_NERD
-	const CERULEANPOKECENTER1F_GYM_GUIDE
 
 CeruleanPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -11,53 +17,50 @@ CeruleanPokecenter1F_MapScripts:
 CeruleanPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
+; Yellow: PokecenterChanseyText (engine/events/pokecenter_chansey.asm) --
+; one line plus the cry.
+CeruleanPokecenter1FChanseyScript:
+	opentext
+	writetext CeruleanPokecenter1FChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
+
+CeruleanPokecenter1FGentlemanScript:
+	jumptextfaceplayer CeruleanPokecenter1FGentlemanText
+
 CeruleanPokecenter1FSuperNerdScript:
-	special CheckMobileAdapterStatusSpecial
-	iftrue .mobile
 	jumptextfaceplayer CeruleanPokecenter1FSuperNerdText
 
-.mobile
-	jumptextfaceplayer CeruleanPokecenter1FSuperNerdText_Mobile
+CeruleanPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
+	done
 
-CeruleanPokecenter1FGymGuideScript:
-	jumptextfaceplayer CeruleanPokecenter1FGymGuideText
+CeruleanPokecenter1FGentlemanText:
+	text "Have you heard"
+	line "about BILL?"
+
+	para "Everyone calls"
+	line "him a #MANIAC!"
+
+	para "I think people"
+	line "are just jealous"
+	cont "of BILL, though."
+
+	para "Who wouldn't want"
+	line "to boast about"
+	cont "their #MON?"
+	done
 
 CeruleanPokecenter1FSuperNerdText:
-	text "For battles, I'd"
-	line "much rather use"
+	text "That BILL!"
 
-	para "#MON I've been"
-	line "raising, even if"
-
-	para "they're weaker"
-	line "than some newly"
-	cont "caught #MON."
-	done
-
-CeruleanPokecenter1FSuperNerdText_Mobile:
-	text "Do you battle by"
-	line "mobile phone?"
-
-	para "If time runs out"
-	line "during a battle,"
-
-	para "waiting to see who"
-	line "won is really"
-	cont "nerve wracking."
-	done
-
-CeruleanPokecenter1FGymGuideText:
-	text "The MAGNET TRAIN"
-	line "travels at over"
-
-	para "340 mph. It goes"
-	line "between KANTO and"
-
-	para "JOHTO in almost no"
-	line "time at all."
-
-	para "It really makes"
-	line "JOHTO accessible."
+	para "I heard that"
+	line "he'll do whatever"
+	cont "it takes to get"
+	cont "rare #MON!"
 	done
 
 CeruleanPokecenter1F_MapEvents:
@@ -74,5 +77,6 @@ CeruleanPokecenter1F_MapEvents:
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FNurseScript, -1
-	object_event  8,  4, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FSuperNerdScript, -1
-	object_event  1,  5, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FGymGuideScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FChanseyScript, -1
+	object_event  6,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FGentlemanScript, -1
+	object_event  8,  4, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanPokecenter1FSuperNerdScript, -1

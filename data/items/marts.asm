@@ -247,17 +247,17 @@ MartPewter:
 	db PARLYZ_HEAL
 	db -1 ; end
 
+; Kanto hack: Yellow's CERULEAN MART stock (docs/M3-CERULEAN.md 6b).
 MartCerulean:
-	db 9 ; # items
-	db GREAT_BALL
-	db ULTRA_BALL
-	db SUPER_POTION
-	db SUPER_REPEL
-	db FULL_HEAL
-	db X_DEFEND
-	db X_ATTACK
-	db DIRE_HIT
-	db SURF_MAIL
+	db 8 ; # items
+	db POKE_BALL
+	db POTION
+	db ESCAPE_ROPE
+	db REPEL
+	db ANTIDOTE
+	db BURN_HEAL
+	db AWAKENING
+	db PARLYZ_HEAL
 	db -1 ; end
 
 MartLavender:
