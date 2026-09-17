@@ -3023,7 +3023,9 @@ wGameTimeMinutes:: db
 wGameTimeSeconds:: db
 wGameTimeFrames::  db
 
-	ds 2
+; Pikachu follower state (docs/FOLLOWER.md)
+wPikaFollowFlags::    db ; FOLLOWER_*_F
+wPikaFollowStepType:: db ; STEP_* of the player's last committed step
 
 wCurDay:: db
 
@@ -3038,13 +3040,16 @@ wFollowMovementQueue:: ds 5
 wObjectStructs::
 wPlayerStruct:: object_struct wPlayer ; player is object struct 0
 ; wObject1Struct - wObject12Struct
-for n, 1, NUM_OBJECT_STRUCTS
+for n, 1, NUM_OBJECT_STRUCTS - 1
 wObject{d:n}Struct:: object_struct wObject{d:n}
 endr
+; Pikachu follower (FOLLOWER_OBJECT). Persists across map loads; never
+; allocated to map objects. See docs/FOLLOWER.md.
+wFollowerStruct:: object_struct wFollower
 
 wCmdQueue:: ds CMDQUEUE_CAPACITY * CMDQUEUE_ENTRY_SIZE
 
-	ds 40
+	; (was ds 40 padding; consumed by wFollowerStruct, OBJECT_LENGTH == 40)
 
 wMapObjects::
 wPlayerObject:: map_object wPlayer ; player is map object 0

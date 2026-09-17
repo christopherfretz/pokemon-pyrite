@@ -425,7 +425,7 @@ FindFirstEmptyObjectStruct::
 	push de
 	ld hl, wObjectStructs
 	ld de, OBJECT_LENGTH
-	ld c, NUM_OBJECT_STRUCTS
+	ld c, FOLLOWER_OBJECT ; the follower's struct is reserved
 .loop
 	ld a, [hl]
 	and a
@@ -437,7 +437,7 @@ FindFirstEmptyObjectStruct::
 	jr .done
 
 .break
-	ld a, NUM_OBJECT_STRUCTS
+	ld a, FOLLOWER_OBJECT
 	sub c
 	scf
 

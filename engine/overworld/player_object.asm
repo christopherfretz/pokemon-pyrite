@@ -144,7 +144,7 @@ CopyObjectStruct::
 	add hl, de
 	ldh a, [hObjectStructIndex]
 	inc a
-	cp NUM_OBJECT_STRUCTS
+	cp FOLLOWER_OBJECT ; never hand the follower's struct to a map object
 	jr nz, .loop
 	scf
 	ret ; overflow

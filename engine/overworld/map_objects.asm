@@ -3032,7 +3032,8 @@ InitSprites:
 	table_width 2
 	dw wPlayerStruct
 ; wObjectStruct1 - wObjectStruct12
-for n, 1, NUM_OBJECT_STRUCTS
+for n, 1, NUM_OBJECT_STRUCTS - 1
 	dw wObject{d:n}Struct
 endr
+	dw wFollowerStruct
 	assert_table_length NUM_OBJECT_STRUCTS

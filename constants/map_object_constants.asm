@@ -35,7 +35,8 @@ DEF OBJECT_JUMP_HEIGHT      rb ; 1f
 DEF OBJECT_RANGE            rb ; 20
                             rb_skip 7
 DEF OBJECT_LENGTH EQU _RS
-DEF NUM_OBJECT_STRUCTS EQU 13 ; see wObjectStructs
+DEF NUM_OBJECT_STRUCTS EQU 14 ; see wObjectStructs (13 = FOLLOWER_OBJECT, the Pikachu follower)
+DEF FOLLOWER_OBJECT EQU NUM_OBJECT_STRUCTS - 1
 
 ; object_struct OBJECT_DIRECTION values
 DEF OW_DOWN  EQU DOWN  << 2
@@ -287,3 +288,9 @@ DEF NUM_FACINGS EQU const_value
 	const STEP_BACK_LEDGE    ; 6
 	const STEP_WALK_IN_PLACE ; 7
 DEF NUM_STEPS EQU const_value
+
+; wPikaFollowFlags (Pikachu follower, docs/FOLLOWER.md)
+	const_def
+	const FOLLOWER_ENABLED_F ; 0: Pikachu should exist in the overworld
+	const FOLLOWER_HIDDEN_F  ; 1: hidden this frame (bike/surf/on player tile)
+	const FOLLOWER_SNAPPED_F ; 2: sitting on the player's tile, awaiting first step
