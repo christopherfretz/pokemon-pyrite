@@ -3234,8 +3234,10 @@ wMobileBattleRoomSceneID::                        db
 ; Kanto hack (docs/M2-INTRO.md)
 wPalletTownSceneID::                              db
 wOaksLabSceneID::                                 db
+wViridianMartSceneID::                            db
+wViridianCitySceneID::                            db
 
-	ds 47
+	ds 45
 
 ; fight counts
 wJackFightCount::    db

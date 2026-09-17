@@ -226,17 +226,13 @@ MartBlackthorn:
 	db X_ATTACK
 	db -1 ; end
 
-MartViridian:
-	db 9 ; # items
-	db ULTRA_BALL
-	db HYPER_POTION
-	db FULL_HEAL
-	db REVIVE
+MartViridian: ; Yellow's Kanto-act stock (docs/M2-PARCEL.md); the Johto act wants the late list back
+	db 5 ; # items
+	db POKE_BALL
+	db POTION
 	db ANTIDOTE
 	db PARLYZ_HEAL
-	db AWAKENING
 	db BURN_HEAL
-	db FLOWER_MAIL
 	db -1 ; end
 
 MartPewter:

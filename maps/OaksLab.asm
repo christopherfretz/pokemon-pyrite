@@ -112,9 +112,16 @@ Oak:
 	opentext
 	checkevent EVENT_GOT_STARTER_PIKACHU
 	iffalse .BeforeIntro
-	; TODO(M2 step 2): the parcel quest replaces this. The vanilla Kanto
-	; logic below is kept for the Johto act.
-	writetext OakYourPokemonCanFightText
+	; Yellow's OaksLabOak1Text branch order (docs/M2-PARCEL.md).
+	checkevent EVENT_GOT_POKEBALLS_FROM_OAK
+	iftrue .DexCheck
+	checkevent EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
+	iftrue .GivePokeBalls
+	checkflag ENGINE_POKEDEX
+	iftrue .MonAroundTheWorld
+	checkitem OAKS_PARCEL
+	iftrue .DeliverParcel
+	writetext OakYouShouldTalkToItText
 	waitbutton
 	closetext
 	end
@@ -123,6 +130,96 @@ Oak:
 	writetext OakBusyText
 	waitbutton
 	closetext
+	end
+
+.MonAroundTheWorld:
+	writetext OakMonAroundTheWorldText
+	waitbutton
+	closetext
+	end
+
+.GivePokeBalls:
+	writetext OakReceivedPokeBallsText
+	promptbutton
+	giveitem POKE_BALL, 5
+	playsound SFX_ITEM
+	waitsfx
+	setevent EVENT_GOT_POKEBALLS_FROM_OAK
+	writetext OakPokeBallsExplanationText
+	waitbutton
+	closetext
+	end
+
+.DexCheck:
+	writetext OakHowIsYourDexComingText
+	waitbutton
+	special ProfOaksPCBoot
+	writetext OakComeSeeMeSometimesText
+	waitbutton
+	closetext
+	end
+
+; The parcel delivery: the rival barges in, Oak hands out the POKéDEX.
+.DeliverParcel:
+	writetext OakDeliverParcelText
+	promptbutton
+	playsound SFX_KEY_ITEM
+	waitsfx
+	takeitem OAKS_PARCEL
+	writetext OakParcelThanksText
+	waitbutton
+	closetext
+	playmusic MUSIC_RIVAL_ENCOUNTER
+	opentext
+	writetext OaksLabRivalGrampsText
+	waitbutton
+	closetext
+	; An object that appears 6+ rows below the player is deleted on the spot
+	; (CheckObjectStillVisible, see M2-INTRO.md), so the rival spawns just
+	; off the bottom of the screen and walks up column 5 to (5,3).
+	readvar VAR_YCOORD
+	ifequal 1, .EnterFromRow6
+	ifequal 2, .EnterFromRow7
+	moveobject OAKSLAB_RIVAL, 5, 8
+	appear OAKSLAB_RIVAL
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalEntersFromRow8Movement
+	sjump .RivalArrived
+.EnterFromRow7:
+	moveobject OAKSLAB_RIVAL, 5, 7
+	appear OAKSLAB_RIVAL
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalEntersFromRow7Movement
+	sjump .RivalArrived
+.EnterFromRow6:
+	moveobject OAKSLAB_RIVAL, 5, 6
+	appear OAKSLAB_RIVAL
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalEntersFromRow6Movement
+.RivalArrived:
+	turnobject OAKSLAB_OAK, DOWN
+	opentext
+	writetext OaksLabRivalGrownStrongerText
+	waitbutton
+	writetext OakIHaveARequestText
+	waitbutton
+	writetext OakMyInventionPokedexText
+	waitbutton
+	writetext OakGotPokedexText
+	playsound SFX_ITEM
+	waitsfx
+	setflag ENGINE_POKEDEX
+	writetext OakThatWasMyDreamText
+	waitbutton
+	closetext
+	turnobject OAKSLAB_RIVAL, LEFT
+	opentext
+	writetext OaksLabRivalLeaveItToMeText
+	waitbutton
+	closetext
+	applymovement OAKSLAB_RIVAL, OaksLab_RivalLeavesWithDexMovement
+	disappear OAKSLAB_RIVAL
+	playmapmusic
+	setevent EVENT_OAK_GOT_PARCEL
+	setmapscene VIRIDIAN_CITY, SCENE_VIRIDIANCITY_NOOP
+	turnobject OAKSLAB_OAK, DOWN
 	end
 
 .KantoAct2: ; unreferenced until the Johto act
@@ -196,6 +293,29 @@ OaksLab_RivalToPlayerMovement:
 	step LEFT
 	step LEFT
 	turn_head LEFT
+	step_end
+
+; Fallthrough: 5, 4 or 3 steps up, all ending at (5,3).
+OaksLab_RivalEntersFromRow8Movement:
+	step UP
+OaksLab_RivalEntersFromRow7Movement:
+	step UP
+OaksLab_RivalEntersFromRow6Movement:
+	step UP
+	step UP
+	step UP
+	turn_head UP
+	step_end
+
+OaksLab_RivalLeavesWithDexMovement:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
 	step_end
 
 OaksLab_RivalLeavesMovement:
@@ -357,14 +477,181 @@ OaksLabThatsAPokeBallText:
 	cont "#MON inside!"
 	done
 
-OakYourPokemonCanFightText:
-	text "OAK: If a wild"
-	line "#MON appears,"
-	cont "your #MON can"
-	cont "fight against it!"
+OakYouShouldTalkToItText:
+	text "OAK: You should"
+	line "talk to it and"
+	cont "see how it feels."
+	done
 
-	para "Afterward, go on"
-	line "to the next town."
+OakDeliverParcelText:
+	text "OAK: Oh, <PLAYER>!"
+
+	para "How is my old"
+	line "#MON?"
+
+	para "Well, it seems to"
+	line "like you a lot."
+
+	para "You must be"
+	line "talented as a"
+	cont "#MON trainer!"
+
+	para "What? You have"
+	line "something for me?"
+
+	para "<PLAYER> delivered"
+	line "OAK'S PARCEL."
+	done
+
+OakParcelThanksText:
+	text "Ah! This is the"
+	line "custom # BALL"
+	cont "I ordered!"
+	cont "Thanks, <PLAYER>!"
+
+	para "By the way, I must"
+	line "ask you to do"
+	cont "something for me."
+	done
+
+OaksLabRivalGrampsText:
+	text "<RIVAL>: Gramps!"
+	done
+
+OaksLabRivalGrownStrongerText:
+	text "<RIVAL>: Gramps,"
+	line "my #MON has"
+	cont "grown stronger!"
+	cont "Check it out!"
+	done
+
+OakIHaveARequestText:
+	text "OAK: Ah, <RIVAL>,"
+	line "good timing!"
+
+	para "I needed to ask"
+	line "both of you to do"
+	cont "something for me."
+	done
+
+OakMyInventionPokedexText:
+	text "On the desk there"
+	line "is my invention,"
+	cont "#DEX!"
+
+	para "It automatically"
+	line "records data on"
+	cont "#MON you've"
+	cont "seen or caught!"
+
+	para "It's a hi-tech"
+	line "encyclopedia!"
+	done
+
+OakGotPokedexText:
+	text "OAK: <PLAYER> and"
+	line "<RIVAL>! Take"
+	cont "these with you!"
+
+	para "<PLAYER> got"
+	line "#DEX from OAK!"
+	done
+
+OakThatWasMyDreamText:
+	text "To make a complete"
+	line "guide on all the"
+	cont "#MON in the"
+	cont "world…"
+
+	para "That was my dream!"
+
+	para "But, I'm too old!"
+	line "I can't do it!"
+
+	para "So, I want you two"
+	line "to fulfill my"
+	cont "dream for me!"
+
+	para "Get moving, you"
+	line "two!"
+
+	para "This is a great"
+	line "undertaking in"
+	cont "#MON history!"
+	done
+
+OaksLabRivalLeaveItToMeText:
+	text "<RIVAL>: Alright"
+	line "Gramps! Leave it"
+	cont "all to me!"
+
+	para "<PLAYER>, I hate to"
+	line "say it, but I"
+	cont "don't need you!"
+
+	para "I know! I'll"
+	line "borrow a TOWN MAP"
+	cont "from my sis!"
+
+	para "I'll tell her not"
+	line "to lend you one,"
+	cont "<PLAYER>! Hahaha!"
+	done
+
+OakMonAroundTheWorldText:
+	text "#MON around the"
+	line "world wait for"
+	cont "you, <PLAYER>!"
+	done
+
+OakReceivedPokeBallsText:
+	text "OAK: You can't get"
+	line "detailed data on"
+	cont "#MON by just"
+	cont "seeing them."
+
+	para "You must catch"
+	line "them! Use these"
+	cont "to capture wild"
+	cont "#MON."
+
+	para "<PLAYER> got 5"
+	line "# BALLs!"
+	done
+
+OakPokeBallsExplanationText:
+	text "When a wild"
+	line "#MON appears,"
+	cont "it's fair game."
+
+	para "Just like I showed"
+	line "you, throw a #"
+	cont "BALL at it and try"
+	cont "to catch it!"
+
+	para "This won't always"
+	line "work, though."
+
+	para "A healthy #MON"
+	line "could escape. You"
+	cont "have to be lucky!"
+	done
+
+OakHowIsYourDexComingText:
+	text "OAK: Good to see"
+	line "you! How is your"
+	cont "#DEX coming?"
+	cont "Here, let me take"
+	cont "a look!"
+	done
+
+OakComeSeeMeSometimesText:
+	text "OAK: Come see me"
+	line "sometimes."
+
+	para "I want to know how"
+	line "your #DEX is"
+	cont "coming along."
 	done
 
 OakBusyText:

@@ -6,9 +6,35 @@
 
 ViridianCity_MapScripts:
 	def_scene_scripts
+	scene_script ViridianCityGrampsBlockScene, SCENE_VIRIDIANCITY_GRAMPS_BLOCK
+	scene_script ViridianCityNoopScene,        SCENE_VIRIDIANCITY_NOOP
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, ViridianCityFlypointCallback
+
+ViridianCityGrampsBlockScene:
+ViridianCityNoopScene:
+	end
+
+; Yellow's grumpy old man (docs/M2-PARCEL.md): until OAK'S PARCEL is
+; delivered he stands in the road to ROUTE 2 and turns the player back.
+ViridianCityGrampsBlockLeft:
+	turnobject VIRIDIANCITY_GRAMPS1, LEFT
+	sjump ViridianCityGrampsBlock
+
+ViridianCityGrampsBlockRight:
+	turnobject VIRIDIANCITY_GRAMPS1, RIGHT
+ViridianCityGrampsBlock:
+	opentext
+	writetext ViridianCityGrampsPrivatePropertyText
+	waitbutton
+	closetext
+	applymovement PLAYER, ViridianCity_PlayerStepBackMovement
+	end
+
+ViridianCity_PlayerStepBackMovement:
+	step DOWN
+	step_end
 
 ViridianCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_VIRIDIAN
@@ -17,16 +43,16 @@ ViridianCityFlypointCallback:
 ViridianCityCoffeeGramps:
 	faceplayer
 	opentext
-	writetext ViridianCityCoffeeGrampsQuestionText
-	yesorno
-	iffalse .no
-	writetext ViridianCityCoffeeGrampsBelievedText
+	checkevent EVENT_OAK_GOT_PARCEL
+	iftrue .HadMyCoffee
+	writetext ViridianCityGrampsPrivatePropertyText
 	waitbutton
 	closetext
 	end
 
-.no:
-	writetext ViridianCityCoffeeGrampsDoubtedText
+.HadMyCoffee:
+	; TODO: Yellow's old-man catch tutorial hangs off this line.
+	writetext ViridianCityGrampsHadMyCoffeeText
 	waitbutton
 	closetext
 	end
@@ -85,43 +111,24 @@ ViridianCityPokecenterSign:
 ViridianCityMartSign:
 	jumpstd MartSignScript
 
-ViridianCityCoffeeGrampsQuestionText:
-	text "Hey, kid! I just"
-	line "had a double shot"
+ViridianCityGrampsPrivatePropertyText:
+	text "You can't go"
+	line "through here!"
 
-	para "of espresso, and"
-	line "I am wired!"
-
-	para "I need to talk to"
-	line "someone, so you'll"
-	cont "have to do!"
-
-	para "I might not look"
-	line "like much now, but"
-
-	para "I was an expert at"
-	line "catching #MON."
-
-	para "Do you believe me?"
+	para "This is private"
+	line "property!"
 	done
 
-ViridianCityCoffeeGrampsBelievedText:
-	text "Good, good. Yes, I"
-	line "was something out"
+ViridianCityGrampsHadMyCoffeeText:
+	text "Ahh, I've had my"
+	line "coffee now and I"
+	cont "feel great!"
 
-	para "of the ordinary,"
-	line "let me tell you!"
-	done
+	para "Sure, you can go"
+	line "through!"
 
-ViridianCityCoffeeGrampsDoubtedText:
-	text "What? You little"
-	line "whelp!"
-
-	para "If I were just a"
-	line "bit younger, I'd"
-
-	para "show you a thing"
-	line "or two. Humph!"
+	para "I'm sorry I was"
+	line "so rude to you!"
 	done
 
 ViridianCityGrampsNearGymText:
@@ -224,6 +231,8 @@ ViridianCity_MapEvents:
 	warp_event 23, 25, VIRIDIAN_POKECENTER_1F, 1
 
 	def_coord_events
+	coord_event 17,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockRight
+	coord_event 19,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockLeft
 
 	def_bg_events
 	bg_event 17, 17, BGEVENT_READ, ViridianCitySign
@@ -234,7 +243,7 @@ ViridianCity_MapEvents:
 	bg_event 30, 19, BGEVENT_READ, ViridianCityMartSign
 
 	def_object_events
-	object_event 18,  5, SPRITE_GRAMPS, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, -1
+	object_event 18,  3, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, -1
 	object_event 30,  8, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianCityGrampsNearGym, -1
 	object_event  6, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityDreamEaterFisher, -1
 	object_event 17, 21, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 3, 3, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungsterScript, -1

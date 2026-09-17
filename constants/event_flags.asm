@@ -1465,7 +1465,13 @@
 	const EVENT_OAKS_LAB_EEVEE_BALL
 	const EVENT_GOT_STARTER_PIKACHU
 	const EVENT_BATTLED_RIVAL_IN_OAKS_LAB
-; Unused: next 43 events
+; Kanto hack: Oak's Parcel (docs/M2-PARCEL.md)
+	const EVENT_GOT_OAKS_PARCEL
+	const EVENT_OAK_GOT_PARCEL
+	const EVENT_GOT_POTION_SAMPLE
+	const EVENT_GOT_POKEBALLS_FROM_OAK
+	const EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
+; Unused: next 38 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800
