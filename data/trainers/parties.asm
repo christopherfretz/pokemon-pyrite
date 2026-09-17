@@ -3494,6 +3494,12 @@ KantoRivalGroup:
 	db  5, EEVEE
 	db -1 ; end
 
+	; KANTO_RIVAL (2): Route 22, first battle (Yellow's Rival1Data #2)
+	db "?@", TRAINERTYPE_NORMAL
+	db  9, SPEAROW
+	db  8, EEVEE
+	db -1 ; end
+
 MysticalmanGroup:
 	; MYSTICALMAN (1)
 	db "EUSINE@", TRAINERTYPE_MOVES

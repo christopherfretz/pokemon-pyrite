@@ -1471,7 +1471,9 @@
 	const EVENT_GOT_POTION_SAMPLE
 	const EVENT_GOT_POKEBALLS_FROM_OAK
 	const EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
-; Unused: next 38 events
+; Kanto hack: Route 22 rival battle #1 (docs/M2-ROUTE22.md)
+	const EVENT_ROUTE22_RIVAL ; object hidden; the Route 22 OBJECTS callback derives it
+; Unused: next 37 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

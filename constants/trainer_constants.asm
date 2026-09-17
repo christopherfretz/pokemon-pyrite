@@ -703,6 +703,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Blue, the Kanto rival (docs/M2-INTRO.md). Named from wRivalName.
 	trainerclass KANTO_RIVAL ; 43
 	const KANTO_RIVAL_1
+	const KANTO_RIVAL_2
 
 	trainerclass MYSTICALMAN ; 44
 	const EUSINE
