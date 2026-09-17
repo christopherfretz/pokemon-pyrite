@@ -312,7 +312,7 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_23 ; Kanto hack: Mt. Moon B2F ROCKET 3 (was unused)
 	const GRUNTM_24
 	const GRUNTM_25
-	const GRUNTM_26 ; unused
+	const GRUNTM_26 ; Kanto hack: Cerulean City Rocket thief (was unused)
 	const GRUNTM_27 ; unused
 	const GRUNTM_28
 	const GRUNTM_29

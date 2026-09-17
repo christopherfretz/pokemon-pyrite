@@ -1448,11 +1448,13 @@ GruntMGroup:
 	db 24, MUK
 	db -1 ; end
 
-	; GRUNTM (26) - free again since 5h; the Mt. Moon B2F stand-in that used to
-	; live here is now the JESSIE_JAMES class. Vanilla Crystal never used it.
+	; GRUNTM (26) - Kanto hack: Cerulean City, the Rocket thief who smashes his
+	; way out of the trashed house (6c). Yellow's RocketData #5 (OPP_ROCKET, 5).
+	; The slot was free again after 5h moved the Mt. Moon B2F stand-in to the
+	; JESSIE_JAMES class; vanilla Crystal never used it.
 	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 15, RATTATA
-	db 15, RATTATA
+	db 17, MACHOP
+	db 17, DROWZEE
 	db -1 ; end
 
 	; GRUNTM (27)

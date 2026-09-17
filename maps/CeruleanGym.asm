@@ -43,7 +43,9 @@ CeruleanGymGruntRunsOutScript:
 	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntRunsOutMovement
 	playsound SFX_EXIT_BUILDING
 	disappear CERULEANGYM_ROCKET
-	setevent EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM
+; 6c: EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM was renamed in place to
+; EVENT_BEAT_CERULEAN_ROCKET_THIEF (docs/M3-CERULEAN.md, 6c). Nothing ever read
+; it here, so the dead `setevent` is simply gone; 6e replaces this whole scene.
 	clearevent EVENT_ROUTE_24_ROCKET
 	clearevent EVENT_ROUTE_25_MISTY_BOYFRIEND
 	setscene SCENE_CERULEANGYM_NOOP

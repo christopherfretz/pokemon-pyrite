@@ -3,9 +3,24 @@
 ; objects and nine bg_events are gone; the seven statics below are Yellow's, on
 ; Yellow's tiles.  Yellow's other four objects belong to later sub-steps and are
 ; APPENDED at the end of both lists so these indexes never move:
-;   6c: CERULEANCITY_ROCKET (30,8), CERULEANCITY_GUARD1 (28,12),
-;       CERULEANCITY_GUARD2 (27,12)
 ;   6d: CERULEANCITY_RIVAL  (20,2)
+;
+; 6c: the Rocket break-in (vendor/pokeyellow/scripts/CeruleanCity.asm,
+; CeruleanCityDefaultScript + CeruleanCityRocketText + CeruleanCity_2.asm's
+; CeruleanHideRocket; docs/M3-CERULEAN.md 3.1 and "6c findings").  The thief
+; stands in the yard behind the trashed house at (30,8); Officer Jenny #2
+; (27,12) physically blocks the house's front door at (27,11) and Officer Jenny
+; #1 (28,12) is off the map until the guards stand aside.  Yellow's coord trigger
+; CeruleanCityCoords1 = (30,7)/(30,9) force-faces the two of them and runs the
+; thief's own text, which is also what talking to him does - so both paths go
+; through one script here.  Losing is a plain GSC white-out: the flag is only
+; set after `startbattle` returns, so the trigger re-arms exactly as Yellow's
+; CeruleanCityClearScripts does.
+;
+; NOTE: the yard is only reachable through the trashed house's smashed back
+; wall, so in Yellow (and here) the whole beat is gated behind Bill's S.S.
+; Ticket, which is what moves Officer Jenny #2 off the door.  6i must
+; `setevent EVENT_CERULEAN_GUARDS_STAND_ASIDE` when Bill hands the ticket over.
 	object_const_def
 	const CERULEANCITY_COOLTRAINER_M
 	const CERULEANCITY_SUPER_NERD1
@@ -14,7 +29,9 @@
 	const CERULEANCITY_ELECTRODE
 	const CERULEANCITY_COOLTRAINER_F2
 	const CERULEANCITY_SUPER_NERD3
-	; 6c appends CERULEANCITY_ROCKET / _GUARD1 / _GUARD2 here
+	const CERULEANCITY_ROCKET
+	const CERULEANCITY_GUARD1
+	const CERULEANCITY_GUARD2
 	; 6d appends CERULEANCITY_RIVAL here
 
 CeruleanCity_MapScripts:
@@ -22,9 +39,33 @@ CeruleanCity_MapScripts:
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, CeruleanCityFlypointCallback
+	callback MAPCALLBACK_OBJECTS, CeruleanCityObjectsCallback
 
 CeruleanCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_CERULEAN
+	endcallback
+
+; Yellow's guard swap (CeruleanHideRocket) is a one-shot ShowObject/HideObject
+; pair, which a white-out could leave half-applied.  The durable GSC idiom
+; (docs/PORTING.md 3.4) is to DERIVE both guards from one stored fact on every
+; map load.  That fact is EVENT_CERULEAN_GUARDS_STAND_ASIDE, and Yellow sets it
+; in two places: BillsHouse_2.asm when Bill hands over the S.S. Ticket (that is
+; what unblocks the trashed house's door in the first place, and is the reason
+; the thief is only reachable after Route 25 -- see "6c findings"), and
+; CeruleanHideRocket after the thief is beaten.  6c owns the second; Bill's
+; scene (6i) only has to `setevent` the same flag.  Guard 1 is therefore hidden
+; by default even though its appended flag starts clear, and a pocket-full
+; retry leaves the thief, guard 2 and the blocked door exactly as they were.
+CeruleanCityObjectsCallback:
+	checkevent EVENT_CERULEAN_GUARDS_STAND_ASIDE
+	iftrue .GuardsAside
+	setevent EVENT_CERULEAN_GUARD_1_HIDDEN
+	clearevent EVENT_CERULEAN_GUARD_2_HIDDEN
+	endcallback
+
+.GuardsAside:
+	clearevent EVENT_CERULEAN_GUARD_1_HIDDEN
+	setevent EVENT_CERULEAN_GUARD_2_HIDDEN
 	endcallback
 
 CeruleanCityCooltrainerMScript:
@@ -97,6 +138,86 @@ CeruleanCityCooltrainerF2Script:
 
 CeruleanCitySuperNerd3Script:
 	jumptextfaceplayer CeruleanCitySuperNerd3Text
+
+; Yellow's CeruleanCityCoords1.  wCoordIndex 1 = (30,7), i.e. the player is
+; ABOVE the thief and both turn to face each other; anything else is (30,9),
+; below him.  The scene id is -1 so it fires whatever CheckScenes returns
+; (this map declares no scene scripts) - docs/PORTING.md 3.2.
+CeruleanCityRocketSceneNorth:
+	checkevent EVENT_BEAT_CERULEAN_ROCKET_THIEF
+	iftrue .Done
+	turnobject PLAYER, DOWN
+	turnobject CERULEANCITY_ROCKET, UP
+	sjump CeruleanCityRocketConfrontation
+
+.Done:
+	end
+
+CeruleanCityRocketSceneSouth:
+	checkevent EVENT_BEAT_CERULEAN_ROCKET_THIEF
+	iftrue .Done
+	turnobject PLAYER, UP
+	turnobject CERULEANCITY_ROCKET, DOWN
+	sjump CeruleanCityRocketConfrontation
+
+.Done:
+	end
+
+; Walking up to the thief and pressing A is the same beat in Yellow (his object
+; text IS the trigger text), so the object script funnels into the same place.
+CeruleanCityRocketScript:
+	faceplayer
+	sjump CeruleanCityRocketConfrontation
+
+CeruleanCityRocketConfrontation:
+	checkevent EVENT_BEAT_CERULEAN_ROCKET_THIEF
+	iftrue .GiveTM
+	opentext
+	writetext CeruleanCityRocketText
+	waitbutton
+	closetext
+	winlosstext CeruleanCityRocketIGiveUpText, 0
+	setlasttalked CERULEANCITY_ROCKET
+	loadtrainer GRUNTM, GRUNTM_26
+	startbattle
+	reloadmapafterbattle
+	setevent EVENT_BEAT_CERULEAN_ROCKET_THIEF
+
+; Yellow gives the TM in the same breath as the defeat text, and will not let
+; the thief leave until it lands - so a full TM pocket re-runs this branch on
+; the next talk instead of stranding TM_DIG (verbosegiveitem prints its own
+; "no room" page, docs/PORTING.md 6.1; Yellow's line follows it).
+.GiveTM:
+	opentext
+	writetext CeruleanCityRocketIllReturnTheTMText
+	promptbutton
+	verbosegiveitem TM_DIG
+	iffalse .NoRoom
+	writetext CeruleanCityRocketBetterGetMovingText
+	waitbutton
+	closetext
+	pause 15
+	special FadeOutToBlack
+	special ReloadSpritesNoPalettes
+	disappear CERULEANCITY_ROCKET
+	setevent EVENT_CERULEAN_GUARDS_STAND_ASIDE
+	appear CERULEANCITY_GUARD1
+	disappear CERULEANCITY_GUARD2
+	pause 15
+	special FadeInFromBlack
+	end
+
+.NoRoom:
+	writetext CeruleanCityRocketNoRoomText
+	waitbutton
+	closetext
+	end
+
+CeruleanCityGuard1Script:
+	jumptextfaceplayer CeruleanCityGuardText
+
+CeruleanCityGuard2Script:
+	jumptextfaceplayer CeruleanCityGuardText
 
 CeruleanCitySign:
 	jumptext CeruleanCitySignText
@@ -206,6 +327,56 @@ CeruleanCitySuperNerd3Text:
 	cont "is allowed in!"
 	done
 
+CeruleanCityRocketText:
+	text "Hey! Stay out!"
+	line "It's not your"
+	cont "yard! Huh? Me?"
+
+	para "I'm an innocent"
+	line "bystander! Don't"
+	cont "you believe me?"
+	done
+
+CeruleanCityRocketIGiveUpText:
+	text "Stop!"
+	line "I give up! I'll"
+	cont "leave quietly!"
+	done
+
+CeruleanCityRocketIllReturnTheTMText:
+	text "OK! I'll return"
+	line "the TM I stole!"
+	done
+
+CeruleanCityRocketBetterGetMovingText:
+	text "I better get"
+	line "moving! Bye!"
+	done
+
+CeruleanCityRocketNoRoomText:
+	text "Make room for"
+	line "this!"
+
+	para "I can't run until"
+	line "I give it to you!"
+	done
+
+; Yellow gives both Officer Jennys the same line (TEXT_CERULEANCITY_GUARD1 and
+; _GUARD2 both point at _CeruleanCityGuardText).
+CeruleanCityGuardText:
+	text "These poor people"
+	line "here were robbed."
+
+	para "We're positive"
+	line "that TEAM ROCKET"
+	cont "is behind this"
+	cont "terrible deed."
+
+	para "Even our POLICE"
+	line "FORCE has trouble"
+	cont "with the ROCKETs!"
+	done
+
 CeruleanCitySignText:
 	text "CERULEAN CITY"
 	line "A Mysterious,"
@@ -257,7 +428,8 @@ CeruleanCity_MapEvents:
 	warp_event  9,  9, CERULEAN_BADGE_HOUSE, 1
 
 	def_coord_events
-	; 6c appends the Rocket break-in trigger at (30,7)/(30,9)
+	coord_event 30,  7, -1, CeruleanCityRocketSceneNorth
+	coord_event 30,  9, -1, CeruleanCityRocketSceneSouth
 	; 6d appends the rival trigger at (20,6)/(21,6)
 
 ; 6b: Yellow's six signs, on Yellow's tiles, in Yellow's order.  Crystal's three
@@ -279,5 +451,7 @@ CeruleanCity_MapEvents:
 	object_event 28, 26, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityElectrodeScript, -1
 	object_event  9, 27, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF2Script, -1
 	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, -1
-	; 6c appends the Rocket thief (30,8) and the two Officer Jennys (28,12)/(27,12)
+	object_event 30,  8, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityRocketScript, EVENT_CERULEAN_ROCKET_THIEF_HIDDEN
+	object_event 28, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard1Script, EVENT_CERULEAN_GUARD_1_HIDDEN
+	object_event 27, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard2Script, EVENT_CERULEAN_GUARD_2_HIDDEN
 	; 6d appends the rival (20,2)

@@ -209,7 +209,11 @@
 	const EVENT_GOT_NUGGET_FROM_GUY
 	const EVENT_RETURNED_MACHINE_PART
 	const EVENT_MET_MANAGER_AT_POWER_PLANT
-	const EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM
+	const EVENT_BEAT_CERULEAN_ROCKET_THIEF ; Kanto hack: renamed in place (6c,
+; docs/M3-CERULEAN.md). Was EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM, whose only
+; reference was one dead `setevent` in Crystal's CeruleanGym grunt scene (6e
+; deletes that scene outright). Set when Yellow's Cerulean Rocket thief has
+; been beaten; gates the (30,7)/(30,9) coord trigger.
 	const EVENT_MET_REDS_MOM
 	const EVENT_RESTORED_POWER_TO_KANTO
 	const EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON
@@ -1543,7 +1547,21 @@
 ; so nothing live moved and WRAM bank 1 is no fuller than it was.
 ; 36 bytes of that padding are left, i.e. one more +256-flag bump is available.
 
-; Unused: next 524 events
+; Kanto hack: the Cerulean Rocket break-in (6c, docs/M3-CERULEAN.md). Four
+; APPENDED flags; the first three are object-visibility flags (SET = hidden, the
+; object_event convention). The thief's is set by the scene's `disappear` once
+; TM_DIG has actually landed in the bag; the two Officer Jennys are re-derived
+; from EVENT_CERULEAN_GUARDS_STAND_ASIDE by CeruleanCityObjectsCallback on every
+; map load, so a white-out mid-beat can never strand the guard swap half-done.
+; Yellow sets that fourth fact in TWO places (BillsHouse_2.asm's S.S. Ticket
+; hand-over and CeruleanCity_2.asm's CeruleanHideRocket); 6c wires the second,
+; and Bill's scene (6i) only has to `setevent` it. 524 free -> 520 free.
+	const EVENT_CERULEAN_ROCKET_THIEF_HIDDEN ; the thief has handed the TM over and run
+	const EVENT_CERULEAN_GUARD_1_HIDDEN ; Officer Jenny by the road (28,12)
+	const EVENT_CERULEAN_GUARD_2_HIDDEN ; Officer Jenny blocking the door (27,12)
+	const EVENT_CERULEAN_GUARDS_STAND_ASIDE ; S.S. Ticket from Bill, or the thief beaten: the trashed house's door is open
+
+; Unused: next 520 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
