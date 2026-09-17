@@ -536,6 +536,9 @@ TryObjectEvent:
 	ret
 
 .IsObject:
+	ldh a, [hObjectStructIndex]
+	cp FOLLOWER_OBJECT
+	jr z, .nope ; Pikachu follower has no map object; interaction comes later
 	call PlayTalkObject
 	ldh a, [hObjectStructIndex]
 	call GetObjectStruct

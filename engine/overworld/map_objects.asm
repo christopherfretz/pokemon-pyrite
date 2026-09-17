@@ -553,6 +553,7 @@ StepFunction_FromMovement:
 	dw MovementFunction_SpinCounterclockwise ; 19
 	dw MovementFunction_BoulderDust          ; 1a
 	dw MovementFunction_ShakingGrass         ; 1b
+	dw MovementFunction_PikaFollower         ; 1c
 	assert_table_length NUM_SPRITEMOVEFN
 
 MovementFunction_Null:
@@ -3037,3 +3038,5 @@ for n, 1, NUM_OBJECT_STRUCTS - 1
 endr
 	dw wFollowerStruct
 	assert_table_length NUM_OBJECT_STRUCTS
+
+INCLUDE "engine/overworld/follower.asm"

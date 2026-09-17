@@ -37,6 +37,7 @@ MapSetupScript_Warp:
 	mapsetup HandleNewMap
 	mapsetup SpawnPlayer
 	mapsetup RefreshPlayerCoords
+	mapsetup SpawnFollower
 	mapsetup GetMapScreenCoords
 	mapsetup LoadBlockData
 	mapsetup BufferScreen
@@ -60,6 +61,7 @@ MapSetupScript_BadWarp:
 	mapsetup HandleNewMap
 	mapsetup SpawnPlayer
 	mapsetup RefreshPlayerCoords
+	mapsetup SpawnFollower
 	mapsetup GetMapScreenCoords
 	mapsetup LoadBlockData
 	mapsetup BufferScreen
@@ -107,6 +109,7 @@ MapSetupScript_Train:
 	mapsetup GetWarpDestCoords
 	mapsetup HandleNewMap
 	mapsetup RefreshPlayerCoords
+	mapsetup SpawnFollower
 	mapsetup LoadBlockData
 	mapsetup BufferScreen
 	mapsetup DisableLCD

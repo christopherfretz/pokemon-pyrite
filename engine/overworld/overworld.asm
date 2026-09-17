@@ -48,6 +48,12 @@ RefreshSprites::
 	ld hl, wUsedSprites
 	call ByteFill
 	call GetPlayerSprite
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	jr z, .no_follower
+	ld a, SPRITE_PIKACHU_FOLLOWER
+	call AddSpriteGFX
+.no_follower
 	call AddMapSprites
 	call LoadAndSortSprites
 	ret

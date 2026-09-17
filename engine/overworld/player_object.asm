@@ -122,10 +122,33 @@ RefreshPlayerCoords:
 	ld hl, wPlayerLastMapY
 	ld [hl], e
 	ld e, a
-; the next three lines are useless
-	ld a, [wObjectFollow_Leader]
-	cp PLAYER
-	ret nz
+; d/e = delta the player's map coords just moved by. Keep the Pikachu
+; follower in the same frame of reference (matters for map connections;
+; warps re-spawn it right after this anyway).
+	ld hl, wFollowerMapX
+	ld a, [hl]
+	add d
+	ld [hl], a
+	ld hl, wFollowerLastMapX
+	ld a, [hl]
+	add d
+	ld [hl], a
+	ld hl, wFollowerInitX
+	ld a, [hl]
+	add d
+	ld [hl], a
+	ld hl, wFollowerMapY
+	ld a, [hl]
+	add e
+	ld [hl], a
+	ld hl, wFollowerLastMapY
+	ld a, [hl]
+	add e
+	ld [hl], a
+	ld hl, wFollowerInitY
+	ld a, [hl]
+	add e
+	ld [hl], a
 	ret
 
 CopyObjectStruct::
