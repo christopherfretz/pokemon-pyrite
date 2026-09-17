@@ -337,3 +337,13 @@ FollowerDespawnEmote:
 	ldh [hMapObjectIndex], a
 	call DespawnEmote
 	jp UpdateSprites
+
+EnablePikaFollower::
+; Special. Turns the follower on mid-map (Oak's Lab, docs/M2-INTRO.md):
+; sets the flag, reloads the used-sprite list so the follower's tiles are in
+; VRAM (see AddFollowerSprite), and spawns the object on the player's tile.
+	ld hl, wPikaFollowFlags
+	set FOLLOWER_ENABLED_F, [hl]
+	farcall RefreshSprites
+	call SpawnFollower
+	ret

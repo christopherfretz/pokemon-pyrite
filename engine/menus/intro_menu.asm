@@ -67,9 +67,6 @@ NewGame:
 	call OakSpeech
 	call InitializeWorld
 
-	ld a, 1 << FOLLOWER_ENABLED_F ; yellowcrystal: Pikachu follows from the start (prototype)
-	ld [wPikaFollowFlags], a
-
 	ld a, LANDMARK_PALLET_TOWN ; yellowcrystal: new game starts in Pallet Town
 	ld [wPrevLandmark], a
 
