@@ -1519,7 +1519,14 @@
 ; place above (EVENT_BEAT_ROCKET_GRUNTM_12/20/21/22/23/26/27/30/31,
 ; EVENT_BEAT_SUPER_NERD_JAY and the misspelled EVENT_BEAY_SUPER_NERD_DAVE -
 ; every one of them referenced nowhere but this file).
-; Unused: next 16 events
+; Kanto hack: Mt. Moon Pokemon Center (5g, docs/M2-MTMOON.md). Yellow's
+; EVENT_BOUGHT_MAGIKARP. The only remaining unreferenced Crystal flags are
+; Johto rematch flags (EVENT_BEAT_*2/*3 and a handful of Kanto gym-trainer
+; ones) that the Johto milestone will still want, so this one is APPENDED from
+; the free pool rather than renamed in place: 16 free -> 15 free.
+	const EVENT_BOUGHT_MAGIKARP ; the Mt. Moon Pokecenter MAGIKARP salesman has been paid
+
+; Unused: next 15 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800
