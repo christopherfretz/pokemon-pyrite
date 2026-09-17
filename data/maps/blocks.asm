@@ -153,7 +153,6 @@ BlackthornEmysHouse_Blocks:
 MoveDeletersHouse_Blocks:
 CeruleanMelaniesHouse_Blocks:
 BikeShop_Blocks:
-BillsHouse_Blocks:
 CharcoalKiln_Blocks:
 LakeOfRageHiddenPowerHouse_Blocks:
 LakeOfRageMagikarpHouse_Blocks:
@@ -1073,5 +1072,12 @@ Route24_Blocks:
 CeruleanTrashedHouse_Blocks:
 CeruleanBadgeHouse_Blocks:
 	INCBIN "maps/House1Hole.blk"
+
+; Kanto hack: Bill's House (docs/M3-CERULEAN.md, 6j).  Split out of the shared
+; House1 alias group above: Bill's cutscene needs a cell-separator console and
+; a bank of machines along the north wall, which House1's living room has not
+; got.  Re-cut from TILESET_HOUSE metatiles only (no new graphics).
+BillsHouse_Blocks:
+	INCBIN "maps/BillsHouse.blk"
 
 ENDSECTION

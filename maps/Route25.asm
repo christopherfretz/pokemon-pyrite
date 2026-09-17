@@ -56,16 +56,39 @@
 ; still grass after the re-cut.
 ;
 ; 6j: Bill's House is NOT touched here - the warp at (45,3) into BILLS_HOUSE
-; and the Sea Cottage sign at (43,3) are all Route 25 owes it.  When 6j writes
-; Bill's cutscene it MUST `setevent EVENT_CERULEAN_GUARDS_STAND_ASIDE` as Bill
-; hands over the S.S. TICKET, or Cerulean's trashed-house beat (6c) stays
-; unreachable forever - see docs/M3-CERULEAN.md 6c.1.  6j also owns Yellow's
-; Route25ToggleBillsScript, which hides the Nugget Bridge guy on Route 24 once
-; the player leaves Bill's house with the ticket.
+; and the Sea Cottage sign at (43,3) are all Route 25 owes it.  Bill's cutscene
+; (hack/maps/BillsHouse.asm) sets EVENT_CERULEAN_GUARDS_STAND_ASIDE as he hands
+; over the S.S. TICKET, which is what unblocks Cerulean's trashed house (6c,
+; docs/M3-CERULEAN.md 6c.1).
+;
+; 6j also owns Yellow's Route25ToggleBillsScript.  Three of the four things it
+; does are BILLS_HOUSE's own business and live in BillsHouseObjectsCallback
+; (reset EVENT_BILL_SAID_USE_CELL_SEPARATOR, re-show BILL-as-#MON, swap BILL 1
+; for BILL 2).  The fourth is cross-map and is the callback below: once you
+; leave Bill's house with the ticket, Yellow HideObjects
+; TOGGLE_NUGGET_BRIDGE_GUY, which
+; vendor/pokeyellow/data/maps/toggleable_objects.asm resolves to
+; ROUTE24_COOLTRAINER_M1 - the Rocket who ambushes you at the top of Nugget
+; Bridge on Route 24, not anything on Route 25 (Route 25's only toggleable
+; object is its TM ball, and nothing ever toggles it).  6h already keeps that
+; Rocket on the bridge after he is beaten, on purpose - Yellow gives him a
+; "the top leader" line and our Route24 object is a plain always-visible
+; object with no hide flag - so there is deliberately nothing to hide and the
+; callback only re-derives Route 25's own scene.
 Route25_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, Route25ObjectsCallback
+
+; Route 25 has no objects left whose visibility depends on Bill (see above),
+; so this only pins the scene to 0.  It exists as the documented hook: the
+; `scene_var ROUTE_25` row and wRoute25SceneID survive from Crystal (6i), and
+; an empty def_scene_scripts means wCurMapSceneScriptCount is 0 and
+; RunSceneScript bails immediately, so scene 0 is the only legal value.
+Route25ObjectsCallback:
+	setscene 0
+	endcallback
 
 TrainerYoungsterGrant:
 	trainer YOUNGSTER, GRANT, EVENT_BEAT_YOUNGSTER_GRANT, YoungsterGrantSeenText, YoungsterGrantBeatenText, 0, .Script
