@@ -3271,7 +3271,10 @@ wKenjiFightCount::   db ; unreferenced
 wParryFightCount::   db
 wErinFightCount::    db
 
-	ds 100
+; Kanto hack (docs/HOUSEKEEPING.md): vanilla reserves 100 unused bytes here.
+; 64 of them were handed to wEventFlags so NUM_EVENTS could go 2048 -> 2560
+; without moving anything live. 36 are left (good for one more +256-flag bump).
+	ds 36
 
 wEventFlags:: flag_array NUM_EVENTS
 

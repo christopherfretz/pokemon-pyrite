@@ -124,8 +124,18 @@ INCLUDE "engine/events/kurt_selectquantity_interpretjoypad.asm"
 SECTION "bankA", ROMX
 
 INCLUDE "engine/link/link.asm"
-INCLUDE "engine/overworld/wildmons.asm"
 INCLUDE "engine/battle/link_result.asm"
+
+
+; Kanto hack (docs/HOUSEKEEPING.md): wildmons.asm used to live in "bankA",
+; which left only 231 bytes for new Kanto encounter tables (47 bytes each).
+; The wild-mon lookups walk the tables with plain `ld a, [hli]`, so the tables
+; MUST stay in the same bank as the code that reads them - hence the code moved
+; with the data instead of the data moving alone. Pinned to ROMX $11 in
+; layout.link; keep it pinned to a bank that map/tileset/pic data never uses.
+SECTION "Wild Mons", ROMX
+
+INCLUDE "engine/overworld/wildmons.asm"
 
 
 SECTION "bankB", ROMX

@@ -1537,7 +1537,13 @@
 	const EVENT_BOUGHT_MUSEUM_TICKET
 	const EVENT_GOT_OLD_AMBER
 
-; Unused: next 12 events
+; Kanto hack (docs/HOUSEKEEPING.md): the pool was grown from 2048 to 2560 flags.
+; That is +64 bytes of wEventFlags, paid for out of the unused `ds 100` padding
+; that sits immediately in front of wEventFlags in ram/wram.asm (now `ds 36`),
+; so nothing live moved and WRAM bank 1 is no fuller than it was.
+; 36 bytes of that padding are left, i.e. one more +256-flag bump is available.
 
-	const_next 2048
-DEF NUM_EVENTS EQU const_value ; 800
+; Unused: next 524 events
+
+	const_next 2560
+DEF NUM_EVENTS EQU const_value ; a00
