@@ -243,7 +243,7 @@ PokeBallEffect:
 	ld b, a
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	jp z, .catch_without_fail
+	jp z, .tutorial
 	ld a, [wCurItem]
 	cp MASTER_BALL
 	jp z, .catch_without_fail
@@ -378,6 +378,14 @@ PokeBallEffect:
 	ld a, 0
 	jr z, .catch_without_fail
 	jr nc, .fail_to_catch
+
+.tutorial
+; Kanto hack: Viridian's old man fumbles his first demo (docs/M2-CATCH.md).
+	ld a, [wCatchTutorialCatcher]
+	cp CATCHTUTORIAL_OLD_MAN_FAIL
+	jr nz, .catch_without_fail
+	xor a
+	jr .fail_to_catch
 
 .catch_without_fail
 	ld a, [wEnemyMonSpecies]
@@ -685,6 +693,16 @@ PokeBallEffect:
 	farcall BugContest_SetCaughtContestMon
 	jr .return_from_capture
 
+.tutorial_done
+; Kanto hack: the old man's failed throw still ends the tutorial battle
+; (a nonzero wWildMon is what BattleMenu_Pack treats as "battle over").
+	ld a, [wCatchTutorialCatcher]
+	cp CATCHTUTORIAL_OLD_MAN_FAIL
+	ret nz
+	ld a, [wEnemyMonSpecies]
+	ld [wWildMon], a
+	ret
+
 .FinishTutorial:
 	ld hl, Text_GotchaMonWasCaught
 
@@ -695,7 +713,7 @@ PokeBallEffect:
 .return_from_capture
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	ret z
+	jr z, .tutorial_done
 	cp BATTLETYPE_DEBUG
 	ret z
 	cp BATTLETYPE_CONTEST

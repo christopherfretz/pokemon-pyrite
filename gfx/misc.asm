@@ -6,6 +6,8 @@ DudeBackpic::
 INCBIN "gfx/battle/dude.2bpp.lz"
 OakBackpic::
 INCBIN "gfx/battle/oak_back.2bpp.lz"
+OldManBackpic::
+INCBIN "gfx/battle/old_man_back.2bpp.lz"
 
 
 SECTION "Shrink Pics", ROMX

@@ -186,4 +186,5 @@ SpecialsPointers::
 
 ; Kanto hack
 	add_special OakCatchTutorial
+	add_special OldManCatchTutorial
 	add_special EnablePikaFollower

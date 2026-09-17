@@ -11,6 +11,7 @@ ViridianCity_MapScripts:
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, ViridianCityFlypointCallback
+	callback MAPCALLBACK_OBJECTS, ViridianCityGrampsCallback
 
 ViridianCityGrampsBlockScene:
 ViridianCityNoopScene:
@@ -40,9 +41,22 @@ ViridianCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_VIRIDIAN
 	endcallback
 
+; After his catch demo the old man stands beside the road (docs/M2-CATCH.md).
+ViridianCityGrampsCallback:
+	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
+	iffalse .Done
+	moveobject VIRIDIANCITY_GRAMPS1, 16, 5
+.Done:
+	endcallback
+
+; Yellow's old man: grumpy until OAK'S PARCEL is delivered, then he shows
+; the player how to catch #MON as an apology (and fumbles it), then offers
+; repeat demonstrations from beside the road.
 ViridianCityCoffeeGramps:
 	faceplayer
 	opentext
+	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
+	iftrue .ShowYouAgain
 	checkevent EVENT_OAK_GOT_PARCEL
 	iftrue .HadMyCoffee
 	writetext ViridianCityGrampsPrivatePropertyText
@@ -51,11 +65,78 @@ ViridianCityCoffeeGramps:
 	end
 
 .HadMyCoffee:
-	; TODO: Yellow's old-man catch tutorial hangs off this line.
 	writetext ViridianCityGrampsHadMyCoffeeText
 	waitbutton
 	closetext
+	loadwildmon RATTATA, 5
+	setval TRUE ; the ball breaks free
+	special OldManCatchTutorial
+	reloadmap
+	faceplayer
+	opentext
+	writetext ViridianCityGrampsLosingMyTouchText
+	waitbutton
+	closetext
+	; Walk to (16,5) around whichever side the player is standing on.
+	readvar VAR_XCOORD
+	ifequal 17, .AsideViaRight
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsAsideViaLeftMovement
+	sjump .Aside
+.AsideViaRight:
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsAsideViaRightMovement
+.Aside:
+	setevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	end
+
+.ShowYouAgain:
+	writetext ViridianCityGrampsShowYouAgainText
+	yesorno
+	iffalse .NotGoodEnough
+	readvar VAR_BOXSPACE
+	ifequal 0, .BoxFull
+	writetext ViridianCityGrampsWatchCloselyText
+	waitbutton
+	closetext
+	loadwildmon RATTATA, 5
+	setval FALSE ; he catches it
+	special OldManCatchTutorial
+	reloadmap
+	faceplayer
+	opentext
+	writetext ViridianCityGrampsWeakenTheTargetText
+	waitbutton
+	closetext
+	end
+
+.NotGoodEnough:
+	writetext ViridianCityGrampsNotGoodEnoughText
+	waitbutton
+	closetext
+	end
+
+.BoxFull:
+	writetext ViridianCityGrampsBoxFullText
+	waitbutton
+	closetext
+	end
+
+ViridianCity_GrampsAsideViaLeftMovement:
+	step LEFT
+	step DOWN
+	step DOWN
+	step LEFT
+	turn_head DOWN
+	step_end
+
+ViridianCity_GrampsAsideViaRightMovement:
+	step RIGHT
+	step DOWN
+	step DOWN
+	step LEFT
+	step LEFT
+	step LEFT
+	turn_head DOWN
+	step_end
 
 ViridianCityGrampsNearGym:
 	faceplayer
@@ -129,6 +210,56 @@ ViridianCityGrampsHadMyCoffeeText:
 
 	para "I'm sorry I was"
 	line "so rude to you!"
+
+	para "I see you're using"
+	line "a #DEX."
+
+	para "I'll show you how"
+	line "to catch #MON"
+	cont "as my apology."
+	done
+
+ViridianCityGrampsLosingMyTouchText:
+	text "That didn't work!"
+	line "I must be losing"
+	cont "my touch."
+
+	para "I've run out of"
+	line "# BALLs too."
+
+	para "I have to get some"
+	line "at #MON MART."
+	done
+
+ViridianCityGrampsShowYouAgainText:
+	text "Hmm? You want me"
+	line "to show you how"
+	cont "to catch #MON"
+	cont "again?"
+	done
+
+ViridianCityGrampsWatchCloselyText:
+	text "Dandy! Watch what"
+	line "I do closely now!"
+	done
+
+ViridianCityGrampsWeakenTheTargetText:
+	text "First, you need"
+	line "to weaken the"
+	cont "target #MON."
+	done
+
+ViridianCityGrampsNotGoodEnoughText:
+	text "Oh... I'm not good"
+	line "enough for you."
+	done
+
+ViridianCityGrampsBoxFullText:
+	text "Hmm? Your #MON"
+	line "BOX is full."
+
+	para "Make some room"
+	line "first!"
 	done
 
 ViridianCityGrampsNearGymText:

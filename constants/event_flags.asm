@@ -1473,7 +1473,9 @@
 	const EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
 ; Kanto hack: Route 22 rival battle #1 (docs/M2-ROUTE22.md)
 	const EVENT_ROUTE22_RIVAL ; object hidden; the Route 22 OBJECTS callback derives it
-; Unused: next 37 events
+; Kanto hack: Viridian's old-man catch tutorial (docs/M2-CATCH.md)
+	const EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO ; his first (failed) demo is done; he stands aside
+; Unused: next 36 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

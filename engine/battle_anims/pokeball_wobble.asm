@@ -24,6 +24,11 @@ GetPokeBallWobble:
 	ld c, 0 ; next
 	jr nz, .done
 
+; Kanto hack: the old man's failed demo always wobbles three times.
+	ld a, [wCatchTutorialCatcher]
+	cp CATCHTUTORIAL_OLD_MAN_FAIL
+	jr z, .done
+
 	ld hl, WobbleProbabilities
 	ld a, [wFinalCatchRate]
 	ld b, a

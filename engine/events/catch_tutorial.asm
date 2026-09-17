@@ -86,6 +86,9 @@ CatchTutorial::
 .Oak:
 	db "PROF.OAK@"
 
+.OldMan:
+	db "OLD MAN@"
+
 .AutoInput:
 	db NO_INPUT, $ff ; end
 
@@ -96,10 +99,31 @@ OakCatchTutorial::
 ; catchtutorial script command. The catcher flag selects Oak's back-pic.
 	ld a, BATTLETYPE_TUTORIAL
 	ld [wBattleType], a
-	ld a, TRUE
+	ld a, CATCHTUTORIAL_OAK
 	ld [wCatchTutorialCatcher], a
 	call BufferScreen
 	ld hl, CatchTutorial.Oak
+	call CatchTutorial.RunTutorial
+	xor a
+	ld [wCatchTutorialCatcher], a
+	ret
+
+OldManCatchTutorial::
+; Viridian City's old man (docs/M2-CATCH.md), Yellow's catch tutorial. Same
+; contract as OakCatchTutorial (loadwildmon before, reloadmap after).
+; wScriptVar nonzero: his first demo, the ball wobbles three times and the
+; RATTATA breaks free ("I must be losing my touch"); zero: he catches it.
+	ld a, BATTLETYPE_TUTORIAL
+	ld [wBattleType], a
+	ld a, [wScriptVar]
+	and a
+	ld a, CATCHTUTORIAL_OLD_MAN
+	jr z, .got_catcher
+	ld a, CATCHTUTORIAL_OLD_MAN_FAIL
+.got_catcher
+	ld [wCatchTutorialCatcher], a
+	call BufferScreen
+	ld hl, CatchTutorial.OldMan
 	call CatchTutorial.RunTutorial
 	xor a
 	ld [wCatchTutorialCatcher], a
