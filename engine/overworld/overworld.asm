@@ -48,14 +48,32 @@ RefreshSprites::
 	ld hl, wUsedSprites
 	call ByteFill
 	call GetPlayerSprite
-	ld a, [wPikaFollowFlags]
-	bit FOLLOWER_ENABLED_F, a
-	jr z, .no_follower
-	ld a, SPRITE_PIKACHU_FOLLOWER
-	call AddSpriteGFX
-.no_follower
 	call AddMapSprites
 	call LoadAndSortSprites
+	call AddFollowerSprite
+	ret
+
+AddFollowerSprite:
+; Append the Pikachu follower to wUsedSprites at its reserved tile, after the
+; shared list has been sorted and arranged (see ArrangeUsedSprites' cap).
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	ld hl, wUsedSprites + 2
+	ld c, SPRITE_GFX_LIST_CAPACITY - 1
+.loop
+	ld a, [hl]
+	and a
+	jr z, .found
+	inc hl
+	inc hl
+	dec c
+	jr nz, .loop
+	ret ; list full (can't happen: capacity 32, at most 1 + 23 map sprites)
+.found
+	ld a, SPRITE_PIKACHU_FOLLOWER
+	ld [hli], a
+	ld [hl], FOLLOWER_VTILE
 	ret
 
 GetPlayerSprite:
@@ -449,6 +467,14 @@ ArrangeUsedSprites:
 ; Get the length of each sprite and space them out in VRAM.
 ; Crystal introduces a second table in VRAM bank 0.
 
+; The first table ends early when the Pikachu follower is enabled, to keep
+; FOLLOWER_VTILE.. free for it (see AddFollowerSprite).
+	ld e, $80
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	jr z, .got_limit
+	ld e, FOLLOWER_VTILE
+.got_limit
 	ld hl, wUsedSprites
 	ld c, SPRITE_GFX_LIST_CAPACITY
 	ld b, 0
@@ -461,9 +487,9 @@ ArrangeUsedSprites:
 	ld a, [hl]
 	call GetSpriteLength
 
-; Spill over into the second table after $80 tiles.
+; Spill over into the second table after $80 tiles (or the follower's cap).
 	add b
-	cp $80
+	cp e
 	jr z, .loop
 	jr nc, .SecondTable
 

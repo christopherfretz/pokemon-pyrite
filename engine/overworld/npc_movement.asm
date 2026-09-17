@@ -319,6 +319,12 @@ IsNPCAtCoord:
 	call DoesObjectHaveASprite
 	jr z, .next
 
+; The Pikachu follower never blocks anyone (Yellow: you walk through it and it
+; falls in behind you). Talking to it is special-cased in TryObjectEvent.
+	ldh a, [hObjectStructIndex]
+	cp FOLLOWER_OBJECT
+	jr z, .next
+
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit EMOTE_OBJECT_F, [hl]

@@ -107,6 +107,11 @@
 	const SPRITE_PIKACHU_FOLLOWER   ; 67
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
+; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared
+; sprite-GFX budget, so it can never be dropped on crowded maps. Its walking
+; frames land at $ec-$f7, just below the emote tiles at $f8.
+DEF FOLLOWER_VTILE EQU $6c
+
 ; SpriteMons indexes (see data/sprites/sprite_mons.asm)
 	const_next $80
 DEF SPRITE_POKEMON EQU const_value
