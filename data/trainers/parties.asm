@@ -412,6 +412,13 @@ YoungsterGroup:
 	db 37, RATICATE,   HYPER_BEAM, QUICK_ATTACK, HYPER_FANG, PURSUIT
 	db -1 ; end
 
+	; YOUNGSTER (15) - Kanto hack: Mt. Moon 1F, Yellow's YOUNGSTER 3
+	db "DUSTIN@", TRAINERTYPE_NORMAL
+	db 10, RATTATA
+	db 10, RATTATA
+	db 10, ZUBAT
+	db -1 ; end
+
 SchoolboyGroup:
 	; SCHOOLBOY (1)
 	db "JACK@", TRAINERTYPE_NORMAL
@@ -817,6 +824,17 @@ LassGroup:
 	db 31, PARAS
 	db 31, PARAS
 	db 31, PARASECT
+	db -1 ; end
+
+	; LASS (23) - Kanto hack: Mt. Moon 1F, Yellow's LASS 5
+	db "MELISSA@", TRAINERTYPE_NORMAL
+	db 11, ODDISH
+	db 11, BELLSPROUT
+	db -1 ; end
+
+	; LASS (24) - Kanto hack: Mt. Moon 1F, Yellow's LASS 6
+	db "NADINE@", TRAINERTYPE_NORMAL
+	db 14, CLEFAIRY
 	db -1 ; end
 
 JanineGroup:
@@ -1686,6 +1704,19 @@ BugCatcherGroup:
 	db 11, METAPOD
 	db -1 ; end
 
+	; BUG_CATCHER (27) - Kanto hack: Mt. Moon 1F, Yellow's BUG_CATCHER 7
+	db "TRAVIS@", TRAINERTYPE_NORMAL
+	db 11, WEEDLE
+	db 11, KAKUNA
+	db -1 ; end
+
+	; BUG_CATCHER (28) - Kanto hack: Mt. Moon 1F, Yellow's BUG_CATCHER 8
+	db "NEIL@", TRAINERTYPE_NORMAL
+	db 10, CATERPIE
+	db 10, METAPOD
+	db 10, CATERPIE
+	db -1 ; end
+
 FisherGroup:
 	; FISHER (1)
 	db "JUSTIN@", TRAINERTYPE_NORMAL
@@ -2192,11 +2223,11 @@ SuperNerdGroup:
 	db 11, GRIMER
 	db -1 ; end
 
-	; SUPER_NERD (3)
+	; SUPER_NERD (3) - Kanto hack: Mt. Moon 1F, Yellow's SUPER_NERD 1.
+	; Crystal never used this slot; rewritten in place with Yellow's party.
 	db "GREGG@", TRAINERTYPE_NORMAL
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
-	db 20, MAGNEMITE
+	db 11, MAGNEMITE
+	db 11, VOLTORB
 	db -1 ; end
 
 	; SUPER_NERD (4)
@@ -2483,6 +2514,13 @@ HikerGroup:
 	db 34, GRAVELER,   MAGNITUDE, SELFDESTRUCT, DEFENSE_CURL, ROLLOUT
 	db 36, GOLEM,      MAGNITUDE, SELFDESTRUCT, DEFENSE_CURL, ROLLOUT
 	db 34, MACHOKE,    KARATE_CHOP, VITAL_THROW, HEADBUTT, DIG
+	db -1 ; end
+
+	; HIKER (23) - Kanto hack: Mt. Moon 1F, Yellow's HIKER 1
+	db "MARCOS@", TRAINERTYPE_NORMAL
+	db 10, GEODUDE
+	db 10, GEODUDE
+	db 10, ONIX
 	db -1 ; end
 
 BikerGroup:

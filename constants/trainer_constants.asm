@@ -125,6 +125,7 @@ DEF KRIS EQU __trainer_class__
 	const JASON
 	const JOEY4
 	const JOEY5
+	const DUSTIN ; Kanto hack: Mt. Moon 1F (Yellow YOUNGSTER 3)
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -197,6 +198,9 @@ DEF KRIS EQU __trainer_class__
 	const SALLY
 	const ROBIN
 	const TAMARA ; Kanto hack: Route 4 (Yellow LASS 4)
+; Kanto hack: Mt. Moon 1F's two lasses (Yellow LASS 5/6)
+	const MELISSA
+	const NADINE
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -363,6 +367,9 @@ DEF KRIS EQU __trainer_class__
 	const COLTON
 	const DION
 	const BRETT
+; Kanto hack: Mt. Moon 1F's two bug catchers (Yellow BUG_CATCHER 7/8)
+	const TRAVIS
+	const NEIL
 
 	trainerclass FISHER ; 25
 	const JUSTIN
@@ -453,7 +460,7 @@ DEF KRIS EQU __trainer_class__
 	trainerclass SUPER_NERD ; 29
 	const STAN
 	const ERIC
-	const GREGG ; unused
+	const GREGG ; Kanto hack: Mt. Moon 1F (Yellow SUPER_NERD 1); was an unused Crystal slot
 	const JAY ; unused
 	const DAVE ; unused
 	const SAM
@@ -501,6 +508,7 @@ DEF KRIS EQU __trainer_class__
 	const PARRY3
 	const ANTHONY4
 	const ANTHONY5
+	const MARCOS ; Kanto hack: Mt. Moon 1F (Yellow HIKER 1)
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused

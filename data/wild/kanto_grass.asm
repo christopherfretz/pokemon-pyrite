@@ -30,6 +30,100 @@ KantoGrassWildMons:
 	db 32, DUGTRIO
 	end_grass_wildmons
 
+; Kanto hack (docs/M2-MTMOON.md): Yellow's three Mt. Moon floors, replacing
+; Crystal's single MOUNT_MOON block that 5b deleted. Tables are Yellow's
+; (vendor/pokeyellow/data/wild/maps/MtMoon{1F,B1F,B2F}.asm), rate 10/256 ==
+; `4 percent` in all three columns, morn/day/nite identical (Gen 1 has no time
+; of day). Yellow's ten slots squeeze into GSC's seven by dropping duplicated
+; middle entries, keeping Yellow's order and every species; no PIKACHU.
+
+	; Kanto hack: dropped Yellow's ZUBAT 7, ZUBAT 10 and the second GEODUDE 10
+	def_grass_wildmons MT_MOON_1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db  6, ZUBAT
+	db 11, ZUBAT
+	db 12, SANDSHREW
+	db 11, CLEFAIRY
+	; day
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db  6, ZUBAT
+	db 11, ZUBAT
+	db 12, SANDSHREW
+	db 11, CLEFAIRY
+	; nite
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db  6, ZUBAT
+	db 11, ZUBAT
+	db 12, SANDSHREW
+	db 11, CLEFAIRY
+	end_grass_wildmons
+
+	; Kanto hack: dropped Yellow's ZUBAT 10, GEODUDE 11 and PARAS 11
+	def_grass_wildmons MT_MOON_B1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db 11, ZUBAT
+	db  9, PARAS
+	db 10, CLEFAIRY
+	db 12, CLEFAIRY
+	; day
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db 11, ZUBAT
+	db  9, PARAS
+	db 10, CLEFAIRY
+	db 12, CLEFAIRY
+	; nite
+	db  8, ZUBAT
+	db  9, ZUBAT
+	db 10, GEODUDE
+	db 11, ZUBAT
+	db  9, PARAS
+	db 10, CLEFAIRY
+	db 12, CLEFAIRY
+	end_grass_wildmons
+
+	; Kanto hack: dropped Yellow's duplicate ZUBAT 11, ZUBAT 13 and CLEFAIRY 11
+	def_grass_wildmons MT_MOON_B2F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 10, ZUBAT
+	db 11, GEODUDE
+	db 13, PARAS
+	db 11, ZUBAT
+	db 12, ZUBAT
+	db  9, CLEFAIRY
+	db 13, CLEFAIRY
+	; day
+	db 10, ZUBAT
+	db 11, GEODUDE
+	db 13, PARAS
+	db 11, ZUBAT
+	db 12, ZUBAT
+	db  9, CLEFAIRY
+	db 13, CLEFAIRY
+	; nite
+	db 10, ZUBAT
+	db 11, GEODUDE
+	db 13, PARAS
+	db 11, ZUBAT
+	db 12, ZUBAT
+	db  9, CLEFAIRY
+	db 13, CLEFAIRY
+	end_grass_wildmons
+
 	def_grass_wildmons ROCK_TUNNEL_1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn

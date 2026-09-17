@@ -243,7 +243,7 @@
 	const EVENT_ROCK_TUNNEL_B1F_HIDDEN_MAX_POTION
 	const EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
 	const EVENT_VERMILION_PORT_HIDDEN_IRON
-	const EVENT_MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE
+	const EVENT_MT_MOON_1F_TM_RAIN_DANCE ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone
 	const EVENT_ROUTE_2_HIDDEN_MAX_ETHER
 	const EVENT_ROUTE_2_HIDDEN_FULL_HEAL
 	const EVENT_ROUTE_2_HIDDEN_FULL_RESTORE
@@ -682,8 +682,8 @@
 	const EVENT_BEAT_PICNICKER_BROOKE
 	const EVENT_BEAT_PICNICKER_KIM
 	const EVENT_BEAT_PICNICKER_CINDY
-	const EVENT_BEAT_PICNICKER_HOPE
-	const EVENT_BEAT_PICNICKER_SHARON
+	const EVENT_BEAT_HIKER_MARCOS ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_HOPE
+	const EVENT_BEAT_YOUNGSTER_DUSTIN ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_SHARON
 	const EVENT_BEAT_PICNICKER_DEBRA
 	const EVENT_BEAT_PICNICKER_GINA2
 	const EVENT_BEAT_PICNICKER_ERIN
@@ -962,7 +962,7 @@
 ; Super Nerd
 	const EVENT_BEAT_SUPER_NERD_STAN
 	const EVENT_BEAT_SUPER_NERD_ERIC
-	const EVENT_BEAT_SUPER_NERD_GREGG
+	const EVENT_BEAT_SUPER_NERD_GREGG ; Kanto hack: now Mt. Moon 1F (Yellow's SUPER_NERD 1); Crystal never used this slot
 	const EVENT_BEAT_SUPER_NERD_JAY
 	const EVENT_BEAY_SUPER_NERD_DAVE
 	const EVENT_BEAT_SUPER_NERD_SAM
@@ -1369,9 +1369,9 @@
 	const EVENT_BLUE_IN_CINNABAR
 	const EVENT_VIRIDIAN_GYM_BLUE
 	const EVENT_SEAFOAM_GYM_GYM_GUIDE
-	const EVENT_MT_MOON_SQUARE_ROCK
+	const EVENT_MT_MOON_1F_RARE_CANDY ; Kanto hack: renamed in place (5e), was EVENT_MT_MOON_SQUARE_ROCK
 	const EVENT_MT_MOON_SQUARE_CLEFAIRY
-	const EVENT_MT_MOON_RIVAL
+	const EVENT_MT_MOON_1F_MOON_STONE ; Kanto hack: renamed in place (5e), was EVENT_MT_MOON_RIVAL
 	const EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
 	const EVENT_TELEPORT_GUY
 ; Kanto itemballs
@@ -1497,7 +1497,23 @@
 	const EVENT_BEAT_LASS_SALLY ; Route 3, Yellow's LASS 2
 	const EVENT_BEAT_BUG_CATCHER_BRETT ; Route 3, Yellow's BUG_CATCHER 6
 	const EVENT_BEAT_LASS_ROBIN ; Route 3, Yellow's LASS 3
-; Unused: next 23 events
+; Kanto hack: Mt. Moon 1F (docs/M2-MTMOON.md). Five in-scope Crystal flags were
+; renamed in place above (PICNICKER HOPE/SHARON from Route 4, MT_MOON_RIVAL and
+; MT_MOON_SQUARE_ROCK and MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE from the deleted
+; MOUNT_MOON maps) and Crystal's never-used EVENT_BEAT_SUPER_NERD_GREGG was
+; taken as-is, so 1F's 7 trainers + 6 itemballs cost seven new flags, not
+; thirteen. Mt. Moon B1F has no objects at all. NOTE: EVENT_BEAT_RIVAL_IN_MT_MOON
+; is NOT free - Johto's Dragon's Den / Dragon Shrine / Indigo Plateau scripts
+; still read it - and EVENT_MT_MOON_SQUARE_CLEFAIRY is still set by an (orphaned)
+; std script, so neither was reused.
+	const EVENT_BEAT_LASS_MELISSA ; Mt. Moon 1F, Yellow's LASS 5
+	const EVENT_BEAT_LASS_NADINE ; Mt. Moon 1F, Yellow's LASS 6
+	const EVENT_BEAT_BUG_CATCHER_TRAVIS ; Mt. Moon 1F, Yellow's BUG_CATCHER 7
+	const EVENT_BEAT_BUG_CATCHER_NEIL ; Mt. Moon 1F, Yellow's BUG_CATCHER 8
+	const EVENT_MT_MOON_1F_POTION_1 ; the POTION itemball at (2,20)
+	const EVENT_MT_MOON_1F_ESCAPE_ROPE ; the ESCAPE_ROPE itemball at (36,23)
+	const EVENT_MT_MOON_1F_POTION_2 ; the POTION itemball at (20,33)
+; Unused: next 16 events
 
 	const_next 2048
 DEF NUM_EVENTS EQU const_value ; 800

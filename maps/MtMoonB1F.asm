@@ -1,6 +1,11 @@
 ; Kanto hack: Mt. Moon B1F, from vendor/pokeyellow/maps/MtMoonB1F.blk and
 ; vendor/pokeyellow/data/maps/objects/MtMoonB1F.asm (docs/M2-MTMOON.md).
-; Yellow's B1F has no objects or signs at all; the wild table comes later.
+; 5e re-checked Yellow: B1F really is the connective floor and nothing else -
+; its object file has eight warps and empty def_bg_events / def_object_events,
+; and neither data/events/hidden_item_coords.asm nor hidden_events.asm lists a
+; single MT_MOON_B1F entry (Mt. Moon's only two hidden items are on B2F, which
+; is 5f's). So this map stays object-free; 5e only gives it a wild table
+; (def_grass_wildmons MT_MOON_B1F in data/wild/kanto_grass.asm).
 
 MtMoonB1F_MapScripts:
 	def_scene_scripts
