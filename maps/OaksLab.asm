@@ -72,6 +72,21 @@ OaksLabIntroScript:
 	loadtrainer KANTO_RIVAL, KANTO_RIVAL_1
 	loadvar VAR_BATTLETYPE, BATTLETYPE_CANLOSE
 	startbattle
+; 6d (docs/M3-CERULEAN.md): half of Yellow's Eevee-evolution rule.  This battle
+; is BATTLETYPE_CANLOSE, so losing it does NOT white out and the script runs on
+; either way -- which is exactly why Yellow reads wBattleResult here
+; (OaksLabRivalEndBattleScript, vendor/pokeyellow/scripts/OaksLab.asm:365-381:
+; win -> RIVAL_STARTER_FLAREON, lose -> RIVAL_STARTER_VAPOREON).  Script_startbattle
+; leaves the same masked result in wScriptVar, so one `ifnotequal WIN` records
+; it.  Route 22's win is the other half (EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE,
+; which can only be set by winning); the two flags together pick JOLTEON /
+; FLAREON / VAPOREON for the Pokemon Tower, Silph Co. and Champion parties in a
+; later milestone.  See the comment on EVENT_BEAT_OAKS_LAB_RIVAL in
+; constants/event_flags.asm for the full table.
+	ifnotequal WIN, .LostToRival
+	setevent EVENT_BEAT_OAKS_LAB_RIVAL
+
+.LostToRival:
 	dontrestartmapmusic
 	reloadmap
 	special HealParty

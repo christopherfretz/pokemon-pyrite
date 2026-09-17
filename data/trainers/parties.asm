@@ -3626,6 +3626,17 @@ KantoRivalGroup:
 	db  8, EEVEE
 	db -1 ; end
 
+	; KANTO_RIVAL (3): Cerulean City, the south end of Nugget Bridge
+	; (Yellow's Rival1Data #3, docs/M3-CERULEAN.md 5).  A fixed party: Yellow
+	; never branches this one on wRivalStarter, only the Pokemon Tower / Silph
+	; / Champion parties.  The L18 SPEAROW is fair against Yellow's Pikachu.
+	db "?@", TRAINERTYPE_NORMAL
+	db 18, SPEAROW
+	db 15, SANDSHREW
+	db 15, RATTATA
+	db 17, EEVEE
+	db -1 ; end
+
 JessieJamesGroup:
 	; JESSIE_JAMES (1): Mt. Moon B2F (Yellow's OPP_ROCKET $2a)
 	; Name is empty: PlaceEnemysName prints the class name "JESSIE&JAMES" alone.

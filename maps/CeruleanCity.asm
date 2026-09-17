@@ -3,7 +3,18 @@
 ; objects and nine bg_events are gone; the seven statics below are Yellow's, on
 ; Yellow's tiles.  Yellow's other four objects belong to later sub-steps and are
 ; APPENDED at the end of both lists so these indexes never move:
-;   6d: CERULEANCITY_RIVAL  (20,2)
+;   6d: CERULEANCITY_RIVAL  (20,2)  -- DONE, appended below
+;
+; 6d: rival battle #2, Yellow's third (vendor/pokeyellow/scripts/CeruleanCity.asm,
+; CeruleanCityDefaultScript's second half + CeruleanCityRivalBattleScript /
+; ...RivalDefeatedScript / ...RivalCleanupScript; docs/M3-CERULEAN.md 3.2 and
+; "6d findings").  The rival waits at (20,2), on the bridge planks at the south
+; end of Nugget Bridge; Yellow's coord trigger CeruleanCityCoords2 =
+; (20,6)/(21,6) is the pair of tiles you must cross to reach the bridge, so the
+; beat cannot be skipped.  He walks three steps DOWN into your face, fights
+; (Rival1Data #3), then steps around you and walks six tiles SOUTH into the city
+; before vanishing -- he is on his way back from BILL's, which is what his
+; after-battle text is about.
 ;
 ; 6c: the Rocket break-in (vendor/pokeyellow/scripts/CeruleanCity.asm,
 ; CeruleanCityDefaultScript + CeruleanCityRocketText + CeruleanCity_2.asm's
@@ -32,7 +43,7 @@
 	const CERULEANCITY_ROCKET
 	const CERULEANCITY_GUARD1
 	const CERULEANCITY_GUARD2
-	; 6d appends CERULEANCITY_RIVAL here
+	const CERULEANCITY_RIVAL
 
 CeruleanCity_MapScripts:
 	def_scene_scripts
@@ -57,6 +68,20 @@ CeruleanCityFlypointCallback:
 ; by default even though its appended flag starts clear, and a pocket-full
 ; retry leaves the thief, guard 2 and the blocked door exactly as they were.
 CeruleanCityObjectsCallback:
+; 6d: the rival exists only until he has been beaten.  Same derivation rule as
+; the guards below (and as Route22RivalCallback, docs/M2-ROUTE22.md): the stored
+; fact is EVENT_BEAT_CERULEAN_RIVAL, and his object-visibility flag is recomputed
+; from it on every map load, so losing the battle (a white-out) puts him back on
+; the bridge with the trigger re-armed and nothing else to undo.
+	checkevent EVENT_BEAT_CERULEAN_RIVAL
+	iftrue .RivalGone
+	clearevent EVENT_CERULEAN_RIVAL_HIDDEN
+	sjump .Guards
+
+.RivalGone:
+	setevent EVENT_CERULEAN_RIVAL_HIDDEN
+
+.Guards:
 	checkevent EVENT_CERULEAN_GUARDS_STAND_ASIDE
 	iftrue .GuardsAside
 	setevent EVENT_CERULEAN_GUARD_1_HIDDEN
@@ -213,6 +238,131 @@ CeruleanCityRocketConfrontation:
 	closetext
 	end
 
+; Yellow's CeruleanCityCoords2.  The two trigger tiles are the whole width of
+; the road at the bridge's mouth, so one of them always fires.  Yellow reacts to
+; which one by forcing the rival's map X to the player's column (`ld [hl], 25`
+; = map x 21 + the +4 sprite-data bias) before he walks down, so that he always
+; ends up directly in front of you.  GSC's `moveobject` only rewrites the
+; MapObject spawn record (CopyDECoordsToMapObject, engine/overworld/player_object.asm),
+; not the live object struct, so it does nothing to an already-visible NPC --
+; the east trigger instead gives him one extra sideways step at the end of the
+; walk-in, which looks like Yellow and needs no teleport.
+CeruleanCityRivalSceneWest:
+	checkevent EVENT_BEAT_CERULEAN_RIVAL
+	iftrue .Done
+	turnobject PLAYER, UP
+	showemote EMOTE_SHOCK, CERULEANCITY_RIVAL, 15
+	playmusic MUSIC_RIVAL_ENCOUNTER
+	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalApproachWest
+	turnobject CERULEANCITY_RIVAL, DOWN
+	scall CeruleanCityRivalBattle
+	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalExitEast
+	sjump CeruleanCityRivalGone
+
+.Done:
+	end
+
+CeruleanCityRivalSceneEast:
+	checkevent EVENT_BEAT_CERULEAN_RIVAL
+	iftrue .Done
+	turnobject PLAYER, UP
+	showemote EMOTE_SHOCK, CERULEANCITY_RIVAL, 15
+	playmusic MUSIC_RIVAL_ENCOUNTER
+	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalApproachEast
+	turnobject CERULEANCITY_RIVAL, DOWN
+	scall CeruleanCityRivalBattle
+	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalExitWest
+	sjump CeruleanCityRivalGone
+
+.Done:
+	end
+
+; Losing is a plain GSC white-out, so nothing past `startbattle` runs, the beat
+; flag stays clear and the OBJECTS callback re-arms the whole scene on the way
+; back in -- exactly what Yellow's CeruleanCityClearScripts does by hand.
+CeruleanCityRivalBattle:
+	opentext
+	writetext CeruleanCityRivalPreBattleText
+	waitbutton
+	closetext
+	winlosstext CeruleanCityRivalDefeatedText, CeruleanCityRivalVictoryText
+	setlasttalked CERULEANCITY_RIVAL
+	loadtrainer KANTO_RIVAL, KANTO_RIVAL_3
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	setevent EVENT_BEAT_CERULEAN_RIVAL
+	playmusic MUSIC_RIVAL_AFTER
+	opentext
+	writetext CeruleanCityRivalIWentToBillsText
+	waitbutton
+	closetext
+	return
+
+CeruleanCityRivalGone:
+	disappear CERULEANCITY_RIVAL
+	playmapmusic
+	end
+
+; Yellow's CeruleanCityRivalText is a text_asm that branches on
+; EVENT_BEAT_CERULEAN_RIVAL, so the object carries both halves of the beat.  He
+; is unreachable on foot before the trigger fires (the trigger tiles are the
+; only way onto the bridge) and gone afterwards, but keep both branches.
+CeruleanCityRivalScript:
+	faceplayer
+	opentext
+	checkevent EVENT_BEAT_CERULEAN_RIVAL
+	iftrue .AfterBattle
+	writetext CeruleanCityRivalPreBattleText
+	waitbutton
+	closetext
+	end
+
+.AfterBattle:
+	writetext CeruleanCityRivalIWentToBillsText
+	waitbutton
+	closetext
+	end
+
+; (20,2) -> (20,5), one tile above the player on (20,6).
+CeruleanCity_RivalApproachWest:
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+; (20,2) -> (21,5), one tile above the player on (21,6).  Yellow teleports him
+; to x=21 first and walks straight down; see the note above CeruleanCityRivalSceneWest.
+CeruleanCity_RivalApproachEast:
+	step DOWN
+	step DOWN
+	step DOWN
+	step RIGHT
+	step_end
+
+; Yellow's CeruleanCityMovement4: around the player to the east, then six tiles
+; south into the city.  (20,5) -> (21,5) -> (21,11).
+CeruleanCity_RivalExitEast:
+	step RIGHT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+; Yellow's CeruleanCityMovement3, mirrored: (21,5) -> (20,5) -> (20,11).
+CeruleanCity_RivalExitWest:
+	step LEFT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
 CeruleanCityGuard1Script:
 	jumptextfaceplayer CeruleanCityGuardText
 
@@ -361,6 +511,66 @@ CeruleanCityRocketNoRoomText:
 	line "I give it to you!"
 	done
 
+CeruleanCityRivalPreBattleText:
+	text "<RIVAL>: Yo!"
+	line "<PLAYER>!"
+
+	para "You're still"
+	line "struggling along"
+	cont "back here?"
+
+	para "I'm doing great!"
+	line "I caught a bunch"
+	cont "of strong and"
+	cont "smart #MON!"
+
+	para "Here, let me see"
+	line "what you caught,"
+	cont "<PLAYER>!"
+	done
+
+CeruleanCityRivalDefeatedText:
+	text "Hey!"
+	line "Take it easy!"
+	cont "You won already!"
+	prompt
+
+CeruleanCityRivalVictoryText:
+	text "Heh!"
+	line "You're no match"
+	cont "for my genius!"
+	prompt
+
+CeruleanCityRivalIWentToBillsText:
+	text "<RIVAL>: Hey,"
+	line "guess what?"
+
+	para "I went to BILL's"
+	line "and got him to"
+	cont "show me his rare"
+	cont "#MON!"
+
+	para "That added a lot"
+	line "of pages to my"
+	cont "#DEX!"
+
+	para "After all, BILL's"
+	line "world famous as a"
+	cont "#MANIAC!"
+
+	para "He invented the"
+	line "#MON Storage"
+	cont "System on PC!"
+
+	para "Since you're using"
+	line "his system, go"
+	cont "thank him!"
+
+	para "Well, I better"
+	line "get rolling!"
+	cont "Smell ya later!"
+	done
+
 ; Yellow gives both Officer Jennys the same line (TEXT_CERULEANCITY_GUARD1 and
 ; _GUARD2 both point at _CeruleanCityGuardText).
 CeruleanCityGuardText:
@@ -430,7 +640,8 @@ CeruleanCity_MapEvents:
 	def_coord_events
 	coord_event 30,  7, -1, CeruleanCityRocketSceneNorth
 	coord_event 30,  9, -1, CeruleanCityRocketSceneSouth
-	; 6d appends the rival trigger at (20,6)/(21,6)
+	coord_event 20,  6, -1, CeruleanCityRivalSceneWest
+	coord_event 21,  6, -1, CeruleanCityRivalSceneEast
 
 ; 6b: Yellow's six signs, on Yellow's tiles, in Yellow's order.  Crystal's three
 ; extra bg_events (CERULEAN CAPE, the locked door, the hidden BERSERK_GENE at
@@ -454,4 +665,4 @@ CeruleanCity_MapEvents:
 	object_event 30,  8, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityRocketScript, EVENT_CERULEAN_ROCKET_THIEF_HIDDEN
 	object_event 28, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard1Script, EVENT_CERULEAN_GUARD_1_HIDDEN
 	object_event 27, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard2Script, EVENT_CERULEAN_GUARD_2_HIDDEN
-	; 6d appends the rival (20,2)
+	object_event 20,  2, SPRITE_KANTO_RIVAL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityRivalScript, EVENT_CERULEAN_RIVAL_HIDDEN

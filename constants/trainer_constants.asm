@@ -725,8 +725,9 @@ DEF KRIS EQU __trainer_class__
 
 ; Kanto hack: Blue, the Kanto rival (docs/M2-INTRO.md). Named from wRivalName.
 	trainerclass KANTO_RIVAL ; 43
-	const KANTO_RIVAL_1
-	const KANTO_RIVAL_2
+	const KANTO_RIVAL_1 ; Oak's Lab
+	const KANTO_RIVAL_2 ; Route 22
+	const KANTO_RIVAL_3 ; Cerulean City, the south end of Nugget Bridge (6d)
 
 ; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h).
 ; One class, one party id per Yellow encounter: Mt. Moon B2F now, then Rocket

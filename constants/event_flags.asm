@@ -1561,7 +1561,37 @@
 	const EVENT_CERULEAN_GUARD_2_HIDDEN ; Officer Jenny blocking the door (27,12)
 	const EVENT_CERULEAN_GUARDS_STAND_ASIDE ; S.S. Ticket from Bill, or the thief beaten: the trashed house's door is open
 
-; Unused: next 520 events
+; Kanto hack: the Cerulean rival battle, Yellow's third (6d,
+; docs/M3-CERULEAN.md).  Three APPENDED flags.  The first two are this beat's
+; own state (SET = hidden, the object_event convention); CeruleanCityObjectsCallback
+; derives the rival's visibility from EVENT_BEAT_CERULEAN_RIVAL on every map
+; load, so a white-out can never strand him half-way through the cutscene.
+;
+; The third is the Eevee bookkeeping.  Yellow's rival evolves his EEVEE from
+; wRivalStarter (vendor/pokeyellow/constants/pokemon_constants.asm:207-209),
+; which is written in exactly two places:
+;   * OaksLab.asm:230-231 sets JOLTEON when he takes the ball, then
+;     OaksLabRivalEndBattleScript (OaksLab.asm:365-381) overwrites it with
+;     FLAREON if the player WON the lab battle and VAPOREON if not;
+;   * Route22Rival1AfterBattleScript (Route22.asm:150-156) promotes FLAREON ->
+;     JOLTEON when the player wins Route 22 (it only fires on a win, and only
+;     upgrades FLAREON, so a lab loss stays VAPOREON forever).
+; The Cerulean battle does NOT touch it (its party, Rival1Data #3, is fixed).
+; So the whole rule is a function of two win/loss facts, and we store them as
+; flags instead of a WRAM byte:
+;   EVENT_BEAT_OAKS_LAB_RIVAL + EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE -> JOLTEON
+;   EVENT_BEAT_OAKS_LAB_RIVAL alone                                 -> FLAREON
+;   neither (the lab battle was lost)                               -> VAPOREON
+; EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE already exists and is only set on a win
+; (losing there is a white-out).  The lab battle is BATTLETYPE_CANLOSE, so it
+; needed a flag of its own; OaksLab.asm sets it from wScriptVar right after
+; `startbattle`.  Pokemon Tower 2F / Silph Co. 7F / the Champion's room read
+; the pair in a later milestone.  520 free -> 517 free.
+	const EVENT_CERULEAN_RIVAL_HIDDEN ; the rival is off the map (before he walks in / after he leaves)
+	const EVENT_BEAT_CERULEAN_RIVAL ; Yellow's third rival battle, at the south end of Nugget Bridge
+	const EVENT_BEAT_OAKS_LAB_RIVAL ; won the Oak's Lab battle (BATTLETYPE_CANLOSE): half of the Eevee rule
+
+; Unused: next 517 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
