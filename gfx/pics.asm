@@ -789,7 +789,10 @@ SECTION "Pics 24", ROMX
 
 
 ; Kanto hack: moved out of "Pics 3" (bank shared with TrainerPicPointers,
-; which grew by one class). Floating section; the linker places it.
+; which grew by one class). Pinned to a "Pics N" bank in layout.link:
+; FixPicBank only maps banks in the "Pics 1".."Pics 24" range, so a
+; floating placement (it landed in bank $01) breaks every pic in here.
 SECTION "Pics 3 Overflow", ROMX
 
 OmastarBackpic:      INCBIN "gfx/pokemon/omastar/back.2bpp.lz"
+KantoRivalPic:       INCBIN "gfx/trainers/kanto_rival.2bpp.lz" ; Yellow's young Blue

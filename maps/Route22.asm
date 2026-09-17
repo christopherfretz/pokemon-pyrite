@@ -211,4 +211,4 @@ Route22_MapEvents:
 	bg_event 15,  7, BGEVENT_READ, VictoryRoadEntranceSign
 
 	def_object_events
-	object_event 21,  5, SPRITE_BLUE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route22RivalScript, EVENT_ROUTE22_RIVAL
+	object_event 21,  5, SPRITE_KANTO_RIVAL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route22RivalScript, EVENT_ROUTE22_RIVAL
