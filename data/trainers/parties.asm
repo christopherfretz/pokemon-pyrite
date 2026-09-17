@@ -1358,9 +1358,12 @@ GruntMGroup:
 	db 25, RATTATA
 	db -1 ; end
 
-	; GRUNTM (12)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 33, HOUNDOUR
+	; GRUNTM (12) - Kanto hack: Mt. Moon B2F, Yellow's ROCKET 1 at (15,22)
+	; (OPP_ROCKET party 2). Crystal never used this slot; rewritten in place.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 11, SANDSHREW
+	db 11, RATTATA
+	db 11, ZUBAT
 	db -1 ; end
 
 	; GRUNTM (13)
@@ -1419,14 +1422,18 @@ GruntMGroup:
 	db 18, RATTATA
 	db -1 ; end
 
-	; GRUNTM (22)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 36, GOLBAT
+	; GRUNTM (22) - Kanto hack: Mt. Moon B2F, Yellow's ROCKET 2 at (29,11)
+	; (OPP_ROCKET party 3). Crystal never used this slot; rewritten in place.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 12, ZUBAT
+	db 12, EKANS
 	db -1 ; end
 
-	; GRUNTM (23)
-	db "EXECUTIVE@", TRAINERTYPE_NORMAL
-	db 30, KOFFING
+	; GRUNTM (23) - Kanto hack: Mt. Moon B2F, Yellow's ROCKET 3 at (29,17)
+	; (OPP_ROCKET party 1). Crystal never used this slot; rewritten in place.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 13, RATTATA
+	db 13, ZUBAT
 	db -1 ; end
 
 	; GRUNTM (24)
@@ -1441,10 +1448,13 @@ GruntMGroup:
 	db 24, MUK
 	db -1 ; end
 
-	; GRUNTM (26)
+	; GRUNTM (26) - Kanto hack: Mt. Moon B2F, the plain grunt standing in for
+	; JESSIE & JAMES until 5h. Party is Yellow's OPP_ROCKET $2a (their Mt. Moon
+	; team). Crystal never used this slot; rewritten in place.
 	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 15, RATTATA
-	db 15, RATTATA
+	db 14, EKANS
+	db 14, MEOWTH
+	db 14, KOFFING
 	db -1 ; end
 
 	; GRUNTM (27)
@@ -2230,10 +2240,12 @@ SuperNerdGroup:
 	db 11, VOLTORB
 	db -1 ; end
 
-	; SUPER_NERD (4)
-	db "JAY@", TRAINERTYPE_NORMAL
-	db 22, KOFFING
-	db 22, KOFFING
+	; SUPER_NERD (4) - Kanto hack: Mt. Moon B2F, Yellow's SUPER_NERD 2, the
+	; fossil rival. Crystal never used this slot; rewritten in place.
+	db "MIGUEL@", TRAINERTYPE_NORMAL
+	db 12, GRIMER
+	db 12, VOLTORB
+	db 12, KOFFING
 	db -1 ; end
 
 	; SUPER_NERD (5)

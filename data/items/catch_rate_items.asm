@@ -4,8 +4,8 @@
 
 TimeCapsule_CatchRateItems:
 	db OAKS_PARCEL, LEFTOVERS ; RBY catch rate $19 (was ITEM_19)
-	db ITEM_2D, BITTER_BERRY
-	db ITEM_32, GOLD_BERRY
+	db DOME_FOSSIL, BITTER_BERRY ; RBY catch rate $2d (was ITEM_2D)
+	db HELIX_FOSSIL, GOLD_BERRY ; RBY catch rate $32 (was ITEM_32)
 	db ITEM_5A, BERRY
 	db ITEM_64, BERRY
 	db ITEM_78, BERRY

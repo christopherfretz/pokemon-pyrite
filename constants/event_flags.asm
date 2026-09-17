@@ -816,7 +816,7 @@
 	const EVENT_BEAT_ROCKET_GRUNTM_9
 	const EVENT_BEAT_ROCKET_GRUNTM_10
 	const EVENT_BEAT_ROCKET_GRUNTM_11
-	const EVENT_BEAT_ROCKET_GRUNTM_12
+	const EVENT_BEAT_MT_MOON_B2F_ROCKET_1 ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_12
 	const EVENT_BEAT_ROCKET_GRUNTM_13
 	const EVENT_BEAT_ROCKET_GRUNTM_14
 	const EVENT_BEAT_ROCKET_GRUNTM_15
@@ -824,18 +824,18 @@
 	const EVENT_BEAT_ROCKET_GRUNTM_17
 	const EVENT_BEAT_ROCKET_GRUNTM_18
 	const EVENT_BEAT_ROCKET_GRUNTM_19
-	const EVENT_BEAT_ROCKET_GRUNTM_20
-	const EVENT_BEAT_ROCKET_GRUNTM_21
-	const EVENT_BEAT_ROCKET_GRUNTM_22
-	const EVENT_BEAT_ROCKET_GRUNTM_23
+	const EVENT_MT_MOON_B2F_HIDDEN_MOON_STONE ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_20
+	const EVENT_MT_MOON_B2F_HIDDEN_ETHER ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_21
+	const EVENT_BEAT_MT_MOON_B2F_ROCKET_2 ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_22
+	const EVENT_BEAT_MT_MOON_B2F_ROCKET_3 ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_23
 	const EVENT_BEAT_ROCKET_GRUNTM_24
 	const EVENT_BEAT_ROCKET_GRUNTM_25
-	const EVENT_BEAT_ROCKET_GRUNTM_26
-	const EVENT_BEAT_ROCKET_GRUNTM_27
+	const EVENT_BEAT_MT_MOON_B2F_JESSIE_JAMES ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_26. 5f uses it for the plain GRUNTM standing in for JESSIE & JAMES; 5h keeps the flag and swaps the scene
+	const EVENT_MT_MOON_B2F_DOME_FOSSIL ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_27. Set when the DOME FOSSIL object is gone (taken by the player, or claimed by MIGUEL)
 	const EVENT_BEAT_ROCKET_GRUNTM_28
 	const EVENT_BEAT_ROCKET_GRUNTM_29
-	const EVENT_BEAT_ROCKET_GRUNTM_30
-	const EVENT_BEAT_ROCKET_GRUNTM_31
+	const EVENT_MT_MOON_B2F_HELIX_FOSSIL ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_30. Ditto for the HELIX FOSSIL object
+	const EVENT_MT_MOON_B2F_HP_UP ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_ROCKET_GRUNTM_31 (the GRUNTM_31 party slot is still used by Route 24, which battles it from a script and needs no flag)
 ; GruntF
 	const EVENT_BEAT_ROCKET_GRUNTF_1
 	const EVENT_BEAT_ROCKET_GRUNTF_2
@@ -963,8 +963,8 @@
 	const EVENT_BEAT_SUPER_NERD_STAN
 	const EVENT_BEAT_SUPER_NERD_ERIC
 	const EVENT_BEAT_SUPER_NERD_GREGG ; Kanto hack: now Mt. Moon 1F (Yellow's SUPER_NERD 1); Crystal never used this slot
-	const EVENT_BEAT_SUPER_NERD_JAY
-	const EVENT_BEAY_SUPER_NERD_DAVE
+	const EVENT_BEAT_SUPER_NERD_MIGUEL ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_SUPER_NERD_JAY
+	const EVENT_MT_MOON_B2F_TM_DYNAMICPUNCH ; Kanto hack: renamed in place (5f), was the unused (and misspelled) EVENT_BEAY_SUPER_NERD_DAVE
 	const EVENT_BEAT_SUPER_NERD_SAM
 	const EVENT_BEAT_SUPER_NERD_TOM
 	const EVENT_BEAT_SUPER_NERD_PAT
@@ -1513,6 +1513,12 @@
 	const EVENT_MT_MOON_1F_POTION_1 ; the POTION itemball at (2,20)
 	const EVENT_MT_MOON_1F_ESCAPE_ROPE ; the ESCAPE_ROPE itemball at (36,23)
 	const EVENT_MT_MOON_1F_POTION_2 ; the POTION itemball at (20,33)
+; Kanto hack: Mt. Moon B2F (5f, docs/M2-MTMOON.md) cost ZERO new flags - its
+; three Rocket grunts, SUPER NERD MIGUEL, the two fossil objects, the two
+; itemballs and the two hidden items all reuse dead Crystal flags renamed in
+; place above (EVENT_BEAT_ROCKET_GRUNTM_12/20/21/22/23/26/27/30/31,
+; EVENT_BEAT_SUPER_NERD_JAY and the misspelled EVENT_BEAY_SUPER_NERD_DAVE -
+; every one of them referenced nowhere but this file).
 ; Unused: next 16 events
 
 	const_next 2048

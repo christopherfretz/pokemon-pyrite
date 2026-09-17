@@ -298,7 +298,7 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_9
 	const GRUNTM_10
 	const GRUNTM_11
-	const GRUNTM_12 ; unused
+	const GRUNTM_12 ; Kanto hack: Mt. Moon B2F ROCKET 1 (was unused)
 	const GRUNTM_13
 	const GRUNTM_14
 	const GRUNTM_15
@@ -308,8 +308,8 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_19
 	const GRUNTM_20
 	const GRUNTM_21
-	const GRUNTM_22 ; unused
-	const GRUNTM_23 ; unused
+	const GRUNTM_22 ; Kanto hack: Mt. Moon B2F ROCKET 2 (was unused)
+	const GRUNTM_23 ; Kanto hack: Mt. Moon B2F ROCKET 3 (was unused)
 	const GRUNTM_24
 	const GRUNTM_25
 	const GRUNTM_26 ; unused
@@ -461,7 +461,7 @@ DEF KRIS EQU __trainer_class__
 	const STAN
 	const ERIC
 	const GREGG ; Kanto hack: Mt. Moon 1F (Yellow SUPER_NERD 1); was an unused Crystal slot
-	const JAY ; unused
+	const MIGUEL ; Kanto hack: Mt. Moon B2F fossil rival (was the unused JAY)
 	const DAVE ; unused
 	const SAM
 	const TOM
