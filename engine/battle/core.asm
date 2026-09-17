@@ -47,10 +47,16 @@ DoBattle:
 
 .player_2
 	call LoadTilemapToTempTilemap
+; Kanto hack: the Oak catch tutorial runs before the player owns a Pokemon,
+; so an empty party must not lose instantly.
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
+	jr z, .skip_fit_check
 	call CheckPlayerPartyForFitMon
 	ld a, d
 	and a
 	jp z, LostBattle
+.skip_fit_check
 	call SafeLoadTempTilemapToTilemap
 	ld a, [wBattleType]
 	cp BATTLETYPE_DEBUG
@@ -8027,9 +8033,14 @@ StartBattle:
 ; This check prevents you from entering a battle without any Pokemon.
 ; Those using walk-through-walls to bypass getting a Pokemon experience
 ; the effects of this check.
+; Kanto hack: tutorial battles (Oak catching Pikachu) are allowed with no party.
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
+	jr z, .allowed
 	ld a, [wPartyCount]
 	and a
 	ret z
+.allowed
 
 	ld a, [wTimeOfDayPal]
 	push af
