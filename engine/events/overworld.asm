@@ -130,7 +130,8 @@ CutFunction:
 	dw .FailCut
 
 .CheckAble:
-	ld de, ENGINE_HIVEBADGE
+; Kanto hack: CUT is unlocked by the CASCADEBADGE, as Misty says it is (6e).
+	ld de, ENGINE_CASCADEBADGE
 	call CheckBadge
 	jr c, .nohivebadge
 	call CheckMapForSomethingToCut
@@ -1764,7 +1765,8 @@ TryCutOW::
 	call CheckPartyMove
 	jr c, .cant_cut
 
-	ld de, ENGINE_HIVEBADGE
+; Kanto hack: CUT is unlocked by the CASCADEBADGE, as Misty says it is (6e).
+	ld de, ENGINE_CASCADEBADGE
 	call CheckEngineFlag
 	jr c, .cant_cut
 

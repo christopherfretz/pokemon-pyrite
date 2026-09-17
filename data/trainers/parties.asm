@@ -276,11 +276,16 @@ BrockGroup:
 
 MistyGroup:
 	; MISTY (1)
+	; Kanto hack: Yellow's MISTY (docs/M3-CERULEAN.md, 6e).  Yellow's MistyData
+	; is `db $FF, 18, STARYU, 21, STARMIE, 0` -- no explicit moves, so Gen 1
+	; derives each mon's moveset from its level-1 moves plus every level-up move
+	; at or below its level (vendor/pokeyellow/data/pokemon/base_stats/*.asm,
+	; evos_moves.asm): STARYU L18 = TACKLE + WATER_GUN (L17); STARMIE L21 =
+	; TACKLE/WATER_GUN/HARDEN (its level-1 set -- Starmie is a stone evolution
+	; and learns nothing by level).  Same convention as BrockGroup above.
 	db "MISTY@", TRAINERTYPE_MOVES
-	db 42, GOLDUCK,    SURF, DISABLE, PSYCH_UP, PSYCHIC_M
-	db 42, QUAGSIRE,   SURF, AMNESIA, EARTHQUAKE, RAIN_DANCE
-	db 44, LAPRAS,     SURF, PERISH_SONG, BLIZZARD, RAIN_DANCE
-	db 47, STARMIE,    SURF, CONFUSE_RAY, RECOVER, ICE_BEAM
+	db 18, STARYU,     TACKLE, WATER_GUN, NO_MOVE, NO_MOVE
+	db 21, STARMIE,    TACKLE, WATER_GUN, HARDEN, NO_MOVE
 	db -1 ; end
 
 LtSurgeGroup:
@@ -2025,10 +2030,11 @@ SwimmerMGroup:
 	db -1 ; end
 
 	; SWIMMERM (21)
-	db "PARKER@", TRAINERTYPE_NORMAL
-	db 32, HORSEA
-	db 32, HORSEA
-	db 35, SEADRA
+	; Kanto hack: Yellow's CERULEAN GYM SWIMMER 1 (docs/M3-CERULEAN.md, 6e).
+	; Re-uses Crystal's own gym swimmer slot, renamed PARKER -> LUIS.
+	db "LUIS@", TRAINERTYPE_NORMAL
+	db 16, HORSEA
+	db 16, SHELLDER
 	db -1 ; end
 
 SwimmerFGroup:
@@ -2129,16 +2135,9 @@ SwimmerFGroup:
 	db 28, DEWGONG
 	db -1 ; end
 
-	; SWIMMERF (18)
-	db "DIANA@", TRAINERTYPE_NORMAL
-	db 37, GOLDUCK
-	db -1 ; end
-
-	; SWIMMERF (19)
-	db "BRIANA@", TRAINERTYPE_NORMAL
-	db 35, SEAKING
-	db 35, SEAKING
-	db -1 ; end
+; Kanto hack (6e): SWIMMERF (18) DIANA and (19) BRIANA -- Crystal's Cerulean Gym
+; swimmers -- are gone with the rest of Crystal's gym.  They were the last two
+; entries of the class, so no other SWIMMERF id moves.
 
 SailorGroup:
 	; SAILOR (1)
@@ -3035,6 +3034,14 @@ PicnickerGroup:
 	; PICNICKER (26)
 	db "TIFFANY@", TRAINERTYPE_MOVES
 	db 43, CLEFAIRY,   METRONOME, ENCORE, MOONLIGHT, MINIMIZE
+	db -1 ; end
+
+	; PICNICKER (27)
+	; Kanto hack: Yellow's CERULEAN GYM JR.TRAINER^F 1 (docs/M3-CERULEAN.md, 6e).
+	; Crystal has no JR.TRAINER class, so she is a PICNICKER -- the same
+	; substitution M2 made for Pewter's JR.TRAINER^M (CAMPER JERRY).
+	db "DIANA@", TRAINERTYPE_NORMAL
+	db 19, GOLDEEN
 	db -1 ; end
 
 CamperGroup:

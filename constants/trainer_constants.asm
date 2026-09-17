@@ -419,7 +419,8 @@ DEF KRIS EQU __trainer_class__
 	const SETH
 	const JAMES ; unused
 	const LEWIS ; unused
-	const PARKER
+	const LUIS ; Kanto hack: Cerulean Gym, Yellow's SWIMMER 1 (was PARKER,
+	           ; Crystal's own gym swimmer; renamed in place, 6e)
 
 	trainerclass SWIMMERF ; 27
 	const ELAINE
@@ -439,8 +440,10 @@ DEF KRIS EQU __trainer_class__
 	const LORI
 	const JODY ; unused
 	const NIKKI
-	const DIANA
-	const BRIANA
+; Kanto hack (6e): Crystal's two Cerulean Gym SWIMMERF trainers, DIANA and
+; BRIANA, are gone -- the gym now holds Yellow's two.  They were the LAST two
+; consts of the class, so removing them shifts no other trainer id.  The name
+; DIANA is re-used by the PICNICKER below.
 
 	trainerclass SAILOR ; 28
 	const EUGENE
@@ -605,6 +608,7 @@ DEF KRIS EQU __trainer_class__
 	const GINA4
 	const GINA5
 	const TIFFANY4
+	const DIANA ; Kanto hack: Cerulean Gym, Yellow's JR.TRAINER^F 1 (6e)
 
 	trainerclass CAMPER ; 36
 	const ROLAND

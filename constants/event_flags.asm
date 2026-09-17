@@ -536,8 +536,12 @@
 	const EVENT_BEAT_SWIMMERF_LORI
 	const EVENT_BEAT_SWIMMERF_JODY
 	const EVENT_BEAT_SWIMMERF_NIKKI
-	const EVENT_BEAT_SWIMMERF_DIANA
-	const EVENT_BEAT_SWIMMERF_BRIANA
+	const EVENT_BEAT_PICNICKER_DIANA ; Kanto hack: renamed in place (6e,
+; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERF_DIANA; Yellow's Cerulean Gym
+; JR.TRAINER^F is a PICNICKER named DIANA, so the flag keeps its meaning.
+	const EVENT_BEAT_SWIMMERF_BRIANA ; Kanto hack: dead since 6e (Crystal's
+; third Cerulean Gym swimmer is gone).  Left in place -- flag indexes are
+; positional and savestate-visible, so flags are never deleted.
 ; Bird Keeper
 	const EVENT_BEAT_BIRD_KEEPER_ROD
 	const EVENT_BEAT_BIRD_KEEPER_ABE
@@ -1006,7 +1010,9 @@
 	const EVENT_BEAT_SWIMMERM_SETH
 	const EVENT_BEAT_SWIMMERM_JAMES
 	const EVENT_BEAT_SWIMMERM_LEWIS
-	const EVENT_BEAT_SWIMMERM_PARKER
+	const EVENT_BEAT_SWIMMERM_LUIS ; Kanto hack: renamed in place (6e,
+; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERM_PARKER; same object, now
+; Yellow's Cerulean Gym SWIMMER.
 ; Youngster
 	const EVENT_BEAT_YOUNGSTER_JOEY
 	const EVENT_BEAT_YOUNGSTER_MIKEY
@@ -1591,7 +1597,17 @@
 	const EVENT_BEAT_CERULEAN_RIVAL ; Yellow's third rival battle, at the south end of Nugget Bridge
 	const EVENT_BEAT_OAKS_LAB_RIVAL ; won the Oak's Lab battle (BATTLETYPE_CANLOSE): half of the Eevee rule
 
-; Unused: next 517 events
+; Kanto hack: Cerulean Gym / MISTY (6e, docs/M3-CERULEAN.md).  ONE appended flag.
+; Yellow's Misty hands over TM11 BUBBLEBEAM after the CASCADEBADGE; our TM is
+; TM18 RAIN_DANCE (§0.8), given by `verbosegiveitem`, so the give needs a flag of
+; its own exactly as Brock's TM_ROLLOUT does (EVENT_GOT_TM_FROM_BROCK).
+; §3's table proposed renaming EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM (index
+; 265) for this; that flag is NOT dead -- InitializeEventsScript sets it and
+; PowerPlant.asm clears it to arm Johto's machine-part quest -- so it was left
+; alone and this flag was appended instead.  517 free -> 516 free.
+	const EVENT_GOT_TM_FROM_MISTY ; Misty has handed over TM18 RAIN_DANCE
+
+; Unused: next 516 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

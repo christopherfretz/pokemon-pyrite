@@ -1,63 +1,44 @@
+; Kanto hack (docs/M3-CERULEAN.md, 6e): Yellow's CERULEAN GYM.
+;
+; Crystal's gym is kept as geometry only -- same .blk, same two warps, same
+; statue bg_events -- but everything in it is Yellow's: MISTY with Yellow's
+; L18 STARYU / L21 STARMIE, Yellow's two gym trainers (JR.TRAINER^F -> a
+; PICNICKER, SWIMMER -> a SWIMMERM), Yellow's gym guide, the CASCADEBADGE and
+; Yellow's TM reward (TM11 BUBBLEBEAM -> TM18 RAIN_DANCE, §0.8).
+;
+; Deleted with Crystal's Johto plot: the Rocket grunt object and his
+; SCENE_CERULEANGYM_GRUNT_RUNS_OUT cutscene, the two "MISTY is out on a date"
+; statue notes, Crystal's third swimmer, and the hidden MACHINE_PART at (3,8).
+; NOTE for M5 (Johto re-route): the MACHINE_PART for the Power Plant quest no
+; longer has a location -- PowerPlant.asm still clears
+; EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM and still points the gym at
+; SCENE_CERULEANGYM_GRUNT_RUNS_OUT, so that scene id is deliberately kept below
+; (bound to the no-op scene) and both of those lines are now inert.
+
 	object_const_def
-	const CERULEANGYM_ROCKET
 	const CERULEANGYM_MISTY
-	const CERULEANGYM_SWIMMER_GIRL1
-	const CERULEANGYM_SWIMMER_GIRL2
+	const CERULEANGYM_PICNICKER
 	const CERULEANGYM_SWIMMER_GUY
 	const CERULEANGYM_GYM_GUIDE
 
 CeruleanGym_MapScripts:
 	def_scene_scripts
-	scene_script CeruleanGymNoopScene,         SCENE_CERULEANGYM_NOOP
-	scene_script CeruleanGymGruntRunsOutScene, SCENE_CERULEANGYM_GRUNT_RUNS_OUT
+	scene_script CeruleanGymNoopScene, SCENE_CERULEANGYM_NOOP
+; 6e: Crystal's Rocket-grunt scene is gone, but PowerPlant.asm (Johto, M5) still
+; does `setmapscene CERULEAN_GYM, SCENE_CERULEANGYM_GRUNT_RUNS_OUT`.  Keep the
+; constant defined and bind it to the no-op script so that line stays harmless.
+	scene_script CeruleanGymNoopScene, SCENE_CERULEANGYM_GRUNT_RUNS_OUT
 
 	def_callbacks
 
 CeruleanGymNoopScene:
 	end
 
-CeruleanGymGruntRunsOutScene:
-	sdefer CeruleanGymGruntRunsOutScript
-	end
-
-CeruleanGymGruntRunsOutScript:
-	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntRunsDownMovement
-	playsound SFX_TACKLE
-	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntRunsIntoYouMovement
-	playmusic MUSIC_ROCKET_ENCOUNTER
-	opentext
-	writetext CeruleanGymGruntIntroText
-	waitbutton
-	closetext
-	showemote EMOTE_SHOCK, CERULEANGYM_ROCKET, 15
-	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntBacksAwayMovement
-	opentext
-	writetext CeruleanGymGruntBigMistakeText
-	waitbutton
-	closetext
-	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntMovesCloseMovement
-	opentext
-	writetext CeruleanGymGruntByeText
-	waitbutton
-	closetext
-	applymovement CERULEANGYM_ROCKET, CeruleanGymGruntRunsOutMovement
-	playsound SFX_EXIT_BUILDING
-	disappear CERULEANGYM_ROCKET
-; 6c: EVENT_MET_ROCKET_GRUNT_AT_CERULEAN_GYM was renamed in place to
-; EVENT_BEAT_CERULEAN_ROCKET_THIEF (docs/M3-CERULEAN.md, 6c). Nothing ever read
-; it here, so the dead `setevent` is simply gone; 6e replaces this whole scene.
-	clearevent EVENT_ROUTE_24_ROCKET
-	clearevent EVENT_ROUTE_25_MISTY_BOYFRIEND
-	setscene SCENE_CERULEANGYM_NOOP
-	setmapscene ROUTE_25, SCENE_ROUTE25_MISTYS_DATE
-	setmapscene POWER_PLANT, SCENE_POWERPLANT_NOOP
-	waitsfx
-	special RestartMapMusic
-	pause 15
-	turnobject PLAYER, DOWN
-	pause 15
-	end
-
+; Yellow's flow (vendor/pokeyellow/scripts/CeruleanGym.asm,
+; text/CeruleanGym.asm): pre-battle speech -> battle -> "I can't believe I
+; lost!" + CASCADEBADGE -> the badge explanation, which ends by offering her
+; favourite TM -> the TM -> the TM explanation, which is also what she says
+; every time you talk to her afterwards.  Structured like PewterGym.asm (4e).
 CeruleanGymMistyScript:
 	faceplayer
 	opentext
@@ -71,49 +52,46 @@ CeruleanGymMistyScript:
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_MISTY
-	setevent EVENT_BEAT_SWIMMERF_DIANA
-	setevent EVENT_BEAT_SWIMMERF_BRIANA
-	setevent EVENT_BEAT_SWIMMERM_PARKER
+	setevent EVENT_BEAT_PICNICKER_DIANA
+	setevent EVENT_BEAT_SWIMMERM_LUIS
 	opentext
 	writetext ReceivedCascadeBadgeText
 	playsound SFX_GET_BADGE
 	waitsfx
 	setflag ENGINE_CASCADEBADGE
+	writetext MistyCascadeBadgeInfoText
+	waitbutton
 .FightDone:
-	writetext MistyFightDoneText
+	checkevent EVENT_GOT_TM_FROM_MISTY
+	iftrue .SpeechAfterTM
+	verbosegiveitem TM_RAIN_DANCE
+	iffalse .NoRoomForRainDance
+	setevent EVENT_GOT_TM_FROM_MISTY
+.SpeechAfterTM:
+	writetext MistyTMRainDanceText
 	waitbutton
+.NoRoomForRainDance:
 	closetext
 	end
 
-TrainerSwimmerfDiana:
-	trainer SWIMMERF, DIANA, EVENT_BEAT_SWIMMERF_DIANA, SwimmerfDianaSeenText, SwimmerfDianaBeatenText, 0, .Script
+TrainerPicnickerDiana:
+	trainer PICNICKER, DIANA, EVENT_BEAT_PICNICKER_DIANA, PicnickerDianaSeenText, PicnickerDianaBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext SwimmerfDianaAfterBattleText
+	writetext PicnickerDianaAfterBattleText
 	waitbutton
 	closetext
 	end
 
-TrainerSwimmerfBriana:
-	trainer SWIMMERF, BRIANA, EVENT_BEAT_SWIMMERF_BRIANA, SwimmerfBrianaSeenText, SwimmerfBrianaBeatenText, 0, .Script
+TrainerSwimmermLuis:
+	trainer SWIMMERM, LUIS, EVENT_BEAT_SWIMMERM_LUIS, SwimmermLuisSeenText, SwimmermLuisBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext SwimmerfBrianaAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerSwimmermParker:
-	trainer SWIMMERM, PARKER, EVENT_BEAT_SWIMMERM_PARKER, SwimmermParkerSeenText, SwimmermParkerBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext SwimmermParkerAfterBattleText
+	writetext SwimmermLuisAfterBattleText
 	waitbutton
 	closetext
 	end
@@ -134,27 +112,6 @@ CeruleanGymGuideScript:
 	closetext
 	end
 
-CeruleanGymHiddenMachinePart:
-	hiddenitem MACHINE_PART, EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
-
-CeruleanGymStatue1:
-	checkevent EVENT_TRAINERS_IN_CERULEAN_GYM
-	iffalse CeruleanGymStatue
-	opentext
-	writetext CeruleanGymNote1Text
-	waitbutton
-	closetext
-	end
-
-CeruleanGymStatue2:
-	checkevent EVENT_TRAINERS_IN_CERULEAN_GYM
-	iffalse CeruleanGymStatue
-	opentext
-	writetext CeruleanGymNote2Text
-	waitbutton
-	closetext
-	end
-
 CeruleanGymStatue:
 	checkflag ENGINE_CASCADEBADGE
 	iftrue .Beaten
@@ -163,108 +120,36 @@ CeruleanGymStatue:
 	gettrainername STRING_BUFFER_4, MISTY, MISTY1
 	jumpstd GymStatue2Script
 
-CeruleanGymGruntRunsDownMovement:
-	big_step DOWN
-	big_step DOWN
-	big_step DOWN
-	big_step DOWN
-	step_end
-
-CeruleanGymGruntRunsOutMovement:
-	big_step RIGHT
-	big_step DOWN
-	step_end
-
-CeruleanGymGruntRunsIntoYouMovement:
-	fix_facing
-	set_sliding
-	jump_step UP
-	remove_sliding
-	remove_fixed_facing
-	step_sleep 8
-	step_sleep 8
-	step DOWN
-	step DOWN
-	step_end
-
-CeruleanGymGruntMovesCloseMovement:
-	big_step DOWN
-	step_end
-
-CeruleanGymGruntBacksAwayMovement:
-	fix_facing
-	slow_step UP
-	remove_fixed_facing
-	step_end
-
-CeruleanGymGruntIntroText:
-	text "Oops! I so sorry!"
-	line "You not hurt,"
-	cont "okay?"
-
-	para "I very busy."
-	line "No time for talk-"
-	cont "ing with you. Not"
-	cont "good for me if"
-	cont "seen by somebody."
-	done
-
-CeruleanGymGruntBigMistakeText:
-	text "Oh no! You seen"
-	line "me already! I make"
-	cont "big mistake!"
-	done
-
-CeruleanGymGruntByeText:
-	text "Hey, you! Forget"
-	line "you see me, okay?"
-
-	para "You see, hear,"
-	line "know nothing,"
-
-	para "okay?"
-	line "Bye, kid! Nothing!"
-
-	para "Bye-bye a go-go!"
-	done
-
-CeruleanGymNote1Text:
-	text "Sorry, I'll be out"
-	line "for a while."
-	cont "MISTY, GYM LEADER"
-	done
-
-CeruleanGymNote2Text:
-	text "Since MISTY's out,"
-	line "we'll be away too."
-	cont "GYM TRAINERS"
-	done
-
 MistyIntroText:
-	text "MISTY: I was ex-"
-	line "pecting you, you"
-	cont "pest!"
+	text "Hi, you're a new"
+	line "face!"
 
-	para "You may have a"
-	line "lot of JOHTO GYM"
+	para "What's your policy"
+	line "on #MON? What"
+	cont "is your approach?"
 
-	para "BADGES, but you'd"
-	line "better not take me"
-	cont "too lightly."
+	para "My policy is an"
+	line "all-out offensive"
+	cont "with water-type"
+	cont "#MON!"
 
-	para "My water-type"
-	line "#MON are tough!"
+	para "MISTY, the world-"
+	line "famous beauty, is"
+	cont "your host!"
+
+	para "Are you ready,"
+	line "sweetie?"
 	done
 
 MistyWinLossText:
-	text "MISTY: You really"
-	line "are good…"
+	text "MISTY: I can't"
+	line "believe I lost!"
 
-	para "I'll admit that"
-	line "you are skilled…"
+	para "All right!"
 
-	para "Here you go. It's"
-	line "CASCADEBADGE."
+	para "You can have the"
+	line "CASCADEBADGE to"
+	cont "show you beat me!"
 	done
 
 ReceivedCascadeBadgeText:
@@ -272,94 +157,98 @@ ReceivedCascadeBadgeText:
 	line "CASCADEBADGE."
 	done
 
-MistyFightDoneText:
-	text "MISTY: Are there"
-	line "many strong train-"
-	cont "ers in JOHTO? Like"
-	cont "you, I mean."
+MistyCascadeBadgeInfoText:
+	text "The CASCADEBADGE"
+	line "makes all #MON"
+	cont "up to L30 obey!"
 
-	para "I'm going to"
-	line "travel one day, so"
+	para "That includes"
+	line "even outsiders!"
 
-	para "I can battle some"
-	line "skilled trainers."
+	para "There's more, you"
+	line "can now use CUT"
+	cont "anytime!"
+
+	para "You can CUT down"
+	line "small bushes to"
+	cont "open new paths!"
+
+	para "You can also have"
+	line "my favorite TM!"
 	done
 
-SwimmerfDianaSeenText:
-	text "Sorry about being"
-	line "away. Let's get on"
-	cont "with it!"
+MistyTMRainDanceText:
+	text "TM18 teaches"
+	line "RAIN DANCE!"
+
+	para "Use it on a"
+	line "water-type #MON!"
 	done
 
-SwimmerfDianaBeatenText:
-	text "I give up! You're"
-	line "the winner!"
+PicnickerDianaSeenText:
+	text "I'm more than good"
+	line "enough for you!"
+
+	para "MISTY can wait!"
 	done
 
-SwimmerfDianaAfterBattleText:
-	text "I'll be swimming"
-	line "quietly."
+PicnickerDianaBeatenText:
+	text "You"
+	line "overwhelmed me!"
 	done
 
-SwimmerfBrianaSeenText:
-	text "Don't let my ele-"
-	line "gant swimming un-"
-	cont "nerve you."
+PicnickerDianaAfterBattleText:
+	text "You have to face"
+	line "other trainers to"
+	cont "find out how good"
+	cont "you really are."
 	done
 
-SwimmerfBrianaBeatenText:
-	text "Ooh, you calmly"
-	line "disposed of me…"
+SwimmermLuisSeenText:
+	text "Splash!"
+
+	para "I'm first up!"
+	line "Let's do it!"
 	done
 
-SwimmerfBrianaAfterBattleText:
-	text "Don't be too smug"
-	line "about beating me."
-
-	para "MISTY will destroy"
-	line "you if you get"
-	cont "complacent."
+SwimmermLuisBeatenText:
+	text "That"
+	line "can't be!"
 	done
 
-SwimmermParkerSeenText:
-	text "Glub…"
+SwimmermLuisAfterBattleText:
+	text "MISTY is going to"
+	line "keep improving!"
 
-	para "I'm first! Come"
-	line "and get me!"
-	done
-
-SwimmermParkerBeatenText:
-	text "This can't be…"
-	done
-
-SwimmermParkerAfterBattleText:
-	text "MISTY has gotten"
-	line "much better in the"
-	cont "past few years."
-
-	para "Don't let your"
-	line "guard down, or"
-	cont "you'll be crushed!"
+	para "She won't lose to"
+	line "someone like you!"
 	done
 
 CeruleanGymGuideText:
-	text "Yo! CHAMP in"
+	text "Yo! Champ in"
 	line "making!"
 
-	para "Since MISTY was"
-	line "away, I went out"
+	para "Here's my advice!"
 
-	para "for some fun too."
-	line "He-he-he."
+	para "The LEADER, MISTY,"
+	line "is a pro who uses"
+	cont "water #MON!"
+
+	para "You can drain all"
+	line "their water with"
+	cont "plant #MON!"
+
+	para "Or, zap them with"
+	line "electricity!"
 	done
 
 CeruleanGymGuideWinText:
-	text "Hoo, you showed me"
-	line "how tough you are."
+	text "You beat MISTY!"
+	line "What'd I tell ya?"
 
-	para "As always, that"
-	line "was one heck of a"
-	cont "great battle!"
+	para "You and me, kid,"
+	line "we make a pretty"
+	cont "darn good team!"
 	done
 
 CeruleanGym_MapEvents:
@@ -372,14 +261,15 @@ CeruleanGym_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  3,  8, BGEVENT_ITEM, CeruleanGymHiddenMachinePart
-	bg_event  2, 13, BGEVENT_READ, CeruleanGymStatue1
-	bg_event  6, 13, BGEVENT_READ, CeruleanGymStatue2
+	bg_event  2, 13, BGEVENT_READ, CeruleanGymStatue
+	bg_event  6, 13, BGEVENT_READ, CeruleanGymStatue
 
 	def_object_events
-	object_event  4, 10, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CERULEAN_GYM_ROCKET
-	object_event  5,  3, SPRITE_MISTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanGymMistyScript, EVENT_TRAINERS_IN_CERULEAN_GYM
-	object_event  4,  6, SPRITE_SWIMMER_GIRL, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerSwimmerfDiana, EVENT_TRAINERS_IN_CERULEAN_GYM
-	object_event  1,  9, SPRITE_SWIMMER_GIRL, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerSwimmerfBriana, EVENT_TRAINERS_IN_CERULEAN_GYM
-	object_event  8,  9, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerSwimmermParker, EVENT_TRAINERS_IN_CERULEAN_GYM
-	object_event  7, 13, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanGymGuideScript, EVENT_TRAINERS_IN_CERULEAN_GYM
+; All four are always visible (-1), as in PewterGym.asm.  Crystal hid them
+; behind EVENT_TRAINERS_IN_CERULEAN_GYM, which InitializeEventsScript sets at
+; new game and only Route 25's Misty's-date scene ever clears -- so under the
+; Kanto start the gym would be empty.  6i deletes that Route 25 scene.
+	object_event  5,  3, SPRITE_MISTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanGymMistyScript, -1
+	object_event  2,  4, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPicnickerDiana, -1
+	object_event  8,  9, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerSwimmermLuis, -1
+	object_event  7, 13, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanGymGuideScript, -1
