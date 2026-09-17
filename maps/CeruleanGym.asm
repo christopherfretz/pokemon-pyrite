@@ -266,9 +266,10 @@ CeruleanGym_MapEvents:
 
 	def_object_events
 ; All four are always visible (-1), as in PewterGym.asm.  Crystal hid them
-; behind EVENT_TRAINERS_IN_CERULEAN_GYM, which InitializeEventsScript sets at
-; new game and only Route 25's Misty's-date scene ever clears -- so under the
-; Kanto start the gym would be empty.  6i deletes that Route 25 scene.
+; behind EVENT_TRAINERS_IN_CERULEAN_GYM, which InitializeEventsScript set at
+; new game and only Route 25's Misty's-date scene ever cleared -- so under the
+; Kanto start the gym would have been empty.  6i deleted that Route 25 scene
+; and the two stale setevents with it; the flag itself is now dead.
 	object_event  5,  3, SPRITE_MISTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanGymMistyScript, -1
 	object_event  2,  4, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPicnickerDiana, -1
 	object_event  8,  9, SPRITE_SWIMMER_GUY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerSwimmermLuis, -1

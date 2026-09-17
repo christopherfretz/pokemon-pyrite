@@ -844,31 +844,36 @@ KantoGrassWildMons:
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_25
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+; Kanto hack (6i): Yellow's Route 25 table.  Yellow rate 15 -> 6 percent
+; (docs/PORTING.md).  Yellow has ten slots and no time of day, so the two
+; duplicate PIDGEY (15/17) and the duplicate VENONAT (16) are dropped to fit
+; GSC's seven, and morn/day/nite are identical.  Same species list as Route 24
+; (6h), which is exactly what Yellow does.
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 10, CATERPIE
-	db 10, PIDGEY
-	db 12, PIDGEOTTO
-	db 12, METAPOD
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
+	db 12, ODDISH
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
 	; day
-	db 10, CATERPIE
-	db 10, PIDGEY
-	db 12, PIDGEOTTO
-	db 12, METAPOD
-	db 10, BELLSPROUT
-	db 14, BUTTERFREE
-	db 14, BUTTERFREE
+	db 12, ODDISH
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
 	; nite
-	db 10, ODDISH
-	db 10, HOOTHOOT
-	db 10, VENONAT
-	db 12, NOCTOWL
-	db 10, BELLSPROUT
-	db 14, NOCTOWL
-	db 14, NOCTOWL
+	db 12, ODDISH
+	db 12, BELLSPROUT
+	db 13, PIDGEY
+	db 14, ODDISH
+	db 14, BELLSPROUT
+	db 13, VENONAT
+	db 17, PIDGEOTTO
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_26

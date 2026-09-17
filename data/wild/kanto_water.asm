@@ -99,7 +99,7 @@ KantoWaterWildMons:
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_25
-	db 4 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here
 	db 10, GOLDEEN
 	db 5, GOLDEEN
 	db 10, SEAKING

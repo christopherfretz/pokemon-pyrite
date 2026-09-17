@@ -226,7 +226,7 @@
 	const EVENT_TALKED_TO_SEAFOAM_GYM_GUIDE_ONCE
 	const EVENT_ENABLE_DIPLOMA_PRINTING
 	const EVENT_CINNABAR_ROCKS_CLEARED
-	const EVENT_CLEARED_NUGGET_BRIDGE
+	const EVENT_BEAT_HIKER_MORTON ; Kanto hack: renamed in place (6i), was EVENT_CLEARED_NUGGET_BRIDGE; Route 25, Yellow's HIKER 4
 	const EVENT_TALKED_TO_WARDENS_GRANDDAUGHTER
 	const EVENT_GOT_TM03_CURSE
 	const EVENT_GOT_CLEANSE_TAG
@@ -582,7 +582,7 @@
 	const EVENT_BEAT_CAMPER_IVAN
 	const EVENT_BEAT_CAMPER_ELLIOT
 	const EVENT_BEAT_CAMPER_BARRY
-	const EVENT_BEAT_CAMPER_LLOYD
+	const EVENT_BEAT_CAMPER_WENDELL ; Kanto hack: renamed in place (6i), was EVENT_BEAT_CAMPER_LLOYD; Route 25, Yellow's JR_TRAINER_M 2
 	const EVENT_BEAT_CAMPER_DEAN
 	const EVENT_BEAT_CAMPER_SID
 	const EVENT_BEAT_CAMPER_HERVEY
@@ -672,8 +672,8 @@
 	const EVENT_BEAT_SCHOOLBOY_JOHNNY
 	const EVENT_BEAT_SCHOOLBOY_DANNY
 	const EVENT_BEAT_SCHOOLBOY_TOMMY
-	const EVENT_BEAT_SCHOOLBOY_DUDLEY
-	const EVENT_BEAT_SCHOOLBOY_JOE
+	const EVENT_BEAT_YOUNGSTER_GRANT ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SCHOOLBOY_DUDLEY; Route 25, Yellow's YOUNGSTER 5
+	const EVENT_BEAT_YOUNGSTER_ELMER ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SCHOOLBOY_JOE; Route 25, Yellow's YOUNGSTER 6
 	const EVENT_BEAT_SCHOOLBOY_BILLY
 	const EVENT_BEAT_SCHOOLBOY_CHAD
 	const EVENT_BEAT_SCHOOLBOY_NATE
@@ -857,11 +857,11 @@
 	const EVENT_BEAT_LASS_KRISE
 	const EVENT_BEAT_LASS_CONNIE
 	const EVENT_BEAT_LASS_LINDA
-	const EVENT_BEAT_LASS_LAURA
-	const EVENT_BEAT_LASS_SHANNON
+	const EVENT_BEAT_LASS_JODIE ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_LAURA; Route 25, Yellow's LASS 9
+	const EVENT_BEAT_YOUNGSTER_OSCAR ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_SHANNON; Route 25, Yellow's YOUNGSTER 7
 	const EVENT_BEAT_LASS_MICHELLE
 	const EVENT_BEAT_LASS_DANA
-	const EVENT_BEAT_LASS_ELLEN
+	const EVENT_BEAT_LASS_TESSA ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_ELLEN; Route 25, Yellow's LASS 10
 	const EVENT_BEAT_LASS_CONNIE2
 	const EVENT_BEAT_LASS_CONNIE3
 	const EVENT_BEAT_LASS_DANA2
@@ -922,7 +922,7 @@
 	const EVENT_BEAT_COOLTRAINERM_ANDY
 	const EVENT_BEAT_COOLTRAINERM_TYLER
 	const EVENT_BEAT_COOLTRAINERM_SEAN
-	const EVENT_BEAT_COOLTRAINERM_KEVIN
+	const EVENT_BEAT_HIKER_ARCHIE ; Kanto hack: renamed in place (6i), was EVENT_BEAT_COOLTRAINERM_KEVIN; Route 25, Yellow's HIKER 3
 	const EVENT_BEAT_COOLTRAINERM_STEVE
 	const EVENT_BEAT_COOLTRAINERM_ALLEN
 ; CooltrainerF
@@ -975,7 +975,7 @@
 	const EVENT_MT_MOON_B2F_TM_DYNAMICPUNCH ; Kanto hack: renamed in place (5f), was the unused (and misspelled) EVENT_BEAY_SUPER_NERD_DAVE
 	const EVENT_BEAT_SUPER_NERD_SAM
 	const EVENT_BEAT_SUPER_NERD_TOM
-	const EVENT_BEAT_SUPER_NERD_PAT
+	const EVENT_BEAT_HIKER_GRAHAM ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SUPER_NERD_PAT; Route 25, Yellow's HIKER 2
 	const EVENT_BEAT_SUPER_NERD_SHAWN
 	const EVENT_BEAT_SUPER_NERD_TERU
 ; Medium
@@ -1369,8 +1369,8 @@
 ; Kanto people
 	const EVENT_BEAT_ROUTE_24_ROCKET ; Kanto hack (6h): renamed in place.  Crystal's Route 24 Rocket-executive object flag is dead -- 6h deletes that NPC -- so this slot now records the win over Yellow's Nugget Bridge recruiter.  Its two setters (PowerPlant.asm, InitializeEventsScript) were deleted with it.
 	const EVENT_CERULEAN_GYM_ROCKET
-	const EVENT_ROUTE_25_MISTY_BOYFRIEND
-	const EVENT_TRAINERS_IN_CERULEAN_GYM
+	const EVENT_ROUTE_25_MISTY_BOYFRIEND ; Kanto hack: DEAD since 6i (Crystal's Misty's-date NPC is gone with Misty's date); free to rename in place
+	const EVENT_TRAINERS_IN_CERULEAN_GYM ; Kanto hack: DEAD since 6i (Crystal's gym-trainer gate is gone with Misty's date); free to rename in place
 	const EVENT_VERMILION_CITY_SNORLAX
 	const EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH
 	const EVENT_SAFFRON_TRAIN_STATION_POPULATION
@@ -1399,7 +1399,7 @@
 	const EVENT_ROUTE_12_CALCIUM
 	const EVENT_ROUTE_12_NUGGET
 	const EVENT_ROUTE_15_PP_UP
-	const EVENT_ROUTE_25_PROTEIN
+	const EVENT_ROUTE_25_TM_ROCK_SMASH ; Kanto hack: renamed in place (6i), was EVENT_ROUTE_25_PROTEIN; Route 25, Yellow's TM39 SEISMIC TOSS ball -> TM08 ROCK_SMASH
 ; New to Crystal
 	const EVENT_KURTS_HOUSE_GRANDDAUGHTER_1
 	const EVENT_KURTS_HOUSE_GRANDDAUGHTER_2

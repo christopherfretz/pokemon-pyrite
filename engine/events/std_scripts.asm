@@ -606,8 +606,9 @@ InitializeEventsScript:
 	variablesprite SPRITE_JANINE_IMPERSONATOR, SPRITE_LASS
 	setevent EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
 	setevent EVENT_CERULEAN_GYM_ROCKET
-	setevent EVENT_ROUTE_25_MISTY_BOYFRIEND
-	setevent EVENT_TRAINERS_IN_CERULEAN_GYM
+; Kanto hack (6i): EVENT_ROUTE_25_MISTY_BOYFRIEND / EVENT_TRAINERS_IN_CERULEAN_GYM
+; deleted -- 6i removed Misty's date from Route 25, the only thing that ever
+; cleared them, and 6e rebuilt Cerulean Gym with always-visible objects.
 	setevent EVENT_COPYCATS_HOUSE_2F_DOLL
 	setevent EVENT_VIRIDIAN_GYM_BLUE
 	setevent EVENT_SEAFOAM_GYM_GYM_GUIDE

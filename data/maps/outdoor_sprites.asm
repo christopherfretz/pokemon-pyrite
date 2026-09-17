@@ -79,7 +79,6 @@ rept MAX_OUTDOOR_SPRITES - 4
 endr
 
 CeruleanGroupSprites:
-	db SPRITE_MISTY
 	db SPRITE_COOLTRAINER_M
 	db SPRITE_COOLTRAINER_F
 	db SPRITE_BUG_CATCHER
@@ -91,7 +90,7 @@ CeruleanGroupSprites:
 	db SPRITE_OFFICER
 	db SPRITE_POKE_BALL
 	db SPRITE_KANTO_RIVAL
-rept MAX_OUTDOOR_SPRITES - 12
+rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

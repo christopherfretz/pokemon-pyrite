@@ -431,6 +431,23 @@ YoungsterGroup:
 	db 14, ZUBAT
 	db -1 ; end
 
+	; YOUNGSTER (17) - Kanto hack: Route 25, Yellow's YOUNGSTER 5
+	db "GRANT@", TRAINERTYPE_NORMAL
+	db 15, RATTATA
+	db 15, SPEAROW
+	db -1 ; end
+
+	; YOUNGSTER (18) - Kanto hack: Route 25, Yellow's YOUNGSTER 6
+	db "ELMER@", TRAINERTYPE_NORMAL
+	db 17, SLOWPOKE
+	db -1 ; end
+
+	; YOUNGSTER (19) - Kanto hack: Route 25, Yellow's YOUNGSTER 7
+	db "OSCAR@", TRAINERTYPE_NORMAL
+	db 14, EKANS
+	db 14, SANDSHREW
+	db -1 ; end
+
 SchoolboyGroup:
 	; SCHOOLBOY (1)
 	db "JACK@", TRAINERTYPE_NORMAL
@@ -859,6 +876,19 @@ LassGroup:
 	db "PAULINE@", TRAINERTYPE_NORMAL
 	db 14, PIDGEY
 	db 14, NIDORAN_F
+	db -1 ; end
+
+	; LASS (27) - Kanto hack: Route 25, Yellow's LASS 9
+	db "JODIE@", TRAINERTYPE_NORMAL
+	db 15, NIDORAN_M
+	db 15, NIDORAN_F
+	db -1 ; end
+
+	; LASS (28) - Kanto hack: Route 25, Yellow's LASS 10
+	db "TESSA@", TRAINERTYPE_NORMAL
+	db 13, ODDISH
+	db 13, PIDGEY
+	db 13, ODDISH
 	db -1 ; end
 
 JanineGroup:
@@ -2560,6 +2590,25 @@ HikerGroup:
 	db 10, ONIX
 	db -1 ; end
 
+	; HIKER (24) - Kanto hack: Route 25, Yellow's HIKER 2
+	db "GRAHAM@", TRAINERTYPE_NORMAL
+	db 15, MACHOP
+	db 15, GEODUDE
+	db -1 ; end
+
+	; HIKER (25) - Kanto hack: Route 25, Yellow's HIKER 3
+	db "ARCHIE@", TRAINERTYPE_NORMAL
+	db 13, GEODUDE
+	db 13, GEODUDE
+	db 13, MACHOP
+	db 13, GEODUDE
+	db -1 ; end
+
+	; HIKER (26) - Kanto hack: Route 25, Yellow's HIKER 4
+	db "MORTON@", TRAINERTYPE_NORMAL
+	db 17, ONIX
+	db -1 ; end
+
 BikerGroup:
 	; BIKER (1)
 	db "BENNY@", TRAINERTYPE_NORMAL
@@ -3225,6 +3274,13 @@ CamperGroup:
 	; CAMPER (24) - Kanto hack: Nugget Bridge No. 5, Yellow's JR_TRAINER_M 3
 	db "RUFUS@", TRAINERTYPE_NORMAL
 	db 18, MANKEY
+	db -1 ; end
+
+	; CAMPER (25) - Kanto hack: Route 25, Yellow's JR_TRAINER_M 2 (2nd use;
+	; Nugget Bridge's ANSEL has the same party, so this one needs its own name)
+	db "WENDELL@", TRAINERTYPE_NORMAL
+	db 14, RATTATA
+	db 14, EKANS
 	db -1 ; end
 
 ExecutiveFGroup:

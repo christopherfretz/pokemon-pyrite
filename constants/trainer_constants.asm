@@ -127,6 +127,10 @@ DEF KRIS EQU __trainer_class__
 	const JOEY5
 	const DUSTIN ; Kanto hack: Mt. Moon 1F (Yellow YOUNGSTER 3)
 	const VICTOR ; Kanto hack: Nugget Bridge No. 3 (Yellow YOUNGSTER 4)
+; Kanto hack: Route 25 (Yellow YOUNGSTER 5/6/7)
+	const GRANT
+	const ELMER
+	const OSCAR
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -205,6 +209,9 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Nugget Bridge No. 4 and No. 2 (Yellow LASS 7/8)
 	const NORMA
 	const PAULINE
+; Kanto hack: Route 25 (Yellow LASS 9/10)
+	const JODIE
+	const TESSA
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -517,6 +524,10 @@ DEF KRIS EQU __trainer_class__
 	const ANTHONY4
 	const ANTHONY5
 	const MARCOS ; Kanto hack: Mt. Moon 1F (Yellow HIKER 1)
+; Kanto hack: Route 25 (Yellow HIKER 2/3/4)
+	const GRAHAM
+	const ARCHIE
+	const MORTON
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused
@@ -641,6 +652,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Nugget Bridge's two Jr.Trainers (Yellow JR_TRAINER_M 2/3)
 	const ANSEL
 	const RUFUS
+	const WENDELL ; Kanto hack: Route 25 (Yellow JR_TRAINER_M 2, 2nd use)
 
 	trainerclass EXECUTIVEF ; 37
 	const EXECUTIVEF_1
