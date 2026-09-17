@@ -359,6 +359,11 @@ PlacePartyMonEvoStoneCompatibility:
 	call PartyMenuCheckEgg
 	jr z, .next
 	push hl
+	push bc
+	ld c, b
+	farcall IsStarterPikachuInSlot ; Yellow: the starter refuses every stone
+	pop bc
+	jr c, .starter
 	ld a, b
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, wPartyMon1Species
@@ -371,8 +376,14 @@ PlacePartyMonEvoStoneCompatibility:
 	add hl, de
 	add hl, de
 	call .DetermineCompatibility
+.place
 	pop hl
 	call PlaceString
+	jr .next
+
+.starter
+	ld de, .string_not_able
+	jr .place
 
 .next
 	pop hl

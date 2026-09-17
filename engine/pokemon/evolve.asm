@@ -41,6 +41,13 @@ EvolveAfterBattle_MasterLoop:
 	and a
 	jp z, EvolveAfterBattle_MasterLoop
 
+; Yellow: the starter Pikachu never evolves (docs/FOLLOWER.md step 7). With
+; wMonTriedToEvolve left clear, a stone reports "won't have any effect".
+	ld a, [wCurPartyMon]
+	ld c, a
+	farcall IsStarterPikachuInSlot
+	jp c, EvolveAfterBattle_MasterLoop
+
 	ld a, [wEvolutionOldSpecies]
 	dec a
 	ld b, 0

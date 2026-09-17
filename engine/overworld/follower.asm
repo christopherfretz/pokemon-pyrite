@@ -15,6 +15,13 @@ MovementFunction_PikaFollower:
 	bit FOLLOWER_ENABLED_F, a
 	jr z, .hide
 
+; Yellow: Pikachu only follows while the starter is in the party with HP
+; left (deposited / fainted -> it waits, hidden, on the player's tile).
+	push bc
+	call IsStarterPikachuAliveInParty
+	pop bc
+	jr nc, .hide
+
 ; Bike / surf / anything but plain walking: ride along hidden on the
 ; player's tile so we re-emerge behind them on the first step afterwards.
 	ld a, [wPlayerState]
@@ -337,6 +344,58 @@ FollowerDespawnEmote:
 	ldh [hMapObjectIndex], a
 	call DespawnEmote
 	jp UpdateSprites
+
+IsStarterPikachuInSlot::
+; c = party slot (not a: farcall hands the callee its bank in a). Returns
+; carry if that mon is the starter Pikachu: species PIKACHU with the player's
+; OT ID (Yellow's IsThisPartyMonStarterPikachu). Preserves de. Clobbers a, bc, hl.
+	ld a, c
+	ld hl, wPartyMon1Species
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call AddNTimes
+	ld a, [hl]
+	cp PIKACHU
+	jr nz, .no
+	ld bc, MON_OT_ID
+	add hl, bc
+	ld a, [wPlayerID]
+	cp [hl]
+	jr nz, .no
+	inc hl
+	ld a, [wPlayerID + 1]
+	cp [hl]
+	jr nz, .no
+	scf
+	ret
+.no
+	and a
+	ret
+
+IsStarterPikachuAliveInParty::
+; Returns carry if the starter Pikachu is in the party with HP > 0.
+; Clobbers a, bc, de, hl.
+	ld a, [wPartyCount]
+	and a
+	ret z
+	ld e, a
+	ld d, 0
+.loop
+	ld c, d
+	call IsStarterPikachuInSlot ; preserves de
+	jr nc, .next
+	ld bc, MON_HP - MON_OT_ID - 1
+	add hl, bc
+	ld a, [hli]
+	or [hl]
+	jr z, .next ; fainted
+	scf
+	ret
+.next
+	inc d
+	dec e
+	jr nz, .loop
+	and a
+	ret
 
 EnablePikaFollower::
 ; Special. Turns the follower on mid-map (Oak's Lab, docs/M2-INTRO.md):
