@@ -10,8 +10,12 @@
 ;   2. FLY / TELEPORT / ESCAPE ROPE out of there. The "!" plays over the
 ;      departure: that is the confirmation the arm took.
 ;   3. Battle anything; the last enemy mon's Sp.Atk is the payload.
-;   4. Come back to the map you armed on. A wild battle starts with the species
-;      that stat selects, at level TRAINERFLY_LEVEL.
+;   4. Come back to the map you armed on. The Start menu pops open by itself;
+;      close it and a wild battle starts with the species that stat selects, at
+;      level TRAINERFLY_LEVEL. FLY / TELEPORT / ESCAPE ROPE straight back out of
+;      that menu and you do not lose the battle - it follows you and fires when
+;      you land, wherever that is. (Gen 1 did exactly this; verified on a
+;      vanilla Yellow build - docs/TRAINER-FLY.md I.5.)
 ;
 ; None of Gen 1's memory corruption is reproduced - the species is computed and
 ; bounds-checked (C.5), never aliased - so ROM/save integrity is not at stake.
@@ -56,6 +60,8 @@ DEF TRAINERFLY_MAX_GEN1_INDEX EQU NUM_POKEMON + 1
 DEF TRAINERFLY_IDLE     EQU 0
 DEF TRAINERFLY_ARMED    EQU 1 ; latched, still standing on the map that armed it
 DEF TRAINERFLY_DEPARTED EQU 2 ; the player has left; fires on return
+DEF TRAINERFLY_FIRING   EQU 3 ; auto-menu dismissed; battle owed on the next
+                              ; free overworld frame, wherever the player is
 
 
 ; ---------------------------------------------------------------------------
@@ -151,6 +157,8 @@ TrainerFlyCheckPending::
 	and a
 	ret z
 
+	cp TRAINERFLY_FIRING
+	jr z, .firing
 	cp TRAINERFLY_ARMED
 	jr nz, .departed
 
@@ -170,13 +178,34 @@ TrainerFlyCheckPending::
 	call TrainerFlyOnStoredMap
 	jr nz, .nothing
 
-; Back where it started. Fire, then forget - win, lose or run, the state is
-; already clear, so the encounter happens exactly once per arm.
+; Back where it started. Open the menu, then forget - win, lose or run, the
+; state is already clear, so the encounter happens exactly once per arm. (The
+; one path that writes it again is a warp chosen from the auto-menu, and that
+; writes TRAINERFLY_FIRING, which is still the same single encounter.)
+;
+; The species is resolved HERE, before the menu, because the menu can overwrite
+; wEnemyMon* - SAVE writes nothing there, but a Bug Contest QUIT or any future
+; menu battle would, and the payload must be the one the player earned.
 	xor a
 	ld [wTrainerFlyPending], a
 	call TrainerFlyGetSpecies
 	jr nc, .nothing ; out of bounds: abort silently (C.5). Gen 1 often did too.
 	ld [wTrainerFlySpecies], a
+	ld a, BANK(TrainerFlyReturnScript)
+	ld hl, TrainerFlyReturnScript
+	jp CallScript
+
+.firing
+; The auto-menu has been dismissed by something that warped the player out of
+; it (FLY / TELEPORT / ESCAPE ROPE / DIG), so the battle is owed but the map is
+; no longer the armed one. Deliberately NO map check: Gen 1 fired the encounter
+; on the destination map, ~3 frames after arrival, because OverworldLoop tests
+; the fly/dungeon-warp bits before wCurOpponent and nothing on the warp path
+; clears wCurOpponent (I.5, verified on a vanilla Yellow build). Same result
+; here, by an honest route: the species was resolved before the menu opened and
+; is still sitting in wTrainerFlySpecies.
+	xor a
+	ld [wTrainerFlyPending], a
 	ld a, BANK(TrainerFlyBattleScript)
 	ld hl, TrainerFlyBattleScript
 	jp CallScript
@@ -242,11 +271,73 @@ ENDC
 ; Firing it.
 ; ---------------------------------------------------------------------------
 
+TrainerFlyReturnScript:
+; The return trip, as Gen 1 played it (A.2/A.6): the Start menu opens BY ITSELF
+; the moment you set foot back on the armed map, and the encounter waits until
+; you close it. In Gen 1 that fell out of the stale map-script index - script 1
+; ran from JoypadOverworld, the menu was already up from the arming press, and
+; InitBattleEnemyParameters only got its turn once the menu was gone. Here it is
+; explicit: open the menu, then dispatch on how the player left it.
+;
+; Opening it is StartMenuScript's own sequence (engine/overworld/events.asm),
+; including CheckMenuOW's `xor a / ldh [hMenuReturn], a` - without that clear, a
+; stale HMENURETURN_ value from an earlier menu would be read as this menu's
+; verdict and could jump into a long-dead wQueuedScriptBank pointer.
+	loadmem hMenuReturn, 0
+	callasm StartMenu
+
+; StartMenuCallback's three cases, with the encounter bolted on. Anything that
+; is not a queued script means the player dismissed the menu back to the
+; overworld - SAVE, OPTION, EXIT, B, or a PACK/#MON/#DEX sub-menu backed out of
+; (StartMenu's own .Reopen loop keeps those inside the menu, so we only see the
+; final exit) - and that is the cue to fire, right here.
+	readmem hMenuReturn
+	ifequal HMENURETURN_SCRIPT, TrainerFlyWarpOutScript
+	ifequal HMENURETURN_ASM, TrainerFlyQueuedAsmScript
+
 TrainerFlyBattleScript:
+; Also entered straight from TrainerFlyCheckPending.firing, one free overworld
+; frame after a warp taken out of the auto-menu.
 	callasm TrainerFlySetUpWildMon
 	startbattle
 	reloadmapafterbattle
 	end
+
+TrainerFlyQueuedAsmScript:
+; Same as StartMenuCallback.Asm. HMENURETURN_ASM is written nowhere in the tree
+; (the only writers of hMenuReturn are select_menu.asm, CheckMenuOW's clear and
+; StartMenu's two ExitMenuRunScript* returns), so this is 5 bytes of parity with
+; the real callback rather than a reachable path.
+	memcallasm wQueuedScriptBank
+	sjump TrainerFlyBattleScript
+
+TrainerFlyWarpOutScript:
+; The menu queued a script: FLY / TELEPORT / ESCAPE ROPE / DIG, or any other
+; used item. Gen 1 did not lose the encounter to these - it ran StartTrainerBattle
+; the moment the menu closed, then OverworldLoop tested the fly/dungeon-warp bits
+; BEFORE wCurOpponent, so the player warped out with the arm still live and the
+; wild battle fired ~3 frames after arrival on the DESTINATION map (I.5, verified
+; on a vanilla Yellow build). TRAINERFLY_FIRING says the same thing: the menu is
+; dismissed, the battle is owed, and it happens on the next free overworld frame
+; wherever the player ends up.
+;
+; What actually lands here: a field move off the #MON menu, and an item whose
+; effect reports success out of Pack's ITEMMENU_CLOSE arm (ESCAPE ROPE, DIG).
+; A plain used item does NOT - REPEL runs through ITEMMENU_CURRENT, which leaves
+; wItemEffectSucceeded at 0, so the pack stays open (the repel is still spent),
+; backs out into StartMenu's own .Reopen loop, and only the final menu exit
+; reaches this script: the battle then starts where the player is standing. A
+; field move the map REJECTS is the same story - ESCAPE ROPE or DIG outdoors
+; fails the EscapeRopeOrDig tileset gate, .BattleOnly sees wItemEffectSucceeded
+; = 0 and prints OakThisIsntTheTimeText, nothing is consumed and the menu simply
+; reopens, which is exactly Gen 1's "the arm survives" for that case.
+	loadmem wTrainerFlyPending, TRAINERFLY_FIRING
+	memjump wQueuedScriptBank
+
+; Caveat, by design: wTrainerFlyPending lives past wGameDataEnd (unsaved), so
+; SAVE from the auto-menu followed by a reset loses the pending encounter - the
+; menu is gone and nothing is armed. Saving and then closing the menu normally
+; still fires it.
 
 TrainerFlySetUpWildMon:
 ; What Script_loadwildmon does, with a species out of RAM instead of out of the
