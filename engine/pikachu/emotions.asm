@@ -142,9 +142,15 @@ MapSpecificPikachuExpression:
 	ld bc, GROUP_PEWTER_POKECENTER_1F << 8 | MAP_PEWTER_POKECENTER_1F
 	call PikachuCheckCurMap
 	jr nz, .not_pewter_pokecenter
-	call CheckPikachuFollowingPlayer
+; J5 bug fix: Yellow's CheckPikachuFollowingPlayer returns NZ when Pikachu is
+; *not* following, i.e. when the Jigglypuff song has put it to sleep; ours
+; returns carry when the follower is OUT, which is the opposite, so emotion 26
+; (the wake-up face) used to play on EVERY talk in this Pokemon Center.  The
+; real predicate is our sleep flag.
+	ld a, [wPikaAsleep]
+	and a
 	ldpikaemotion a, PikachuEmotion26
-	jr c, .play_emotion
+	jr nz, .play_emotion
 	jr .check_pikachu_status
 
 .not_pewter_pokecenter
@@ -501,9 +507,15 @@ StarterPikachuEmotionCommand_subcmd:
 	ret
 
 .CheckPewterCenter:
-; TODO A3 row 10: Yellow's PikachuPewterPokecenterCheck starts the "Pikachu
-; wakes up in the Pewter Center" scene from here.
-	ret
+; Yellow's PikachuPewterPokecenterCheck
+; (vendor/pokeyellow/engine/pikachu/pikachu_movement.asm:973): clear the sleep
+; and turn away from the player.  The dispatcher pushes de around this call.
+	ld bc, GROUP_PEWTER_POKECENTER_1F << 8 | MAP_PEWTER_POKECENTER_1F
+	call PikachuCheckCurMap
+	ret nz
+	xor a
+	ld [wPikaAsleep], a
+	jp StarterPikachuEmotionCommand_9
 
 .CheckLavenderTower:
 ; TODO A3 row 11: Yellow's PikachuFanClubCheck (mis-named in the subcommand
@@ -694,6 +706,108 @@ FollowerEmotionStepFrame:
 	pop bc
 	pop de
 	pop hl
+	ret
+
+
+; === The Pewter #MON Center JIGGLYPUFF set-piece (docs/JIGGLYPUFF.md J4) =====
+
+PewterJigglypuffSong::
+; `special` body for PewterJigglypuff (maps/PewterPokecenter1F.asm), ported
+; from vendor/pokeyellow/scripts/PewterPokecenter_2.asm:10-79.  The text box is
+; already open and stays open for the whole beat, exactly as Yellow's
+; wDoNotWaitForButtonPressAfterDisplayingText does.  Crystal's script engine
+; cannot wait on the sound driver, so the whole thing is asm like Yellow's.
+;
+; Yellow's timing, measured in the vanilla harness (docs/JIGGLYPUFF.md 1.5):
+; text -> StopAllMusic -> 32 frames of silence -> the song -> one facing flip
+; every 24 frames until BOTH music channels go idle -> 48 frames -> map music.
+	ld de, MUSIC_NONE
+	call PlayMusic ; Yellow's StopAllMusic
+	ld c, 32
+	call DelayFrames
+	ld de, MUSIC_JIGGLYPUFF_SONG
+	call PlayMusic
+
+; b counts ring slots.  Yellow seeds the ring at the sprite's CURRENT facing and
+; writes it unchanged on the first pass, so the first visible turn lands 24
+; frames after the music starts; ours starts at DOWN because the object_event is
+; SPRITEMOVEDATA_STANDING_DOWN and nothing turns it (the script has no
+; faceplayer), which is the same thing.
+	ld b, 0
+.spin
+	push bc
+	ld a, b
+	and %00000011
+	ld c, a
+	ld b, 0
+	ld hl, .FacingRing
+	add hl, bc
+	ld e, [hl]
+	ldh a, [hLastTalked]
+	ld d, a
+	farcall ApplyObjectFacing ; farcall clobbers a, keeps de
+	ld c, 24
+	call DelayFrames
+	call .MusicPlaying
+	pop bc
+	inc b
+	jr c, .spin
+
+	ld c, 48
+	call DelayFrames
+	call RestartMapMusic
+
+; The sleep, behind Yellow's two gates: the starter Pikachu has to actually be
+; out (BIT_PIKACHU_SPAWN_STARTER) and free of any status condition
+; (CheckPikachuStatusCondition / ret c).  Note both gates guard only the SLEEP:
+; Yellow plays the song unconditionally, so talking again always sings again.
+	call CheckPikachuFollowingPlayer
+	ret nc
+	call GetStarterPikachuStatus
+	and a
+	ret nz
+	ld a, TRUE
+	ld [wPikaAsleep], a
+	ret
+
+.MusicPlaying:
+; Carry if either of the song's two channels is still running.  Modelled on
+; _CheckSFX (audio/engine.asm) with channels 1-2 in place of 5-8.
+	ld hl, wChannel1Flags1
+	bit SOUND_CHANNEL_ON, [hl]
+	jr nz, .playing
+	ld hl, wChannel2Flags1
+	bit SOUND_CHANNEL_ON, [hl]
+	jr nz, .playing
+	and a
+	ret
+
+.playing
+	scf
+	ret
+
+.FacingRing:
+; Yellow's .FacingDirections: down, left, up, right.  ApplyObjectFacing wants
+; the direction pre-shifted (Script_turnobject does `add a / add a`).
+	db DOWN << 2
+	db LEFT << 2
+	db UP << 2
+	db RIGHT << 2
+
+CheckPikachuAsleep::
+; Special.  wScriptVar = TRUE while the JIGGLYPUFF SONG has Pikachu asleep.
+; Yellow spells this `call CheckPikachuFollowingPlayer` (home/pikachu.asm:47),
+; which is literally `bit 1, [wPikachuOverworldStateFlags]` -- the sleep bit --
+; and it gates NURSE JOY in the Pewter #MON Center (J6 finding, see
+; docs/JIGGLYPUFF.md: engine/events/pokecenter.asm:1-9 refuses to heal at all
+; while Pikachu sleeps).  The caller decides what to do about it.
+	ld a, [wPikaAsleep]
+	and a
+	ld a, FALSE
+	jr z, .done
+	ld a, TRUE
+.done
+	ld [wScriptVar], a
 	ret
 
 

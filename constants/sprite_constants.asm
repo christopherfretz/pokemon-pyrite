@@ -119,6 +119,10 @@
 	const SPRITE_SANDSHREW          ; 6f (Yellow's overworld SANDSHREW)
 	const SPRITE_ODDISH_OW          ; 70 (Yellow's overworld ODDISH)
 	const SPRITE_BULBASAUR_OW       ; 71 (Yellow's overworld BULBASAUR)
+; Pewter #MON Center (docs/JIGGLYPUFF.md J1).  Same story as ODDISH/BULBASAUR:
+; Crystal's SPRITE_JIGGLYPUFF ($8f) is a SpriteMons party-icon index with only a
+; down facing, and the Jigglypuff song spins the sprite through all four.
+	const SPRITE_JIGGLYPUFF_OW      ; 72 (Yellow's overworld JIGGLYPUFF)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

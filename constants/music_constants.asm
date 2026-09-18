@@ -107,6 +107,7 @@
 	const MUSIC_MOBILE_CENTER                ; 66
 ; Kanto hack
 	const MUSIC_MEET_JESSIE_JAMES            ; 67 (Yellow's Jessie & James theme)
+	const MUSIC_JIGGLYPUFF_SONG              ; 68 (Yellow's JIGGLYPUFF SONG)
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for this value (see home/map.asm)

@@ -193,3 +193,5 @@ SpecialsPointers::
 	add_special FollowerHopToCounter
 	add_special FollowerHide
 	add_special FollowerShow
+	add_special PewterJigglypuffSong
+	add_special CheckPikachuAsleep

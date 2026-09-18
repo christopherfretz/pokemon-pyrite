@@ -137,3 +137,7 @@ ChanseySpriteGFX::             INCBIN "gfx/sprites/chansey.2bpp"
 SandshrewSpriteGFX::           INCBIN "gfx/sprites/sandshrew.2bpp"
 OddishSpriteGFX::              INCBIN "gfx/sprites/oddish.2bpp"
 BulbasaurSpriteGFX::           INCBIN "gfx/sprites/bulbasaur.2bpp"
+
+; Kanto hack: Yellow's Pewter #MON Center JIGGLYPUFF (docs/JIGGLYPUFF.md J1).
+; 16x48 = three 4-tile frames, a 12-tile STANDING_SPRITE like Chansey above.
+JigglypuffSpriteGFX::          INCBIN "gfx/sprites/jigglypuff.2bpp"

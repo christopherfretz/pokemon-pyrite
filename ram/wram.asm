@@ -1391,6 +1391,10 @@ SECTION "Pikachu Emotion Scratch", WRAM0
 
 wPikaEmotionNumber:: db ; the PikachuEmotion* index the interpreter is running
 wPikaPicAnimNumber:: db ; the pikapic script index it selected (E1-E4 read this)
+wPikaAsleep:: db ; non-zero while the Pewter JIGGLYPUFF SONG is holding Pikachu
+                 ; asleep (docs/JIGGLYPUFF.md J3).  UNSAVED and cleared by
+                 ; SpawnFollower, i.e. by any map load -- exactly like Yellow's
+                 ; wPikachuOverworldStateFlags bit 1, which never survives one.
 
 
 SECTION "Video", WRAM0

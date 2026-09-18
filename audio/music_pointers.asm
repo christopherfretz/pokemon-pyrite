@@ -110,4 +110,5 @@ Music:
 
 ; Kanto hack
 	dba Music_MeetJessieJames
+	dba Music_JigglypuffSong
 	assert_table_length NUM_MUSIC_SONGS

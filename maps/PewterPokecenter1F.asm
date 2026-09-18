@@ -23,28 +23,42 @@ PewterPokecenter1F_MapScripts:
 
 	def_callbacks
 
+; J6 (docs/JIGGLYPUFF.md): Yellow's DisplayPokemonCenterDialogue_ opens with a
+; PEWTER_POKECENTER special case (vendor/pokeyellow/engine/events/pokecenter.asm:1)
+; -- while the JIGGLYPUFF SONG has Pikachu asleep NURSE JOY does not heal at all,
+; she only says it looks content, and the whole dialogue returns.  Yellow's
+; predicate there is CheckPikachuFollowingPlayer, i.e. the sleep bit itself,
+; which is our wPikaAsleep.  Anywhere else -- and here once Pikachu is awake --
+; this is the ordinary shared nurse script.
 PewterPokecenter1FNurseScript:
+	special CheckPikachuAsleep
+	iftrue .pikachu_asleep
 	jumpstd PokecenterNurseScript
+
+.pikachu_asleep
+	opentext
+	writetext PewterPokecenter1FLooksContentText
+	waitbutton
+	closetext
+	end
 
 PewterPokecenter1FGentlemanScript:
 	jumptextfaceplayer PewterPokecenter1FGentlemanText
 
-; Yellow's set-piece (vendor/pokeyellow/scripts/PewterPokecenter_2.asm:10):
-; the map music stops, JIGGLYPUFF sings, then the music comes back.  Yellow
-; also spins the sprite through four facings while the JIGGLYPUFF SONG plays;
-; Crystal's overworld #MON sprites are single-facing two-frame bouncers
-; (hack/data/sprites/sprite_mons.asm), so a turn_head spin would be invisible
-; and there is no JIGGLYPUFF SONG in Crystal's audio -- the silence and the cry
-; are as close as this gets without new art and a new track.
+; Yellow's set-piece (vendor/pokeyellow/scripts/PewterPokecenter_2.asm:10),
+; ported in full -- song, sprite spin and the Pikachu sleep (docs/JIGGLYPUFF.md).
+; The whole beat is the PewterJigglypuffSong special, because Crystal's script
+; engine cannot wait on the sound driver: the map music stops, JIGGLYPUFF sings
+; MUSIC_JIGGLYPUFF_SONG while the sprite turns down/left/up/right every 24
+; frames, and the map music comes back 48 frames after the song ends.  No
+; waitbutton: Yellow sets wDoNotWaitForButtonPressAfterDisplayingText, so the
+; box is up for the whole song and closes on its own.  No cry either -- the song
+; IS the cry in Yellow.
 PewterJigglypuff:
-	playmusic MUSIC_NONE
 	opentext
 	writetext PewterJigglypuffText
-	cry JIGGLYPUFF
-	waitbutton
+	special PewterJigglypuffSong
 	closetext
-	pause 30
-	special RestartMapMusic
 	end
 
 PewterPokecenter1FCooltrainerFScript:
@@ -87,6 +101,12 @@ PewterPokecenter1FCooltrainerFText:
 	cont "are cured."
 	done
 
+; Yellow's _LooksContentText (vendor/pokeyellow/data/text/text_7.asm:193).
+PewterPokecenter1FLooksContentText:
+	text "It looks very"
+	line "content asleep."
+	done
+
 PewterPokecenter1FChanseyText:
 	text "CHANSEY: Chaaan"
 	line "sey!"
@@ -107,6 +127,6 @@ PewterPokecenter1F_MapEvents:
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterPokecenter1FNurseScript, -1
 	object_event  8,  6, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PewterPokecenter1FGentlemanScript, -1
-	object_event  1,  3, SPRITE_JIGGLYPUFF, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterJigglypuff, -1
+	object_event  1,  3, SPRITE_JIGGLYPUFF_OW, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterJigglypuff, -1
 	object_event  5,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, PewterPokecenter1FCooltrainerFScript, -1
 	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterPokecenter1FChanseyScript, -1

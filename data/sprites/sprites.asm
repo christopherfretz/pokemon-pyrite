@@ -120,4 +120,5 @@ OverworldSprites:
 	overworld_sprite SandshrewSpriteGFX, 12, STANDING_SPRITE, PAL_OW_YELLOW
 	overworld_sprite OddishSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BLUE
 	overworld_sprite BulbasaurSpriteGFX, 12, STANDING_SPRITE, PAL_OW_GREEN
+	overworld_sprite JigglypuffSpriteGFX, 12, STANDING_SPRITE, PAL_OW_RED
 	assert_table_length NUM_OVERWORLD_SPRITES

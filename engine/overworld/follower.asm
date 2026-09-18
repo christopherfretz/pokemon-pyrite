@@ -13,7 +13,7 @@ MovementFunction_PikaFollower:
 
 	ld a, [wPikaFollowFlags]
 	bit FOLLOWER_ENABLED_F, a
-	jr z, .hide
+	jp z, .hide
 
 ; Yellow: Pikachu only follows while the starter is in the party with HP
 ; left (deposited / fainted -> it waits, hidden, on the player's tile).
@@ -21,6 +21,16 @@ MovementFunction_PikaFollower:
 	call IsStarterPikachuAliveInParty
 	pop bc
 	jr nc, .hide
+
+; J3 (docs/JIGGLYPUFF.md): the Pewter JIGGLYPUFF SONG put Pikachu to sleep.
+; Yellow's wPikachuOverworldStateFlags bit 1 makes SpawnPikachu_ take its
+; "stand still" branch, so Pikachu simply stays on the tile it was on until it
+; is woken or a map loads.  .idle is that branch for us: it stands the object
+; without snapping it to the player, and only touches visibility (invisible
+; iff the player is standing on it -- Pikachu can still be walked through).
+	ld a, [wPikaAsleep]
+	and a
+	jp nz, .idle
 
 ; Bike / surf / anything but plain walking: ride along hidden on the
 ; player's tile so we re-emerge behind them on the first step afterwards.
@@ -225,6 +235,12 @@ SpawnFollower:
 
 	ld hl, wPikaFollowFlags
 	res FOLLOWER_SCRIPTHIDE_F, [hl] ; never let a half-run script leave it set
+; J3: Yellow's SchedulePikachuSpawnForAfterText calls
+; EnablePikachuFollowingPlayer on every normal map load, so the Jigglypuff
+; sleep can never outlive the map.  Clear it before the ENABLED early return
+; so it is gone even when the follower feature is off.
+	xor a
+	ld [wPikaAsleep], a
 	bit FOLLOWER_ENABLED_F, [hl]
 	ret z
 

@@ -140,6 +140,9 @@ INCLUDE "audio/music/mobilecenter.asm"
 ; Kanto hack: Yellow's Jessie & James theme (docs/M2-MTMOON.md 5h)
 INCLUDE "audio/music/meetjessiejames.asm"
 
+; Kanto hack: Yellow's Pewter #MON Center JIGGLYPUFF SONG (docs/JIGGLYPUFF.md J2)
+INCLUDE "audio/music/jigglypuffsong.asm"
+
 
 SECTION "Extra Songs 1", ROMX
 

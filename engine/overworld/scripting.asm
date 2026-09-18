@@ -925,7 +925,7 @@ Script_turnobject:
 	call ApplyObjectFacing
 	ret
 
-ApplyObjectFacing:
+ApplyObjectFacing::
 	ld a, d
 	push de
 	call CheckObjectVisibility
