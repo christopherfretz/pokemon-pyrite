@@ -1,7 +1,22 @@
-	object_const_def
-	const VERMILIONPORT_SAILOR1
-	const VERMILIONPORT_SAILOR2
-	const VERMILIONPORT_SUPER_NERD
+; Kanto hack: M4 step 7g (docs/M4-VERMILION.md).  VERMILION DOCK -- Yellow's 14x6
+; quay, re-cut in 7b and warped in 7c.
+;
+; Yellow's `VermilionDock_Object` has NO object_events, NO bg_events and NO
+; coord_events: you arrive at (14,0), walk two tiles south down the gangway and
+; board at (14,2).  Crystal's FAST SHIP cast (the two sailors, the SUPER NERD,
+; the hidden IRON and the `coord_event 4,1` boarding scene) is therefore deleted;
+; the S.S. TICKET check lives on the CITY side, at `VermilionCityDockGateScript`
+; (coord_event 18,30, ported in 7e).
+;
+; 7j OWNS THE DEPARTURE.  Yellow's `VermilionDock_Script`
+; (vendor/pokeyellow/scripts/VermilionDock.asm) runs on every map load: if
+; EVENT_GOT_HM01 is set and you arrived through warp 1 (i.e. off the ship,
+; `wDestinationWarpID == 1` -- our warp 2), it sets EVENT_SS_ANNE_LEFT, plays the
+; smoke/horn animation, erases the ship and force-walks the player north out of
+; the dock (EVENT_STARTED_WALKING_OUT_OF_DOCK / EVENT_WALKED_OUT_OF_DOCK).
+; NOTHING here sets EVENT_SS_ANNE_LEFT yet -- it needs HM01, which arrives with
+; 7i.  The hook belongs in a MAPCALLBACK_NEWMAP callback next to
+; `VermilionPortFlypointCallback` below, gated on EVENT_GOT_HM01_CUT.
 
 VermilionPort_MapScripts:
 	def_scene_scripts
@@ -14,287 +29,19 @@ VermilionPort_MapScripts:
 VermilionPortNoopScene:
 	end
 
+; Kanto hack (7g): stub.  Johto's untouched FAST SHIP maps (FastShip1F.asm,
+; FastShipCabins_SE_SSE_CaptainsCabin.asm) still `setmapscene VERMILION_PORT,
+; SCENE_VERMILIONPORT_LEAVE_SHIP`, and both scene constants are DEFINED by the
+; `scene_script` lines above, so they must stay for those maps to assemble.
+; The Johto FAST SHIP link is decision (b) -- re-routed in the Johto milestone.
+; Until then this scene only disarms itself; it can never run in the Kanto act.
 VermilionPortLeaveShipScene:
-	sdefer VermilionPortLeaveShipScript
+	setscene SCENE_VERMILIONPORT_ASK_ENTER_SHIP
 	end
 
 VermilionPortFlypointCallback:
 	setflag ENGINE_FLYPOINT_VERMILION
 	endcallback
-
-VermilionPortLeaveShipScript:
-	applymovement PLAYER, VermilionPortLeaveFastShipMovement
-	appear VERMILIONPORT_SAILOR1
-	setscene SCENE_VERMILIONPORT_ASK_ENTER_SHIP
-	setevent EVENT_FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN_TWIN_1
-	setevent EVENT_FAST_SHIP_CABINS_SE_SSE_GENTLEMAN
-	setevent EVENT_FAST_SHIP_PASSENGERS_FIRST_TRIP
-	clearevent EVENT_OLIVINE_PORT_PASSAGE_POKEFAN_M
-	setevent EVENT_FAST_SHIP_FIRST_TIME
-	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	blackoutmod VERMILION_CITY
-	end
-
-VermilionPortSailorAtGangwayScript:
-	faceplayer
-	opentext
-	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	iftrue VermilionPortAlreadyRodeScript
-	writetext VermilionPortDepartingText
-	waitbutton
-	closetext
-	turnobject VERMILIONPORT_SAILOR1, DOWN
-	pause 10
-	playsound SFX_EXIT_BUILDING
-	disappear VERMILIONPORT_SAILOR1
-	waitsfx
-	applymovement PLAYER, VermilionPortEnterFastShipMovement
-	playsound SFX_EXIT_BUILDING
-	special FadeOutToWhite
-	waitsfx
-	setevent EVENT_FAST_SHIP_PASSENGERS_EASTBOUND
-	clearevent EVENT_FAST_SHIP_PASSENGERS_WESTBOUND
-	clearevent EVENT_BEAT_POKEMANIAC_ETHAN
-	clearevent EVENT_BEAT_BURGLAR_COREY
-	clearevent EVENT_BEAT_BUG_CATCHER_KEN
-	clearevent EVENT_BEAT_GUITARIST_CLYDE
-	clearevent EVENT_BEAT_POKEFANM_JEREMY
-	clearevent EVENT_BEAT_POKEFANF_GEORGIA
-	clearevent EVENT_BEAT_SAILOR_KENNETH
-	clearevent EVENT_BEAT_TEACHER_SHIRLEY
-	clearevent EVENT_BEAT_SCHOOLBOY_NATE
-	clearevent EVENT_BEAT_SCHOOLBOY_RICKY
-	setevent EVENT_FAST_SHIP_DESTINATION_OLIVINE
-	appear VERMILIONPORT_SAILOR1
-	setmapscene FAST_SHIP_1F, SCENE_FASTSHIP1F_ENTER_SHIP
-	warp FAST_SHIP_1F, 25, 1
-	end
-
-VermilionPortAlreadyRodeScript:
-	writetext VermilionPortCantBoardText
-	waitbutton
-	closetext
-	end
-
-VermilionPortWalkUpToShipScript:
-	turnobject VERMILIONPORT_SAILOR2, RIGHT
-	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	iftrue .skip
-	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
-	iftrue .skip
-	turnobject PLAYER, LEFT
-	opentext
-	readvar VAR_WEEKDAY
-	ifequal MONDAY, .NextShipWednesday
-	ifequal TUESDAY, .NextShipWednesday
-	ifequal THURSDAY, .NextShipSunday
-	ifequal FRIDAY, .NextShipSunday
-	ifequal SATURDAY, .NextShipSunday
-	writetext VermilionPortAskBoardingText
-	yesorno
-	iffalse VermilionPortNotRidingMoveAwayScript
-	writetext VermilionPortAskTicketText
-	promptbutton
-	checkitem S_S_TICKET
-	iffalse .NoTicket
-	writetext VermilionPortSSTicketText
-	waitbutton
-	closetext
-	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
-	applymovement PLAYER, VermilionPortApproachFastShipMovement
-	sjump VermilionPortSailorAtGangwayScript
-
-.NoTicket:
-	writetext VermilionPortNoTicketText
-	waitbutton
-	closetext
-	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
-	end
-
-.NextShipWednesday:
-	writetext VermilionPortSailWednesdayText
-	waitbutton
-	closetext
-	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
-	end
-
-.NextShipSunday:
-	writetext VermilionPortSailSundayText
-	waitbutton
-	closetext
-	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
-	end
-
-.skip:
-	end
-
-VermilionPortNotRidingScript:
-	writetext VermilionPortComeAgainText
-	waitbutton
-	closetext
-	end
-
-VermilionPortNotRidingMoveAwayScript:
-	writetext VermilionPortComeAgainText
-	waitbutton
-	closetext
-	applymovement PLAYER, VermilionPortCannotEnterFastShipMovement
-	end
-
-VermilionPortSailorScript:
-	faceplayer
-	opentext
-	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	iftrue VermilionPortAlreadyRodeScript
-	readvar VAR_WEEKDAY
-	ifequal MONDAY, .NextShipWednesday
-	ifequal TUESDAY, .NextShipWednesday
-	ifequal THURSDAY, .NextShipSunday
-	ifequal FRIDAY, .NextShipSunday
-	ifequal SATURDAY, .NextShipSunday
-	writetext VermilionPortAskBoardingText
-	yesorno
-	iffalse VermilionPortNotRidingScript
-	writetext VermilionPortAskTicketText
-	promptbutton
-	checkitem S_S_TICKET
-	iffalse .NoTicket
-	writetext VermilionPortSSTicketText
-	waitbutton
-	closetext
-	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
-	applymovement PLAYER, VermilionPortApproachFastShipRightMovement
-	sjump VermilionPortSailorAtGangwayScript
-
-.NoTicket:
-	writetext VermilionPortNoTicketText
-	waitbutton
-	closetext
-	end
-
-.NextShipWednesday:
-	writetext VermilionPortSailWednesdayText
-	waitbutton
-	closetext
-	end
-
-.NextShipSunday:
-	writetext VermilionPortSailSundayText
-	waitbutton
-	closetext
-	end
-
-VermilionPortSuperNerdScript:
-	faceplayer
-	opentext
-	writetext VermilionPortSuperNerdText
-	waitbutton
-	closetext
-	end
-
-VermilionPortHiddenIron:
-	hiddenitem IRON, EVENT_VERMILION_PORT_HIDDEN_IRON
-
-VermilionPortEnterFastShipMovement:
-	step DOWN
-	step_end
-
-VermilionPortLeaveFastShipMovement:
-	step UP
-	step_end
-
-VermilionPortCannotEnterFastShipMovement:
-	step RIGHT
-	turn_head LEFT
-	step_end
-
-VermilionPortApproachFastShipMovement:
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step_end
-
-VermilionPortApproachFastShipRightMovement:
-	step RIGHT
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step_end
-
-VermilionPortDepartingText:
-	text "We're departing"
-	line "soon. Please get"
-	cont "on board."
-	done
-
-VermilionPortCantBoardText:
-	text "Sorry. You can't"
-	line "board now."
-	done
-
-VermilionPortAskBoardingText:
-	text "Welcome to FAST"
-	line "SHIP S.S.AQUA."
-
-	para "Will you be board-"
-	line "ing today?"
-	done
-
-VermilionPortAskTicketText:
-	text "May I see your"
-	line "S.S.TICKET?"
-	done
-
-VermilionPortComeAgainText:
-	text "We hope to see you"
-	line "again!"
-	done
-
-VermilionPortSSTicketText:
-	text "<PLAYER> flashed"
-	line "the S.S.TICKET."
-
-	para "That's it."
-	line "Thank you!"
-	done
-
-VermilionPortNoTicketText:
-	text "<PLAYER> tried to"
-	line "show the S.S."
-	cont "TICKET…"
-
-	para "…But no TICKET!"
-
-	para "Sorry!"
-	line "You may board only"
-
-	para "if you have an"
-	line "S.S.TICKET."
-	done
-
-VermilionPortSailWednesdayText:
-	text "The FAST SHIP will"
-	line "sail on Wednesday."
-	done
-
-VermilionPortSailSundayText:
-	text "The FAST SHIP will"
-	line "sail next Sunday."
-	done
-
-VermilionPortSuperNerdText:
-	text "You came from"
-	line "JOHTO?"
-
-	para "I hear many rare"
-	line "#MON live over"
-	cont "there."
-	done
 
 VermilionPort_MapEvents:
 	db 0, 0 ; filler
@@ -304,12 +51,7 @@ VermilionPort_MapEvents:
 	warp_event 14,  2, SS_ANNE_1F, 2 ; Kanto hack (docs/M4-VERMILION.md, 7c): Yellow's gangway.  The Johto FAST SHIP link is decided in the Johto milestone (decision (b)).
 
 	def_coord_events
-	coord_event  4,  1, SCENE_VERMILIONPORT_ASK_ENTER_SHIP, VermilionPortWalkUpToShipScript
 
 	def_bg_events
-	bg_event 20,  0, BGEVENT_ITEM, VermilionPortHiddenIron
 
 	def_object_events
-	object_event  4,  0, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorAtGangwayScript, EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY
-	object_event  6,  0, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorScript, -1
-	object_event  9,  0, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSuperNerdScript, -1

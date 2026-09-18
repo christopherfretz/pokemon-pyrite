@@ -246,7 +246,7 @@
 	const EVENT_ROCK_TUNNEL_1F_HIDDEN_X_DEFEND
 	const EVENT_ROCK_TUNNEL_B1F_HIDDEN_MAX_POTION
 	const EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
-	const EVENT_VERMILION_PORT_HIDDEN_IRON
+	const EVENT_WALKED_PAST_GUARD_AFTER_SS_ANNE_LEFT ; Kanto hack: renamed in place (7g) from EVENT_VERMILION_PORT_HIDDEN_IRON -- Yellow's dock has no hidden IRON and Crystal's was deleted with the FAST SHIP cast.  7j sets/reads this (Yellow: VermilionCityLeftSSAnneCallbackScript, docs/M4-VERMILION.md §3.8); no reader today.
 	const EVENT_MT_MOON_1F_TM_WATER_GUN ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone.  M3b: Yellow's TM12 WATER GUN (was TM_RAIN_DANCE)
 	const EVENT_ROUTE_2_HIDDEN_MAX_ETHER
 	const EVENT_ROUTE_2_HIDDEN_FULL_HEAL
