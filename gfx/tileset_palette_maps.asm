@@ -112,6 +112,10 @@ INCLUDE "gfx/tilesets/battle_tower_outside_palette_map.asm"
 TilesetShipPalMap:
 INCLUDE "gfx/tilesets/ship_palette_map.asm"
 
+; Kanto hack: Yellow's SHIP_PORT tileset, the S.S. ANNE's dock (7g-b).
+TilesetKantoDockPalMap:
+INCLUDE "gfx/tilesets/kanto_dock_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

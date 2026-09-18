@@ -361,3 +361,22 @@ INCBIN "data/tilesets/ship_metatiles.bin"
 
 TilesetShipColl::
 INCLUDE "data/tilesets/ship_collision.asm"
+
+
+SECTION "Tileset Data 11", ROMX
+
+; Vermilion Port's tileset, ported wholesale from Yellow by M4 step 7g-b
+; (docs/M4-VERMILION.md, "## 7g-b findings") -- the same call 7c made for the
+; S.S. Anne herself.  7b had drawn Yellow's dock with Crystal's `port`
+; tileset on the assumption that Crystal's $18-$1f were a 4x2 FAST SHIP; they
+; are two unrelated pieces of it, so the dock came out corrupt.  With Yellow's
+; own 23-block blockset the map is a byte-identical copy of Yellow's
+; VermilionDock.blk, border block $0f (solid black) included.
+TilesetKantoDockGFX::
+INCBIN "gfx/tilesets/kanto_dock.2bpp.lz"
+
+TilesetKantoDockMeta::
+INCBIN "data/tilesets/kanto_dock_metatiles.bin"
+
+TilesetKantoDockColl::
+INCLUDE "data/tilesets/kanto_dock_collision.asm"

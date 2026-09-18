@@ -401,7 +401,7 @@ TrainerClassAttributes:
 ; KantoRival
 	db NO_ITEM, NO_ITEM ; items
 	db 15 ; base reward
-	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
+	dw NO_AI ; Kanto hack (docs/RIVAL1-BALANCE.md): Yellow's Rival1 class AI (lab, Route 22, Cerulean) is a no-op without a player status -> random move pick.  From the S.S. Anne fight on Yellow adds "prefer super-effective" (7i: AI_TYPES for those parties).
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
 ; JessieJames

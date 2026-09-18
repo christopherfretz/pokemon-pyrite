@@ -351,7 +351,7 @@ MapGroup_Pewter:
 MapGroup_FastShip:
 	table_width MAP_LENGTH
 	map OlivinePort, TILESET_PORT, ROUTE, LANDMARK_OLIVINE_CITY, MUSIC_VIOLET_CITY, FALSE, PALETTE_AUTO, FISHGROUP_OCEAN
-	map VermilionPort, TILESET_PORT, ROUTE, LANDMARK_VERMILION_CITY, MUSIC_SS_AQUA, FALSE, PALETTE_AUTO, FISHGROUP_OCEAN ; Kanto hack (7g): Yellow plays MUSIC_SS_ANNE here (data/maps/songs.asm).  That Gen 1 track is unported (milestone K6), so the dock shares the ship shells' MUSIC_SS_AQUA placeholder.
+	map VermilionPort, TILESET_KANTO_DOCK, ROUTE, LANDMARK_VERMILION_CITY, MUSIC_SS_AQUA, FALSE, PALETTE_AUTO, FISHGROUP_OCEAN ; Kanto hack (7g): Yellow plays MUSIC_SS_ANNE here (data/maps/songs.asm).  That Gen 1 track is unported (milestone K6), so the dock shares the ship shells' MUSIC_SS_AQUA placeholder.
 	map FastShip1F, TILESET_LIGHTHOUSE, INDOOR, LANDMARK_FAST_SHIP, MUSIC_SS_AQUA, FALSE, PALETTE_DAY, FISHGROUP_SHORE
 	map FastShipCabins_NNW_NNE_NE, TILESET_LIGHTHOUSE, INDOOR, LANDMARK_FAST_SHIP, MUSIC_SS_AQUA, FALSE, PALETTE_DAY, FISHGROUP_SHORE
 	map FastShipCabins_SW_SSW_NW, TILESET_LIGHTHOUSE, INDOOR, LANDMARK_FAST_SHIP, MUSIC_SS_AQUA, FALSE, PALETTE_DAY, FISHGROUP_SHORE

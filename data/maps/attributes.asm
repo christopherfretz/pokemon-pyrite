@@ -614,7 +614,7 @@ ENDM
 	map_attributes Museum1F, MUSEUM_1F, $00
 	map_attributes Museum2F, MUSEUM_2F, $00
 	map_attributes OlivinePort, OLIVINE_PORT, $0a
-	map_attributes VermilionPort, VERMILION_PORT, $0a
+	map_attributes VermilionPort, VERMILION_PORT, $0f
 	map_attributes FastShip1F, FAST_SHIP_1F, $00
 	map_attributes FastShipCabins_NNW_NNE_NE, FAST_SHIP_CABINS_NNW_NNE_NE, $00
 	map_attributes FastShipCabins_SW_SSW_NW, FAST_SHIP_CABINS_SW_SSW_NW, $00
