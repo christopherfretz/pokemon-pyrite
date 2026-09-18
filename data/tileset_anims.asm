@@ -227,13 +227,34 @@ UnusedTilesetRocketHouseAnim: ; unreferenced
 	tileframe WaitTileAnimation
 	tileframe DoneTileAnimation
 
+TilesetKantoDockAnim:
+; Kanto hack (docs/M4-VERMILION.md P1/A): Yellow's SHIP_PORT sea, tile $14.
+; Crystal's TilesetPortAnim uses AnimateWaterTile, which REPLACES tile $14 with
+; a frame of Crystal's own water.2bpp and would throw away Yellow's art, so we
+; rotate the tile in place instead (Read/Scroll/Write, as TilesetCaveAnim does),
+; which is what Yellow's own UpdateMovingBgTiles:: does to its water tiles.
+; Crystal's port cadence otherwise: one pixel step and one palette step per
+; 11 frames.  ScrollTileRightLeft ticks wTileAnimationTimer itself, so no
+; StandingTileFrame8 frame is needed.
+	tileframe ReadTileToAnimBuffer,    vTiles2 tile $14
+	tileframe ScrollTileRightLeft,     wTileAnimBuffer
+	tileframe WriteTileFromAnimBuffer, vTiles2 tile $14
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe AnimateWaterPalette
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe DoneTileAnimation
+
 TilesetBattleTowerOutsideAnim:
 TilesetHouseAnim:
 TilesetPlayersHouseAnim:
 TilesetPokecenterAnim:
 TilesetGateAnim:
 TilesetShipAnim:
-TilesetKantoDockAnim:
 TilesetLabAnim:
 TilesetFacilityAnim:
 TilesetMartAnim:

@@ -88,6 +88,11 @@ MapSetupScript_Connection:
 	mapsetup RefreshPlayerCoords
 	mapsetup LoadBlockData
 	mapsetup LoadMapTileset
+; Kanto hack (P1/B2): a connection can cross a map-group boundary (Route 1 ->
+; VIRIDIAN CITY), and the outdoor sprite GFX list is per group.  Reloads the
+; list only when the new group needs a sprite that is not loaded, before
+; LoadMapObjects spawns the objects that ask for its vtiles.
+	mapsetup RefreshConnectionSprites
 	mapsetup SaveScreen
 	mapsetup LoadMapObjects
 	mapsetup FadeToMapMusic

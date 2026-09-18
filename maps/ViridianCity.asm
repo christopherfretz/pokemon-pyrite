@@ -8,6 +8,13 @@
 ; second youngster with the CATERPIE/WEEDLE speech.
 	const VIRIDIANCITY_GIRL
 	const VIRIDIANCITY_YOUNGSTER2
+; Kanto hack (P1, docs/M2-CATCH.md): Yellow's other two old-man objects.  Yellow
+; keeps THREE gamblers on this map -- the one lying across (18,9), the awake
+; OLD_MAN_2 who stands on the same tile after the POKeDEX, and OLD_MAN_1 who
+; paces by the nook at (17,5) once he is back from the MART -- and toggles them
+; with HideObject/ShowObject.  APPENDED so the six existing indices don't move.
+	const VIRIDIANCITY_OLD_MAN_ASLEEP
+	const VIRIDIANCITY_OLD_MAN_WANDER
 
 ViridianCity_MapScripts:
 	def_scene_scripts
@@ -47,16 +54,50 @@ ViridianCity_PlayerStepBackMovement:
 	step DOWN
 	step_end
 
+; P1: talking to the sleeper himself (from (18,10) below, or (19,9) with A after
+; the trigger has already fired).  He is asleep, so no faceplayer -- his sheet is
+; a single 16x16 frame anyway -- and he says the same sleepy line.
+ViridianCityAsleepGramps:
+	opentext
+	writetext ViridianCityGrampsPrivatePropertyText
+	waitbutton
+	closetext
+	end
+
 ViridianCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_VIRIDIAN
 	endcallback
 
-; After his catch demo the old man stands beside the road (docs/M2-CATCH.md).
+; P1: Yellow's three-object old man, driven the way KurtsHouse drives Kurt.
+; Three states, one visible object each:
+;   before the POKeDEX   VIRIDIANCITY_OLD_MAN_ASLEEP lies across (18,9)
+;                        (hidden by EVENT_OAK_GOT_PARCEL, which OaksLab sets at
+;                        exactly Yellow's TOGGLE_LYING_OLD_MAN moment);
+;   after the POKeDEX    VIRIDIANCITY_GRAMPS1 stands awake on (18,9) and does
+;                        the coffee/catch demo (hidden by
+;                        EVENT_VIRIDIAN_OLD_MAN_OFF_ROAD, owned here);
+;   after the MART trip  VIRIDIANCITY_OLD_MAN_WANDER paces at (17,5) with the
+;                        repeat offer (hidden by
+;                        EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART, which the demo
+;                        leaves set and ViridianMart's NEWMAP callback clears).
+; The sleeper needs no handling here -- his flag is set by OaksLab and never
+; cleared.  Before the demo we keep the wanderer's flag set; from the demo on we
+; never touch it again, so the MART visit alone brings him back.
 ViridianCityGrampsCallback:
 	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
-	iffalse .Done
-	moveobject VIRIDIANCITY_GRAMPS1, 17, 5 ; L1: Yellow's OLD_MAN_1 tile (was 16, 5)
-.Done:
+	iftrue .AfterDemo
+	disappear VIRIDIANCITY_OLD_MAN_WANDER ; sets EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	checkevent EVENT_OAK_GOT_PARCEL
+	iffalse .StillAsleep
+	appear VIRIDIANCITY_GRAMPS1
+	endcallback
+
+.StillAsleep:
+	disappear VIRIDIANCITY_GRAMPS1
+	endcallback
+
+.AfterDemo:
+	disappear VIRIDIANCITY_GRAMPS1
 	endcallback
 
 ; Yellow's old man: grumpy until OAK'S PARCEL is delivered, then he shows
@@ -152,7 +193,7 @@ ViridianCityGrampsCatchDemo:
 .OffToMart:
 	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsOffToMartMovement
 .GoneToMart:
-	disappear VIRIDIANCITY_GRAMPS1 ; sets EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	disappear VIRIDIANCITY_GRAMPS1 ; sets EVENT_VIRIDIAN_OLD_MAN_OFF_ROAD; GONE_TO_MART is already set by the callback
 	setevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	setscene SCENE_VIRIDIANCITY_NOOP
 	end
@@ -532,9 +573,14 @@ ViridianCity_MapEvents:
 	bg_event 30, 19, BGEVENT_READ, ViridianCityMartSign
 
 	def_object_events
-	object_event 18,  9, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	object_event 18,  9, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_OFF_ROAD
 	object_event 30,  8, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianCityGrampsNearGym, -1
 	object_event  6, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityDreamEaterFisher, -1
 	object_event 13, 20, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungsterScript, -1
 	object_event 17,  9, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityGirlScript, -1
 	object_event 30, 25, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungster2Script, -1
+; P1: Yellow's lying-asleep gambler on the same tile as the awake one, and his
+; OLD_MAN_1 pacing LEFT_RIGHT by the nook.  Palette 0 on both, so each takes its
+; sprite's own PAL_OW_BROWN -- the palette Crystal gives its own SPRITE_GRAMPS.
+	object_event 18,  9, SPRITE_OLD_MAN_ASLEEP_OW, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityAsleepGramps, EVENT_OAK_GOT_PARCEL
+	object_event 17,  5, SPRITE_OLD_MAN, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART

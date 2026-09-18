@@ -129,6 +129,7 @@
 ; of these are Yellow's own 16x48 overworld art.
 	const SPRITE_SEEL_OW            ; 73 (Yellow's overworld SEEL)
 	const SPRITE_CLEFAIRY_OW        ; 74 (Yellow's overworld CLEFAIRY)
+	const SPRITE_OLD_MAN_ASLEEP_OW  ; 75 (Yellow's lying-asleep gambler)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

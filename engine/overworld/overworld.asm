@@ -142,6 +142,19 @@ AddIndoorSprites:
 	ret
 
 AddOutdoorSprites:
+	call GetOutdoorSpriteList
+	ld c, MAX_OUTDOOR_SPRITES
+.loop
+	push bc
+	ld a, [hli]
+	call AddSpriteGFX
+	pop bc
+	dec c
+	jr nz, .loop
+	ret
+
+GetOutdoorSpriteList:
+; hl = the current map group's OutdoorSprites list.
 	ld a, [wMapGroup]
 	dec a
 	ld c, a
@@ -152,14 +165,59 @@ AddOutdoorSprites:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
+	ret
+
+RefreshConnectionSprites::
+; Kanto hack (docs/M2-CATCH.md P1/B2).  The outdoor sprite GFX list is per map
+; GROUP, but MapSetupScript_Connection never reloads it: vanilla assumes a
+; connection stays inside one group, or that the two groups' lists are
+; identical (vanilla's Pallet/Viridian/Pewter lists are, which is why vanilla
+; Kanto gets away with it).  Our lists are trimmed per group
+; (scripts/trim_outdoor_sprites.py), so walking Route 1 -> VIRIDIAN CITY kept
+; PALLET's list loaded, SPRITE_OLD_MAN had no vtile, and GetSpriteVTile fell
+; back to wUsedSprites + 1 -- the PLAYER's tiles -- so the old man was drawn as
+; Red in the old man's palette.
+; Runs between EnterMapConnection and LoadMapObjects, so every object struct is
+; (re-)spawned from the refreshed list.  Reloading costs ~20 frames, so only do
+; it when the new group needs a sprite that is not already loaded: crossings
+; inside one group, and between groups with compatible lists, stay free.
+	call GetOutdoorSpriteList
 	ld c, MAX_OUTDOOR_SPRITES
-.loop
-	push bc
+.check
 	ld a, [hli]
-	call AddSpriteGFX
+	and a
+	jr z, .next ; 0 = list padding
+	push hl
+	push bc
+	call .IsLoaded
 	pop bc
+	pop hl
+	jr nc, .refresh
+.next
+	dec c
+	jr nz, .check
+	ret
+
+.refresh
+	jp RefreshSprites
+
+.IsLoaded:
+; Return carry if sprite id a already has a vtile in wUsedSprites.
+	ld b, a
+	ld hl, wUsedSprites
+	ld c, SPRITE_GFX_LIST_CAPACITY
+.loop
+	ld a, [hli]
+	inc hl ; skip the vtile
+	cp b
+	jr z, .loaded
 	dec c
 	jr nz, .loop
+	and a
+	ret
+
+.loaded
+	scf
 	ret
 
 LoadUsedSpritesGFX:

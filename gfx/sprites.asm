@@ -150,3 +150,9 @@ SECTION "Sprites 4", ROMX
 ; for 12 tiles, so the top 16x48 is the whole sprite the game ever shows).
 SeelSpriteGFX::                INCBIN "gfx/sprites/seel.2bpp"
 ClefairyOwSpriteGFX::          INCBIN "gfx/sprites/clefairy.2bpp"
+
+; Kanto hack: Yellow's lying-asleep old man (docs/M2-CATCH.md P1/B), from
+; pokeyellow gfx/sprites/gambler_asleep.png byte for byte.  16x16 = one 4-tile
+; frame, declared STILL_SPRITE like Crystal's own props, and given PAL_OW_BROWN
+; so he matches the standing SPRITE_OLD_MAN he is swapped for.
+OldManAsleepSpriteGFX::        INCBIN "gfx/sprites/old_man_asleep.2bpp"

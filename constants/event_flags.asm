@@ -1666,7 +1666,18 @@
 ; entry would cost saved WRAM, and bank 1 is full).  495 free -> 494 free.
 	const EVENT_POKEMON_FAN_CLUB_PIKACHU_SCENE ; the Fan Club Pikachu scene has played once; later entries re-roll Yellow's 25/256
 
-; Unused: next 494 events
+; Kanto hack: Yellow's three VIRIDIAN CITY old-man objects (P1, docs/M2-CATCH.md).
+; Yellow toggles a LYING gambler, a standing OLD_MAN_2 on the road and a
+; wandering OLD_MAN_1 by the nook; each Crystal object_event can carry only ONE
+; hidden flag, and the other two states already have exact flags to reuse
+; (EVENT_OAK_GOT_PARCEL hides the sleeper at precisely Yellow's moment,
+; EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART hides the wanderer until the MART visit).
+; The standing man needs "visible only between the POKeDEX and his demo", two
+; toggles, so he gets one appended flag that the OBJECTS callback owns outright.
+; 494 free -> 493 free.
+	const EVENT_VIRIDIAN_OLD_MAN_OFF_ROAD ; the awake old man is not standing on (18,9) (his hidden flag; owned by ViridianCityGrampsCallback)
+
+; Unused: next 493 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
