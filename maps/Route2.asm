@@ -11,9 +11,17 @@
 ; The hidden items are Crystal's and stay.
 ; 4b carved the two Viridian Forest gate doorways into Route2.blk - warps 6
 ; (3,27, Pewter half) and 7 (5,33, Viridian half) - and opened the cut trees
-; at (5,8) and (15,18) so the Route 2 gate, Diglett's Cave and the Nugget
-; House are reachable without CUT. The cut trees at (10,40)/(12,46)/(12,50)
-; stay: opening them would let the player skip the forest entirely.
+; at (5,8) and (15,18) so the Route 2 gate, Diglett's Cave and the Route 2
+; trade house are reachable without CUT. The cut trees at
+; (10,40)/(12,46)/(12,50) stay: opening them would let the player skip the
+; forest entirely.
+; N1d: Crystal's NUGGET HOUSE is gone - Yellow's Route 2 has exactly one
+; building, the trade house. Its front blocks (Route2.blk offsets 77/78) are
+; now trees, so the door tile (15,15) is a WALL. Warp 1 below is left in the
+; list on purpose: CheckWarpTile (hack/engine/overworld/events.asm:330) fires
+; on coordinates alone, so the tile had to become unstandable, and deleting
+; the entry would renumber warps 2-8, which Route2Gate, both Viridian Forest
+; gates, Diglett's Cave and Route2TradeHouse all reference by index.
 Route2_MapScripts:
 	def_scene_scripts
 
@@ -48,9 +56,8 @@ Route2HiddenRevive:
 
 Route2SignText:
 	text "ROUTE 2"
-
-	para "VIRIDIAN CITY -"
-	line "PEWTER CITY"
+	line "VIRIDIAN CITY -"
+	cont "PEWTER CITY"
 	done
 
 Route2DiglettsCaveSignText:
@@ -61,7 +68,7 @@ Route2_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 15, 15, ROUTE_2_NUGGET_HOUSE, 1
+	warp_event 15, 15, ROUTE_2_NUGGET_HOUSE, 1 ; Kanto hack: unreachable, see above
 	warp_event 15, 31, ROUTE_2_GATE, 3
 	warp_event 16, 27, ROUTE_2_GATE, 1
 	warp_event 17, 27, ROUTE_2_GATE, 2

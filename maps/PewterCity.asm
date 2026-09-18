@@ -159,7 +159,12 @@ PewterCityCooltrainerFScript:
 PewterCityCooltrainerMScript:
 	jumptextfaceplayer PewterCityCooltrainerMText
 
-; Yellow's museum barker. The MUSEUM itself is step 4d, so he only talks.
+; Yellow's museum barker (vendor/pokeyellow/scripts/PewterCity.asm:48-91,
+; 204-225). Say NO and he drags you to the museum door himself, says his
+; second box there, and walks off; he resets afterwards, so he will do it
+; again every time you say no. Yellow uses the simulated joypad plus NPC
+; movement script 2; we use GSC's `follow`, exactly as the gym dragger below
+; does (docs/M2-PEWTER-CITY.md).
 PewterCityMuseumBarkerScript:
 	faceplayer
 	opentext
@@ -175,7 +180,48 @@ PewterCityMuseumBarkerScript:
 	writetext PewterCityMuseumBarkerNoText
 	waitbutton
 	closetext
+	playmusic MUSIC_SHOW_ME_AROUND
+	follow PEWTERCITY_SUPER_NERD1, PLAYER
+	applymovement PEWTERCITY_SUPER_NERD1, PewterCity_BarkerToMuseum
+	stopfollow
+	turnobject PLAYER, LEFT
+	turnobject PEWTERCITY_SUPER_NERD1, UP
+	opentext
+	writetext PewterCityMuseumBarkerItsRightHereText
+	waitbutton
+	closetext
+	special RestartMapMusic
+	disappear PEWTERCITY_SUPER_NERD1
+	moveobject PEWTERCITY_SUPER_NERD1, 27, 17
+	appear PEWTERCITY_SUPER_NERD1
 	end
+
+; (27,17) -> up x=27 to row 13 -> west to x=18 -> up to row 8 -> west to the
+; tile in front of the museum door at (14,8). The player trails one behind.
+PewterCity_BarkerToMuseum:
+	step UP
+	step UP
+	step UP
+	step UP
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step_end
 
 PewterCityRepelGardenerScript:
 	faceplayer
@@ -251,7 +297,7 @@ PewterCityFruitTree2:
 
 PewterCityCooltrainerFText:
 	text "It's rumored that"
-	line "CLEFAIRY came"
+	line "CLEFAIRYs came"
 	cont "from the moon!"
 
 	para "They appeared"
@@ -287,11 +333,14 @@ PewterCityMuseumBarkerNoText:
 	text "Really?"
 	line "You absolutely"
 	cont "have to go!"
+	done
 
-	para "It's right here!"
+PewterCityMuseumBarkerItsRightHereText:
+	text "It's right here!"
 	line "You have to pay"
 	cont "to get in, but"
 	cont "it's worth it!"
+	cont "See you around!"
 	done
 
 PewterCityRepelGardenerAskText:
@@ -380,7 +429,7 @@ PewterGymSignText:
 	cont "LEADER: BROCK"
 
 	para "The Rock Solid"
-	line "#MON Trainer"
+	line "#MON Trainer!"
 	done
 
 PewterMuseumSignText:

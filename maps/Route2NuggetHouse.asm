@@ -1,3 +1,7 @@
+; Kanto hack (N1d): DEAD MAP. Yellow's Route 2 has no such building, so its
+; door on Route 2 is walled over (hack/maps/Route2.blk offsets 77/78) and
+; nothing warps here any more. Left registered rather than deleted so the
+; Route 2 warp list keeps its numbering; see hack/maps/Route2.asm.
 	object_const_def
 	const ROUTE2NUGGETHOUSE_FISHER
 
@@ -22,9 +26,6 @@ Route2NuggetHouseFisherScript:
 .NoRoom:
 	closetext
 	end
-
-Route2NuggetHouseBookshelf: ; unreferenced
-	jumpstd DifficultBookshelfScript
 
 Route2NuggetHouseFisherText:
 	text "Hi! Wow, I'm glad"

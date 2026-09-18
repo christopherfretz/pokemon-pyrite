@@ -92,11 +92,13 @@ Route2GateOaksAideComeBackText:
 
 Route2GateOaksAideHereYouGoText:
 	text "Great! You have"
-	line "caught 10 kinds"
+	line "caught @"
+	text_decimal wStringBuffer2, 1, 3
+	text " kinds "
 	cont "of #MON!"
+	cont "Congratulations!"
 
-	para "Congratulations!"
-	line "Here you go!"
+	para "Here you go!"
 	done
 
 Route2GateOaksAideFlashExplanationText:

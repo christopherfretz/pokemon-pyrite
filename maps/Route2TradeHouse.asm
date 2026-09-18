@@ -28,11 +28,9 @@ Route2TradeHouseBookshelf:
 
 Route2TradeHouseScientistText:
 	text "A fainted #MON"
-	line "can't fight."
-
-	para "But it can still"
-	line "use moves like"
-	cont "CUT!"
+	line "can't fight. But, "
+	cont "it can still use "
+	cont "moves like CUT!"
 	done
 
 Route2TradeHouse_MapEvents:

@@ -1,3 +1,7 @@
+; Kanto hack: Yellow's PEWTER MART (docs/M2-PEWTER.md). Both shoppers speak
+; Yellow's lines verbatim (vendor/pokeyellow/text/PewterMart.asm) and copy
+; Yellow's movement (youngster paces UP/DOWN, super nerd STAY/NONE); the floor
+; tiles differ from Yellow's so the positions stay Crystal's.
 	object_const_def
 	const PEWTERMART_CLERK
 	const PEWTERMART_YOUNGSTER
@@ -21,26 +25,21 @@ PewterMartSuperNerdScript:
 	jumptextfaceplayer PewterMartSuperNerdText
 
 PewterMartYoungsterText:
-	text "Hi! Check out my"
-	line "GYARADOS!"
+	text "A shady old man"
+	line "got me to buy"
+	cont "this really weird"
+	cont "fish #MON!"
 
-	para "I raised it from a"
-	line "MAGIKARP. I can't"
-
-	para "believe how strong"
-	line "it has become."
+	para "It's totally weak"
+	line "and it cost ¥500!"
 	done
 
 PewterMartSuperNerdText:
-	text "There once was a"
-	line "weird old man who"
-	cont "sold MAGIKARP."
-
-	para "He was saying the"
-	line "MAGIKARP from the"
-
-	para "LAKE OF RAGE were"
-	line "excellent."
+	text "Good things can"
+	line "happen if you"
+	cont "raise #MON"
+	cont "diligently, even"
+	cont "the weak ones!"
 	done
 
 PewterMart_MapEvents:
@@ -56,5 +55,5 @@ PewterMart_MapEvents:
 
 	def_object_events
 	object_event  1,  3, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterMartClerkScript, -1
-	object_event  9,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterMartYoungsterScript, -1
-	object_event  6,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PewterMartSuperNerdScript, -1
+	object_event  9,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterMartYoungsterScript, -1
+	object_event  6,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PewterMartSuperNerdScript, -1

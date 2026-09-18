@@ -1534,6 +1534,49 @@ _NPCTradeAfterText4::
 	line "to learn about it."
 	done
 
+; Kanto hack: Yellow's CASUAL trader (vendor/pokeyellow/data/text/text_9.asm,
+; _WannaTrade1Text / _NoTrade1Text / _WrongMon1Text / _Thanks1Text /
+; _AfterTrade1Text), verbatim. wStringBuffer1 is the species the trader wants,
+; wStringBuffer2 the one he offers - Yellow's wInGameTradeGiveMonName and
+; wInGameTradeReceiveMonName respectively.
+_NPCTradeIntroText5::
+	text "I'm looking for"
+	line "@"
+	text_ram wStringBuffer1
+	text "! Wanna"
+
+	para "trade one for"
+	line "@"
+	text_ram wStringBuffer2
+	text "? "
+	done
+
+_NPCTradeCancelText5::
+	text "Awww!"
+	line "Oh well…"
+	done
+
+_NPCTradeWrongText5::
+	text "What? That's not"
+	line "@"
+	text_ram wStringBuffer1
+	text "!"
+
+	para "If you get one,"
+	line "come back here!"
+	done
+
+_NPCTradeCompleteText5::
+	text "Hey thanks!"
+	done
+
+_NPCTradeAfterText5::
+	text "Isn't my old"
+	line "@"
+	text_ram wStringBuffer2
+	text " great?"
+	done
+
 _MomLeavingText1::
 	text "Wow, that's a cute"
 	line "#MON."

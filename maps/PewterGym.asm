@@ -48,7 +48,12 @@ PewterGymBrockScript:
 .SpeechAfterTM:
 	writetext BrockFightDoneText
 	waitbutton
+	closetext
+	end
+
 .NoRoomForTM:
+	writetext BrockTMNoRoomText
+	waitbutton
 	closetext
 	end
 
@@ -63,14 +68,28 @@ TrainerCamperJerry:
 	closetext
 	end
 
+; Yellow's guide asks before he advises (vendor/pokeyellow/scripts/PewterGym.asm
+; :182-213). NO gets "It's a free service!" and the advice anyway; YES with a
+; PIKACHU gets the PIKACHU warning instead of the advice.
 PewterGymGuideScript:
 	faceplayer
 	opentext
 	checkevent EVENT_BEAT_BROCK
 	iftrue .PewterGymGuideWinScript
+	writetext PewterGymGuidePreAdviceText
+	yesorno
+	iffalse .PewterGymGuideFreeServiceScript
 	checkevent EVENT_GOT_STARTER_PIKACHU
 	iftrue .PewterGymGuidePikachuScript
-	writetext PewterGymGuideText
+	writetext PewterGymGuideBeginAdviceText
+	waitbutton
+	sjump .PewterGymGuideAdviceScript
+
+.PewterGymGuideFreeServiceScript:
+	writetext PewterGymGuideFreeServiceText
+	waitbutton
+.PewterGymGuideAdviceScript:
+	writetext PewterGymGuideAdviceText
 	waitbutton
 	closetext
 	end
@@ -128,7 +147,7 @@ BrockWinLossText:
 
 ReceivedBoulderBadgeText:
 	text "<PLAYER> received"
-	line "BOULDERBADGE."
+	line "the BOULDERBADGE!"
 	done
 
 BrockBoulderBadgeText:
@@ -159,8 +178,10 @@ BrockTMBideText:
 
 	para "A TM is good only"
 	line "once! So when you"
-	cont "use one, pick the"
-	cont "#MON carefully!"
+	cont "use one to teach"
+	cont "a new technique,"
+	cont "pick the #MON"
+	cont "carefully!"
 
 	para "That TM contains"
 	line "BIDE!"
@@ -169,6 +190,11 @@ BrockTMBideText:
 	line "absorb damage in"
 	cont "battle then pay"
 	cont "it back double!"
+	done
+
+BrockTMNoRoomText:
+	text "You don't have"
+	line "room for this!"
 	done
 
 BrockFightDoneText:
@@ -217,7 +243,7 @@ CamperJerryAfterBattleText:
 	cont "as BROCK!"
 	done
 
-PewterGymGuideText:
+PewterGymGuidePreAdviceText:
 	text "Hiya! I can tell"
 	line "you have what it"
 	cont "takes to become a"
@@ -227,7 +253,23 @@ PewterGymGuideText:
 	line "but I can tell"
 	cont "you how to win!"
 
-	para "The 1st #MON"
+	para "Let me take you"
+	line "to the top!"
+	done
+
+PewterGymGuideBeginAdviceText:
+	text "All right! Let's"
+	line "get happening!"
+	done
+
+PewterGymGuideFreeServiceText:
+	text "It's a free"
+	line "service! Let's"
+	cont "get happening!"
+	done
+
+PewterGymGuideAdviceText:
+	text "The 1st #MON"
 	line "out in a match is"
 	cont "at the top of the"
 	cont "#MON LIST!"

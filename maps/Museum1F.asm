@@ -65,12 +65,18 @@ Museum1FTicketCounterScript:
 
 ; Reachable only from the east room, i.e. from Pewter City's side door, which
 ; is exactly the situation Yellow's "you can't sneak in the back way" line is
-; written for.  Over the counter from the west he just greets you.
+; written for.
+; Yellow picks this conversation on POSITION, before any ticket check
+; (vendor/pokeyellow/scripts/Museum1F_2.asm:1-16, .behind_counter): standing at
+; (13,4) or (12,3) always gets it.  Those are the only two tiles on our map
+; from which the clerk can be talked to at all - the wall at x=11 seals the
+; west room off - so there is no ticket check here and the AMBER questions stay
+; answerable forever.  Yellow's third branch, "Please go to the other side!",
+; is for a ticketless player standing somewhere else beside the counter; our
+; re-cut leaves no such tile, so it has no port (N1d).
 Museum1FClerkScript:
 	faceplayer
 	opentext
-	checkevent EVENT_BOUGHT_MUSEUM_TICKET
-	iftrue .Greet
 	writetext Museum1FClerkBackWayText
 	yesorno
 	iffalse .AmberIsSap
@@ -81,12 +87,6 @@ Museum1FClerkScript:
 
 .AmberIsSap:
 	writetext Museum1FClerkAmberIsSapText
-	waitbutton
-	closetext
-	end
-
-.Greet:
-	writetext Museum1FClerkTakePlentyOfTimeText
 	waitbutton
 	closetext
 	end
