@@ -913,6 +913,10 @@ CountStep:
 	farcall StepHappiness
 
 .skip_happiness
+	; F3: every step, Pikachu's mood converges one unit toward 128 and the
+	; emotion modifier clears when it gets there (docs/PIKACHU-EMOTIONS.md A4.2).
+	farcall StepPikachuMood
+
 	; Every 256 steps, offset from the happiness incrementor by 128 steps,
 	; decrease the hatch counter of all your eggs until you reach the first
 	; one that is ready to hatch.

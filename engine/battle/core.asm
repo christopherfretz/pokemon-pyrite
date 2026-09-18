@@ -8302,6 +8302,9 @@ ExitBattle:
 	xor a
 	ld [wForceEvolution], a
 	predef EvolveAfterBattle
+; F3: Yellow's end_of_battle.asm:48-49 floors Pikachu's mood at 130 after a won
+; battle (docs/PIKACHU-EMOTIONS.md A4.2).
+	farcall UpdatePikachuMoodAfterBattle
 	farcall GivePokerusAndConvertBerries
 	ret
 

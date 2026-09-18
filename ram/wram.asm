@@ -1382,6 +1382,17 @@ ENDU
 endc
 
 
+; F3 Pikachu emotions (docs/PIKACHU-EMOTIONS.md).  Yellow keeps both of these in
+; its scratch area (wExpressionNumber / wPikaPicAnimNumber), i.e. not in the save
+; block, so ours are unsaved too.  They are WRAM0 rather than the "Pic Animations"
+; bank: the emotion interpreter runs from the overworld with SVBK = 1, and a
+; `ld [wPikaPicAnimNumber], a` there would land in bank 1, not bank 2.
+SECTION "Pikachu Emotion Scratch", WRAM0
+
+wPikaEmotionNumber:: db ; the PikachuEmotion* index the interpreter is running
+wPikaPicAnimNumber:: db ; the pikapic script index it selected (E1-E4 read this)
+
+
 SECTION "Video", WRAM0
 
 UNION
@@ -3024,8 +3035,8 @@ wGameTimeSeconds:: db
 wGameTimeFrames::  db
 
 ; Pikachu follower state (docs/FOLLOWER.md)
-wPikaFollowFlags::    db ; FOLLOWER_*_F
-wPikaFollowStepType:: db ; STEP_* of the player's last committed step
+wPikaFollowFlags::    db ; FOLLOWER_*_F, plus the emotion modifier in bits 5-7
+wPikaMood::           db ; F3: Yellow's wPikachuMood, 0-255, neutral 128
 
 wCurDay:: db
 
@@ -3570,6 +3581,7 @@ wPokeAnimBitmaskCurBit:: db
 wPokeAnimBitmaskBuffer:: ds 7
 	ds 2
 wPokeAnimStructEnd::
+
 
 
 SECTION "Battle Tower RAM", WRAMX

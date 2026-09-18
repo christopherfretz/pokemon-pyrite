@@ -43,6 +43,12 @@ ChangeHappiness:
 	cp EGG
 	ret z
 
+; F3: Yellow's PikachuMoods rides along with every happiness change made to the
+; starter Pikachu (docs/PIKACHU-EMOTIONS.md A4.2).
+	push bc
+	farcall ApplyStarterPikachuMood
+	pop bc
+
 	push bc
 	ld hl, wPartyMon1Happiness
 	ld bc, PARTYMON_STRUCT_LENGTH

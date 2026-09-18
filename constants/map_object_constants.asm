@@ -299,3 +299,8 @@ DEF NUM_STEPS EQU const_value
 	const FOLLOWER_SNAPPED_F ; 2: sitting on the player's tile, awaiting first step
 	const FOLLOWER_SCRIPTHIDE_F ; 3: a script is hiding it (Pokemon Center heal)
 	const FOLLOWER_HOPRIGHT_F ; 4: counter hop swings right, not left (F6b)
+; 5-7: F3's emotion modifier (Yellow's wPikachuEmotionModifier, 0-5).  Yellow
+; keeps it inside wMainDataStart..wMainDataEnd, i.e. it is saved, so ours has to
+; live in a saved byte too -- these three spare bits of the follower flags.
+DEF FOLLOWER_EMOTION_SHIFT EQU 5
+DEF FOLLOWER_EMOTION_MASK  EQU %11100000

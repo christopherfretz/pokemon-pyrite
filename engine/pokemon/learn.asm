@@ -115,6 +115,8 @@ LearnMove:
 .learned
 	ld hl, LearnedMoveText
 	call PrintText
+; F3 (A3 row 7): THUNDER / THUNDERBOLT on the starter Pikachu.
+	farcall PikachuLearnedMoveMood
 	ld b, 1
 	ret
 

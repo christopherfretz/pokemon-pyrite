@@ -534,6 +534,9 @@ PokeBallEffect:
 	predef NewPokedexEntry
 
 .skip_pokedex
+; F3 (A3 row 4): Yellow bumps Pikachu's mood here, right after the Pokedex beat.
+	farcall PikachuCaughtMonMood
+
 	ld a, [wBattleType]
 	cp BATTLETYPE_CONTEST
 	jp z, .catch_bug_contest_mon
@@ -1158,6 +1161,8 @@ EvoStoneEffect:
 	jp UseDisposableItem
 
 .NoEffect:
+; F3 (A3 row 6): the starter Pikachu refusing a stone sours its mood.
+	farcall PikachuRefusedStoneMood
 	call WontHaveAnyEffectMessage
 
 .DecidedNotToUse:
@@ -2285,6 +2290,10 @@ SuperRodEffect:
 	jr UseRod
 
 UseRod:
+; F3 (A3 row 5): Yellow sets the modifier when the rod goes in, not on a bite.
+	push de
+	farcall PikachuUsedRodMood
+	pop de
 	farcall FishFunction
 	ret
 

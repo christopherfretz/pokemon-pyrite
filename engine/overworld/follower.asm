@@ -286,17 +286,28 @@ CheckFacingFollower::
 	ret
 
 PikachuFollowerScript::
-; Talking to Pikachu (Yellow: it turns, cries and shows how it feels).
-; Happiness-dependent emotions come later; always happy for now.
-	callasm FollowerFacePlayer
-	loademote EMOTE_HAPPY
-	callasm FollowerSpawnEmote
-	cry PIKACHU
-	pause 20
-	callasm FollowerDespawnEmote
+; Talking to Pikachu.  F3: Yellow's real 2-D mood x happiness emotion system
+; (engine/pikachu/emotions.asm, docs/PIKACHU-EMOTIONS.md).
+	callasm TalkToPikachu
 	end
 
-FollowerFacePlayer:
+FollowerEmotionFrame::
+; One "unit" of an emotion animation, farcall'd from the emotion interpreter in
+; bank $3f.  Deliberately NOT HandleObjectStep: that runs the follower's own
+; step function, and MovementFunction_PikaFollower forces OBJECT_ACTION_STAND
+; on every idle frame, which would cancel the hop's walk cycle.
+; HandleObjectAction alone turns OBJECT_DIRECTION + OBJECT_ACTION into
+; OBJECT_FACING, which is all an in-place emotion needs.  Two DelayFrames,
+; because one of Yellow's ExecutePikachuMovementCommand iterations is two frames.
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call HandleObjectAction
+	call UpdateSprites
+	call DelayFrame
+	jp DelayFrame
+
+FollowerFacePlayer::
 	ld a, [wPlayerDirection]
 	and %00001100
 	xor %00000100 ; DOWN <-> UP, LEFT <-> RIGHT
@@ -307,7 +318,7 @@ FollowerFacePlayer:
 	call HandleObjectStep ; refresh OBJECT_FACING now
 	jp UpdateSprites
 
-FollowerSpawnEmote:
+FollowerSpawnEmote::
 ; Emote objects remember their parent's struct index in hMapObjectIndex.
 ; Script `pause`/`cry` only delay frames, so give the new emote object its
 ; first step here (MovementFunction_Emote sets it up) and redraw sprites.
@@ -351,7 +362,7 @@ FollowerSpawnEmote:
 	and a
 	ret
 
-FollowerDespawnEmote:
+FollowerDespawnEmote::
 	ld a, FOLLOWER_OBJECT
 	ldh [hMapObjectIndex], a
 	call DespawnEmote

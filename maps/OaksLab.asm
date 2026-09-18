@@ -68,6 +68,11 @@ OaksLabIntroScript:
 	waitsfx
 	givepoke PIKACHU, 5
 	setevent EVENT_GOT_STARTER_PIKACHU
+; F3 (docs/PIKACHU-EMOTIONS.md A6 Decision D): Yellow starts the gift Pikachu at
+; happiness 90 and mood 128 (wPikachuHappiness / wPikachuMood are initialised in
+; its new-game setup); Crystal's givepoke would leave it on the species' base
+; happiness instead.
+	callasm InitStarterPikachuMood
 	closetext
 	applymovement OAKSLAB_RIVAL, OaksLab_RivalToPlayerMovement
 	turnobject PLAYER, RIGHT
