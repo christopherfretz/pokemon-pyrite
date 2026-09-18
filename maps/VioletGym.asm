@@ -103,11 +103,13 @@ VioletGymGuideScript:
 	end
 
 VioletGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, FALKNER, FALKNER1
 	checkflag ENGINE_ZEPHYRBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 .Beaten:
-	gettrainername STRING_BUFFER_4, FALKNER, FALKNER1
 	jumpstd GymStatue2Script
 
 FalknerIntroText:

@@ -58,7 +58,14 @@ StdScripts::
 	add_stdscript HappinessCheckScript
 
 PokecenterNurseScript:
-; EVENT_WELCOMED_TO_POKECOM_CENTER is never set
+; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2 #151): the clock fan-out STAYS
+; -- day/night is an engine feature the operator kept -- but the #MON
+; COMMUNICATION CENTER variant of every branch is GONE.  It hung off
+; EVENT_WELCOMED_TO_POKECOM_CENTER, which nothing in the ROM ever sets, so one
+; stray setevent would have dropped a Gen-2 facility into a Kanto Pokecenter.
+; Deleting the branches (rather than leaving them dormant) is the robust fix;
+; the texts went with them (hack/data/text/std_text.asm).  The greetings
+; themselves now speak Yellow.
 
 	opentext
 	checktime MORN
@@ -70,42 +77,20 @@ PokecenterNurseScript:
 	sjump .ok
 
 .morn
-	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
-	iftrue .morn_comcenter
 	farwritetext NurseMornText
-	promptbutton
-	sjump .ok
-.morn_comcenter
-	farwritetext PokeComNurseMornText
 	promptbutton
 	sjump .ok
 
 .day
-	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
-	iftrue .day_comcenter
 	farwritetext NurseDayText
-	promptbutton
-	sjump .ok
-.day_comcenter
-	farwritetext PokeComNurseDayText
 	promptbutton
 	sjump .ok
 
 .nite
-	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
-	iftrue .nite_comcenter
 	farwritetext NurseNiteText
 	promptbutton
-	sjump .ok
-.nite_comcenter
-	farwritetext PokeComNurseNiteText
-	promptbutton
-	sjump .ok
 
 .ok
-	; only do this once
-	clearevent EVENT_WELCOMED_TO_POKECOM_CENTER
-
 	farwritetext NurseAskHealText
 	yesorno
 	iffalse .done
@@ -151,22 +136,22 @@ PokecenterNurseScript:
 	end
 
 .pokerus
-	; already cleared earlier in the script
-	checkevent EVENT_WELCOMED_TO_POKECOM_CENTER
-	iftrue .pokerus_comcenter
+; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2 #152): Pokerus STAYS (operator
+; ruling), and so does the nurse's explanation -- NursePokerusText now carries
+; it in full, because the thing that used to explain Pokerus was PROF.ELM
+; ringing the player's #GEAR, and in the Kanto act there is no ELM, no phone
+; and no #GEAR.  The specialphonecall is therefore gated, not deleted: the
+; Johto act sets ENGINE_POKEGEAR (hack/maps/PlayersHouse1F.asm) and gets
+; Crystal's call back for free.  ENGINE_POKEGEAR clear == "Kanto act" is the
+; hack's standing predicate (docs/PORTING.md).
 	farwritetext NursePokerusText
 	waitbutton
 	closetext
-	sjump .pokerus_done
-
-.pokerus_comcenter
-	farwritetext PokeComNursePokerusText
-	waitbutton
-	closetext
-
-.pokerus_done
 	setflag ENGINE_CAUGHT_POKERUS
+	checkflag ENGINE_POKEGEAR
+	iffalse .pokerus_no_phone
 	specialphonecall SPECIALCALL_POKERUS
+.pokerus_no_phone
 	end
 
 DifficultBookshelfScript:
@@ -612,6 +597,14 @@ InitializeEventsScript:
 ; Kanto hack (6i): EVENT_ROUTE_25_MISTY_BOYFRIEND / EVENT_TRAINERS_IN_CERULEAN_GYM
 ; deleted -- 6i removed Misty's date from Route 25, the only thing that ever
 ; cleared them, and 6e rebuilt Cerulean Gym with always-visible objects.
+; N1a (AUDIT-NPC-TEXT N1.2 #153): a THIRD setevent went at the same time,
+; `setevent EVENT_ROUTE_24_ROCKET`, and it is deliberate.  6h renamed that flag
+; in place to EVENT_BEAT_ROUTE_24_ROCKET (constants/event_flags.asm, "Route 24 /
+; Nugget Bridge"), so setting it at new game would have marked Yellow's Nugget
+; Bridge recruiter as already beaten.  The Route 24 Rocket is meant to be
+; visible from the first visit: his object_event carries no hide flag
+; (hack/maps/Route24.asm:429) and Route24RocketScript branches on
+; EVENT_BEAT_ROUTE_24_ROCKET alone.
 	setevent EVENT_COPYCATS_HOUSE_2F_DOLL
 	setevent EVENT_VIRIDIAN_GYM_BLUE
 	setevent EVENT_SEAFOAM_GYM_GYM_GUIDE
@@ -1768,10 +1761,13 @@ GymStatue1Script:
 	end
 
 GymStatue2Script:
+; Kanto hack (N1a): Yellow's _GymStatueText2 is ONE text box (city, #MON GYM,
+; LEADER, then WINNING TRAINERS: <RIVAL>/<PLAYER>), so the post-badge statue no
+; longer prints GymStatue_CityGymText first.  Both statues need wStringBuffer4
+; filled with the leader's name -- the gym map does that with gettrainername
+; before the jumpstd.
 	getcurlandmarkname STRING_BUFFER_3
 	opentext
-	farwritetext GymStatue_CityGymText
-	promptbutton
 	farwritetext GymStatue_WinningTrainersText
 	waitbutton
 	closetext

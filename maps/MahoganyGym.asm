@@ -140,11 +140,13 @@ MahoganyGymGuideScript:
 	end
 
 MahoganyGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, PRYCE, PRYCE1
 	checkflag ENGINE_GLACIERBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 .Beaten:
-	gettrainername STRING_BUFFER_4, PRYCE, PRYCE1
 	jumpstd GymStatue2Script
 
 PryceText_Intro:

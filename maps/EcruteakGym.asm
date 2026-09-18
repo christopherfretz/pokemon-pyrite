@@ -156,11 +156,13 @@ EcruteakGymGuideScript:
 	end
 
 EcruteakGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, MORTY, MORTY1
 	checkflag ENGINE_FOGBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 .Beaten:
-	gettrainername STRING_BUFFER_4, MORTY, MORTY1
 	jumpstd GymStatue2Script
 
 EcruteakGymPlayerStepUpMovement:

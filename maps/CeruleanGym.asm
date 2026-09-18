@@ -114,11 +114,13 @@ CeruleanGymGuideScript:
 	end
 
 CeruleanGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, MISTY, MISTY1
 	checkflag ENGINE_CASCADEBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 .Beaten:
-	gettrainername STRING_BUFFER_4, MISTY, MISTY1
 	jumpstd GymStatue2Script
 
 MistyIntroText:

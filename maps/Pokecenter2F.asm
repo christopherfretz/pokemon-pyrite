@@ -1,3 +1,20 @@
+; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2b).  All four Kanto Pokecenters
+; warp up here, so this floor is Kanto's CABLE CLUB.  Gen 1 puts the Cable Club
+; on the ground floor rather than up a staircase, but its rooms are the same
+; two -- CABLE TRADE CENTER and CABLE CLUB COLOSSEUM, both open from Viridian --
+; so the floor is kept and the Gen-2-only content is switched off instead:
+;   #154 the TRADE / COLOSSEUM receptionists gated on ENGINE_POKEDEX (Kanto-
+;        reachable) instead of EVENT_GAVE_MYSTERY_EGG_TO_ELM (Elm's Lab, i.e.
+;        never in Kanto -- both rooms were permanently "being adjusted");
+;   #155 the TIME CAPSULE receptionist keeps his tile (he blocks the door) but
+;        speaks Yellow's "This area is reserved…" line in the Kanto act;
+;   #156 the MYSTERY GIFT delivery guy never appears in the Kanto act;
+;   #157 Text_BrokeStadiumRules ("excluding EGGS") is reachable ONLY from the
+;        mobile-adapter path (.Mobile_InvalidParty), which #158 removes, so it
+;        is dead rather than deleted -- Johto keeps it;
+;   #158 the MOBILE_TRADE_ROOM / MOBILE_BATTLE_ROOM warps are gone.
+; "Kanto act" == ENGINE_POKEGEAR clear (docs/PORTING.md).
+
 	object_const_def
 	const POKECENTER2F_TRADE_RECEPTIONIST
 	const POKECENTER2F_BATTLE_RECEPTIONIST
@@ -16,6 +33,8 @@ Pokecenter2F_MapScripts:
 	def_callbacks
 
 Pokecenter2FCheckMysteryGiftScene:
+	checkflag ENGINE_POKEGEAR ; Kanto hack (N1a #156): Johto act only
+	iffalse .done
 	special CheckMysteryGift
 	ifequal $0, .done
 	clearevent EVENT_MYSTERY_GIFT_DELIVERY_GUY
@@ -67,7 +86,7 @@ Script_BattleRoomClosed:
 	end
 
 LinkReceptionistScript_Trade:
-	checkevent EVENT_GAVE_MYSTERY_EGG_TO_ELM
+	checkflag ENGINE_POKEDEX ; Kanto hack (N1a #154): was EVENT_GAVE_MYSTERY_EGG_TO_ELM
 	iffalse Script_TradeCenterClosed
 	opentext
 	writetext Text_TradeReceptionistIntro
@@ -169,7 +188,7 @@ BattleTradeMobile_WalkIn:
 	end
 
 LinkReceptionistScript_Battle:
-	checkevent EVENT_GAVE_MYSTERY_EGG_TO_ELM
+	checkflag ENGINE_POKEDEX ; Kanto hack (N1a #154): was EVENT_GAVE_MYSTERY_EGG_TO_ELM
 	iffalse Script_BattleRoomClosed
 	opentext
 	writetext Text_BattleReceptionistIntro
@@ -295,7 +314,20 @@ Script_TimeCapsuleClosed:
 	closetext
 	end
 
+Script_CableClubAreaReserved:
+; Kanto hack (N1a #155): the TIME CAPSULE is a Gen-2 concept end to end, so in
+; the Kanto act this receptionist never names it.  He keeps his tile because he
+; is what stands between the player and the TIME_CAPSULE door behind him.
+	faceplayer
+	opentext
+	writetext Text_CableClubAreaReserved
+	waitbutton
+	closetext
+	end
+
 LinkReceptionistScript_TimeCapsule:
+	checkflag ENGINE_POKEGEAR ; Kanto hack (N1a #155): Johto act only
+	iffalse Script_CableClubAreaReserved
 	checkevent EVENT_MET_BILL
 	iftrue Script_TimeCapsuleClosed
 	checkflag ENGINE_TIME_CAPSULE
@@ -940,6 +972,15 @@ Text_TimeCapsuleClosed:
 	cont "being adjusted."
 	done
 
+Text_CableClubAreaReserved:
+; Yellow: _CableClubNPCAreaReservedFor2FriendsLinkedByCableText
+; (vendor/pokeyellow/data/text/text_7.asm:199).
+	text "This area is"
+	line "reserved for 2"
+	cont "friends who are"
+	cont "linked by cable."
+	done
+
 Text_TradeRoomClosed:
 	text "I'm sorry--the"
 	line "TRADE MACHINE is"
@@ -1000,6 +1041,10 @@ Text_LikeTheLook:
 	done
 
 Text_BrokeStadiumRules:
+; Kanto hack (N1a #157): "excluding EGGS" is Gen-2, but the only writetext that
+; reaches this string is .Mobile_InvalidParty on the mobile-adapter path, which
+; needs CheckMobileAdapterStatusSpecial to pass AND the MOBILE_* warps #158
+; removed.  Unreachable in either act as things stand; left for Johto.
 	text "Excuse me!"
 
 	para "For STADIUM rules,"
@@ -1027,8 +1072,13 @@ Pokecenter2F_MapEvents:
 	warp_event  5,  0, TRADE_CENTER, 1
 	warp_event  9,  0, COLOSSEUM, 1
 	warp_event 13,  2, TIME_CAPSULE, 1
-	warp_event  6,  0, MOBILE_TRADE_ROOM, 1
-	warp_event 10,  0, MOBILE_BATTLE_ROOM, 1
+	; Kanto hack (N1a #158): MOBILE_TRADE_ROOM (6,0) and MOBILE_BATTLE_ROOM
+	; (10,0) warps deleted -- the Game Boy mobile adapter is Japan-only Crystal
+	; hardware.  They were the last two warps, so warp ids 1-4 are unchanged
+	; and the Pokecenter 1F stairs / TRADE_CENTER / COLOSSEUM / TIME_CAPSULE
+	; return warps still land correctly.  MobileTradeRoom.asm and
+	; MobileBattleRoom.asm are untouched but now unreachable; their return
+	; warps (POKECENTER_2F, 5 and 6) would need these lines back.
 
 	def_coord_events
 

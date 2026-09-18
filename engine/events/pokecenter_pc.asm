@@ -1,8 +1,21 @@
+; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2 #149/#150).  Two Yellow rules
+; that Crystal's PC does not have:
+;   1. The storage PC is "SOMEONE's PC" until the player has met BILL, and only
+;      then "BILL's PC" (vendor/pokeyellow/engine/pokemon/bills_pc.asm:28,85).
+;      Crystal has no such state, so the two SOMEONES_* index sets below are
+;      new, and PCPC_CheckMetBill picks between them.
+;   2. Gen 1 has no Mail, so the player's PC has no MAIL BOX entry in the Kanto
+;      act (PLAYERSPC_NO_MAIL below).  "Kanto act" == ENGINE_POKEGEAR clear,
+;      the hack's standing predicate: the #GEAR is handed out on entering
+;      Johto (docs/PORTING.md).
+
 	; PokemonCenterPC.WhichPC indexes
 	const_def
-	const PCPC_BEFORE_POKEDEX ; 0
-	const PCPC_BEFORE_HOF     ; 1
-	const PCPC_POSTGAME       ; 2
+	const PCPC_BEFORE_POKEDEX          ; 0
+	const PCPC_BEFORE_HOF              ; 1
+	const PCPC_POSTGAME                ; 2
+	const PCPC_SOMEONES_BEFORE_POKEDEX ; 3
+	const PCPC_SOMEONES_BEFORE_HOF     ; 4
 
 	; PokemonCenterPC.Jumptable indexes
 	const_def
@@ -11,6 +24,7 @@
 	const PCPCITEM_OAKS_PC      ; 2
 	const PCPCITEM_HALL_OF_FAME ; 3
 	const PCPCITEM_TURN_OFF     ; 4
+	const PCPCITEM_SOMEONES_PC  ; 5
 
 PokemonCenterPC:
 	call PC_CheckPartyForPokemon
@@ -60,9 +74,11 @@ PokemonCenterPC:
 	dw OaksPC,       .String_OaksPC
 	dw HallOfFamePC, .String_HallOfFame
 	dw TurnOffPC,    .String_TurnOff
+	dw BillsPC,      .String_SomeonesPC
 
 .String_PlayersPC:  db "<PLAYER>'s PC@"
 .String_BillsPC:    db "BILL's PC@"
+.String_SomeonesPC: db "SOMEONE's PC@"
 .String_OaksPC:     db "PROF.OAK's PC@"
 .String_HallOfFame: db "HALL OF FAME@"
 .String_TurnOff:    db "TURN OFF@"
@@ -94,18 +110,73 @@ PokemonCenterPC:
 	db PCPCITEM_TURN_OFF
 	db -1 ; end
 
+	; PCPC_SOMEONES_BEFORE_POKEDEX
+	db 3
+	db PCPCITEM_SOMEONES_PC
+	db PCPCITEM_PLAYERS_PC
+	db PCPCITEM_TURN_OFF
+	db -1 ; end
+
+	; PCPC_SOMEONES_BEFORE_HOF
+	db 4
+	db PCPCITEM_SOMEONES_PC
+	db PCPCITEM_PLAYERS_PC
+	db PCPCITEM_OAKS_PC
+	db PCPCITEM_TURN_OFF
+	db -1 ; end
+
 .ChooseWhichPCListToUse:
 	call CheckReceivedDex
 	jr nz, .got_dex
+	call PCPC_CheckMetBill
 	ld a, PCPC_BEFORE_POKEDEX
+	ret nz
+	ld a, PCPC_SOMEONES_BEFORE_POKEDEX
 	ret
 
 .got_dex
 	ld a, [wHallOfFameCount]
 	and a
+	jr nz, .postgame
+	call PCPC_CheckMetBill
 	ld a, PCPC_BEFORE_HOF
-	ret z
+	ret nz
+	ld a, PCPC_SOMEONES_BEFORE_HOF
+	ret
+
+.postgame
 	ld a, PCPC_POSTGAME
+	ret
+
+PCPC_CheckMetBill::
+; Kanto hack (N1a): Yellow's EVENT_MET_BILL test, done on a flag this hack
+; actually sets.  hack/maps/BillsHouse.asm deliberately leaves Crystal's
+; EVENT_MET_BILL alone (over in Johto it is BillsFamilysHouse's object-hide
+; flag), and the Kanto Sea Cottage beat ends one text box later with the
+; S.S. TICKET, which is permanent.  Returns nz if the player has met BILL.
+	ld de, EVENT_GOT_SS_TICKET
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret
+
+PCPC_CheckKantoAct::
+; Kanto hack (N1a): returns nz while the game is in the Kanto act, i.e. while
+; the player has no #GEAR.  ENGINE_POKEGEAR is set on entering Johto
+; (hack/maps/PlayersHouse1F.asm).
+	ld de, ENGINE_POKEGEAR
+	ld b, CHECK_FLAG
+	farcall EngineFlagAction
+	ld a, c
+	and a
+	jr nz, .johto
+	ld a, 1
+	and a
+	ret
+
+.johto
+	xor a
 	ret
 
 PC_CheckPartyForPokemon:
@@ -126,8 +197,9 @@ PC_CheckPartyForPokemon:
 
 	; PlayersPCMenuData.WhichPC indexes
 	const_def
-	const PLAYERSPC_NORMAL ; 0
-	const PLAYERSPC_HOUSE  ; 1
+	const PLAYERSPC_NORMAL  ; 0
+	const PLAYERSPC_HOUSE   ; 1
+	const PLAYERSPC_NO_MAIL ; 2 ; Kanto hack (N1a): Gen 1 has no Mail
 
 	; PlayersPCMenuData.PlayersPCMenuPointers indexes
 	const_def
@@ -141,7 +213,11 @@ PC_CheckPartyForPokemon:
 
 BillsPC:
 	call PC_PlayChoosePCSound
+	call PCPC_CheckMetBill ; clobbers hl, so probe first
 	ld hl, PokecenterBillsPCText
+	jr nz, .met_bill
+	ld hl, PokecenterSomeonesPCText
+.met_bill
 	call PC_DisplayText
 	farcall _BillsPC
 	and a
@@ -151,7 +227,11 @@ PlayersPC:
 	call PC_PlayChoosePCSound
 	ld hl, PokecenterPlayersPCText
 	call PC_DisplayText
+	call PCPC_CheckKantoAct ; clobbers b, so probe first
 	ld b, PLAYERSPC_NORMAL
+	jr z, .got_set
+	ld b, PLAYERSPC_NO_MAIL
+.got_set
 	call _PlayersPC
 	and a
 	ret
@@ -309,6 +389,14 @@ PlayersPCMenuData:
 	db PLAYERSPCITEM_MAIL_BOX
 	db PLAYERSPCITEM_DECORATION
 	db PLAYERSPCITEM_TURN_OFF
+	db -1 ; end
+
+	; PLAYERSPC_NO_MAIL ; Kanto act: Yellow's WITHDRAW / DEPOSIT / TOSS / LOG OFF
+	db 4
+	db PLAYERSPCITEM_WITHDRAW_ITEM
+	db PLAYERSPCITEM_DEPOSIT_ITEM
+	db PLAYERSPCITEM_TOSS_ITEM
+	db PLAYERSPCITEM_LOG_OFF
 	db -1 ; end
 
 PC_DisplayTextWaitMenu:
@@ -660,6 +748,10 @@ PokecenterPCTurnOnText:
 
 PokecenterPCWhoseText:
 	text_far _PokecenterPCWhoseText
+	text_end
+
+PokecenterSomeonesPCText:
+	text_far _PokecenterSomeonesPCText
 	text_end
 
 PokecenterBillsPCText:

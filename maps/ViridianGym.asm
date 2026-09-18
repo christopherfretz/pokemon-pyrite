@@ -53,12 +53,14 @@ ViridianGymGuideScript:
 	end
 
 ViridianGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, BLUE, BLUE1
 	checkflag ENGINE_EARTHBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 
 .Beaten:
-	gettrainername STRING_BUFFER_4, BLUE, BLUE1
 	jumpstd GymStatue2Script
 
 LeaderBlueBeforeText:

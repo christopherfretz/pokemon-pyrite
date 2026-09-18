@@ -368,13 +368,15 @@ MartSaffron:
 	db -1 ; end
 
 MartMtMoon:
-	db 6 ; # items
+; Kanto hack (N1a): FLOWER_MAIL dropped -- Mail is a Gen-2 item class and this
+; table sits one `pokemart` away from a Kanto counter (Yellow's Mt. Moon
+; Pokecenter has no clerk, so nothing references MART_MT_MOON today).
+	db 5 ; # items
 	db POKE_DOLL
 	db FRESH_WATER
 	db SODA_POP
 	db LEMONADE
 	db REPEL
-	db FLOWER_MAIL ; Kanto hack: was PORTRAITMAIL
 	db -1 ; end
 
 MartIndigoPlateau:

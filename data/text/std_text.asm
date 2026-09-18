@@ -1,13 +1,23 @@
+; Kanto hack (N1a): the nurse keeps Crystal's clock fan-out (day/night is an
+; engine feature the operator kept) but speaks Yellow's words.  Yellow's
+; "Welcome to our #MON CENTER!" is the greeting; the rest of
+; _PokemonCenterWelcomeText ("We heal your #MON back to perfect health!")
+; lives in NurseAskHealText below, which is the box that follows.
+; DELETED here: PokeComNurseMorn/Day/NiteText and PokeComNursePokerusText,
+; the #MON COMMUNICATION CENTER variants.  They hung off
+; EVENT_WELCOMED_TO_POKECOM_CENTER, which is set by nothing in the whole ROM,
+; so a single stray setevent would have dropped a Gen-2 facility into a Kanto
+; Pokecenter.  Restore from vendor/pokecrystal if the Johto act wants them.
 NurseMornText:
 	text "Good morning!"
 	line "Welcome to our"
-	cont "#MON CENTER."
+	cont "#MON CENTER!"
 	done
 
 NurseDayText:
 	text "Hello!"
 	line "Welcome to our"
-	cont "#MON CENTER."
+	cont "#MON CENTER!"
 	done
 
 NurseNiteText:
@@ -15,60 +25,31 @@ NurseNiteText:
 	line "You're out late."
 
 	para "Welcome to our"
-	line "#MON CENTER."
-	done
-
-PokeComNurseMornText:
-	text "Good morning!"
-
-	para "This is the #-"
-	line "MON COMMUNICATION"
-
-	para "CENTER--or the"
-	line "#COM CENTER."
-	done
-
-PokeComNurseDayText:
-	text "Hello!"
-
-	para "This is the #-"
-	line "MON COMMUNICATION"
-
-	para "CENTER--or the"
-	line "#COM CENTER."
-	done
-
-PokeComNurseNiteText:
-	text "Good to see you"
-	line "working so late."
-
-	para "This is the #-"
-	line "MON COMMUNICATION"
-
-	para "CENTER--or the"
-	line "#COM CENTER."
+	line "#MON CENTER!"
 	done
 
 NurseAskHealText:
-	text "We can heal your"
-	line "#MON to perfect"
-	cont "health."
+; Yellow: _PokemonCenterWelcomeText tail + _ShallWeHealYourPokemonText
+; (vendor/pokeyellow/data/text/text_7.asm:163,172).
+	text "We heal your"
+	line "#MON back to"
+	cont "perfect health!"
 
 	para "Shall we heal your"
 	line "#MON?"
 	done
 
 NurseTakePokemonText:
-	text "OK, may I see your"
-	line "#MON?"
+; Yellow: _NeedYourPokemonText (vendor/pokeyellow/data/text/text_7.asm:177).
+	text "OK. We'll need"
+	line "your #MON."
 	done
 
 NurseReturnPokemonText:
-	text "Thank you for"
-	line "waiting."
-
-	para "Your #MON are"
-	line "fully healed."
+; Yellow: _PokemonFightingFitText (vendor/pokeyellow/data/text/text_7.asm:182).
+	text "Thank you!"
+	line "Your #MON are"
+	cont "fighting fit!"
 	done
 
 NurseGoodbyeText:
@@ -82,6 +63,10 @@ NurseGoodbyeText:
 	done
 
 NursePokerusText:
+; Kanto hack (N1a): Pokerus stays (operator ruling), but the Elm phone call
+; that used to explain it does not exist in Kanto, so the nurse explains it
+; herself at the counter.  The facts are Gen 2's own Pokerus lore; no
+; professor, no #GEAR.  See hack/engine/events/std_scripts.asm .pokerus.
 	text "Your #MON"
 	line "appear to be"
 
@@ -92,37 +77,34 @@ NursePokerusText:
 	line "healthy and seem"
 	cont "to be fine."
 
-	para "But we can't tell"
-	line "you anything more"
+	para "We call it the"
+	line "#RUS. It is"
 
-	para "at a #MON"
-	line "CENTER."
+	para "rare, and it is"
+	line "good news--it"
+
+	para "makes a #MON"
+	line "grow stronger"
+	cont "much faster."
+
+	para "It fades in a day"
+	line "or two, but any"
+
+	para "#MON in your"
+	line "BOX will keep it."
 	done
 
-PokeComNursePokerusText:
-	text "Your #MON"
-	line "appear to be"
-
-	para "infected by tiny"
-	line "life forms."
-
-	para "Your #MON are"
-	line "healthy and seem"
-	cont "to be fine."
-
-	para "But we can't tell"
-	line "you anything more."
-	done
-
+; Kanto hack (N1a): Yellow drives every bookcase from one string,
+; _PokemonBooksText (vendor/pokeyellow/data/text/text_2.asm:846).  Both std
+; bookshelf scripts print it; the labels are kept so Johto can re-split them.
 DifficultBookshelfText:
-	text "It's full of"
-	line "difficult books."
+	text "Crammed full of"
+	line "#MON books!"
 	done
 
 PictureBookshelfText:
-	text "A whole collection"
-	line "of #MON picture"
-	cont "books!"
+	text "Crammed full of"
+	line "#MON books!"
 	done
 
 MagazineBookshelfText:
@@ -208,10 +190,10 @@ PokecenterSignText:
 	done
 
 MartSignText:
-	text "For All Your"
-	line "#MON Needs"
-
-	para "#MON MART"
+; Yellow: _MartSignText (vendor/pokeyellow/data/text/text_1.asm:49).
+	text "All your item"
+	line "needs fulfilled!"
+	cont "#MON MART"
 	done
 
 ContestResults_ReadyToJudgeText:
@@ -278,18 +260,36 @@ ContestResults_PartyFullText:
 	line "in BILL's PC."
 	done
 
+; Kanto hack (N1a): Yellow's statues are one text each and both name the
+; LEADER and the RIVAL (_GymStatueText1 / _GymStatueText2,
+; vendor/pokeyellow/data/text/text_2.asm:142,155).  GymStatue_CityGymText is
+; now the whole pre-badge statue, GymStatue_WinningTrainersText the whole
+; post-badge one -- GymStatue2Script no longer prints both.
+; wStringBuffer3 = city (getcurlandmarkname), wStringBuffer4 = leader
+; (gettrainername, done by the gym map before the jumpstd).
 GymStatue_CityGymText:
 	text_ram wStringBuffer3
 	text_start
 	line "#MON GYM"
+	cont "LEADER: @"
+	text_ram wStringBuffer4
+	text_start
+
+	para "WINNING TRAINERS:"
+	line "<RIVAL>"
 	done
 
 GymStatue_WinningTrainersText:
-	text "LEADER: @"
+	text_ram wStringBuffer3
+	text_start
+	line "#MON GYM"
+	cont "LEADER: @"
 	text_ram wStringBuffer4
 	text_start
+
 	para "WINNING TRAINERS:"
-	line "<PLAYER>"
+	line "<RIVAL>"
+	cont "<PLAYER>"
 	done
 
 CoinVendor_WelcomeText:

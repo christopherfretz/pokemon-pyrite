@@ -255,10 +255,16 @@ _CoordinatesEventText::
 	done
 
 _ReceivedItemText::
-	text "<PLAYER> received"
+; Kanto hack (N1a): Yellow's give-item voice, "<PLAYER> got the DOME FOSSIL!"
+; (vendor/pokeyellow/text/MtMoonB2F.asm:34, _OaksAideGotItemText
+; vendor/pokeyellow/data/text/text_1.asm:135).  This is the shared
+; verbosegiveitem string (hack/engine/overworld/scripting.asm GiveItemScript)
+; and nothing else -- trades, Mail and the std ReceiveItemScript have their
+; own texts -- so the whole game speaks Yellow here.
+	text "<PLAYER> got the"
 	line "@"
 	text_ram wStringBuffer4
-	text "."
+	text "!"
 	done
 
 _PutItemInPocketText::
@@ -639,8 +645,10 @@ _MartSellPriceText::
 	done
 
 _MartWelcomeText::
-	text "Welcome! How may I"
-	line "help you?"
+; Kanto hack (N1a): Yellow's _PokemartGreetingText
+; (vendor/pokeyellow/data/text/text_7.asm:5).
+	text "Hi there!"
+	line "May I help you?"
 	done
 
 _MartThanksText::
@@ -659,17 +667,20 @@ _MartPackFullText::
 	done
 
 _MartCantBuyText::
-	text "Sorry, I can't buy"
-	line "that from you."
+; Yellow: _PokemartUnsellableItemText (text_7.asm:74).
+	text "I can't put a"
+	line "price on that."
 	prompt
 
 _MartComeAgainText::
-	text "Please come again!"
+; Yellow: _PokemartThankYouText (text_7.asm:79).
+	text "Thank you!"
 	done
 
 _MartAskMoreText::
-	text "Can I do anything"
-	line "else for you?"
+; Yellow: _PokemartAnythingElseText (text_7.asm:83).
+	text "Is there anything"
+	line "else I can do?"
 	done
 
 _MartBoughtText::

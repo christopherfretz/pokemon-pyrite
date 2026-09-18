@@ -1164,6 +1164,18 @@ _PokecenterBillsPCText::
 	line "System opened."
 	prompt
 
+_PokecenterSomeonesPCText::
+; Kanto hack (N1a): Yellow's pre-BILL variant, _AccessedSomeonesPCText
+; (vendor/pokeyellow/data/text/text_3.asm:186).  Selected by
+; hack/engine/events/pokecenter_pc.asm on the same test as the
+; "SOMEONE's PC" menu entry.
+	text "Accessed someone's"
+	line "PC."
+
+	para "Accessed #MON"
+	line "Storage System."
+	prompt
+
 _PokecenterPlayersPCText::
 	text "Accessed own PC."
 

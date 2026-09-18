@@ -103,11 +103,13 @@ TrainerTwinsJoAndZoe2:
 	end
 
 CeladonGymStatue:
+	; Kanto hack (N1a): Yellow's pre-badge statue names the LEADER too
+	; (_GymStatueText1), so wStringBuffer4 must be filled for BOTH statues.
+	gettrainername STRING_BUFFER_4, ERIKA, ERIKA1
 	checkflag ENGINE_RAINBOWBADGE
 	iftrue .Beaten
 	jumpstd GymStatue1Script
 .Beaten:
-	gettrainername STRING_BUFFER_4, ERIKA, ERIKA1
 	jumpstd GymStatue2Script
 
 ErikaBeforeBattleText:
