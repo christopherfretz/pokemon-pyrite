@@ -13,6 +13,11 @@ ViridianCity_MapScripts:
 	def_scene_scripts
 	scene_script ViridianCityGrampsBlockScene, SCENE_VIRIDIANCITY_GRAMPS_BLOCK
 	scene_script ViridianCityNoopScene,        SCENE_VIRIDIANCITY_NOOP
+; V1: Yellow's third VIRIDIAN CITY script state, SCRIPT_VIRIDIANCITY_AFTER_POKEDEX
+; (vendor/pokeyellow/scripts/ViridianCity.asm): the old man is awake and waiting
+; on the same tile, and stepping in front of him starts the catch demo.
+; APPENDED so SCENE_VIRIDIANCITY_NOOP keeps id 1 for the existing savestates.
+	scene_script ViridianCityOldManWaitingScene, SCENE_VIRIDIANCITY_OLD_MAN_WAITING
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, ViridianCityFlypointCallback
@@ -20,16 +25,16 @@ ViridianCity_MapScripts:
 
 ViridianCityGrampsBlockScene:
 ViridianCityNoopScene:
+ViridianCityOldManWaitingScene:
 	end
 
-; Yellow's grumpy old man (docs/M2-PARCEL.md): until OAK'S PARCEL is
-; delivered he stands in the road to ROUTE 2 and turns the player back.
-ViridianCityGrampsBlockLeft:
-	turnobject VIRIDIANCITY_GRAMPS1, LEFT
-	sjump ViridianCityGrampsBlock
-
-ViridianCityGrampsBlockRight:
-	turnobject VIRIDIANCITY_GRAMPS1, RIGHT
+; Yellow's sleepy old man (docs/M2-PARCEL.md, V1): until OAK'S PARCEL is
+; delivered he lies across (18,9) -- the middle of the three-tile road north,
+; with the girl who apologises for him beside him at (17,9).  (19,9) is the only
+; gap in that row, and stepping onto it is Yellow's trigger
+; (ViridianCityCheckSleepingOldMan: y == 9 && x == 19): his text, then the player
+; is forced one step back DOWN.  The x=18 and x=17 approaches are plain body
+; collisions with no text, in Yellow and here.  He never turns -- he is asleep.
 ViridianCityGrampsBlock:
 	opentext
 	writetext ViridianCityGrampsPrivatePropertyText
@@ -63,44 +68,10 @@ ViridianCityCoffeeGramps:
 	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	iftrue .ShowYouAgain
 	checkevent EVENT_OAK_GOT_PARCEL
-	iftrue .HadMyCoffee
+	iftrue ViridianCityGrampsCatchDemo
 	writetext ViridianCityGrampsPrivatePropertyText
 	waitbutton
 	closetext
-	end
-
-.HadMyCoffee:
-	writetext ViridianCityGrampsHadMyCoffeeText
-	waitbutton
-	closetext
-	loadwildmon RATTATA, 5
-	setval TRUE ; the ball breaks free
-	special OldManCatchTutorial
-	reloadmap
-	faceplayer
-	opentext
-	writetext ViridianCityGrampsLosingMyTouchText
-	waitbutton
-	closetext
-	; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 4.3): Yellow's post-demo beat.  He walks
-	; six tiles DOWN the road towards the MART and is gone until he has restocked
-	; (ViridianMart's NEWMAP callback clears the flag again); the OBJECTS callback
-	; above then stands him beside the road at (17,5), Yellow's own tile.
-	; Yellow picks between two movements on the player's X
-	; (vendor/pokeyellow/scripts/ViridianCity.asm:219-243): the six-DOWN when the
-	; column below him is clear, one step aside when the player is standing in it.
-	; Yellow tests `cp 19` because its old man can only be spoken to from the east;
-	; ours is approachable from (17,3) and (19,3) as well, so the test is "is the
-	; player in MY column".
-	readvar VAR_XCOORD
-	ifequal 18, .StepAside
-	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsOffToMartMovement
-	sjump .GoneToMart
-.StepAside:
-	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsStepAsideMovement
-.GoneToMart:
-	disappear VIRIDIANCITY_GRAMPS1 ; sets EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
-	setevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	end
 
 .ShowYouAgain:
@@ -135,8 +106,60 @@ ViridianCityCoffeeGramps:
 	closetext
 	end
 
+; V1: Yellow's ViridianCityCheckWaitingOldMan.  Once OAK'S PARCEL is delivered
+; (OaksLab setmapscene) the old man is awake on the same tile and the demo starts
+; by itself when the player steps onto (19,9) -- no A press: he turns to face the
+; player, the player turns to face him, and he offers the demonstration.
+ViridianCityOldManWaitingTrigger:
+	turnobject VIRIDIANCITY_GRAMPS1, RIGHT
+	turnobject PLAYER, LEFT
+	opentext
+	sjump ViridianCityGrampsCatchDemo
+
+; The catch demo itself, shared by the (19,9) trigger above and by talking to him
+; from below.  Entered with text open.
+ViridianCityGrampsCatchDemo:
+	writetext ViridianCityGrampsHadMyCoffeeText
+	waitbutton
+	closetext
+	loadwildmon RATTATA, 5
+	setval TRUE ; the ball breaks free
+	special OldManCatchTutorial
+	reloadmap
+	readvar VAR_XCOORD
+	ifequal 19, .FacePlayerEast
+	turnobject VIRIDIANCITY_GRAMPS1, DOWN
+	sjump .LosingMyTouch
+.FacePlayerEast:
+	turnobject VIRIDIANCITY_GRAMPS1, RIGHT
+.LosingMyTouch:
+	opentext
+	writetext ViridianCityGrampsLosingMyTouchText
+	waitbutton
+	closetext
+	; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 4.3) / V1: Yellow's post-demo beat.  He
+	; walks six tiles DOWN the road towards the MART and is gone until he has
+	; restocked (ViridianMart's NEWMAP callback clears the flag again); the OBJECTS
+	; callback above then stands him beside the road at (17,5), Yellow's own tile.
+	; Yellow picks between two movements on the player's X
+	; (vendor/pokeyellow/scripts/ViridianCity.asm:219-243) and we now test the same
+	; `cp 19`: straight down the road when the player is east of him on (19,9),
+	; one step RIGHT first when they are below him in his own column.
+	readvar VAR_XCOORD
+	ifequal 19, .OffToMart
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsStepAsideMovement
+	sjump .GoneToMart
+.OffToMart:
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsOffToMartMovement
+.GoneToMart:
+	disappear VIRIDIANCITY_GRAMPS1 ; sets EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	setevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
+	setscene SCENE_VIRIDIANCITY_NOOP
+	end
+
 ; Yellow's ViridianCityOldManMovementData2, verbatim: six steps DOWN.  Column 18
-; is walkable on rows 4-9 (scripts/mapgrid.py ViridianCity), so (18,3) -> (18,9).
+; is walkable on rows 10-15 (scripts/mapgrid.py ViridianCity), so his walk-off
+; runs (18,9) -> (18,15), the same six tiles Yellow's does.
 ViridianCity_GrampsOffToMartMovement:
 	step DOWN
 	step DOWN
@@ -146,10 +169,18 @@ ViridianCity_GrampsOffToMartMovement:
 	step DOWN
 	step_end
 
-; Yellow's ViridianCityOldManMovementData1, for when the player (or the follower
-; behind them) is standing in that column.
+; Yellow's ViridianCityOldManMovementData1, for when the player is below him in
+; his own column.  Data1 is a single NPC_MOVEMENT_RIGHT with NO $ff terminator,
+; so it falls through into Data2's six DOWN: verified in the Yellow harness
+; (V1 phase C), (18,9) -> (19,9) -> (19,15).
 ViridianCity_GrampsStepAsideMovement:
 	step RIGHT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
 	step_end
 
 ; L1 (4.6): Yellow's gambler by the gym.  He is the hint that the GYM is shut,
@@ -488,8 +519,8 @@ ViridianCity_MapEvents:
 	warp_event 23, 15, VIRIDIAN_SCHOOL_HOUSE, 1
 
 	def_coord_events
-	coord_event 17,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockRight
-	coord_event 19,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockLeft
+	coord_event 19,  9, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlock
+	coord_event 19,  9, SCENE_VIRIDIANCITY_OLD_MAN_WAITING, ViridianCityOldManWaitingTrigger
 	coord_event 32,  8, -1, ViridianGymLockedDoor ; L1 (R1): the locked GYM door
 
 	def_bg_events
@@ -501,7 +532,7 @@ ViridianCity_MapEvents:
 	bg_event 30, 19, BGEVENT_READ, ViridianCityMartSign
 
 	def_object_events
-	object_event 18,  3, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	object_event 18,  9, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
 	object_event 30,  8, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianCityGrampsNearGym, -1
 	object_event  6, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityDreamEaterFisher, -1
 	object_event 13, 20, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungsterScript, -1
