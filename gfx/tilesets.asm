@@ -9,12 +9,6 @@ SECTION "Tileset Data 1", ROMX
 TilesetKantoGFX::
 INCBIN "gfx/tilesets/kanto.2bpp.lz"
 
-TilesetKantoMeta::
-INCBIN "data/tilesets/kanto_metatiles.bin"
-
-TilesetKantoColl::
-INCLUDE "data/tilesets/kanto_collision.asm"
-
 Tileset0GFX::
 TilesetJohtoGFX::
 INCBIN "gfx/tilesets/johto.2bpp.lz"
@@ -335,3 +329,18 @@ INCBIN "data/tilesets/omanyte_word_room_metatiles.bin"
 
 TilesetAerodactylWordRoomMeta::
 INCBIN "data/tilesets/aerodactyl_word_room_metatiles.bin"
+
+
+SECTION "Tileset Data 9", ROMX
+
+; Kanto's metatile and collision tables, moved out of "Tileset Data 1" by
+; M4 step 7b (docs/M4-VERMILION.md): the five new gate-warp metatiles
+; $97-$9b overflowed that section by 46 bytes.  `tileset` (data/tilesets.asm)
+; emits a separate `dba` for GFX, Meta and Coll, so the three are free to sit
+; in different banks.  Kanto grows with every remaining Kanto milestone, so it
+; gets a section of its own instead of squeezing.
+TilesetKantoMeta::
+INCBIN "data/tilesets/kanto_metatiles.bin"
+
+TilesetKantoColl::
+INCLUDE "data/tilesets/kanto_collision.asm"

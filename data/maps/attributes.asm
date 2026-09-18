@@ -330,8 +330,13 @@ ENDM
 	connection south, Route13, ROUTE_13, -20
 	connection west, Route11, ROUTE_11, 9
 
+; Kanto hack: Vermilion, Routes 5/6/11 re-cut from Yellow (docs/M4-VERMILION.md,
+; 7b).  Route 11 is 30x9 now and meets Vermilion City four blocks down its east
+; edge -- Yellow's own offsets (headers/Route11.asm, headers/VermilionCity.asm),
+; transferred unchanged the way M3 did for Cerulean.  The Route 12 y-offset is
+; untouched: widening Route 11 extends it eastward only.
 	map_attributes Route11, ROUTE_11, $0f
-	connection west, VermilionCity, VERMILION_CITY, 0
+	connection west, VermilionCity, VERMILION_CITY, -4
 	connection east, Route12, ROUTE_12, -9
 
 	map_attributes LavenderTown, LAVENDER_TOWN, $2c
@@ -341,7 +346,7 @@ ENDM
 
 	map_attributes VermilionCity, VERMILION_CITY, $43
 	connection north, Route6, ROUTE_6, 5
-	connection east, Route11, ROUTE_11, 0
+	connection east, Route11, ROUTE_11, 4
 
 	map_attributes Route6, ROUTE_6, $0f
 	connection north, SaffronCity, SAFFRON_CITY, -5

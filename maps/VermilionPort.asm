@@ -300,16 +300,16 @@ VermilionPort_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  9,  5, VERMILION_PORT_PASSAGE, 5
-	warp_event  7, 17, FAST_SHIP_1F, 1
+	warp_event 14,  0, VERMILION_CITY, 6
+	warp_event 14,  2, FAST_SHIP_1F, 1
 
 	def_coord_events
-	coord_event  7, 11, SCENE_VERMILIONPORT_ASK_ENTER_SHIP, VermilionPortWalkUpToShipScript
+	coord_event  4,  1, SCENE_VERMILIONPORT_ASK_ENTER_SHIP, VermilionPortWalkUpToShipScript
 
 	def_bg_events
-	bg_event 16, 13, BGEVENT_ITEM, VermilionPortHiddenIron
+	bg_event 20,  0, BGEVENT_ITEM, VermilionPortHiddenIron
 
 	def_object_events
-	object_event  7, 17, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorAtGangwayScript, EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY
-	object_event  6, 11, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorScript, -1
-	object_event 11, 11, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSuperNerdScript, -1
+	object_event  4,  0, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorAtGangwayScript, EVENT_VERMILION_PORT_SAILOR_AT_GANGWAY
+	object_event  6,  0, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSailorScript, -1
+	object_event  9,  0, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPortSuperNerdScript, -1

@@ -146,8 +146,8 @@ ENDM
 	map_const DRAGONS_DEN_B1F,                             20, 18 ; 81
 	map_const DRAGON_SHRINE,                                5,  5 ; 82
 	map_const TOHJO_FALLS,                                 15,  9 ; 83
-	map_const DIGLETTS_CAVE,                               10, 18 ; 84
-	map_const UNDERGROUND_PATH,                             3, 14 ; 85
+	map_const DIGLETTS_CAVE,                               20, 18 ; 84
+	map_const UNDERGROUND_PATH,                             4, 23 ; 85
 	map_const ROCK_TUNNEL_1F,                              15, 18 ; 86
 	map_const ROCK_TUNNEL_B1F,                             15, 18 ; 87
 	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88
@@ -284,8 +284,8 @@ ENDM
 	endgroup
 
 	newgroup VERMILION                                            ; 12
-	map_const ROUTE_6,                                     10,  9 ;  1
-	map_const ROUTE_11,                                    20,  9 ;  2
+	map_const ROUTE_6,                                     10, 18 ;  1
+	map_const ROUTE_11,                                    30,  9 ;  2
 	map_const VERMILION_CITY,                              20, 18 ;  3
 	map_const VERMILION_FISHING_SPEECH_HOUSE,               4,  4 ;  4
 	map_const VERMILION_POKECENTER_1F,                      5,  4 ;  5
@@ -323,7 +323,7 @@ ENDM
 
 	newgroup FAST_SHIP                                            ; 15
 	map_const OLIVINE_PORT,                                10, 18 ;  1
-	map_const VERMILION_PORT,                              10, 18 ;  2
+	map_const VERMILION_PORT,                              14,  6 ;  2
 	map_const FAST_SHIP_1F,                                16,  9 ;  3
 	map_const FAST_SHIP_CABINS_NNW_NNE_NE,                  4, 16 ;  4
 	map_const FAST_SHIP_CABINS_SW_SSW_NW,                   4, 16 ;  5
@@ -480,7 +480,7 @@ ENDM
 	endgroup
 
 	newgroup SAFFRON                                              ; 25
-	map_const ROUTE_5,                                     10,  9 ;  1
+	map_const ROUTE_5,                                     10, 18 ;  1
 	map_const SAFFRON_CITY,                                20, 18 ;  2
 	map_const FIGHTING_DOJO,                                5,  6 ;  3
 	map_const SAFFRON_GYM,                                 10,  9 ;  4
