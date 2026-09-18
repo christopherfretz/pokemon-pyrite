@@ -1,8 +1,20 @@
+; Kanto hack: Yellow's VERMILION_POKECENTER
+; (vendor/pokeyellow/data/maps/objects/VermilionPokecenter.asm,
+; scripts/VermilionPokecenter.asm, text/VermilionPokecenter.asm), re-placed on
+; Crystal's 5x4 room the way 6b did Cerulean's.  Yellow's LINK_RECEPTIONIST is
+; dropped: Crystal's cable club lives on POKECENTER_2F, which the (0,7)
+; staircase already reaches.  Crystal's SNORLAX fisher and JOHTO-badges bug
+; catcher are gone with the Snorlax (7e).
+;
+; Yellow's NURSE (3,1), CHANSEY (4,1) and SAILOR (5,4) are on Yellow's own
+; tiles.  Yellow's FISHING_GURU stands at (10,5), past the right-hand end of
+; Crystal's narrower room, so he takes the equivalent tile on this side of the
+; tables, (9,5).
 	object_const_def
 	const VERMILIONPOKECENTER1F_NURSE
+	const VERMILIONPOKECENTER1F_CHANSEY
 	const VERMILIONPOKECENTER1F_FISHING_GURU
 	const VERMILIONPOKECENTER1F_SAILOR
-	const VERMILIONPOKECENTER1F_BUG_CATCHER
 
 VermilionPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -12,66 +24,44 @@ VermilionPokecenter1F_MapScripts:
 VermilionPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
-VermilionPokecenter1FFishingGuruScript:
-	faceplayer
+; Yellow: PokecenterChanseyText (engine/events/pokecenter_chansey.asm).
+VermilionPokecenter1FChanseyScript:
 	opentext
-	checkevent EVENT_FOUGHT_SNORLAX
-	iftrue .FoughtSnorlax
-	writetext VermilionPokecenter1FFishingGuruText
+	writetext VermilionPokecenter1FChanseyText
+	cry CHANSEY
 	waitbutton
 	closetext
 	end
 
-.FoughtSnorlax:
-	writetext VermilionPokecenter1FFishingGuruText_FoughtSnorlax
-	waitbutton
-	closetext
-	end
+VermilionPokecenter1FFishingGuruScript:
+	jumptextfaceplayer VermilionPokecenter1FFishingGuruText
 
 VermilionPokecenter1FSailorScript:
 	jumptextfaceplayer VermilionPokecenter1FSailorText
 
-VermilionPokecenter1FBugCatcherScript:
-	jumptextfaceplayer VermilionPokecenter1FBugCatcherText
-
-VermilionPokecenter1FFishingGuruText:
-	text "A sleeping #MON"
-	line "is lying in front"
-	cont "of DIGLETT'S CAVE."
-
-	para "It's a fantastic"
-	line "opportunity to get"
-
-	para "it, but how do you"
-	line "wake it up?"
+VermilionPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
 	done
 
-VermilionPokecenter1FFishingGuruText_FoughtSnorlax:
-	text "There used to be a"
-	line "sleeping #MON"
+VermilionPokecenter1FFishingGuruText:
+	text "Even if they are"
+	line "the same level,"
+	cont "#MON can have"
+	cont "very different"
+	cont "abilities."
 
-	para "lying in front of"
-	line "DIGLETT'S CAVE."
-
-	para "But it seems to"
-	line "have disappeared."
+	para "A #MON raised"
+	line "by a trainer is"
+	cont "stronger than one"
+	cont "in the wild."
 	done
 
 VermilionPokecenter1FSailorText:
-	text "The FAST SHIP is a"
-	line "great place to"
-
-	para "meet and battle"
-	line "trainers."
-	done
-
-VermilionPokecenter1FBugCatcherText:
-	text "Oh? You have some"
-	line "BADGES I've never"
-	cont "seen before."
-
-	para "Oh, I get it. You"
-	line "got them in JOHTO."
+	text "My #MON was"
+	line "poisoned! It"
+	cont "fainted while we"
+	cont "were walking!"
 	done
 
 VermilionPokecenter1F_MapEvents:
@@ -88,6 +78,6 @@ VermilionPokecenter1F_MapEvents:
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FNurseScript, -1
-	object_event  7,  2, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FFishingGuruScript, -1
-	object_event  6,  5, SPRITE_SAILOR, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FSailorScript, -1
-	object_event  1,  5, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FBugCatcherScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FChanseyScript, -1
+	object_event  9,  5, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FFishingGuruScript, -1
+	object_event  5,  4, SPRITE_SAILOR, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FSailorScript, -1

@@ -273,15 +273,15 @@ MartLavender:
 	db -1 ; end
 
 MartVermilion:
-	db 8 ; # items
-	db ULTRA_BALL
+; Kanto hack (7e): Yellow's VERMILION_MART stock
+; (vendor/pokeyellow/data/items/marts.asm VermilionMartClerkText).
+	db 6 ; # items
+	db POKE_BALL
 	db SUPER_POTION
-	db HYPER_POTION
-	db REVIVE
-	db PARLYZ_HEAL
+	db ICE_HEAL
 	db AWAKENING
-	db BURN_HEAL
-	db FLOWER_MAIL ; Kanto hack: was LITEBLUEMAIL
+	db PARLYZ_HEAL
+	db REPEL
 	db -1 ; end
 
 MartCeladon2F1:
