@@ -156,6 +156,12 @@ FollowerSnapToPlayer:
 ; Put the follower (bc) on the player's current tile and recompute its
 ; screen position from map coords (same formula as CopyTempObjectToObjectStruct).
 	ld a, [wPlayerMapX]
+	ld d, a
+	ld a, [wPlayerMapY]
+	ld e, a
+FollowerSnapToTile:
+; Same, onto an arbitrary map tile d (x), e (y).  Clobbers a, hl; keeps bc.
+	ld a, d
 	ld hl, OBJECT_MAP_X
 	add hl, bc
 	ld [hl], a
@@ -175,7 +181,7 @@ FollowerSnapToPlayer:
 	add hl, bc
 	ld [hl], a
 
-	ld a, [wPlayerMapY]
+	ld a, e
 	ld hl, OBJECT_MAP_Y
 	add hl, bc
 	ld [hl], a
@@ -405,6 +411,89 @@ EnablePikaFollower::
 	set FOLLOWER_ENABLED_F, [hl]
 	farcall RefreshSprites
 	call SpawnFollower
+	ret
+
+SpawnFollowerVisible::
+; Special.  F2, docs/FOLLOWER-FIXES.md section 2: like EnablePikaFollower, but
+; Pikachu is *already standing* on the tile behind the player and facing it, so
+; a script can talk about it before the player has taken a step (Oak's Lab).
+; This is Yellow's spawn state $2: CalculatePikachuPlacementCoords's
+; .check_player_facing2 (vendor/pokeyellow/engine/pikachu/pikachu_follow.asm:52-185)
+; subtracts the player's facing vector -- facing UP puts Pikachu one tile below --
+; and both facing paths that spawn state $2 can take (the copy-player branch of
+; SchedulePikachuSpawnForAfterText, and ComputePikachuFacingDirection's .check_y
+; at :1389) end up facing Pikachu straight back at the player, which for a tile
+; directly behind is the player's own facing byte.
+	call EnablePikaFollower
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+
+	ld bc, wFollowerStruct
+
+; Face the player (see above: same byte as the player's own facing).
+	ld a, [wPlayerDirection]
+	and %00001100
+	ld hl, OBJECT_DIRECTION
+	add hl, bc
+	ld [hl], a
+	push af
+
+; d, e = the tile behind the player.
+	ld a, [wPlayerMapX]
+	ld d, a
+	ld a, [wPlayerMapY]
+	ld e, a
+	pop af
+	cp OW_DOWN
+	jr z, .behind_is_up
+	cp OW_UP
+	jr z, .behind_is_down
+	cp OW_LEFT
+	jr z, .behind_is_right
+	dec d ; facing RIGHT
+	jr .place
+.behind_is_right
+	inc d
+	jr .place
+.behind_is_up
+	dec e
+	jr .place
+.behind_is_down
+	inc e
+.place
+; Guard: an impassable or occupied tile falls back to the invisible spawn
+; SpawnFollower already left us with (walks out on the first step as usual).
+	push de
+	call FollowerCanStandAt
+	pop de
+	ld bc, wFollowerStruct
+	ret nc
+
+	call FollowerSnapToTile
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	res INVISIBLE_F, [hl]
+	ret
+
+FollowerCanStandAt:
+; d = map x, e = map y.  Carry if the follower may be placed there: plain land,
+; and no other object standing on it.  Clobbers a, bc, hl; keeps de.
+	push de
+	call GetCoordTileCollision
+	call GetTilePermission
+	pop de
+	and a ; LAND_TILE
+	jr nz, .no
+	ld bc, wObjectStructs
+	xor a
+	ldh [hMapObjectIndex], a
+	call IsNPCAtCoord
+	jr c, .no
+	scf
+	ret
+.no
+	and a
 	ret
 
 GetStarterPikachuHappiness::

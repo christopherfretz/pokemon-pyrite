@@ -102,12 +102,19 @@ OaksLabIntroScript:
 	playmapmusic
 	turnobject PLAYER, UP
 	pause 20
+; F2 (docs/FOLLOWER-FIXES.md section 2).  Yellow's
+; OaksLabPikachuEscapesPokeballScript (vendor/pokeyellow/scripts/OaksLab.asm:472)
+; faces the player UP, sets wPikachuSpawnState = $2 and enables Pikachu's
+; overworld sprite BEFORE the "OAK: What?" line, so Pikachu is standing one tile
+; below the player for the whole "it dislikes # BALLs" beat.  SpawnFollowerVisible
+; is that spawn state; plain EnablePikaFollower spawns hidden on the player's own
+; tile (the warp behaviour) and left Oak talking about an invisible Pikachu.
+	special SpawnFollowerVisible
 	cry PIKACHU
 	opentext
 	writetext OaksLabOakWhatText
 	waitbutton
 	closetext
-	special EnablePikaFollower
 	opentext
 	writetext OaksLabPikachuDislikesBallsText
 	waitbutton

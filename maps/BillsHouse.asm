@@ -199,11 +199,10 @@ BillsHousePCScript:
 	sjump BillsHouseBillThanks
 
 ; Yellow's forced walk is a simulated joypad (RLE_1e219 = PAD_RIGHT x3).  GSC's
-; equivalent is applymovement PLAYER, which FREEZES the Pikachu follower for
-; the duration and then snaps it back behind the player (docs/PORTING.md 12,
-; docs/FOLLOWER.md).  That is exactly what happens here and it is fine: three
-; tiles is a short enough hop that the snap reads as Pikachu scurrying after
-; you, and wFollower* is left consistent (verified, see "6j findings").
+; equivalent is applymovement PLAYER, which used to FREEZE the Pikachu follower
+; for the duration and snap it back afterwards; F1 (docs/FOLLOWER-FIXES.md
+; "F1 findings") unfreezes the follower struct inside ApplyMovement, so Pikachu
+; now walks the three tiles one at a time behind the player, as in Yellow.
 BillsHousePlayerStepAside:
 	step RIGHT
 	step RIGHT

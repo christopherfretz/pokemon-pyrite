@@ -818,6 +818,8 @@ ApplyMovement:
 	farcall FreezeAllOtherObjects
 	pop bc
 
+	call UnfreezeFollowerObjectAlways
+
 	push bc
 	call UnfreezeFollowerObject
 	pop bc
@@ -838,6 +840,23 @@ ApplyMovement:
 
 UnfreezeFollowerObject:
 	farcall _UnfreezeFollowerObject
+	ret
+
+UnfreezeFollowerObjectAlways:
+; F1, docs/FOLLOWER-FIXES.md section 4.  FreezeAllOtherObjects sets FROZEN_F on
+; every one of the NUM_OBJECT_STRUCTS structs, wFollowerStruct included, so
+; HandleStepType skips MovementFunction_PikaFollower for the whole cutscene and
+; Pikachu pops in wherever the walk started once UnfreezeAllObjects runs.
+; UnfreezeFollowerObject above cannot help: _UnfreezeFollowerObject bails on
+; wObjectFollow_Leader == -1, and our standalone follower never joins Crystal's
+; follow mechanism (docs/FOLLOWER.md).  Yellow has no equivalent freeze at all --
+; its scripted walks are simulated joypad input, so Pikachu follows normally.
+; Preserves bc.
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	ld hl, wFollowerStruct + OBJECT_FLAGS2
+	res FROZEN_F, [hl]
 	ret
 
 Script_applymovementlasttalked:
