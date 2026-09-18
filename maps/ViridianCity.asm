@@ -440,12 +440,12 @@ ViridianCitySignText:
 	done
 
 ViridianGymSignText:
+; N1 ruling 1 (operator, 2026-09-18): Yellow's sign verbatim, not Crystal's
+; "LEADER: ... / the rest of the text is illegible" gag.  Yellow never names
+; the Viridian leader on the sign -- vendor/pokeyellow/text/ViridianCity.asm
+; _ViridianCityGymSignText.
 	text "VIRIDIAN CITY"
 	line "#MON GYM"
-	cont "LEADER: …"
-
-	para "The rest of the"
-	line "text is illegible…"
 	done
 
 ViridianCityTrainerTips1Text:
