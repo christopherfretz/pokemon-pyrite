@@ -559,9 +559,11 @@ FlyFunction:
 	dw .FailFly
 
 .TryFly:
-	ld de, ENGINE_STORMBADGE
+; Kanto hack (M4 7a): FLY is unlocked by the THUNDERBADGE, as Lt. Surge's
+; Yellow gym does (FLASH/BOULDERBADGE and CUT/CASCADEBADGE precedents above).
+	ld de, ENGINE_THUNDERBADGE
 	call CheckBadge
-	jr c, .nostormbadge
+	jr c, .nothunderbadge
 	call GetMapEnvironment
 	call CheckOutdoorMap
 	jr z, .outdoors
@@ -584,7 +586,7 @@ FlyFunction:
 	ld a, $1
 	ret
 
-.nostormbadge
+.nothunderbadge
 	ld a, JUMPTABLE_EXIT | $2
 	ret
 

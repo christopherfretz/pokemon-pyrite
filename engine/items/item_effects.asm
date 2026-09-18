@@ -73,7 +73,7 @@ ItemEffects:
 	dw NoEffect            ; EXP_SHARE
 	dw OldRodEffect        ; OLD_ROD
 	dw GoodRodEffect       ; GOOD_ROD
-	dw NoEffect            ; SILVER_LEAF
+	dw NoEffect            ; TM_THUNDERBOLT (TM86)
 	dw SuperRodEffect      ; SUPER_ROD
 	dw RestorePPEffect     ; PP_UP
 	dw RestorePPEffect     ; ETHER

@@ -60,7 +60,8 @@ ItemDescriptions:
 	dw ExpShareDesc
 	dw OldRodDesc
 	dw GoodRodDesc
-	dw SilverLeafDesc
+	dw SilverLeafDesc ; unread: $3c is TM86 THUNDERBOLT (M4 7a) and TM/HM items
+	                  ; print the MOVE description; see PrintItemDescription
 	dw SuperRodDesc
 	dw PPUpDesc
 	dw EtherDesc

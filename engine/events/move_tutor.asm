@@ -34,21 +34,17 @@ MoveTutor:
 	ret
 
 .GetMoveTutorMove:
+; Kanto hack (M4 7a): THUNDERBOLT is TM86 now, so MT02 is ICE_BEAM and the
+; tutor is down to two moves.
 	ld a, [wScriptVar]
 	cp MOVETUTOR_FLAMETHROWER
 	jr z, .flamethrower
-	cp MOVETUTOR_THUNDERBOLT
-	jr z, .thunderbolt
 	; MOVETUTOR_ICE_BEAM
-	ld a, MT03_MOVE ; ICE_BEAM
+	ld a, MT02_MOVE ; ICE_BEAM
 	ret
 
 .flamethrower
 	ld a, MT01_MOVE ; FLAMETHROWER
-	ret
-
-.thunderbolt
-	ld a, MT02_MOVE ; THUNDERBOLT
 	ret
 
 CheckCanLearnMoveTutorMove:

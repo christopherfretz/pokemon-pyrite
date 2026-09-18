@@ -16,7 +16,10 @@
 ; ids left.**  The next feature that needs one must reclaim a dead Gen 2 item;
 ; the best remaining candidates (unobtainable in Crystal, referenced only by
 ; the item tables) are, in order:
-;   SILVER_LEAF ($3c), GOLD_LEAF ($4b), NORMAL_BOX ($a7), GORGEOUS_BOX ($a8).
+;   GOLD_LEAF ($4b), NORMAL_BOX ($a7), GORGEOUS_BOX ($a8).
+; M4 7a (docs/M4-VERMILION.md 3.10) reclaimed the first of those, SILVER_LEAF
+; ($3c), for TM_THUNDERBOLT = TM86 (Lt. Surge's TM24), and dropped the
+; THUNDERBOLT move tutor in exchange so NUM_TM_HM_TUTOR stayed 95.
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -79,7 +82,7 @@
 	const EXP_SHARE    ; 39
 	const OLD_ROD      ; 3a
 	const GOOD_ROD     ; 3b
-	const SILVER_LEAF  ; 3c
+	const TM_THUNDERBOLT  ; 3c (was SILVER_LEAF; Kanto hack M4 7a)
 	const SUPER_ROD    ; 3d
 	const PP_UP        ; 3e
 	const ETHER        ; 3f
@@ -350,6 +353,10 @@ DEF TM_SUBSTITUTE  EQU $fe
 	add_tm_id ROCK_SLIDE   ; fc = TM83
 	add_tm_id TRI_ATTACK   ; fd = TM84
 	add_tm_id SUBSTITUTE   ; fe = TM85
+; M4 7a (docs/M4-VERMILION.md 3.10): Lt. Surge's TM24.  Was Crystal's MT02 move
+; tutor; promoting it here and deleting the tutor below keeps NUM_TM_HM_TUTOR at
+; 95, so the tmhm bitfield stays 12 bytes and no base stats had to be regenerated.
+	add_tm_id THUNDERBOLT  ; 3c = TM86
 DEF NUM_TMS EQU __tmhm_value__ - 1
 
 MACRO add_hm
@@ -386,7 +393,7 @@ ENDM
 
 DEF MT01 EQU const_value
 	add_mt FLAMETHROWER
-	add_mt THUNDERBOLT
+; M4 7a: THUNDERBOLT is TM86 now (see the add_tm_id block), not a tutor move.
 	add_mt ICE_BEAM
 DEF NUM_TUTORS = __tmhm_value__ - NUM_TMS - NUM_HMS - 1
 
