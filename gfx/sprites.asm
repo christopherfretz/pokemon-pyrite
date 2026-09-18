@@ -141,3 +141,12 @@ BulbasaurSpriteGFX::           INCBIN "gfx/sprites/bulbasaur.2bpp"
 ; Kanto hack: Yellow's Pewter #MON Center JIGGLYPUFF (docs/JIGGLYPUFF.md J1).
 ; 16x48 = three 4-tile frames, a 12-tile STANDING_SPRITE like Chansey above.
 JigglypuffSpriteGFX::          INCBIN "gfx/sprites/jigglypuff.2bpp"
+
+SECTION "Sprites 4", ROMX
+
+; Kanto hack: Yellow's POKeMON FAN CLUB pair (docs/M4-VERMILION.md 7f).  Both
+; sheets are Yellow's own, cut to the 12 tiles the overworld loads (Yellow's
+; seel.png is a 16x96 walking-sized file but SpriteSheetPointerTable only asks
+; for 12 tiles, so the top 16x48 is the whole sprite the game ever shows).
+SeelSpriteGFX::                INCBIN "gfx/sprites/seel.2bpp"
+ClefairyOwSpriteGFX::          INCBIN "gfx/sprites/clefairy.2bpp"

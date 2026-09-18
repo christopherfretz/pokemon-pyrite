@@ -132,11 +132,22 @@ MapSpecificPikachuExpression:
 	ld bc, GROUP_POKEMON_FAN_CLUB << 8 | MAP_POKEMON_FAN_CLUB
 	call PikachuCheckCurMap
 	jr nz, .not_fan_club
-; Yellow branches on wPikachuMapScriptFlags' BIT_PIKACHU_MAP_SCRIPT_ACTIVE: with
-; the club's Pikachu scene inactive -- which is always, until A3 row 11 ports it
-; -- it plays emotion 29 and never reaches the emotion 30 arm.
+; Yellow branches on wPikachuMapScriptFlags' BIT_PIKACHU_MAP_SCRIPT_ACTIVE
+; (7f / A3 row 10): before the club's Pikachu scene has played this visit it is
+; emotion 29 -- which is the face the scene itself puts up, via
+; InitializePikachuTextID -- and afterwards emotion 30, but only while Pikachu
+; is still parked by the CLEFAIRY.  Yellow's second test is
+; CheckPikachuFollowingPlayer, i.e. the same bit the Pewter JIGGLYPUFF sleep
+; uses, which is our wPikaAsleep.
+	ld a, [wPikaFanClubSceneDone]
+	and a
 	ldpikaemotion a, PikachuEmotion29
-	jr .play_emotion
+	jr z, .play_emotion
+	ld a, [wPikaAsleep]
+	and a
+	ldpikaemotion a, PikachuEmotion30
+	jr nz, .play_emotion
+	jr .check_pikachu_status
 
 .not_fan_club
 	ld bc, GROUP_PEWTER_POKECENTER_1F << 8 | MAP_PEWTER_POKECENTER_1F
@@ -518,9 +529,17 @@ StarterPikachuEmotionCommand_subcmd:
 	jp StarterPikachuEmotionCommand_9
 
 .CheckLavenderTower:
-; TODO A3 row 11: Yellow's PikachuFanClubCheck (mis-named in the subcommand
-; table) starts the Pokemon Fan Club scene.
-	ret
+; Yellow's PikachuFanClubCheck (vendor/pokeyellow/engine/pikachu/pikachu_movement.asm:981)
+; -- mis-named in Yellow's own subcommand table, and kept mis-named here so the
+; two files line up.  It ends emotion 30: talking to the Pikachu the Fan Club
+; scene parked by the CLEFAIRY sends it back to following the player, facing
+; away again.  Same shape as .CheckPewterCenter above.
+	ld bc, GROUP_POKEMON_FAN_CLUB << 8 | MAP_POKEMON_FAN_CLUB
+	call PikachuCheckCurMap
+	ret nz
+	xor a
+	ld [wPikaAsleep], a
+	jp StarterPikachuEmotionCommand_9
 
 .CheckBillsHouse:
 ; TODO A3 row 3 (scene half): Yellow's PikachuBillsHouseCheck runs
@@ -793,6 +812,57 @@ PewterJigglypuffSong::
 	db LEFT << 2
 	db UP << 2
 	db RIGHT << 2
+
+FanClubPikachuScene::
+; Special.  Yellow's PokemonFanClubScript_59a44
+; (vendor/pokeyellow/scripts/PokemonFanClub.asm:44), minus the dice roll and
+; the "has it run before" bookkeeping, which the map script does with
+; EVENT_POKEMON_FAN_CLUB_PIKACHU_SCENE.  wScriptVar comes back TRUE only if the
+; scene actually played, so the caller knows whether to turn the CLEFAIRY.
+	ld a, FALSE
+	ld [wScriptVar], a
+; Yellow: BIT_PIKACHU_SPAWN_STARTER, i.e. Pikachu is out and following.
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	farcall IsStarterPikachuAliveInParty
+	ret nc
+; Never restage it on top of itself, and never wake the Pewter sleep with it.
+	ld a, [wPikaFanClubSceneDone]
+	and a
+	ret nz
+	ld a, [wPikaAsleep]
+	and a
+	ret nz
+; Yellow: `callfar CheckPikachuStatusCondition / ret c` -- a sick Pikachu does
+; not run off to admire the CLEFAIRY.
+	call GetStarterPikachuStatus
+	and a
+	ret nz
+
+; Yellow: EXCLAMATION_BUBBLE over sprite $f (Pikachu), through predef
+; EmotionBubble, which holds for 60 frames.  Same body as
+; StarterPikachuEmotionCommand_emote.
+	ld c, EXCLAMATION_BUBBLE
+	farcall LoadEmote
+	farcall FollowerSpawnEmote
+	ld c, PIKAEMOTION_BUBBLE_FRAMES
+	call DelayFrames
+	farcall FollowerDespawnEmote
+
+	farcall FanClubPikachuWalk
+	ld a, TRUE
+	ld [wPikaFanClubSceneDone], a
+	ld [wScriptVar], a
+	ret
+
+FanClubPikachuFace::
+; Special.  Yellow's `callfar InitializePikachuTextID` at the end of the same
+; routine: the face box goes up straight away, without the player talking to
+; Pikachu.  MapSpecificPikachuExpression would pick emotion 29 here anyway, but
+; Yellow names the script, so name it.
+	ldpikaemotion e, PikachuEmotion29
+	jp PlaySpecificPikachuEmotion
 
 CheckPikachuAsleep::
 ; Special.  wScriptVar = TRUE while the JIGGLYPUFF SONG has Pikachu asleep.

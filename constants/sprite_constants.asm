@@ -120,9 +120,15 @@
 	const SPRITE_ODDISH_OW          ; 70 (Yellow's overworld ODDISH)
 	const SPRITE_BULBASAUR_OW       ; 71 (Yellow's overworld BULBASAUR)
 ; Pewter #MON Center (docs/JIGGLYPUFF.md J1).  Same story as ODDISH/BULBASAUR:
-; Crystal's SPRITE_JIGGLYPUFF ($8f) is a SpriteMons party-icon index with only a
+; Crystal's SPRITE_JIGGLYPUFF ($94) is a SpriteMons party-icon index with only a
 ; down facing, and the Jigglypuff song spins the sprite through all four.
 	const SPRITE_JIGGLYPUFF_OW      ; 72 (Yellow's overworld JIGGLYPUFF)
+; POKeMON FAN CLUB (docs/M4-VERMILION.md 7f).  Yellow's SEEL has no Crystal
+; counterpart at all; Crystal's SPRITE_CLEFAIRY ($8f) is a SpriteMons party-icon
+; index and its SPRITE_FAIRY ($4d) is a different (CLEFAIRY DOLL) sheet, so both
+; of these are Yellow's own 16x48 overworld art.
+	const SPRITE_SEEL_OW            ; 73 (Yellow's overworld SEEL)
+	const SPRITE_CLEFAIRY_OW        ; 74 (Yellow's overworld CLEFAIRY)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

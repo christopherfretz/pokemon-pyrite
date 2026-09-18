@@ -48,3 +48,29 @@ PhotoStudio:
 .EggPhotoText:
 	text_far _EggPhotoText
 	text_end
+
+FanClubPhoto:
+; Special.  Kanto hack (7f): the GB Printer half of Yellow's #MON FAN CLUB
+; chairman (vendor/pokeyellow/scripts/PokemonFanClub.asm:196 .select_mon_to_print).
+; Yellow has no "which #MON?" and no "hold still" line -- the offer itself is
+; the question -- and it prints its own result text from hOaksAideResult, so
+; this hands the three outcomes back in wScriptVar instead of printing
+; anything.  Crystal's own PhotoStudio above is untouched.
+	ld a, FANCLUB_PHOTO_NO_MON
+	ld [wScriptVar], a
+	farcall SelectMonFromParty
+	ret c
+	ld a, [wCurPartySpecies]
+	cp EGG
+	ret z ; Yellow has no EGGs; treat one like a cancel rather than print it
+	call DisableSpriteUpdates
+	farcall PrintPartymon
+	call ReturnToMapWithSpeechTextbox
+	ldh a, [hPrinter]
+	and a
+	ld a, FANCLUB_PHOTO_CANCELLED
+	jr nz, .done
+	ld a, FANCLUB_PHOTO_PRINTED
+.done
+	ld [wScriptVar], a
+	ret

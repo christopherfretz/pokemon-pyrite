@@ -41,6 +41,20 @@ VermilionCity_MapScripts:
 
 VermilionCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_VERMILION
+; 7f: Yellow's .vermilionCityScript_19869 (vendor/pokeyellow/scripts/VermilionCity.asm:69).
+; Once the player is back out in the city carrying the BIKE VOUCHER, the
+; #MON FAN CLUB chairman switches over to his GB Printer offer and both fans
+; start talking about PRINTs.  Yellow tests it from the city's per-frame map
+; script; MAPCALLBACK_NEWMAP runs on arrival, which is the first moment that
+; test can pass.  (Yellow's same map script also clears
+; BIT_PIKACHU_MAP_SCRIPT_ACTIVE; ours is wPikaFanClubSceneDone, cleared by
+; SpawnFollower on every map load instead.)
+	checkevent EVENT_LEFT_FANCLUB_AFTER_BIKE_VOUCHER
+	iftrue .done
+	checkevent EVENT_GOT_BIKE_VOUCHER
+	iffalse .done
+	setevent EVENT_LEFT_FANCLUB_AFTER_BIKE_VOUCHER
+.done
 	endcallback
 
 ; Yellow: VermilionCityDefaultScript / SSAnneTicketCheckCoords (18,30).

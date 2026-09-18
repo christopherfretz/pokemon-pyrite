@@ -241,6 +241,11 @@ SpawnFollower:
 ; so it is gone even when the follower feature is off.
 	xor a
 	ld [wPikaAsleep], a
+; 7f: same deal for the FAN CLUB scene's "already played this visit" byte.
+; Yellow clears BIT_PIKACHU_MAP_SCRIPT_ACTIVE from VERMILION_CITY's map script
+; -- the only map the club opens onto -- so clearing it on every map load is
+; the same thing, one map earlier.
+	ld [wPikaFanClubSceneDone], a
 	bit FOLLOWER_ENABLED_F, [hl]
 	ret z
 
@@ -749,4 +754,119 @@ GetStarterPikachuHappiness::
 	inc d
 	dec e
 	jr nz, .loop
+	ret
+
+
+; --- 7f: the POKeMON FAN CLUB Pikachu scene (docs/M4-VERMILION.md).
+; Yellow: PokemonFanClubScript_59a44 + PokemonFanClubPikachuMovementData
+; (vendor/pokeyellow/scripts/PokemonFanClub.asm:44).  Guards, bubble and face
+; box live with the emotion engine (engine/pikachu/emotions.asm); this is the
+; walk, which needs NormalStep and the object structs.
+
+; Object structs carry map coordinates offset by 4 (CheckCurrentMapCoordEvents
+; subtracts it again), so the Fan Club's tiles are written the same way here.
+DEF FANCLUB_PIKACHU_X   EQU 7 + 4 ; the CLEFAIRY's column, Yellow's x=6
+DEF FANCLUB_PIKACHU_ROW EQU 6 + 4 ; the aisle in front of the two doors
+DEF FANCLUB_PIKACHU_Y   EQU 5 + 4 ; the landing tile, directly below the CLEFAIRY
+
+FanClubPikachuWalk::
+; Yellow's movement blob is `$26 $20 $20 $20 $1e`: slide up one, three steps
+; right, one step up, from the door tile Pikachu is standing on.  Ours walks
+; the same L a tile at a time instead of from a fixed list -- our room is two
+; tiles wider than Yellow's and either door may be the one the player came
+; through -- and the $26 slide is a plain walk, because our movement
+; mini-interpreter only has Yellow's four in-place opcodes
+; (constants/pikachu_emotion_constants.asm).
+	ld bc, wFollowerStruct
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	res INVISIBLE_F, [hl]
+.up_to_aisle
+	ld a, [wFollowerMapY]
+	cp FANCLUB_PIKACHU_ROW
+	jr c, .rightward
+	jr z, .rightward
+	ld d, UP
+	call FanClubPikachuStep
+	jr c, .up_to_aisle
+	jr .park
+.rightward
+	ld a, [wFollowerMapX]
+	cp FANCLUB_PIKACHU_X
+	jr nc, .up_to_clefairy
+	ld d, RIGHT
+	call FanClubPikachuStep
+	jr c, .rightward
+	jr .park
+.up_to_clefairy
+	ld a, [wFollowerMapY]
+	cp FANCLUB_PIKACHU_Y
+	jr c, .park
+	jr z, .park
+	ld d, UP
+	call FanClubPikachuStep
+	jr c, .up_to_clefairy
+.park
+; Yellow's DisablePikachuFollowingPlayer.  That is the same bit as the Pewter
+; JIGGLYPUFF sleep in Yellow (home/pikachu.asm:47 is one `bit 1`), so it is our
+; wPikaAsleep: Pikachu stands still and is walk-through until the player talks
+; to it (emotion 30's CHECKLAVENDERTOWER subcommand clears it again) or the map
+; reloads.
+	ld a, TRUE
+	ld [wPikaAsleep], a
+	ret
+
+FanClubPikachuStep:
+; d = UP or RIGHT.  Walks the follower one tile, blocking until the step is
+; finished the way FollowerHopToCounter animates its hop (a running script
+; stops HandleMap, so nothing else would tick the object).  Carry if it moved.
+	push de
+	ld a, [wFollowerMapX]
+	ld b, a
+	ld a, [wFollowerMapY]
+	ld c, a
+	ld a, d
+	cp UP
+	jr nz, .rightward
+	dec c
+	jr .target
+.rightward
+	inc b
+.target
+	ld d, b
+	ld e, c
+	call FollowerCanStandAt
+	pop de
+	ret nc
+
+	push de
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call ObjectStep_ZeroAnonJumptableIndex
+	pop de
+	ld bc, wFollowerStruct
+	ld a, STEP_WALK << 2
+	or d
+	call NormalStep
+
+; The cap only exists so a follower HandleObjectStep refuses to tick can never
+; hang the script; a walk at STEP_WALK is 16 frames.
+	ld b, 40
+.animate
+	push bc
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call HandleObjectStep
+	call UpdateSprites
+	call DelayFrame
+	pop bc
+	ld a, [wFollowerStepType]
+	cp STEP_TYPE_NPC_WALK
+	jr nz, .done
+	dec b
+	jr nz, .animate
+.done
+	scf
 	ret

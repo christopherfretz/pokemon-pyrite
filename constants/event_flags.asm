@@ -220,9 +220,9 @@
 	const EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
 	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT
 	const EVENT_GOT_PASS_FROM_COPYCAT
-	const EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB
-	const EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL
-	const EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT
+	const EVENT_GOT_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB (Crystal's LOST_ITEM quest deleted); Yellow's EVENT_GOT_BIKE_VOUCHER
+	const EVENT_PIKACHU_FAN_BOAST ; Kanto hack: renamed in place (7f), was EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL; Yellow's boast toggle -- SET means the CLEFAIRY fan brags back next
+	const EVENT_SEEL_FAN_BOAST ; Kanto hack: renamed in place (7f), was EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT; Yellow's boast toggle -- SET means the SEEL fan brags back next
 	const EVENT_TALKED_TO_SEAFOAM_GYM_GUIDE_ONCE
 	const EVENT_ENABLE_DIPLOMA_PRINTING
 	const EVENT_CINNABAR_ROCKS_CLEARED
@@ -1375,7 +1375,7 @@
 	const EVENT_GAVE_SAFFRON_GUARDS_DRINK ; Kanto hack: renamed in place (7d), was EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH; Yellow's BIT_GAVE_SAFFRON_GUARDS_DRINK, shared by every SAFFRON gate guard
 	const EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	const EVENT_COPYCATS_HOUSE_2F_DOLL
-	const EVENT_VERMILION_FAN_CLUB_DOLL
+	const EVENT_LEFT_FANCLUB_AFTER_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_VERMILION_FAN_CLUB_DOLL (the CLEFAIRY DOLL prop is deleted); Yellow's flag, set by VermilionCity's NEWMAP callback once the voucher is in the bag
 	const EVENT_BLUE_IN_CINNABAR
 	const EVENT_VIRIDIAN_GYM_BLUE
 	const EVENT_SEAFOAM_GYM_GYM_GUIDE
@@ -1657,7 +1657,16 @@
 	const EVENT_BEAT_PICNICKER_GRETA ; Route 6, Yellow's JR_TRAINER_F 3
 	const EVENT_BEAT_BUG_CATCHER_FELIX ; Route 6, Yellow's BUG_CATCHER 11
 
-; Unused: next 495 events
+; Kanto hack: the POKeMON FAN CLUB (7f, docs/M4-VERMILION.md).  FOUR renamed in
+; place (EVENT_GOT_BIKE_VOUCHER, EVENT_PIKACHU_FAN_BOAST, EVENT_SEEL_FAN_BOAST,
+; EVENT_LEFT_FANCLUB_AFTER_BIKE_VOUCHER -- all four were Crystal Fan Club flags
+; the port deletes) plus ONE appended: Yellow keeps "has the club's Pikachu
+; scene ever played" in wPokemonFanClubCurScript, a saved Gen 1 map-script
+; variable that GSC's script engine has no equivalent of (a new wMapScenes
+; entry would cost saved WRAM, and bank 1 is full).  495 free -> 494 free.
+	const EVENT_POKEMON_FAN_CLUB_PIKACHU_SCENE ; the Fan Club Pikachu scene has played once; later entries re-roll Yellow's 25/256
+
+; Unused: next 494 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

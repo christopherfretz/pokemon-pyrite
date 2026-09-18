@@ -1391,10 +1391,19 @@ SECTION "Pikachu Emotion Scratch", WRAM0
 
 wPikaEmotionNumber:: db ; the PikachuEmotion* index the interpreter is running
 wPikaPicAnimNumber:: db ; the pikapic script index it selected (E1-E4 read this)
-wPikaAsleep:: db ; non-zero while the Pewter JIGGLYPUFF SONG is holding Pikachu
-                 ; asleep (docs/JIGGLYPUFF.md J3).  UNSAVED and cleared by
-                 ; SpawnFollower, i.e. by any map load -- exactly like Yellow's
-                 ; wPikachuOverworldStateFlags bit 1, which never survives one.
+wPikaAsleep:: db ; non-zero while Pikachu is NOT following the player: the Pewter
+                 ; JIGGLYPUFF SONG sleep (docs/JIGGLYPUFF.md J3) and, from 7f,
+                 ; the POKeMON FAN CLUB park.  Yellow uses one bit for both
+                 ; (wPikachuOverworldStateFlags bit 1, set by
+                 ; DisablePikachuFollowingPlayer), so we do too.  UNSAVED and
+                 ; cleared by SpawnFollower, i.e. by any map load -- exactly
+                 ; like Yellow's bit, which never survives one.
+wPikaFanClubSceneDone:: db ; 7f.  Yellow's wPikachuMapScriptFlags
+                 ; BIT_PIKACHU_MAP_SCRIPT_ACTIVE: set once the FAN CLUB Pikachu
+                 ; scene has run on this visit, cleared by the VERMILION CITY
+                 ; map (so the next entry can run it again).  Picks emotion 29
+                 ; vs 30 in MapSpecificPikachuExpression.  UNSAVED, like
+                 ; Yellow's (it lives in Gen 1's scratch area).
 
 
 SECTION "Video", WRAM0

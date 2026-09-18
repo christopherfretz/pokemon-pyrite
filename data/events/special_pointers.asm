@@ -195,3 +195,6 @@ SpecialsPointers::
 	add_special FollowerShow
 	add_special PewterJigglypuffSong
 	add_special CheckPikachuAsleep
+	add_special FanClubPhoto
+	add_special FanClubPikachuScene
+	add_special FanClubPikachuFace
