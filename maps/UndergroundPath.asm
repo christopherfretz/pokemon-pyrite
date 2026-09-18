@@ -1,3 +1,9 @@
+; Kanto hack: Yellow's UNDERGROUND_PATH_NORTH_SOUTH (docs/M4-VERMILION.md, 7d).
+; Yellow has no objects here and two hidden items,
+; vendor/pokeyellow/data/events/hidden_events.asm:
+;   hidden_event  3,  4, HiddenItems, FULL_RESTORE
+;   hidden_event  4, 34, HiddenItems, X_SPECIAL
+; (the macro is x, y).  Crystal's were at (3,9) and (1,19).
 UndergroundPath_MapScripts:
 	def_scene_scripts
 
@@ -19,7 +25,7 @@ UndergroundPath_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  3,  9, BGEVENT_ITEM, UndergroundPathHiddenFullRestore
-	bg_event  1, 19, BGEVENT_ITEM, UndergroundPathHiddenXSpecial
+	bg_event  3,  4, BGEVENT_ITEM, UndergroundPathHiddenFullRestore
+	bg_event  4, 34, BGEVENT_ITEM, UndergroundPathHiddenXSpecial
 
 	def_object_events

@@ -1788,6 +1788,18 @@ BugCatcherGroup:
 	db 14, WEEDLE
 	db -1 ; end
 
+	; BUG_CATCHER (30) - Kanto hack: Route 6, Yellow's BUG_CATCHER 10 (docs/M4-VERMILION.md 5.1)
+	db "LOGAN@", TRAINERTYPE_NORMAL
+	db 16, WEEDLE
+	db 16, CATERPIE
+	db 16, WEEDLE
+	db -1 ; end
+
+	; BUG_CATCHER (31) - Kanto hack: Route 6, Yellow's BUG_CATCHER 11
+	db "FELIX@", TRAINERTYPE_NORMAL
+	db 20, BUTTERFREE
+	db -1 ; end
+
 FisherGroup:
 	; FISHER (1)
 	db "JUSTIN@", TRAINERTYPE_NORMAL
@@ -3119,6 +3131,18 @@ PicnickerGroup:
 	db 19, GOLDEEN
 	db -1 ; end
 
+	; PICNICKER (28) - Kanto hack: Route 6, Yellow's JR_TRAINER_F 25 (docs/M4-VERMILION.md 5.1)
+	db "MARCY@", TRAINERTYPE_NORMAL
+	db 20, CUBONE
+	db -1 ; end
+
+	; PICNICKER (29) - Kanto hack: Route 6, Yellow's JR_TRAINER_F 3
+	db "GRETA@", TRAINERTYPE_NORMAL
+	db 16, PIDGEY
+	db 16, PIDGEY
+	db 16, PIDGEY
+	db -1 ; end
+
 CamperGroup:
 	; CAMPER (1)
 	db "ROLAND@", TRAINERTYPE_NORMAL
@@ -3281,6 +3305,17 @@ CamperGroup:
 	db "WENDELL@", TRAINERTYPE_NORMAL
 	db 14, RATTATA
 	db 14, EKANS
+	db -1 ; end
+
+	; CAMPER (26) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 10 (docs/M4-VERMILION.md 5.1)
+	db "NOLAN@", TRAINERTYPE_NORMAL
+	db 16, WEEPINBELL
+	db -1 ; end
+
+	; CAMPER (27) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 5
+	db "OLIVER@", TRAINERTYPE_NORMAL
+	db 16, SPEAROW
+	db 16, RATICATE
 	db -1 ; end
 
 ExecutiveFGroup:
@@ -3507,16 +3542,6 @@ PokefanMGroup:
 	db 29, NIDOKING,   BERRY
 	db 29, SLOWKING,   BERRY
 	db 29, SEAKING,    BERRY
-	db -1 ; end
-
-	; POKEFANM (13)
-	db "REX@", TRAINERTYPE_ITEM
-	db 35, PHANPY,     BERRY
-	db -1 ; end
-
-	; POKEFANM (14)
-	db "ALLAN@", TRAINERTYPE_ITEM
-	db 35, TEDDIURSA,  BERRY
 	db -1 ; end
 
 KimonoGirlGroup:

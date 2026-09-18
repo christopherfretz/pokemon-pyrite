@@ -1,40 +1,23 @@
+; Kanto hack: Yellow's ROUTE_5 (docs/M4-VERMILION.md, 7d).
+; Yellow's Route5_Object has NO object_events and exactly one bg_event, the
+; UNDERGROUND PATH sign at (17,29).  Crystal's POKEFAN_M who blocks the
+; Underground Path until the POWER PLANT is fixed is gone, and so is Crystal's
+; "House for Sale" sign at (11,21) -- Yellow has no sign beside the DAY-CARE
+; door, so ours is deleted rather than reworded.
 	object_const_def
-	const ROUTE5_POKEFAN_M
 
 Route5_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-Route5PokefanMScript:
-	jumptextfaceplayer Route5PokefanMText
-
 Route5UndergroundPathSign:
 	jumptext Route5UndergroundPathSignText
 
-HouseForSaleSign:
-	jumptext HouseForSaleSignText
-
-Route5PokefanMText:
-	text "The road is closed"
-	line "until the problem"
-
-	para "at the POWER PLANT"
-	line "is solved."
-	done
-
 Route5UndergroundPathSignText:
 	text "UNDERGROUND PATH"
-
-	para "CERULEAN CITY -"
-	line "VERMILION CITY"
-	done
-
-HouseForSaleSignText:
-	text "What's this?"
-
-	para "House for Sale…"
-	line "Nobody lives here."
+	line "CERULEAN CITY -"
+	cont "VERMILION CITY"
 	done
 
 Route5_MapEvents:
@@ -51,7 +34,5 @@ Route5_MapEvents:
 
 	def_bg_events
 	bg_event 17, 29, BGEVENT_READ, Route5UndergroundPathSign
-	bg_event 11, 21, BGEVENT_READ, HouseForSaleSign
 
 	def_object_events
-	object_event 17, 28, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route5PokefanMScript, EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH

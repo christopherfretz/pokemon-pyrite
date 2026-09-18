@@ -1577,6 +1577,53 @@ _NPCTradeAfterText5::
 	text " great?"
 	done
 
+; Kanto hack: Yellow's HAPPY trader (vendor/pokeyellow/data/text/text_9.asm,
+; _WannaTrade3Text / _NoTrade3Text / _WrongMon3Text / _Thanks3Text /
+; _AfterTrade3Text), verbatim.  wStringBuffer1 is the species the trader wants
+; (Yellow's wInGameTradeGiveMonName), wStringBuffer2 the one he offers
+; (wInGameTradeReceiveMonName).  Used by UNDERGROUND_PATH_ROUTE_5's RICKY.
+_NPCTradeIntroText6::
+	text "Hi! Do you have"
+	line "@"
+	text_ram wStringBuffer1
+	text "?"
+
+	para "Want to trade it"
+	line "for @"
+	text_ram wStringBuffer2
+	text "?"
+	done
+
+_NPCTradeCancelText6::
+	text "That's too bad."
+	done
+
+_NPCTradeWrongText6::
+	text "…This is no"
+	line "@"
+	text_ram wStringBuffer1
+	text "."
+
+	para "If you get one,"
+	line "trade it with me!"
+	done
+
+_NPCTradeCompleteText6::
+	text "Thanks, pal!"
+	done
+
+_NPCTradeAfterText6::
+	text "How is my old"
+	line "@"
+	text_ram wStringBuffer2
+	text "?"
+
+	para "My @"
+	text_ram wStringBuffer1
+	text " is"
+	line "doing great!"
+	done
+
 _MomLeavingText1::
 	text "Wow, that's a cute"
 	line "#MON."
@@ -1701,10 +1748,15 @@ _DaycareDummyText::
 	text_start
 	done
 
+; Kanto hack (7d): the DAY-CARE MAN's side of these shared bodies now carries
+; Yellow's DAYCARE gentleman wording verbatim (vendor/pokeyellow/text/
+; Daycare.asm).  Johto's Route 34 DAY_CARE man shares them - see
+; docs/M4-VERMILION.md 7d.7.  The LADY's and EGG bodies below are untouched.
 _DayCareManIntroText::
-	text "I'm the DAY-CARE"
-	line "MAN. Want me to"
-	cont "raise a #MON?"
+	text "I run a DAYCARE."
+	line "Would you like me"
+	cont "to raise one of"
+	cont "your #MON?"
 	done
 
 _DayCareManIntroEggText::
@@ -1754,13 +1806,13 @@ _DayCareLadyIntroEggText::
 	done
 
 _WhatShouldIRaiseText::
-	text "What should I"
-	line "raise for you?"
+	text "Which #MON"
+	line "should I raise?"
 	prompt
 
 _OnlyOneMonText::
-	text "Oh? But you have"
-	line "just one #MON."
+	text "You only have one"
+	line "#MON with you."
 	prompt
 
 _CantAcceptEggText::
@@ -1780,80 +1832,78 @@ _LastHealthyMonText::
 	prompt
 
 _IllRaiseYourMonText::
-	text "OK. I'll raise"
-	line "your @"
+	text "Fine, I'll look"
+	line "after @"
 	text_ram wStringBuffer1
-	text "."
+	text_start
+	cont "for a while."
 	prompt
 
 _ComeBackLaterText::
-	text "Come back for it"
-	line "later."
+	text "Come see me in"
+	line "a while."
 	done
 
 _AreWeGeniusesText::
-	text "Are we geniuses or"
-	line "what? Want to see"
-	cont "your @"
-	text_ram wStringBuffer1
-	text "?"
-	done
-
-_YourMonHasGrownText::
 	text "Your @"
 	text_ram wStringBuffer1
 	text_start
-	line "has grown a lot."
+	line "has grown a lot!"
 
 	para "By level, it's"
 	line "grown by @"
 	text_decimal wStringBuffer2 + 1, 1, 3
-	text "."
+	text "!"
 
-	para "If you want your"
-	line "#MON back, it"
-	cont "will cost ¥@"
+	para "Aren't I great?"
+	line "Want it back?"
+	done
+
+_YourMonHasGrownText::
+	text "You owe me ¥@"
 	text_decimal wStringBuffer2 + 2, 3, 4
-	text "."
+	text_start
+	line "for the return"
+	cont "of this #MON."
 	done
 
 _PerfectHeresYourMonText::
-	text "Perfect! Here's"
-	line "your #MON."
+	text "Thank you! Here's"
+	line "your #MON!"
 	prompt
 
 _GotBackMonText::
-	text "<PLAYER> got back"
+	text "<PLAYER> got"
 	line "@"
 	text_ram wStringBuffer1
-	text "."
+	text " back!"
 	prompt
 
 _BackAlreadyText::
-	text "Huh? Back already?"
+	text "Back already?"
 	line "Your @"
 	text_ram wStringBuffer1
 	text_start
-	para "needs a little"
-	line "more time with us."
+	cont "needs some more"
+	cont "time with me."
 
-	para "If you want your"
-	line "#MON back, it"
-	cont "will cost ¥100."
+	para "If you want it"
+	line "back, it will"
+	cont "cost ¥100."
 	done
 
 _HaveNoRoomText::
 	text "You have no room"
-	line "for it."
+	line "for this #MON!"
 	prompt
 
 _NotEnoughMoneyText::
-	text "You don't have"
-	line "enough money."
+	text "Hey, you don't"
+	line "have enough ¥!"
 	prompt
 
 _OhFineThenText::
-	text "Oh, fine then."
+	text "All right then,"
 	prompt
 
 _ComeAgainText::

@@ -3268,7 +3268,12 @@ wLizFightCount::     db
 wAnthonyFightCount:: db
 wToddFightCount::    db
 wGinaFightCount::    db
-wIrwinFightCount::   db ; unreferenced
+; Kanto hack (7d, docs/M4-VERMILION.md + docs/HOUSEKEEPING.md 3): wIrwinFightCount
+; was here.  It is one byte of Johto phone-rematch state that is unreferenced in
+; vanilla pokecrystal and in this hack, and it was evicted to pay for the byte
+; wTradeFlags needed when NUM_NPC_TRADES went 8 -> 9 (Yellow's RICKY trade in
+; UNDERGROUND_PATH_ROUTE_5).  wEventFlags and everything after it are unmoved:
+; the byte wTradeFlags gained above is the byte given up here.
 wArnieFightCount::   db
 wAlanFightCount::    db
 wDanaFightCount::    db

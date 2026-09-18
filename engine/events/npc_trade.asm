@@ -390,7 +390,11 @@ PrintTradeText:
 	push af
 	call GetTradeMonNames
 	pop af
-	ld bc, 2 * 4
+	; Kanto hack (7d): the row stride is one pointer per dialog set, so it must
+	; track NUM_TRADE_DIALOGSETS.  Vanilla hardcoded "2 * 4"; M2 added a fifth
+	; set (TRADE_DIALOGSET_CASUAL) without widening it, which made every dialog
+	; after TRADE_DIALOG_INTRO read the wrong pointer.
+	ld bc, 2 * NUM_TRADE_DIALOGSETS
 	ld hl, TradeTexts
 	call AddNTimes
 	ld a, [wTradeDialog]
@@ -412,30 +416,35 @@ TradeTexts:
 	dw NPCTradeIntroText2
 	dw NPCTradeIntroText3
 	dw NPCTradeIntroText5
+	dw NPCTradeIntroText6
 ; TRADE_DIALOG_CANCEL
 	dw NPCTradeCancelText1
 	dw NPCTradeCancelText2
 	dw NPCTradeCancelText2
 	dw NPCTradeCancelText3
 	dw NPCTradeCancelText5
+	dw NPCTradeCancelText6
 ; TRADE_DIALOG_WRONG
 	dw NPCTradeWrongText1
 	dw NPCTradeWrongText2
 	dw NPCTradeWrongText2
 	dw NPCTradeWrongText3
 	dw NPCTradeWrongText5
+	dw NPCTradeWrongText6
 ; TRADE_DIALOG_COMPLETE
 	dw NPCTradeCompleteText1
 	dw NPCTradeCompleteText2
 	dw NPCTradeCompleteText4
 	dw NPCTradeCompleteText3
 	dw NPCTradeCompleteText5
+	dw NPCTradeCompleteText6
 ; TRADE_DIALOG_AFTER
 	dw NPCTradeAfterText1
 	dw NPCTradeAfterText2
 	dw NPCTradeAfterText4
 	dw NPCTradeAfterText3
 	dw NPCTradeAfterText5
+	dw NPCTradeAfterText6
 	assert_table_length NUM_TRADE_DIALOGS * NUM_TRADE_DIALOGSETS
 
 NPCTradeCableText:
@@ -542,4 +551,24 @@ NPCTradeCompleteText5:
 
 NPCTradeAfterText5:
 	text_far _NPCTradeAfterText5
+	text_end
+
+NPCTradeIntroText6:
+	text_far _NPCTradeIntroText6
+	text_end
+
+NPCTradeCancelText6:
+	text_far _NPCTradeCancelText6
+	text_end
+
+NPCTradeWrongText6:
+	text_far _NPCTradeWrongText6
+	text_end
+
+NPCTradeCompleteText6:
+	text_far _NPCTradeCompleteText6
+	text_end
+
+NPCTradeAfterText6:
+	text_far _NPCTradeAfterText6
 	text_end

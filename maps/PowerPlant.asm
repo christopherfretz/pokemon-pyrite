@@ -162,7 +162,8 @@ PowerPlantManager:
 	takeitem MACHINE_PART
 	setevent EVENT_RETURNED_MACHINE_PART
 	clearevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
-	setevent EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH
+	; Kanto hack (7d): the Route 5/6 Underground Path blockers are gone with
+	; Yellow's Route 5/6, and their flag is now EVENT_GAVE_SAFFRON_GUARDS_DRINK.
 	setevent EVENT_RESTORED_POWER_TO_KANTO
 	clearevent EVENT_GOLDENROD_TRAIN_STATION_GENTLEMAN
 .ReturnedMachinePart:

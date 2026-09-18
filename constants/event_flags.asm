@@ -1047,8 +1047,8 @@
 	const EVENT_BEAT_POKEMANIAC_MILLER
 	const EVENT_BEAT_SUPER_NERD_HUGH
 	const EVENT_BEAT_SUPER_NERD_MARKUS
-	const EVENT_BEAT_POKEFANM_REX
-	const EVENT_BEAT_POKEFANM_ALLAN
+	const EVENT_BEAT_CAMPER_NOLAN ; Kanto hack: renamed in place (7d), was EVENT_BEAT_POKEFANM_REX; Route 6, Yellow's JR_TRAINER_M 10
+	const EVENT_BEAT_PICNICKER_MARCY ; Kanto hack: renamed in place (7d), was EVENT_BEAT_POKEFANM_ALLAN; Route 6, Yellow's JR_TRAINER_F 25
 	const EVENT_BEAT_SAGE_GAKU
 	const EVENT_BEAT_SAGE_MASA
 	const EVENT_BEAT_SAGE_KOJI
@@ -1372,7 +1372,7 @@
 	const EVENT_ROUTE_25_MISTY_BOYFRIEND ; Kanto hack: DEAD since 6i (Crystal's Misty's-date NPC is gone with Misty's date); free to rename in place
 	const EVENT_TRAINERS_IN_CERULEAN_GYM ; Kanto hack: DEAD since 6i (Crystal's gym-trainer gate is gone with Misty's date); free to rename in place
 	const EVENT_VERMILION_CITY_SNORLAX
-	const EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH
+	const EVENT_GAVE_SAFFRON_GUARDS_DRINK ; Kanto hack: renamed in place (7d), was EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH; Yellow's BIT_GAVE_SAFFRON_GUARDS_DRINK, shared by every SAFFRON gate guard
 	const EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	const EVENT_COPYCATS_HOUSE_2F_DOLL
 	const EVENT_VERMILION_FAN_CLUB_DOLL
@@ -1648,7 +1648,16 @@
 	const EVENT_CERULEAN_CITY_HIDDEN_RARE_CANDY ; Yellow's hidden RARE CANDY at (15,8)
 	const EVENT_OAKS_LAB_OAK ; OAK is still out looking for #MON (his object's hidden flag, cleared by the lab intro)
 
-; Unused: next 499 events
+; Kanto hack: Route 6's six trainers (7d, docs/M4-VERMILION.md).  TWO renamed
+; in place -- EVENT_BEAT_POKEFANM_REX/ALLAN, the two Crystal trainers who stood
+; on Yellow's trainer-0/1 tiles and are deleted by 7d -- plus FOUR appended.
+; 499 free -> 495 free.
+	const EVENT_BEAT_BUG_CATCHER_LOGAN ; Route 6, Yellow's BUG_CATCHER 10
+	const EVENT_BEAT_CAMPER_OLIVER ; Route 6, Yellow's JR_TRAINER_M 5
+	const EVENT_BEAT_PICNICKER_GRETA ; Route 6, Yellow's JR_TRAINER_F 3
+	const EVENT_BEAT_BUG_CATCHER_FELIX ; Route 6, Yellow's BUG_CATCHER 11
+
+; Unused: next 495 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

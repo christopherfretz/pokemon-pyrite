@@ -382,6 +382,9 @@ DEF KRIS EQU __trainer_class__
 	const TRAVIS
 	const NEIL
 	const MERLE ; Kanto hack: Nugget Bridge No. 1 (Yellow BUG_CATCHER 9)
+; Kanto hack: Route 6's two bug catchers (Yellow BUG_CATCHER 10 / 11)
+	const LOGAN
+	const FELIX
 
 	trainerclass FISHER ; 25
 	const JUSTIN
@@ -625,6 +628,9 @@ DEF KRIS EQU __trainer_class__
 	const GINA5
 	const TIFFANY4
 	const DIANA ; Kanto hack: Cerulean Gym, Yellow's JR.TRAINER^F 1 (6e)
+; Kanto hack: Route 6's two Jr.Trainers^F (Yellow JR_TRAINER_F 25 / 3)
+	const MARCY
+	const GRETA
 
 	trainerclass CAMPER ; 36
 	const ROLAND
@@ -653,6 +659,9 @@ DEF KRIS EQU __trainer_class__
 	const ANSEL
 	const RUFUS
 	const WENDELL ; Kanto hack: Route 25 (Yellow JR_TRAINER_M 2, 2nd use)
+; Kanto hack: Route 6's two Jr.Trainers^M (Yellow JR_TRAINER_M 10 / 5)
+	const NOLAN
+	const OLIVER
 
 	trainerclass EXECUTIVEF ; 37
 	const EXECUTIVEF_1
@@ -699,8 +708,6 @@ DEF KRIS EQU __trainer_class__
 	const DEREK2 ; unused
 	const DEREK3 ; unused
 	const ALEX
-	const REX
-	const ALLAN
 
 	trainerclass KIMONO_GIRL ; 3c
 	const NAOKO_UNUSED ; unused
