@@ -238,6 +238,15 @@ SpawnFollower:
 	ld hl, OBJECT_MAP_OBJECT_INDEX
 	add hl, de
 	ld [hl], -1
+; Playtest fix (2026-09-18): give the object its VRAM tile NOW.  The per-frame
+; refresh in MovementFunction_PikaFollower only runs inside HandleObjectStep,
+; and a script that spawns Pikachu visible and goes straight into text (Oak's
+; Lab) never steps objects before the first draw -- the tile stayed 0 and
+; Pikachu was drawn with the player's tiles.  AddFollowerSprite always puts
+; the follower at FOLLOWER_VTILE, so this is what GetSpriteVTile would return.
+	ld hl, OBJECT_SPRITE_TILE
+	add hl, de
+	ld [hl], FOLLOWER_VTILE
 
 	ld a, SPRITE_PIKACHU_FOLLOWER
 	call GetSpritePalette
