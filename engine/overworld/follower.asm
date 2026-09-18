@@ -136,6 +136,11 @@ MovementFunction_PikaFollower:
 	ld a, [wPikaFollowFlags]
 	bit FOLLOWER_ENABLED_F, a
 	ret z
+; F5: a script is holding Pikachu off-screen (the healing machine).  This runs
+; every frame of every script pause, so without the bit it would undo the hide
+; the moment the follower's coords stopped matching the player's.
+	bit FOLLOWER_SCRIPTHIDE_F, a
+	ret nz
 	ld a, [wPlayerMapX]
 	ld hl, OBJECT_MAP_X
 	add hl, bc
@@ -218,8 +223,9 @@ SpawnFollower:
 	xor a
 	call ByteFill
 
-	ld a, [wPikaFollowFlags]
-	bit FOLLOWER_ENABLED_F, a
+	ld hl, wPikaFollowFlags
+	res FOLLOWER_SCRIPTHIDE_F, [hl] ; never let a half-run script leave it set
+	bit FOLLOWER_ENABLED_F, [hl]
 	ret z
 
 	ld de, wFollowerStruct
@@ -495,6 +501,167 @@ FollowerCanStandAt:
 .no
 	and a
 	ret
+
+; --- F5 / F6: the Pokemon Center counter hop.  Design, and every measurement
+; behind it, in docs/PIKACHU-EMOTIONS.md Part B; port notes in
+; docs/FOLLOWER-FIXES.md.  Yellow: engine/events/pokecenter.asm.
+
+FollowerHopToCounter::
+; Special.  Yellow's `callfar PikachuWalksToNurseJoy`: Pikachu hops from the
+; tile behind the player onto the counter tile the player is facing.
+; Inert unless the follower is out and the faced tile really is a counter, so
+; the shared PokecenterNurseScript behaves exactly as before everywhere else.
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	call IsStarterPikachuAliveInParty
+	ret nc
+	call GetFacingTileCoord ; d, e = the faced tile; a = its collision
+	call CheckCounterTile
+	ret nz
+; A jump always covers exactly two tiles (StepFunction_NPCJump does one
+; AddStepVector per phase), so it has to start two tiles below the landing
+; tile -- which is exactly where the follower is standing after the player
+; walks up to the counter.  Snap rather than test: it is a no-op when the
+; follower is already there, and it fixes up LAST_MAP/INIT/SPRITE together
+; for the rare sideways approach.  NOT FollowerCanStandAt -- the counter is a
+; WALL_TILE and would be refused; no step function consults permissions.
+	inc e
+	inc e
+	ld bc, wFollowerStruct
+	call FollowerSnapToTile
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	res INVISIBLE_F, [hl]
+	call FollowerJumpUp
+
+; Animate it here and now.  Script `pause` is a blocking DelayFrames loop
+; (Script_pause, engine/overworld/scripting.asm) and every text command blocks
+; too, so HandleMap -- and with it HandleObjectStep -- does not run again until
+; the whole nurse script has ended.  Measured: parked before the existing
+; `pause 20`, the jump advanced two frames in 550.  Yellow's
+; PikachuWalksToNurseJoy is a blocking routine for exactly the same reason.
+; The jump needs 16 frames; the cap is only so a follower that HandleObjectStep
+; refuses to tick (CheckObjectStillVisible's `ret c`) can never hang the script.
+; Bailing out is harmless -- the overworld loop finishes the jump afterwards.
+	ld d, 32
+.animate
+	push de
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call HandleObjectStep
+	call UpdateSprites
+	call DelayFrame
+	pop de
+	ld a, [wFollowerStepType]
+	cp STEP_TYPE_FOLLOWER_JUMP
+	ret nz
+	dec d
+	jr nz, .animate
+	ret
+
+FollowerJumpUp:
+; JumpStep (engine/overworld/movement.asm) minus SpawnShadow -- Yellow's counter
+; hop throws no shadow -- and into our own step type, which adds the X arc.
+; bc = wFollowerStruct.
+	call ObjectStep_ZeroAnonJumptableIndex ; StepFunction_FromMovement usually
+	ld a, STEP_WALK << 2 | UP              ; does this for us; we are a special
+	call InitStep
+	ld hl, OBJECT_JUMP_HEIGHT
+	add hl, bc
+	ld [hl], 0
+	ld hl, OBJECT_FLAGS2
+	add hl, bc
+	res IN_GRASS_F, [hl]
+	ld hl, OBJECT_ACTION
+	add hl, bc
+	ld [hl], OBJECT_ACTION_STEP
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld [hl], STEP_TYPE_FOLLOWER_JUMP
+	ret
+
+StepFunction_FollowerJump:
+; StepTypesJumptable $1a.  A plain NPC jump plus a sideways bulge, so the two
+; orthogonal tiles read as Yellow's diagonal hop *around* the player instead of
+; a leap over his head: Yellow's Pikachu stands to the player's left and hops
+; up-right, ours stands below him and swings out left before cutting back up
+; and right onto the counter.  StepVectors has no diagonal entry, so the
+; displacement is cosmetic (OBJECT_SPRITE_X_OFFSET) and the map coords still
+; land dead on the counter tile, which is what the walk-off depends on.
+	call .Arc ; before the jump code: UpdateJumpPosition bumps JUMP_HEIGHT
+	call StepFunction_NPCJump
+; .Land hands the object back to STEP_TYPE_FROM_MOVEMENT on the last frame.
+	ld hl, OBJECT_STEP_TYPE
+	add hl, bc
+	ld a, [hl]
+	cp STEP_TYPE_FOLLOWER_JUMP
+	ret z
+	xor a
+	ld hl, OBJECT_SPRITE_X_OFFSET
+	add hl, bc
+	ld [hl], a
+	ret
+
+.Arc:
+; OBJECT_JUMP_HEIGHT counts up by the speed nybble (2 at STEP_WALK), so it is
+; 0, 2, 4 .. 30 across the 16 frames of the two phases -- the same index
+; UpdateJumpPosition uses for its Y arc.
+	ld hl, OBJECT_JUMP_HEIGHT
+	add hl, bc
+	ld a, [hl]
+	srl a
+	cp .x_offsets_end - .x_offsets
+	ret nc
+	ld e, a
+	ld d, 0
+	ld hl, .x_offsets
+	add hl, de
+	ld a, [hl]
+	ld hl, OBJECT_SPRITE_X_OFFSET
+	add hl, bc
+	ld [hl], a
+	ret
+
+.x_offsets:
+	db   0,  -4,  -8, -11, -13, -14, -14, -13
+	db -11,  -9,  -7,  -5,  -3,  -2,  -1,   0
+.x_offsets_end:
+
+FollowerHide::
+; Special.  Yellow's DisablePikachuOverworldSpriteDrawing: take Pikachu off
+; screen for the healing-machine animation.  HealMachineAnim writes the balls
+; straight into wShadowOAMSprite32 and nothing reserves those structs, so the
+; OAM rebuild has to happen HERE, before the balls exist -- nothing else
+; redraws between this and `special HealMachineAnim`.
+	ld hl, wPikaFollowFlags
+	bit FOLLOWER_ENABLED_F, [hl]
+	ret z
+	set FOLLOWER_SCRIPTHIDE_F, [hl]
+	ld hl, wFollowerStruct + OBJECT_FLAGS1
+	set INVISIBLE_F, [hl]
+	jp UpdateSprites
+
+FollowerShow::
+; Special.  Yellow's wPikachuSpawnState = 5 + EnablePikachuOverworldSpriteDrawing.
+; Pikachu is still standing on the counter tile, so dropping the suppress bit is
+; all it takes: .UpdateVisibility sees coords that differ from the player's and
+; brings it back there, and the next step the player takes walks it off the
+; counter onto the tile they vacate (exactly Yellow's measured walk-off).
+	ld hl, wPikaFollowFlags
+	res FOLLOWER_SCRIPTHIDE_F, [hl]
+; Only bring the sprite back if it was ours to hide: a disabled follower, or one
+; another system is holding hidden (FOLLOWER_HIDDEN_F), must stay invisible --
+; clearing INVISIBLE_F unconditionally would pop Pikachu onto the counter in a
+; save where the feature is off.
+	ld a, [hl]
+	and 1 << FOLLOWER_ENABLED_F | 1 << FOLLOWER_HIDDEN_F
+	cp 1 << FOLLOWER_ENABLED_F
+	ret nz
+	ld hl, wFollowerStruct + OBJECT_FLAGS1
+	res INVISIBLE_F, [hl]
+	jp UpdateSprites ; scripts block, so redraw now or it reappears late
 
 GetStarterPikachuHappiness::
 ; Special. Returns the starter Pikachu's happiness byte in wScriptVar, or 0 if

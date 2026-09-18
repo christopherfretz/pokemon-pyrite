@@ -190,3 +190,6 @@ SpecialsPointers::
 	add_special EnablePikaFollower
 	add_special SpawnFollowerVisible
 	add_special GetStarterPikachuHappiness
+	add_special FollowerHopToCounter
+	add_special FollowerHide
+	add_special FollowerShow

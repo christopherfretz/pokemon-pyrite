@@ -110,6 +110,7 @@ PokecenterNurseScript:
 	yesorno
 	iffalse .done
 
+	special FollowerHopToCounter ; F5/F6: Pikachu hops onto the counter
 	farwritetext NurseTakePokemonText
 	pause 20
 	special StubbedTrainerRankings_Healings
@@ -118,9 +119,11 @@ PokecenterNurseScript:
 	special HealParty
 	playmusic MUSIC_NONE
 	setval HEALMACHINE_POKECENTER
+	special FollowerHide
 	special HealMachineAnim
 	pause 30
 	special RestartMapMusic
+	special FollowerShow
 	turnobject LAST_TALKED, DOWN
 	pause 10
 

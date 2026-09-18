@@ -1116,6 +1116,7 @@ StepTypesJumptable:
 	dw StepFunction_17              ; 17
 	dw StepFunction_Delete          ; 18
 	dw StepFunction_SkyfallTop      ; 19
+	dw StepFunction_FollowerJump    ; 1a
 	assert_table_length NUM_STEP_TYPES
 
 WaitStep_InPlace:

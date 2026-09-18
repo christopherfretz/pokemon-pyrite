@@ -220,6 +220,7 @@ DEF NUM_SPRITEMOVEFN EQU const_value
 	const STEP_TYPE_17               ; 17
 	const STEP_TYPE_DELETE           ; 18
 	const STEP_TYPE_SKYFALL_TOP      ; 19
+	const STEP_TYPE_FOLLOWER_JUMP    ; 1a
 DEF NUM_STEP_TYPES EQU const_value
 
 ; ObjectActionPairPointers indexes (see engine/overworld/map_object_action.asm)
@@ -296,3 +297,4 @@ DEF NUM_STEPS EQU const_value
 	const FOLLOWER_ENABLED_F ; 0: Pikachu should exist in the overworld
 	const FOLLOWER_HIDDEN_F  ; 1: hidden this frame (bike/surf/on player tile)
 	const FOLLOWER_SNAPPED_F ; 2: sitting on the player's tile, awaiting first step
+	const FOLLOWER_SCRIPTHIDE_F ; 3: a script is hiding it (Pokemon Center heal)
