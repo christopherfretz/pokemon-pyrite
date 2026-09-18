@@ -298,3 +298,4 @@ DEF NUM_STEPS EQU const_value
 	const FOLLOWER_HIDDEN_F  ; 1: hidden this frame (bike/surf/on player tile)
 	const FOLLOWER_SNAPPED_F ; 2: sitting on the player's tile, awaiting first step
 	const FOLLOWER_SCRIPTHIDE_F ; 3: a script is hiding it (Pokemon Center heal)
+	const FOLLOWER_HOPRIGHT_F ; 4: counter hop swings right, not left (F6b)

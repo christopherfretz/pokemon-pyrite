@@ -519,6 +519,21 @@ FollowerHopToCounter::
 	call GetFacingTileCoord ; d, e = the faced tile; a = its collision
 	call CheckCounterTile
 	ret nz
+; F6b.  Yellow picks its movement table from the side Pikachu is standing on,
+; never from the player's facing (pikachu_emotions.asm .GetMovementData):
+; trailing below or to the left it arrives from the left ($2b slide up-left then
+; $34 hop up-right, or a bare $34), trailing to the RIGHT it arrives from the
+; right ($33 hop up-left).  We only have one vertical jump, so the side lives in
+; the sprite arc: remember which way to swing before the snap throws the
+; follower's own x away.  d = the counter column = the player's column.
+	ld hl, wPikaFollowFlags
+	res FOLLOWER_HOPRIGHT_F, [hl]
+	ld a, [wFollowerStruct + OBJECT_MAP_X]
+	cp d
+	jr c, .swing_left
+	jr z, .swing_left
+	set FOLLOWER_HOPRIGHT_F, [hl]
+.swing_left
 ; A jump always covers exactly two tiles (StepFunction_NPCJump does one
 ; AddStepVector per phase), so it has to start two tiles below the landing
 ; tile -- which is exactly where the follower is standing after the player
@@ -619,6 +634,14 @@ StepFunction_FollowerJump:
 	ld hl, .x_offsets
 	add hl, de
 	ld a, [hl]
+; F6b: one table, mirrored for a follower that was standing to the player's
+; right, so the hop swings out on the side Yellow's Pikachu would have come from.
+	ld hl, wPikaFollowFlags
+	bit FOLLOWER_HOPRIGHT_F, [hl]
+	jr z, .signed
+	cpl
+	inc a
+.signed
 	ld hl, OBJECT_SPRITE_X_OFFSET
 	add hl, bc
 	ld [hl], a
@@ -651,6 +674,7 @@ FollowerShow::
 ; counter onto the tile they vacate (exactly Yellow's measured walk-off).
 	ld hl, wPikaFollowFlags
 	res FOLLOWER_SCRIPTHIDE_F, [hl]
+	res FOLLOWER_HOPRIGHT_F, [hl] ; the hop is over; leave the saved byte clean
 ; Only bring the sprite back if it was ours to hide: a disabled follower, or one
 ; another system is holding hidden (FOLLOWER_HIDDEN_F), must stay invisible --
 ; clearing INVISIBLE_F unconditionally would pop Pikachu onto the counter in a
