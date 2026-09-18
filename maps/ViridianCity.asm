@@ -3,6 +3,11 @@
 	const VIRIDIANCITY_GRAMPS2
 	const VIRIDIANCITY_FISHER
 	const VIRIDIANCITY_YOUNGSTER
+; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 4.7): Yellow's two missing
+; VIRIDIAN CITY NPCs -- the girl who explains the blocked road north and the
+; second youngster with the CATERPIE/WEEDLE speech.
+	const VIRIDIANCITY_GIRL
+	const VIRIDIANCITY_YOUNGSTER2
 
 ViridianCity_MapScripts:
 	def_scene_scripts
@@ -45,7 +50,7 @@ ViridianCityFlypointCallback:
 ViridianCityGrampsCallback:
 	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	iffalse .Done
-	moveobject VIRIDIANCITY_GRAMPS1, 16, 5
+	moveobject VIRIDIANCITY_GRAMPS1, 17, 5 ; L1: Yellow's OLD_MAN_1 tile (was 16, 5)
 .Done:
 	endcallback
 
@@ -77,14 +82,24 @@ ViridianCityCoffeeGramps:
 	writetext ViridianCityGrampsLosingMyTouchText
 	waitbutton
 	closetext
-	; Walk to (16,5) around whichever side the player is standing on.
+	; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 4.3): Yellow's post-demo beat.  He walks
+	; six tiles DOWN the road towards the MART and is gone until he has restocked
+	; (ViridianMart's NEWMAP callback clears the flag again); the OBJECTS callback
+	; above then stands him beside the road at (17,5), Yellow's own tile.
+	; Yellow picks between two movements on the player's X
+	; (vendor/pokeyellow/scripts/ViridianCity.asm:219-243): the six-DOWN when the
+	; column below him is clear, one step aside when the player is standing in it.
+	; Yellow tests `cp 19` because its old man can only be spoken to from the east;
+	; ours is approachable from (17,3) and (19,3) as well, so the test is "is the
+	; player in MY column".
 	readvar VAR_XCOORD
-	ifequal 17, .AsideViaRight
-	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsAsideViaLeftMovement
-	sjump .Aside
-.AsideViaRight:
-	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsAsideViaRightMovement
-.Aside:
+	ifequal 18, .StepAside
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsOffToMartMovement
+	sjump .GoneToMart
+.StepAside:
+	applymovement VIRIDIANCITY_GRAMPS1, ViridianCity_GrampsStepAsideMovement
+.GoneToMart:
+	disappear VIRIDIANCITY_GRAMPS1 ; sets EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
 	setevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
 	end
 
@@ -120,39 +135,65 @@ ViridianCityCoffeeGramps:
 	closetext
 	end
 
-ViridianCity_GrampsAsideViaLeftMovement:
-	step LEFT
+; Yellow's ViridianCityOldManMovementData2, verbatim: six steps DOWN.  Column 18
+; is walkable on rows 4-9 (scripts/mapgrid.py ViridianCity), so (18,3) -> (18,9).
+ViridianCity_GrampsOffToMartMovement:
 	step DOWN
 	step DOWN
-	step LEFT
-	turn_head DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
 	step_end
 
-ViridianCity_GrampsAsideViaRightMovement:
+; Yellow's ViridianCityOldManMovementData1, for when the player (or the follower
+; behind them) is standing in that column.
+ViridianCity_GrampsStepAsideMovement:
 	step RIGHT
-	step DOWN
-	step DOWN
-	step LEFT
-	step LEFT
-	step LEFT
-	turn_head DOWN
 	step_end
 
+; L1 (4.6): Yellow's gambler by the gym.  He is the hint that the GYM is shut,
+; so he is gated on the same seven badges as the door, not on Crystal's
+; EVENT_BLUE_IN_CINNABAR (which nothing in Kanto sets).
 ViridianCityGrampsNearGym:
 	faceplayer
 	opentext
-	checkevent EVENT_BLUE_IN_CINNABAR
-	iftrue .BlueReturned
-	writetext ViridianCityGrampsNearGymText
+	readvar VAR_BADGES
+	ifless 7, .AlwaysClosed
+	writetext ViridianCityGrampsNearGymLeaderReturnedText
 	waitbutton
 	closetext
 	end
 
-.BlueReturned:
-	writetext ViridianCityGrampsNearGymBlueReturnedText
+.AlwaysClosed:
+	writetext ViridianCityGrampsNearGymAlwaysClosedText
 	waitbutton
 	closetext
 	end
+
+; L1 (4.5, R1): Yellow locks VIRIDIAN GYM until the seventh badge
+; (vendor/pokeyellow/scripts/ViridianCity.asm:31-60).  Kanto is played first, so
+; wJohtoBadges is still 0 and VAR_BADGES is the Kanto count.
+ViridianGymLockedDoor:
+	readvar VAR_BADGES
+	ifless 7, .Locked
+	end
+
+.Locked:
+	opentext
+	writetext ViridianGymLockedText
+	waitbutton
+	closetext
+	applymovement PLAYER, ViridianCity_PlayerStepWestMovement
+	end
+
+; Yellow pushes the player one tile DOWN (a simulated joypad press).  Our door
+; tile (32,8) is the lip of a ledge -- (32,9) is the cliff face and a scripted
+; `step` cannot hop a ledge -- so the nudge is one tile west along the same lip.
+; Same visible result: the player is off the door tile.
+ViridianCity_PlayerStepWestMovement:
+	step LEFT
+	step_end
 
 ViridianCityDreamEaterFisher:
 	faceplayer
@@ -180,11 +221,48 @@ ViridianCitySign:
 ViridianGymSign:
 	jumptext ViridianGymSignText
 
-ViridianCityWelcomeSign:
-	jumptext ViridianCityWelcomeSignText
+ViridianCityTrainerTips1:
+	jumptext ViridianCityTrainerTips1Text
 
-TrainerHouseSign:
-	jumptext TrainerHouseSignText
+ViridianCityTrainerTips2:
+	jumptext ViridianCityTrainerTips2Text
+
+; L1 (4.7): Yellow's GIRL beside the blocked road.  Crystal has no SPRITE_GIRL;
+; SPRITE_TWIN is its little-girl overworld sprite, so she uses that.
+ViridianCityGirlScript:
+	faceplayer
+	opentext
+	checkflag ENGINE_POKEDEX
+	iftrue .WhenIGoShop
+	writetext ViridianCityGirlCoffeeText
+	waitbutton
+	closetext
+	end
+
+.WhenIGoShop:
+	writetext ViridianCityGirlWhenIGoShopText
+	waitbutton
+	closetext
+	end
+
+; L1 (4.7): Yellow's second youngster and his yes/no caterpillar speech
+; (vendor/pokeyellow/scripts/ViridianCity_2.asm:30-41).
+ViridianCityYoungster2Script:
+	faceplayer
+	opentext
+	writetext ViridianCityYoungster2AskText
+	yesorno
+	iffalse .OkThen
+	writetext ViridianCityYoungster2CaterpieText
+	waitbutton
+	closetext
+	end
+
+.OkThen:
+	writetext ViridianCityYoungster2OkThenText
+	waitbutton
+	closetext
+	end
 
 ViridianCityPokecenterSign:
 	jumpstd PokecenterSignScript
@@ -262,24 +340,17 @@ ViridianCityGrampsBoxFullText:
 	line "first!"
 	done
 
-ViridianCityGrampsNearGymText:
-	text "This GYM didn't"
-	line "have a LEADER"
-	cont "until recently."
+ViridianCityGrampsNearGymAlwaysClosedText:
+	text "This #MON GYM"
+	line "is always closed."
 
-	para "A young man from"
-	line "PALLET became the"
-
-	para "LEADER, but he's"
-	line "often away."
+	para "I wonder who the"
+	line "LEADER is?"
 	done
 
-ViridianCityGrampsNearGymBlueReturnedText:
-	text "Are you going to"
-	line "battle the LEADER?"
-
-	para "Good luck to you."
-	line "You'll need it."
+ViridianCityGrampsNearGymLeaderReturnedText:
+	text "VIRIDIAN GYM's"
+	line "LEADER returned!"
 	done
 
 ViridianCityDreamEaterFisherText:
@@ -313,11 +384,54 @@ ViridianCityDreamEaterFisherGotDreamEaterText:
 	done
 
 ViridianCityYoungsterText:
-	text "I heard that there"
-	line "are many items on"
+	text "Those # BALLs"
+	line "at your waist!"
+	cont "You have #MON!"
 
-	para "the ground in"
-	line "VIRIDIAN FOREST."
+	para "It's great that"
+	line "you can carry and"
+	cont "use #MON any-"
+	cont "time, anywhere!"
+	done
+
+ViridianCityYoungster2AskText:
+	text "You want to know"
+	line "about the 2 kinds"
+	cont "of caterpillar"
+	cont "#MON?"
+	done
+
+ViridianCityYoungster2OkThenText:
+	text "Oh, OK then!"
+	done
+
+ViridianCityYoungster2CaterpieText:
+	text "CATERPIE has no"
+	line "poison, but"
+	cont "WEEDLE does."
+
+	para "Watch out for its"
+	line "POISON STING!"
+	done
+
+ViridianCityGirlCoffeeText:
+	text "Oh Grandpa! Don't"
+	line "be so mean!"
+	cont "He hasn't had his"
+	cont "coffee yet."
+	done
+
+ViridianCityGirlWhenIGoShopText:
+	text "When I go shop in"
+	line "PEWTER CITY, I"
+	cont "have to take the"
+	cont "winding trail in"
+	cont "VIRIDIAN FOREST."
+	done
+
+ViridianGymLockedText:
+	text "The GYM's doors"
+	line "are locked…"
 	done
 
 ViridianCitySignText:
@@ -336,19 +450,30 @@ ViridianGymSignText:
 	line "text is illegible…"
 	done
 
-ViridianCityWelcomeSignText:
-	text "WELCOME TO"
-	line "VIRIDIAN CITY,"
+ViridianCityTrainerTips1Text:
+	text "TRAINER TIPS"
 
-	para "THE GATEWAY TO"
-	line "INDIGO PLATEAU"
+	para "Catch #MON"
+	line "and expand your"
+	cont "collection!"
+
+	para "The more you have,"
+	line "the easier it is"
+	cont "to fight!"
 	done
 
-TrainerHouseSignText:
-	text "TRAINER HOUSE"
+ViridianCityTrainerTips2Text:
+	text "TRAINER TIPS"
 
-	para "The Club for Top"
-	line "Trainer Battles"
+	para "The battle moves"
+	line "of #MON are"
+	cont "limited by their"
+	cont "POWER POINTs, PP."
+
+	para "To replenish PP,"
+	line "rest your tired"
+	cont "#MON at a"
+	cont "#MON CENTER!"
 	done
 
 ViridianCity_MapEvents:
@@ -357,24 +482,26 @@ ViridianCity_MapEvents:
 	def_warp_events
 	warp_event 32,  7, VIRIDIAN_GYM, 1
 	warp_event 21,  9, VIRIDIAN_NICKNAME_SPEECH_HOUSE, 1
-	warp_event 23, 15, TRAINER_HOUSE_1F, 1
 	warp_event 29, 19, VIRIDIAN_MART, 2
 	warp_event 23, 25, VIRIDIAN_POKECENTER_1F, 1
 
 	def_coord_events
 	coord_event 17,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockRight
 	coord_event 19,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockLeft
+	coord_event 32,  8, -1, ViridianGymLockedDoor ; L1 (R1): the locked GYM door
 
 	def_bg_events
 	bg_event 17, 17, BGEVENT_READ, ViridianCitySign
 	bg_event 27,  7, BGEVENT_READ, ViridianGymSign
-	bg_event 19,  1, BGEVENT_READ, ViridianCityWelcomeSign
-	bg_event 21, 15, BGEVENT_READ, TrainerHouseSign
+	bg_event 19,  1, BGEVENT_READ, ViridianCityTrainerTips1
+	bg_event 21, 29, BGEVENT_READ, ViridianCityTrainerTips2
 	bg_event 24, 25, BGEVENT_READ, ViridianCityPokecenterSign
 	bg_event 30, 19, BGEVENT_READ, ViridianCityMartSign
 
 	def_object_events
-	object_event 18,  3, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, -1
-	object_event 30,  8, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianCityGrampsNearGym, -1
+	object_event 18,  3, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianCityCoffeeGramps, EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+	object_event 30,  8, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianCityGrampsNearGym, -1
 	object_event  6, 23, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityDreamEaterFisher, -1
-	object_event 17, 21, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 3, 3, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungsterScript, -1
+	object_event 13, 20, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungsterScript, -1
+	object_event 17,  9, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianCityGirlScript, -1
+	object_event 30, 25, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianCityYoungster2Script, -1

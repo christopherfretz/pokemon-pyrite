@@ -139,6 +139,9 @@ TrainerHouse1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
+; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 7.17f): VIRIDIAN CITY's door to this map is
+; gone (Yellow has no TRAINER HOUSE), so the map is unreachable in Kanto and
+; these return warps are vestigial; they point at the MART tile, warp 3.
 	warp_event  2, 13, VIRIDIAN_CITY, 3
 	warp_event  3, 13, VIRIDIAN_CITY, 3
 	warp_event  8,  2, TRAINER_HOUSE_B1F, 1

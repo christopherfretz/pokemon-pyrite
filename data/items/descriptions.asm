@@ -6,7 +6,7 @@ ItemDescriptions:
 	dw BrightpowderDesc
 	dw GreatBallDesc
 	dw PokeBallDesc
-	dw TeruSama1Desc
+	dw TownMapDesc ; L1: item 06 is Yellow's TOWN MAP now
 	dw BicycleDesc
 	dw MoonStoneDesc
 	dw AntidoteDesc
@@ -280,8 +280,10 @@ PokeBallDesc:
 	db   "An item for catch-"
 	next "ing #MON.@"
 
-TeruSama1Desc:
-	db   "?@"
+; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 7.3): Yellow's TOWN MAP, given by DAISY.
+TownMapDesc:
+	db   "A handy map of"
+	next "the KANTO region.@"
 
 BicycleDesc:
 	db   "A collapsible bike"

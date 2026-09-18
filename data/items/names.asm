@@ -5,7 +5,7 @@ ItemNames::
 	li "BRIGHTPOWDER"
 	li "GREAT BALL"
 	li "# BALL"
-	li "TERU-SAMA"
+	li "TOWN MAP" ; L1: item 06 was an unused TERU-SAMA slot
 	li "BICYCLE"
 	li "MOON STONE"
 	li "ANTIDOTE"

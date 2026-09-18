@@ -17,7 +17,7 @@ KantoWaterWildMons:
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_4
-	db 4 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here (L1)
 	db 10, GOLDEEN
 	db 5, GOLDEEN
 	db 10, SEAKING
@@ -80,7 +80,7 @@ KantoWaterWildMons:
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_22
-	db 2 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here (L1)
 	db 10, POLIWAG
 	db 5, POLIWAG
 	db 10, POLIWHIRL
@@ -127,21 +127,21 @@ KantoWaterWildMons:
 	end_water_wildmons
 
 	def_water_wildmons PALLET_TOWN
-	db 6 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here (L1)
 	db 35, TENTACOOL
 	db 30, TENTACOOL
 	db 35, TENTACRUEL
 	end_water_wildmons
 
 	def_water_wildmons VIRIDIAN_CITY
-	db 2 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here (L1)
 	db 10, POLIWAG
 	db 5, POLIWAG
 	db 10, POLIWHIRL
 	end_water_wildmons
 
 	def_water_wildmons CERULEAN_CITY
-	db 4 percent ; encounter rate
+	db 0 percent ; encounter rate: Yellow has none here (L1)
 	db 10, GOLDEEN
 	db 5, GOLDEEN
 	db 10, SEAKING

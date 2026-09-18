@@ -1632,7 +1632,21 @@
 	const EVENT_ROUTE_24_TM_THUNDER_WAVE ; the TM ball at (10,5) has been picked up (M3b: Yellow's TM45 THUNDER WAVE, was TM_ZAP_CANNON)
 	const EVENT_GOT_CHARMANDER_FROM_DAMIAN ; DAMIAN has handed over the L10 CHARMANDER
 
-; Unused: next 506 events
+; Kanto hack: L1 Kanto-leftovers pass (docs/AUDIT-KANTO-LEFTOVERS.md 7).
+; SIX appended flags.  Three drive Yellow beats that were missing entirely --
+; Daisy's TOWN MAP gift (which doubles as the Blue's House prop's hidden flag),
+; the two POKeDEX props on Oak's desk, and the catch-tutorial old man walking
+; off to restock at the MART (his object's hidden flag, cleared again by
+; ViridianMart's NEWMAP callback) -- and three are Yellow hidden items that had
+; never been ported.  506 free -> 500 free.
+	const EVENT_GOT_TOWN_MAP ; Daisy has handed over the TOWN MAP (also hides the Blue's House prop)
+	const EVENT_OAKS_LAB_POKEDEX ; the two desk POKeDEX props are gone (set when Oak hands the dex over)
+	const EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART ; the catch-tutorial old man is off buying # BALLs (his hidden flag)
+	const EVENT_ROUTE_25_HIDDEN_ETHER ; Yellow's hidden ETHER at (38,3)
+	const EVENT_ROUTE_25_HIDDEN_ELIXER ; Yellow's hidden ELIXER at (10,1)
+	const EVENT_CERULEAN_CITY_HIDDEN_RARE_CANDY ; Yellow's hidden RARE CANDY at (15,8)
+
+; Unused: next 500 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

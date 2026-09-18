@@ -383,6 +383,9 @@ CeruleanCitySign:
 CeruleanCityTrainerTips:
 	jumptext CeruleanCityTrainerTipsText
 
+CeruleanCityHiddenRareCandy:
+	hiddenitem RARE_CANDY, EVENT_CERULEAN_CITY_HIDDEN_RARE_CANDY
+
 CeruleanGymSign:
 	jumptext CeruleanGymSignText
 
@@ -661,6 +664,10 @@ CeruleanCity_MapEvents:
 	bg_event 20, 17, BGEVENT_READ, CeruleanCityPokecenterSign
 	bg_event 11, 25, BGEVENT_READ, CeruleanBikeShopSign
 	bg_event 27, 21, BGEVENT_READ, CeruleanGymSign
+	; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 3): Yellow's hidden RARE CANDY
+	; (vendor/pokeyellow/data/events/hidden_events.asm:374-375).  Cerulean is a
+	; Yellow re-cut (6a), so the tile transfers.
+	bg_event 15,  8, BGEVENT_ITEM, CeruleanCityHiddenRareCandy
 
 	def_object_events
 	object_event 31, 20, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerMScript, -1

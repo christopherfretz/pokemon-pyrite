@@ -5,6 +5,11 @@
 	const OAKSLAB_SCIENTIST3
 	const OAKSLAB_RIVAL
 	const OAKSLAB_EEVEE_BALL
+; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 4.2): Yellow draws two
+; #DEX props on OAK's desk, flanking the ball, and hides them both when he
+; hands the #DEX over (vendor/pokeyellow/scripts/OaksLab.asm:568-573).
+	const OAKSLAB_POKEDEX1
+	const OAKSLAB_POKEDEX2
 
 OaksLab_MapScripts:
 	def_scene_scripts
@@ -129,6 +134,9 @@ OaksLabRivalScript:
 OaksLabEeveeBallScript:
 	jumptext OaksLabThatsAPokeBallText
 
+OaksLabPokedexScript:
+	jumptext OaksLabPokedexText
+
 Oak:
 	faceplayer
 	opentext
@@ -228,6 +236,8 @@ Oak:
 	playsound SFX_ITEM
 	waitsfx
 	setflag ENGINE_POKEDEX
+	disappear OAKSLAB_POKEDEX1
+	disappear OAKSLAB_POKEDEX2
 	writetext OakThatWasMyDreamText
 	waitbutton
 	closetext
@@ -497,6 +507,13 @@ OaksLabThatsAPokeBallText:
 	text "That's a #"
 	line "BALL. There's a"
 	cont "#MON inside!"
+	done
+
+; Kanto hack (L1): vendor/pokeyellow/text/OaksLab.asm:141-145.
+OaksLabPokedexText:
+	text "It's encyclopedia-"
+	line "like, but the"
+	cont "pages are blank!"
 	done
 
 OakYouShouldTalkToItText:
@@ -908,3 +925,5 @@ OaksLab_MapEvents:
 	object_event  1,  4, SPRITE_SCIENTIST, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, OaksAssistant3Script, -1
 	object_event  5,  4, SPRITE_KANTO_RIVAL, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabRivalScript, EVENT_OAKS_LAB_RIVAL
 	object_event  7,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabEeveeBallScript, EVENT_OAKS_LAB_EEVEE_BALL
+	object_event  6,  3, SPRITE_POKEDEX, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabPokedexScript, EVENT_OAKS_LAB_POKEDEX
+	object_event  8,  3, SPRITE_POKEDEX, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, OaksLabPokedexScript, EVENT_OAKS_LAB_POKEDEX

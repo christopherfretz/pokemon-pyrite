@@ -9,6 +9,19 @@ ViridianMart_MapScripts:
 	scene_script ViridianMartNoopScene,   SCENE_VIRIDIANMART_NOOP
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, ViridianMartOldManCallback
+
+; L1 (docs/AUDIT-KANTO-LEFTOVERS.md 4.3, Yellow's ViridianMartScript2): after his
+; catch demo the old man comes here for more # BALLs, so visiting the MART is
+; what brings him back.  Clearing the flag from another map is fine --
+; appear/disappear are current-map-only, a plain clearevent is not, and
+; VIRIDIAN CITY's own MAPCALLBACK_OBJECTS re-places him on the next map load.
+ViridianMartOldManCallback:
+	checkevent EVENT_VIRIDIAN_OLD_MAN_CATCH_DEMO
+	iffalse .Done
+	clearevent EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART
+.Done:
+	endcallback
 
 ; Yellow's parcel beat (docs/M2-PARCEL.md): the first time the player walks
 ; in, the clerk calls them over and hands them OAK'S PARCEL.
@@ -102,8 +115,8 @@ ViridianMart_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  7, VIRIDIAN_CITY, 4
-	warp_event  3,  7, VIRIDIAN_CITY, 4
+	warp_event  2,  7, VIRIDIAN_CITY, 3 ; L1: warp 4 -> 3 (TRAINER HOUSE warp deleted)
+	warp_event  3,  7, VIRIDIAN_CITY, 3
 
 	def_coord_events
 

@@ -236,32 +236,39 @@ KantoGrassWildMons:
 	db 23, SLOWPOKE
 	end_grass_wildmons
 
+; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 2): Yellow's Route 1 table,
+; vendor/pokeyellow/data/wild/maps/Route1.asm -- PIDGEY 70% / RATTATA 30%,
+; L2-L7, no Johto species (ours was verbatim Crystal: SENTRET/FURRET/HOOTHOOT).
+; Yellow's rate byte is 25 = `10 percent`; its ten slots fold to seven by
+; dropping the duplicated middle entries (slot 4 RATTATA 3, slot 6 PIDGEY 3,
+; slot 9 PIDGEY 6), keeping Yellow's order; morn = day = nite (Gen 1 has no
+; time of day).
 	def_grass_wildmons ROUTE_1
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 2, PIDGEY
-	db 2, RATTATA
-	db 3, SENTRET
 	db 3, PIDGEY
-	db 6, FURRET
 	db 4, PIDGEY
-	db 4, PIDGEY
+	db 2, RATTATA
+	db 2, PIDGEY
+	db 5, PIDGEY
+	db 4, RATTATA
+	db 7, PIDGEY
 	; day
-	db 2, PIDGEY
-	db 2, RATTATA
-	db 3, SENTRET
 	db 3, PIDGEY
-	db 6, FURRET
 	db 4, PIDGEY
-	db 4, PIDGEY
-	; nite
-	db 2, HOOTHOOT
 	db 2, RATTATA
-	db 3, RATTATA
-	db 3, HOOTHOOT
-	db 6, RATICATE
-	db 4, HOOTHOOT
-	db 4, HOOTHOOT
+	db 2, PIDGEY
+	db 5, PIDGEY
+	db 4, RATTATA
+	db 7, PIDGEY
+	; nite
+	db 3, PIDGEY
+	db 4, PIDGEY
+	db 2, RATTATA
+	db 2, PIDGEY
+	db 5, PIDGEY
+	db 4, RATTATA
+	db 7, PIDGEY
 	end_grass_wildmons
 
 ; Kanto hack: Yellow's Route 2 table (docs/M2-ROUTE2.md). Yellow rate 25/256
@@ -783,32 +790,40 @@ KantoGrassWildMons:
 	db 28, TANGELA
 	end_grass_wildmons
 
+; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 2): Yellow's Route 22 table,
+; vendor/pokeyellow/data/wild/maps/Route22.asm -- NIDORAN_M / NIDORAN_F /
+; MANKEY / RATTATA / SPEAROW, L2-L6 (ours was verbatim Crystal, with a L7
+; FEAROW and a L6 PONYTA on the route the player walks before Viridian Forest
+; with a L5 starter; this is also the set the rival's first battle is balanced
+; around, docs/M2-ROUTE22.md).  Yellow's rate byte is 25 = `10 percent`; its ten
+; slots fold to seven by dropping the duplicated middle entries (NIDORAN_M 4,
+; NIDORAN_F 4, SPEAROW 4), keeping Yellow's order; morn = day = nite.
 	def_grass_wildmons ROUTE_22
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
+	db 2, NIDORAN_M
+	db 2, NIDORAN_F
+	db 3, MANKEY
 	db 3, RATTATA
-	db 3, SPEAROW
-	db 5, SPEAROW
-	db 4, DODUO
-	db 6, PONYTA
-	db 7, FEAROW
-	db 7, FEAROW
+	db 5, MANKEY
+	db 2, SPEAROW
+	db 6, SPEAROW
 	; day
+	db 2, NIDORAN_M
+	db 2, NIDORAN_F
+	db 3, MANKEY
 	db 3, RATTATA
-	db 3, SPEAROW
-	db 5, SPEAROW
-	db 4, DODUO
-	db 6, PONYTA
-	db 7, FEAROW
-	db 7, FEAROW
+	db 5, MANKEY
+	db 2, SPEAROW
+	db 6, SPEAROW
 	; nite
+	db 2, NIDORAN_M
+	db 2, NIDORAN_F
+	db 3, MANKEY
 	db 3, RATTATA
-	db 3, POLIWAG
-	db 5, RATTATA
-	db 4, POLIWAG
-	db 6, RATTATA
-	db 7, RATTATA
-	db 7, RATTATA
+	db 5, MANKEY
+	db 2, SPEAROW
+	db 6, SPEAROW
 	end_grass_wildmons
 
 ; Kanto hack (6h): Yellow's Route 24 table, vendor/pokeyellow/data/wild/maps/

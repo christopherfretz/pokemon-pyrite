@@ -199,6 +199,15 @@ BillsHouseSign:
 Route25HiddenPotion:
 	hiddenitem POTION, EVENT_ROUTE_25_HIDDEN_POTION
 
+; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 3): Yellow's two hidden items
+; on this road (vendor/pokeyellow/data/events/hidden_events.asm:261-263).
+; Route 25 is a Yellow re-cut (6a), so Yellow's tiles transfer unchanged.
+Route25HiddenEther:
+	hiddenitem ETHER, EVENT_ROUTE_25_HIDDEN_ETHER
+
+Route25HiddenElixer:
+	hiddenitem ELIXER, EVENT_ROUTE_25_HIDDEN_ELIXER
+
 YoungsterGrantSeenText:
 	text "Local trainers"
 	line "come here to"
@@ -367,6 +376,8 @@ Route25_MapEvents:
 	def_bg_events
 	bg_event 43,  3, BGEVENT_READ, BillsHouseSign ; 6a: was 45, 5
 	bg_event  4,  5, BGEVENT_ITEM, Route25HiddenPotion
+	bg_event 38,  3, BGEVENT_ITEM, Route25HiddenEther ; L1: Yellow's hidden ETHER
+	bg_event 10,  1, BGEVENT_ITEM, Route25HiddenElixer ; L1: Yellow's hidden ELIXER
 
 ; Yellow's ten objects, in Yellow's order, on Yellow's tiles.  The trailing
 ; number before the script label is the sight range, taken from Yellow's
