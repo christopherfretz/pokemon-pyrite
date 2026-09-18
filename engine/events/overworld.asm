@@ -611,6 +611,13 @@ FlyFunction:
 
 .FlyScript:
 	refreshmap
+; Kanto hack: Trainer-Fly (docs/TRAINER-FLY.md C.2 step 4). If a long-range
+; sighting was armed on this map, play the "!" over the trainer before we leave,
+; the way Gen 1 does. Must come before HideSprites.
+	callasm TrainerFlyArmedHere
+	iffalse .no_trainer_fly
+	showemote EMOTE_SHOCK, LAST_TALKED, 30
+.no_trainer_fly
 	callasm HideSprites
 	special UpdateTimePals
 	callasm FlyFromAnim
@@ -853,6 +860,11 @@ EscapeRopeOrDig:
 .UsedDigOrEscapeRopeScript:
 	waitbutton
 	closetext
+; Kanto hack: Trainer-Fly departure tell (docs/TRAINER-FLY.md C.2 step 4).
+	callasm TrainerFlyArmedHere
+	iffalse .no_trainer_fly
+	showemote EMOTE_SHOCK, LAST_TALKED, 30
+.no_trainer_fly
 	playsound SFX_WARP_TO
 	applymovement PLAYER, .DigOut
 	farscall Script_AbortBugContest
@@ -938,6 +950,11 @@ TeleportFunction:
 	pause 60
 	refreshmap
 	closetext
+; Kanto hack: Trainer-Fly departure tell (docs/TRAINER-FLY.md C.2 step 4).
+	callasm TrainerFlyArmedHere
+	iffalse .no_trainer_fly
+	showemote EMOTE_SHOCK, LAST_TALKED, 30
+.no_trainer_fly
 	playsound SFX_WARP_TO
 	applymovement PLAYER, .TeleportFrom
 	farscall Script_AbortBugContest

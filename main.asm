@@ -125,6 +125,9 @@ SECTION "bankA", ROMX
 
 INCLUDE "engine/link/link.asm"
 INCLUDE "engine/battle/link_result.asm"
+; Kanto hack: Trainer-Fly (docs/TRAINER-FLY.md). ~400 bytes; "Events" ($7c) and
+; bank $01 are tight, bank $0a has room (docs/HOUSEKEEPING.md S2).
+INCLUDE "engine/events/trainer_fly.asm"
 
 
 ; Kanto hack (docs/HOUSEKEEPING.md): wildmons.asm used to live in "bankA",

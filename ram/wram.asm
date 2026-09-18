@@ -3516,6 +3516,19 @@ wMagikarpRecordHoldersName:: ds NAME_LENGTH
 wPokemonDataEnd::
 wGameDataEnd::
 
+; Kanto hack (docs/TRAINER-FLY.md C.6): the Trainer-Fly ("Mew glitch") state.
+; DELIBERATELY placed AFTER wGameDataEnd, in the 10 spare bytes at $dff6-$dfff
+; of WRAM bank 1 (docs/HOUSEKEEPING.md S1), so it is NOT part of sGameData:
+; a pending encounter must not survive a save/load, and sGameData's size and
+; checksum stay untouched.
+wTrainerFlyPending:: db ; TRAINERFLY_IDLE / _ARMED / _DEPARTED
+wTrainerFlyMapGroup:: db
+wTrainerFlyMapNumber:: db
+wTrainerFlyObject:: db ; hLastTalked of the sighting
+wTrainerFlySpecies:: db ; species the pending encounter resolved to
+wTrainerFlyWindow:: db ; frames left in the START window (only used if TRAINERFLY_WINDOW_FRAMES > 1)
+wTrainerFlyEnd::
+
 
 SECTION "Pic Animations", WRAMX
 

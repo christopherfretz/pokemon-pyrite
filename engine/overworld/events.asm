@@ -289,12 +289,28 @@ PlayerEvents:
 	ret
 
 CheckTrainerEvent:
-	nop
-	nop
+; Kanto hack: Trainer-Fly (docs/TRAINER-FLY.md C.2). The two vanilla `nop`s that
+; used to head this routine are the first hook's first two bytes.
+; A pending Trainer-Fly encounter fires ahead of the vanilla sight scan.
+	farcall TrainerFlyCheckPending
+	jr c, .script
 	call CheckTrainerBattle
 	jr nc, .nope
 
+; The sight check has just succeeded and nothing has been drawn yet. This is the
+; one frame on which a START press converts the sighting into a Trainer-Fly arm
+; (carry) - or, with TRAINERFLY_WINDOW_FRAMES > 1, defers it (nc + z).
+	farcall TrainerFlyHook
+	jr c, .script
+	jr z, .nope
+
 	ld a, PLAYEREVENT_SEENBYTRAINER
+	scf
+	ret
+
+.script
+; CallScript has already set wScriptRunning; PlayerEvents just re-stores it.
+	ld a, PLAYEREVENT_MAPSCRIPT
 	scf
 	ret
 
@@ -850,7 +866,7 @@ CheckMenuOW:
 	scf
 	ret
 
-StartMenuScript:
+StartMenuScript::
 	callasm StartMenu
 	sjump StartMenuCallback
 
