@@ -232,6 +232,7 @@ TilesetHouseAnim:
 TilesetPlayersHouseAnim:
 TilesetPokecenterAnim:
 TilesetGateAnim:
+TilesetShipAnim:
 TilesetLabAnim:
 TilesetFacilityAnim:
 TilesetMartAnim:

@@ -108,6 +108,10 @@ INCLUDE "gfx/tilesets/battle_tower_inside_palette_map.asm"
 TilesetBattleTowerOutsidePalMap:
 INCLUDE "gfx/tilesets/battle_tower_outside_palette_map.asm"
 
+; Kanto hack: Yellow's S.S. ANNE tileset (docs/M4-VERMILION.md, decision (a)).
+TilesetShipPalMap:
+INCLUDE "gfx/tilesets/ship_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

@@ -68,7 +68,7 @@ Route2_MapEvents:
 	warp_event 15, 31, ROUTE_2_GATE, 3
 	warp_event 16, 27, ROUTE_2_GATE, 1
 	warp_event 17, 27, ROUTE_2_GATE, 2
-	warp_event 12,  7, DIGLETTS_CAVE, 1
+	warp_event 12,  7, DIGLETTS_CAVE_ROUTE_2, 1 ; Kanto hack (docs/M4-VERMILION.md, 7c)
 	warp_event  3, 27, VIRIDIAN_FOREST_NORTH_GATE, 1 ; Kanto hack (docs/M2-FOREST.md)
 	warp_event  5, 33, VIRIDIAN_FOREST_SOUTH_GATE, 3 ; Kanto hack (docs/M2-FOREST.md)
 	warp_event 15, 11, ROUTE_2_TRADE_HOUSE, 1 ; Kanto hack (docs/M2-PEWTER.md, 4f)

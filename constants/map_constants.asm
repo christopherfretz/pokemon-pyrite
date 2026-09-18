@@ -297,6 +297,9 @@ ENDM
 	map_const VERMILION_GYM,                                5,  9 ; 11
 	map_const ROUTE_6_SAFFRON_GATE,                         5,  4 ; 12
 	map_const ROUTE_6_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 13
+	map_const ROUTE_11_GATE_1F,                             4,  5 ; 14
+	map_const ROUTE_11_GATE_2F,                             4,  4 ; 15
+	map_const DIGLETTS_CAVE_ROUTE_11,                       4,  4 ; 16
 	endgroup
 
 	newgroup PALLET                                               ; 13
@@ -330,8 +333,17 @@ ENDM
 	map_const FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN,       5, 17 ;  6
 	map_const FAST_SHIP_B1F,                               16,  8 ;  7
 	map_const OLIVINE_PORT_PASSAGE,                        10,  9 ;  8
-	map_const VERMILION_PORT_PASSAGE,                      10,  9 ;  9
-	map_const TIN_TOWER_ROOF,                              10,  9 ; 10
+	map_const TIN_TOWER_ROOF,                              10,  9 ;  9
+	map_const SS_ANNE_1F,                                  20,  9 ; 10
+	map_const SS_ANNE_2F,                                  20,  9 ; 11
+	map_const SS_ANNE_3F,                                  10,  3 ; 12
+	map_const SS_ANNE_B1F,                                 15,  4 ; 13
+	map_const SS_ANNE_BOW,                                 10,  7 ; 14
+	map_const SS_ANNE_KITCHEN,                              7,  8 ; 15
+	map_const SS_ANNE_CAPTAINS_ROOM,                        3,  4 ; 16
+	map_const SS_ANNE_1F_ROOMS,                            12,  8 ; 17
+	map_const SS_ANNE_2F_ROOMS,                            12,  8 ; 18
+	map_const SS_ANNE_B1F_ROOMS,                           12,  8 ; 19
 	endgroup
 
 	newgroup INDIGO                                               ; 16
@@ -461,6 +473,7 @@ ENDM
 	map_const VIRIDIAN_FOREST_NORTH_GATE,                   5,  4 ; 16
 	map_const ROUTE_2_TRADE_HOUSE,                          4,  4 ; 17
 	map_const VIRIDIAN_SCHOOL_HOUSE,                        4,  4 ; 18
+	map_const DIGLETTS_CAVE_ROUTE_2,                        4,  4 ; 19
 	endgroup
 
 	newgroup NEW_BARK                                             ; 24
@@ -494,7 +507,7 @@ ENDM
 	map_const COPYCATS_HOUSE_2F,                            5,  3 ; 12
 	map_const ROUTE_5_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 13
 	map_const ROUTE_5_SAFFRON_GATE,                         5,  4 ; 14
-	map_const ROUTE_5_CLEANSE_TAG_HOUSE,                    4,  4 ; 15
+	map_const ROUTE_5_DAY_CARE,                             4,  4 ; 15
 	endgroup
 
 	newgroup CHERRYGROVE                                          ; 26

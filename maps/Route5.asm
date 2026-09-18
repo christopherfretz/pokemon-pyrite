@@ -45,7 +45,7 @@ Route5_MapEvents:
 	warp_event  9, 29, ROUTE_5_SAFFRON_GATE, 1
 	warp_event 10, 33, ROUTE_5_SAFFRON_GATE, 3
 	warp_event 17, 27, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, 1
-	warp_event 10, 21, ROUTE_5_CLEANSE_TAG_HOUSE, 1
+	warp_event 10, 21, ROUTE_5_DAY_CARE, 1 ; Kanto hack (docs/M4-VERMILION.md, decision (c))
 
 	def_coord_events
 

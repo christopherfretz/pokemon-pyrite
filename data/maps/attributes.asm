@@ -598,6 +598,9 @@ ENDM
 	map_attributes VermilionGym, VERMILION_GYM, $00
 	map_attributes Route6SaffronGate, ROUTE_6_SAFFRON_GATE, $00
 	map_attributes Route6UndergroundPathEntrance, ROUTE_6_UNDERGROUND_PATH_ENTRANCE, $00
+	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $27
+	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $27
+	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $00
 	map_attributes RedsHouse1F, REDS_HOUSE_1F, $00
 	map_attributes RedsHouse2F, REDS_HOUSE_2F, $00
 	map_attributes BluesHouse, BLUES_HOUSE, $00
@@ -618,8 +621,17 @@ ENDM
 	map_attributes FastShipCabins_SE_SSE_CaptainsCabin, FAST_SHIP_CABINS_SE_SSE_CAPTAINS_CABIN, $00
 	map_attributes FastShipB1F, FAST_SHIP_B1F, $00
 	map_attributes OlivinePortPassage, OLIVINE_PORT_PASSAGE, $00
-	map_attributes VermilionPortPassage, VERMILION_PORT_PASSAGE, $00
 	map_attributes TinTowerRoof, TIN_TOWER_ROOF, $00
+	map_attributes SSAnne1F, SS_ANNE_1F, $00
+	map_attributes SSAnne2F, SS_ANNE_2F, $00
+	map_attributes SSAnne3F, SS_ANNE_3F, $00
+	map_attributes SSAnneB1F, SS_ANNE_B1F, $00
+	map_attributes SSAnneBow, SS_ANNE_BOW, $00
+	map_attributes SSAnneKitchen, SS_ANNE_KITCHEN, $00
+	map_attributes SSAnneCaptainsRoom, SS_ANNE_CAPTAINS_ROOM, $00
+	map_attributes SSAnne1FRooms, SS_ANNE_1F_ROOMS, $00
+	map_attributes SSAnne2FRooms, SS_ANNE_2F_ROOMS, $00
+	map_attributes SSAnneB1FRooms, SS_ANNE_B1F_ROOMS, $00
 	map_attributes IndigoPlateauPokecenter1F, INDIGO_PLATEAU_POKECENTER_1F, $00
 	map_attributes WillsRoom, WILLS_ROOM, $00
 	map_attributes KogasRoom, KOGAS_ROOM, $00
@@ -703,6 +715,7 @@ ENDM
 	map_attributes ViridianForestNorthGate, VIRIDIAN_FOREST_NORTH_GATE, $00
 	map_attributes Route2TradeHouse, ROUTE_2_TRADE_HOUSE, $00
 	map_attributes ViridianSchoolHouse, VIRIDIAN_SCHOOL_HOUSE, $00
+	map_attributes DiglettsCaveRoute2, DIGLETTS_CAVE_ROUTE_2, $00
 	map_attributes ElmsLab, ELMS_LAB, $00
 	map_attributes PlayersHouse1F, PLAYERS_HOUSE_1F, $00
 	map_attributes PlayersHouse2F, PLAYERS_HOUSE_2F, $00
@@ -724,7 +737,7 @@ ENDM
 	map_attributes CopycatsHouse2F, COPYCATS_HOUSE_2F, $00
 	map_attributes Route5UndergroundPathEntrance, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, $00
 	map_attributes Route5SaffronGate, ROUTE_5_SAFFRON_GATE, $00
-	map_attributes Route5CleanseTagHouse, ROUTE_5_CLEANSE_TAG_HOUSE, $00
+	map_attributes Route5DayCare, ROUTE_5_DAY_CARE, $00
 	map_attributes CherrygroveMart, CHERRYGROVE_MART, $00
 	map_attributes CherrygrovePokecenter1F, CHERRYGROVE_POKECENTER_1F, $00
 	map_attributes CherrygroveGymSpeechHouse, CHERRYGROVE_GYM_SPEECH_HOUSE, $00

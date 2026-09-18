@@ -301,7 +301,7 @@ VermilionPort_MapEvents:
 
 	def_warp_events
 	warp_event 14,  0, VERMILION_CITY, 6
-	warp_event 14,  2, FAST_SHIP_1F, 1
+	warp_event 14,  2, SS_ANNE_1F, 2 ; Kanto hack (docs/M4-VERMILION.md, 7c): Yellow's gangway.  The Johto FAST SHIP link is decided in the Johto milestone (decision (b)).
 
 	def_coord_events
 	coord_event  4,  1, SCENE_VERMILIONPORT_ASK_ENTER_SHIP, VermilionPortWalkUpToShipScript

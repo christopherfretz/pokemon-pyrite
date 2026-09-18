@@ -344,3 +344,20 @@ INCBIN "data/tilesets/kanto_metatiles.bin"
 
 TilesetKantoColl::
 INCLUDE "data/tilesets/kanto_collision.asm"
+
+
+SECTION "Tileset Data 10", ROMX
+
+; S.S. Anne's tileset, ported wholesale from Yellow by M4 step 7c
+; (docs/M4-VERMILION.md decision (a)): Yellow's 62-block SHIP blockset has no
+; Crystal counterpart -- Crystal's own ship is the Fast Ship, drawn with the
+; outdoor `port` tileset -- so the ten SS_ANNE_* maps keep Yellow's own art and
+; their .blk files are byte-identical copies of Yellow's.
+TilesetShipGFX::
+INCBIN "gfx/tilesets/ship.2bpp.lz"
+
+TilesetShipMeta::
+INCBIN "data/tilesets/ship_metatiles.bin"
+
+TilesetShipColl::
+INCLUDE "data/tilesets/ship_collision.asm"

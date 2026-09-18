@@ -1,0 +1,22 @@
+	object_const_def
+
+; Kanto hack: M4 step 7c (docs/M4-VERMILION.md).  S.S. ANNE 3F, the corridor to the bow.
+; Warps only -- Yellow's NPCs, trainers and items arrive in 7d-7g.
+
+SSAnne3F_MapScripts:
+	def_scene_scripts
+
+	def_callbacks
+
+SSAnne3F_MapEvents:
+	db 0, 0 ; filler
+
+	def_warp_events
+	warp_event  0,  3, SS_ANNE_BOW, 1
+	warp_event 19,  3, SS_ANNE_2F, 8
+
+	def_coord_events
+
+	def_bg_events
+
+	def_object_events

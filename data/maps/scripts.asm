@@ -140,7 +140,6 @@ INCLUDE "maps/FastShipCabins_SW_SSW_NW.asm"
 INCLUDE "maps/FastShipCabins_SE_SSE_CaptainsCabin.asm"
 INCLUDE "maps/FastShipB1F.asm"
 INCLUDE "maps/OlivinePortPassage.asm"
-INCLUDE "maps/VermilionPortPassage.asm"
 INCLUDE "maps/TinTowerRoof.asm"
 
 
@@ -291,7 +290,7 @@ INCLUDE "maps/CopycatsHouse1F.asm"
 INCLUDE "maps/CopycatsHouse2F.asm"
 INCLUDE "maps/Route5UndergroundPathEntrance.asm"
 INCLUDE "maps/Route5SaffronGate.asm"
-INCLUDE "maps/Route5CleanseTagHouse.asm"
+INCLUDE "maps/Route5DayCare.asm"
 
 
 SECTION "Map Scripts 16", ROMX
@@ -517,5 +516,23 @@ INCLUDE "maps/CeruleanCave1F.asm"
 ; the warp Crystal gave the TRAINER HOUSE.  Not in "Map Scripts 23" (bank $6a,
 ; the Viridian group) because that bank is the tightest one we have.
 INCLUDE "maps/ViridianSchoolHouse.asm"
+
+; Kanto hack: M4 step 7c (docs/M4-VERMILION.md) -- Route 11's gate, the two
+; Diglett's Cave entrance rooms and the ten S.S. ANNE maps.  Warps-only
+; shells; their NPCs, trainers and items land in 7d-7g.
+INCLUDE "maps/Route11Gate1F.asm"
+INCLUDE "maps/Route11Gate2F.asm"
+INCLUDE "maps/DiglettsCaveRoute2.asm"
+INCLUDE "maps/DiglettsCaveRoute11.asm"
+INCLUDE "maps/SSAnne1F.asm"
+INCLUDE "maps/SSAnne2F.asm"
+INCLUDE "maps/SSAnne3F.asm"
+INCLUDE "maps/SSAnneB1F.asm"
+INCLUDE "maps/SSAnneBow.asm"
+INCLUDE "maps/SSAnneKitchen.asm"
+INCLUDE "maps/SSAnneCaptainsRoom.asm"
+INCLUDE "maps/SSAnne1FRooms.asm"
+INCLUDE "maps/SSAnne2FRooms.asm"
+INCLUDE "maps/SSAnneB1FRooms.asm"
 
 ENDSECTION

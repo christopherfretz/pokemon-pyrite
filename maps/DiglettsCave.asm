@@ -24,8 +24,8 @@ DiglettsCave_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  5,  5, ROUTE_2, 5
-	warp_event 37, 31, ROUTE_11, 5
+	warp_event  5,  5, DIGLETTS_CAVE_ROUTE_2, 3 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	warp_event 37, 31, DIGLETTS_CAVE_ROUTE_11, 3 ; Kanto hack (docs/M4-VERMILION.md, 7c)
 
 	def_coord_events
 

@@ -186,7 +186,6 @@ Route26HealHouse_Blocks:
 DayOfWeekSiblingsHouse_Blocks:
 Route27SandstormHouse_Blocks:
 MrPsychicsHouse_Blocks:
-Route5CleanseTagHouse_Blocks:
 CherrygroveGymSpeechHouse_Blocks:
 GuideGentsHouse_Blocks:
 CherrygroveEvolutionSpeechHouse_Blocks:
@@ -933,7 +932,6 @@ VictoryRoadGate_Blocks:
 	INCBIN "maps/VictoryRoadGate.blk"
 
 OlivinePortPassage_Blocks:
-VermilionPortPassage_Blocks:
 	INCBIN "maps/PortPassage.blk"
 
 FuchsiaGym_Blocks:
@@ -1093,5 +1091,57 @@ BillsHouse_Blocks:
 ; and "Map Blocks 2" are both effectively full.
 ViridianSchoolHouse_Blocks:
 	INCBIN "maps/ViridianSchoolHouse.blk"
+
+; Kanto hack: M4 step 7c (docs/M4-VERMILION.md) -- the Vermilion-area maps
+; Crystal has no slot for.  All of them go in "Map Blocks 3": "Map Blocks 1"
+; (the Viridian/Saffron groups) and "Map Blocks 2" are both effectively full.
+Route11Gate1F_Blocks:
+	INCBIN "maps/Route11Gate1F.blk"
+
+Route11Gate2F_Blocks:
+	INCBIN "maps/Route11Gate2F.blk"
+
+DiglettsCaveRoute2_Blocks:
+	INCBIN "maps/DiglettsCaveRoute2.blk"
+
+DiglettsCaveRoute11_Blocks:
+	INCBIN "maps/DiglettsCaveRoute11.blk"
+
+; Decision (c): Yellow's Route 5 DAY-CARE replaces Crystal's CLEANSE TAG house,
+; so it loses its share of the House1 alias group above and gets its own .blk.
+Route5DayCare_Blocks:
+	INCBIN "maps/Route5DayCare.blk"
+
+; Decision (a): the ten S.S. ANNE maps, byte-identical copies of Yellow's .blk
+; files on the ported TILESET_SHIP blockset.
+SSAnne1F_Blocks:
+	INCBIN "maps/SSAnne1F.blk"
+
+SSAnne2F_Blocks:
+	INCBIN "maps/SSAnne2F.blk"
+
+SSAnne3F_Blocks:
+	INCBIN "maps/SSAnne3F.blk"
+
+SSAnneB1F_Blocks:
+	INCBIN "maps/SSAnneB1F.blk"
+
+SSAnneBow_Blocks:
+	INCBIN "maps/SSAnneBow.blk"
+
+SSAnneKitchen_Blocks:
+	INCBIN "maps/SSAnneKitchen.blk"
+
+SSAnneCaptainsRoom_Blocks:
+	INCBIN "maps/SSAnneCaptainsRoom.blk"
+
+SSAnne1FRooms_Blocks:
+	INCBIN "maps/SSAnne1FRooms.blk"
+
+SSAnne2FRooms_Blocks:
+	INCBIN "maps/SSAnne2FRooms.blk"
+
+SSAnneB1FRooms_Blocks:
+	INCBIN "maps/SSAnneB1FRooms.blk"
 
 ENDSECTION

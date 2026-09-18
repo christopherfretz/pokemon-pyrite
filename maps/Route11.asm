@@ -147,11 +147,11 @@ Route11_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 49,  8, ROUTE_11, 3
-	warp_event 49,  9, ROUTE_11, 4
-	warp_event 58,  8, ROUTE_11, 1
-	warp_event 58,  9, ROUTE_11, 2
-	warp_event  4,  5, DIGLETTS_CAVE, 2
+	warp_event 49,  8, ROUTE_11_GATE_1F, 1 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	warp_event 49,  9, ROUTE_11_GATE_1F, 1 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	warp_event 58,  8, ROUTE_11_GATE_1F, 3 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	warp_event 58,  9, ROUTE_11_GATE_1F, 3 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	warp_event  4,  5, DIGLETTS_CAVE_ROUTE_11, 1 ; Kanto hack (docs/M4-VERMILION.md, 7c)
 
 	def_coord_events
 
