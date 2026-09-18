@@ -119,3 +119,23 @@ DEF PIKAMOVE_HOP_AMPLITUDE EQU 16
 DEF PIKACHU_NEUTRAL_MOOD EQU 128
 DEF PIKACHU_STARTER_HAPPINESS EQU 90
 DEF PIKACHU_POSTBATTLE_MOOD_FLOOR EQU 130
+
+
+; The pikapic face box (docs/PIKACHU-EMOTIONS.md A5 E4): Yellow's
+; `hlcoord 6, 5 / lb bc, 5, 5`, i.e. a 7x7 textbox at (6, 5).  Shared by
+; engine/pikachu/pikapic.asm and _CGB_Pikapic.
+DEF PIKAPIC_BOX_X EQU 6
+DEF PIKAPIC_BOX_Y EQU 5
+DEF PIKAPIC_BOX_W EQU 7
+DEF PIKAPIC_BOX_H EQU 7
+
+; Every compressed pikapic blob is a 5x5 face (Yellow hardcodes 5 * 5 too).
+DEF PIKAPIC_COMPRESSED_TILES EQU 5 * 5
+
+; Crystal's blank tile ' ' ($7f) is plane0 = $ff / plane1 = $00, i.e. every
+; pixel is colour 1.  That is white under PAL_BG_TEXT but yellow under the
+; Pikachu palette the face box puts in its attrmap slot, where Yellow's own
+; blank is colour 0 (white).  So the box uses its own all-zero tile, parked at
+; the top of the borrowed font area, and the GFX allocator stops one tile short.
+DEF PIKAPIC_BLANK_TILE EQU $ff
+DEF PIKAPIC_MAX_TILES EQU PIKAPIC_BLANK_TILE - $80 ; $7f

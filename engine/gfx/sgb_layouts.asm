@@ -54,7 +54,7 @@ SGBLayoutJumptable:
 	dw .SGB_TradeTube
 	dw .SGB_TrainerOrMonFrontpicPals
 	dw .SGB_MysteryGift
-	dw .SGB_Unused1E
+	dw .SGB_MapPals ; SCGB_PIKAPIC: the face box keeps the map's palettes
 	assert_table_length NUM_SCGB_LAYOUTS
 
 .SGB_BattleGrayscale:
@@ -438,38 +438,6 @@ endr
 	ld [hl], a
 	ld hl, wSGBPals
 	ld de, wSGBPals + PALPACKET_LENGTH
-	ret
-
-.SGB_Unused1E:
-	ld hl, PalPacket_Pal01
-	ld de, wSGBPals
-	ld bc, PALPACKET_LENGTH
-	call CopyBytes
-	ld a, [wCurPartySpecies]
-	ld l, a
-	ld h, 0
-	add hl, hl
-	add hl, hl
-	add hl, hl
-	ld de, PokemonPalettes
-	add hl, de
-	ld a, [wUnusedSGB1eColorOffset]
-	and 3
-	sla a
-	sla a
-	ld c, a
-	ld b, 0
-	add hl, bc
-	ld a, [hli]
-	ld [wSGBPals + 3], a
-	ld a, [hli]
-	ld [wSGBPals + 4], a
-	ld a, [hli]
-	ld [wSGBPals + 5], a
-	ld a, [hl]
-	ld [wSGBPals + 6], a
-	ld hl, wSGBPals
-	ld de, BlkPacket_AllPal0
 	ret
 
 .SGB_GamefreakLogo:

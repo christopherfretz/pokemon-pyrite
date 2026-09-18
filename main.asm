@@ -708,6 +708,7 @@ INCLUDE "engine/events/odd_egg.asm"
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"
+INCLUDE "engine/pikachu/pikapic.asm"
 INCLUDE "data/pikachu/pikapic_gfx_headers.asm"
 INCLUDE "data/pikachu/pikapic_anims.asm"
 INCLUDE "data/pikachu/pikapic_objects.asm"

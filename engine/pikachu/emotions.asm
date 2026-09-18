@@ -6,7 +6,7 @@
 ;   emotebubble -> Crystal emote objects via FollowerSpawnEmote
 ;   pcm         -> cry PIKACHU + the PlayPikachuVoiceClip hook (Decision A)
 ;   movement    -> a mini-interpreter over wFollowerStruct (see below)
-;   pikapic     -> stubbed until E1-E4 build the face box
+;   pikapic     -> engine/pikachu/pikapic.asm, the E3/E4 face box
 
 
 TalkToPikachu::
@@ -425,10 +425,14 @@ StarterPikachuEmotionCommand_movement:
 	ret
 
 StarterPikachuEmotionCommand_pikapic:
+; Yellow's .RunPikapic: open the face box, run the selected PikaPicAnimScript,
+; close it again.  engine/pikachu/pikapic.asm (E3/E4) does all three.
 	ld a, [de]
 	inc de
 	ld [wPikaPicAnimNumber], a
-	; TODO E1-E4: run the pikapic animation here
+	push de
+	call Pikapic
+	pop de
 	ret
 
 StarterPikachuEmotionCommand_delay:
@@ -481,9 +485,13 @@ StarterPikachuEmotionCommand_subcmd:
 	ret
 
 .ShowMapView:
-; Yellow redraws the map under the pikapic face box.  E1-E4 will need this;
-; with pikaemotion_pikapic stubbed there is nothing covering the map, so just
-; match Yellow's three-frame pause.
+; Yellow's LoadCurrentMapView + three-frame pause.  ClosePikapicBox already
+; restores the map after a face box, so this only has to matter for the four
+; scripts that use the subcommand on its own; doing the restore here as well
+; is idempotent and keeps Yellow's timing.
+	call LoadOverworldTilemapAndAttrmapPals
+	call ApplyTilemap
+	call UpdateSprites
 	ld c, 3
 	call DelayFrames
 	ret

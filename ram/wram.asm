@@ -3583,6 +3583,55 @@ wPokeAnimBitmaskBuffer:: ds 7
 wPokeAnimStructEnd::
 
 
+; Yellow's pikapic scratch (docs/PIKACHU-EMOTIONS.md A5 E3).  WRAM0 has only
+; 51 bytes free, so this lives in WRAMX (the linker picks the bank, and
+; engine/pikachu/pikapic.asm holds rWBK at BANK(wPikaPicAnimTimer) for the
+; length of a run, the way SetUpPokeAnim does).  Names and struct layouts are Yellow's
+; (vendor/pokeyellow/ram/wram.asm).  wPikaPicAnimNumber is NOT here: it is
+; written by the emotion interpreter from the overworld, so it stays in WRAM0.
+SECTION "Pikapic", WRAMX
+
+wPikaPicUsedGFXCount:: db ; tiles allocated so far; must stay under $80
+
+wPikaPicUsedGFX::
+; 8 slots of (graphic id, tile offset)
+	ds 8 * 2
+wPikaPicUsedGFXEnd::
+
+wPikaPicAnimObjectDataBufferSize:: db
+
+wPikaPicAnimObjectDataBuffer::
+; 4 structs each of length 8
+;     0: buffer index (0 = free)
+;     1: script index (frameset)
+;     2: frame index
+;     3: frame timer
+;     4: vtile offset
+;     5: x offset
+;     6: y offset
+;     7: unused
+	ds 4 * 8
+wPikaPicAnimObjectDataBufferEnd::
+
+wPikaPicAnimPointer:: dw
+wPikaPicAnimPointerSetupFinished:: db
+wPikaPicAnimCurGraphicID:: db
+wPikaPicAnimTimer:: dw
+wPikaPicAnimDelay:: db
+wPikaPicPikaDrawStartX:: db
+wPikaPicPikaDrawStartY:: db
+
+wCurPikaPicAnimObject::
+wCurPikaPicAnimObjectVTileOffset:: db
+wCurPikaPicAnimObjectXOffset:: db
+wCurPikaPicAnimObjectYOffset:: db
+wCurPikaPicAnimObjectScriptIdx:: db
+wCurPikaPicAnimObjectFrameIdx:: db
+wCurPikaPicAnimObjectFrameTimer:: db
+	ds 1
+wCurPikaPicAnimObjectEnd::
+
+
 
 SECTION "Battle Tower RAM", WRAMX
 

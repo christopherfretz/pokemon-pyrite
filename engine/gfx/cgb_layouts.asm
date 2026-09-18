@@ -61,7 +61,7 @@ CGBLayoutJumptable:
 	dw _CGB_TradeTube
 	dw _CGB_TrainerOrMonFrontpicPals
 	dw _CGB_MysteryGift
-	dw _CGB_Unused1E
+	dw _CGB_Pikapic
 	assert_table_length NUM_SCGB_LAYOUTS
 
 _CGB_BattleGrayscale:
@@ -903,13 +903,50 @@ _CGB_PlayerOrMonFrontpicPals:
 	call ApplyPals
 	ret
 
-_CGB_Unused1E:
-	ld de, wBGPals1
+; docs/PIKACHU-EMOTIONS.md A5 E4 / Decision B.  The pikapic face box borrows
+; SCGB_1E, which no shipped code used.
+;
+; E4a (default): keep the map's own palettes and just colour the 7x7 box with
+; the tileset's yellow BG palette, the way _CGB_Pokepic colours its box gray.
+; E4b (PIKAPIC_TRUE_PALETTE): additionally overwrite that BG slot with
+; Pikachu's real mon palette for the duration of the box.
+DEF PIKAPIC_TRUE_PALETTE EQU 1
+
+_CGB_Pikapic:
+	call _CGB_MapPals
+IF PIKAPIC_TRUE_PALETTE
 	ld a, [wCurPartySpecies]
-	call GetMonPalettePointer
-	call LoadPalette_White_Col1_Col2_Black
-	call WipeAttrmap
+	push af
+	ld a, PIKACHU
+	ld [wCurPartySpecies], a
+	ld e, PAL_BG_YELLOW
+	call LoadMonPaletteAsNthBGPal
+	pop af
+	ld [wCurPartySpecies], a
+ENDC
+	hlcoord PIKAPIC_BOX_X, PIKAPIC_BOX_Y, wAttrmap
+	lb bc, PIKAPIC_BOX_H, PIKAPIC_BOX_W
+	ld a, PAL_BG_YELLOW
+	call FillBoxCGB
 	call ApplyAttrmap
+	call ApplyPals
+; ApplyPals only fills the shadow buffer; ask VBlank to push it to the hardware.
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ret
+
+RestorePikapicMapPals::
+; ClosePikapicBox's counterpart to _CGB_Pikapic.  GetMemSGBLayout -> SCGB_MAPPALS
+; -> _CGB_MapPals only refills wBGPals1; the copy into the shadow buffer is
+; ApplyPals, which is local to this bank.  Without it, the Pikachu palette
+; _CGB_Pikapic leaves in BG slot 4 survives the box and keeps recolouring any
+; map tile that uses PAL_BG_YELLOW.
+	call CheckCGB
+	ret z
+	call _CGB_MapPals
+	call ApplyPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
 	ret
 
 _CGB_TradeTube:
