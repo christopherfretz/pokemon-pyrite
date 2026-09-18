@@ -2,8 +2,10 @@
 ; It uses Crystal's shared maps/Pokecenter1F.blk, so the two door tiles and the
 ; 2F staircase are Crystal's, not Yellow's.  Yellow's 7x4 map is wider than
 ; Crystal's 5x4 one, so the NPCs are re-placed (see "5g findings"); Yellow's
-; CLIPBOARD (blank text), LINK_RECEPTIONIST (Crystal's cable club lives on
-; POKECENTER_2F) and CHANSEY (no SPRITE_CHANSEY in Crystal) are dropped.
+; CLIPBOARD (blank text) and LINK_RECEPTIONIST (Crystal's cable club lives on
+; POKECENTER_2F) are dropped.  N1e restored Yellow's CHANSEY at its own (4,1):
+; Crystal does ship SPRITE_CHANSEY, and (4,1) is reachable across the counter
+; from (4,3), the same pattern N1c/N1d used at Viridian and Pewter.
 ; The PC needs no object: Crystal drives it from the tile collision.
 
 	object_const_def
@@ -11,6 +13,7 @@
 	const MTMOONPOKECENTER_YOUNGSTER
 	const MTMOONPOKECENTER_GENTLEMAN
 	const MTMOONPOKECENTER_MAGIKARP_SALESMAN
+	const MTMOONPOKECENTER_CHANSEY
 
 DEF MTMOONPOKECENTER_MAGIKARP_PRICE EQU 500
 
@@ -27,6 +30,15 @@ MtMoonPokecenterYoungsterScript:
 
 MtMoonPokecenterGentlemanScript:
 	jumptextfaceplayer MtMoonPokecenterGentlemanText
+
+; Kanto hack (N1e): Yellow's PokecenterChanseyText -- one line plus the cry.
+MtMoonPokecenterChanseyScript:
+	opentext
+	writetext MtMoonPokecenterChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
 
 ; Yellow's MAGIKARP salesman (scripts/MtMoonPokecenter_2.asm): a L5 MAGIKARP
 ; for Y500, once.  Crystal's givepoke would silently box the mon if the party
@@ -143,6 +155,11 @@ MtMoonPokecenterMagikarpSalesmanNoRefundsText:
 	line "give refunds!"
 	done
 
+MtMoonPokecenterChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
+	done
+
 MtMoonPokecenter_MapEvents:
 	db 0, 0 ; filler
 
@@ -160,3 +177,4 @@ MtMoonPokecenter_MapEvents:
 	object_event  1,  4, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterYoungsterScript, -1
 	object_event  6,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterGentlemanScript, -1
 	object_event  7,  6, SPRITE_POKEFAN_M, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterMagikarpSalesmanScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterChanseyScript, -1

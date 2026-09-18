@@ -102,13 +102,13 @@ TrainerYoungsterGrant:
 	closetext
 	end
 
-TrainerYoungsterElmer:
-	trainer YOUNGSTER, ELMER, EVENT_BEAT_YOUNGSTER_ELMER, YoungsterElmerSeenText, YoungsterElmerBeatenText, 0, .Script
+TrainerYoungsterCole:
+	trainer YOUNGSTER, COLE, EVENT_BEAT_YOUNGSTER_COLE, YoungsterColeSeenText, YoungsterColeBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext YoungsterElmerAfterBattleText
+	writetext YoungsterColeAfterBattleText
 	waitbutton
 	closetext
 	end
@@ -196,9 +196,11 @@ Route25TMSeismicToss:
 BillsHouseSign:
 	jumptext BillsHouseSignText
 
-Route25HiddenPotion:
-	hiddenitem POTION, EVENT_ROUTE_25_HIDDEN_POTION
-
+; Kanto hack (N1e): Crystal's extra hidden POTION at (4,5) is gone.  Yellow's
+; hidden_item_coords.asm:50-51 lists exactly two hidden items on ROUTE_25 (the
+; ETHER and the ELIXER below) and the operator's N1 ruling drops Crystal's
+; added Kanto items.  EVENT_ROUTE_25_HIDDEN_POTION is left defined but dead --
+; the const list is positional, so deleting it would shift every later flag.
 ; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 3): Yellow's two hidden items
 ; on this road (vendor/pokeyellow/data/events/hidden_events.asm:261-263).
 ; Route 25 is a Yellow re-cut (6a), so Yellow's tiles transfer unchanged.
@@ -226,19 +228,19 @@ YoungsterGrantAfterBattleText:
 	cont "different kinds."
 	done
 
-YoungsterElmerSeenText:
+YoungsterColeSeenText:
 	text "Dad took me to a"
 	line "great party on"
 	cont "S.S.ANNE at"
 	cont "VERMILION CITY!"
 	done
 
-YoungsterElmerBeatenText:
+YoungsterColeBeatenText:
 	text "I'm"
 	line "not mad!"
 	done
 
-YoungsterElmerAfterBattleText:
+YoungsterColeAfterBattleText:
 	text "On S.S.ANNE, I"
 	line "saw trainers from"
 	cont "around the world."
@@ -375,7 +377,6 @@ Route25_MapEvents:
 
 	def_bg_events
 	bg_event 43,  3, BGEVENT_READ, BillsHouseSign ; 6a: was 45, 5
-	bg_event  4,  5, BGEVENT_ITEM, Route25HiddenPotion
 	bg_event 38,  3, BGEVENT_ITEM, Route25HiddenEther ; L1: Yellow's hidden ETHER
 	bg_event 10,  1, BGEVENT_ITEM, Route25HiddenElixer ; L1: Yellow's hidden ELIXER
 
@@ -384,7 +385,7 @@ Route25_MapEvents:
 ; Route25TrainerHeaders (2,3,3,2,4,4,3,2,2).
 	def_object_events
 	object_event 14,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerYoungsterGrant, -1
-	object_event 18,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerYoungsterElmer, -1
+	object_event 18,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerYoungsterCole, -1
 	object_event 24,  4, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerCamperWendell, -1
 	object_event 18,  8, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerLassJodie, -1
 	object_event 32,  3, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 4, TrainerYoungsterOscar, -1

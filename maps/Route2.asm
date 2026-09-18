@@ -42,17 +42,13 @@ Route2MoonStone:
 Route2FruitTree:
 	fruittree FRUITTREE_ROUTE_2
 
-Route2HiddenMaxEther:
-	hiddenitem MAX_ETHER, EVENT_ROUTE_2_HIDDEN_MAX_ETHER
-
-Route2HiddenFullHeal:
-	hiddenitem FULL_HEAL, EVENT_ROUTE_2_HIDDEN_FULL_HEAL
-
-Route2HiddenFullRestore:
-	hiddenitem FULL_RESTORE, EVENT_ROUTE_2_HIDDEN_FULL_RESTORE
-
-Route2HiddenRevive:
-	hiddenitem REVIVE, EVENT_ROUTE_2_HIDDEN_REVIVE
+; Kanto hack (N1e, operator ruling "remove Crystal's extra Kanto items",
+; AUDIT-NPC-TEXT 3.1 K2): Crystal's four hidden items on this route are gone.
+; Yellow's hidden_item_coords.asm lists none for ROUTE_2, and MAX_ETHER /
+; FULL_HEAL / FULL_RESTORE / REVIVE before the first badge is Gen-2 loot in a
+; Gen-1 route.  Yellow's own two itemballs (MOON_STONE, HP_UP) stay, and so
+; does the fruit tree (berries ruling).  The four EVENT_ROUTE_2_HIDDEN_* flags
+; are left defined but dead -- the const list is positional.
 
 Route2SignText:
 	text "ROUTE 2"
@@ -82,10 +78,6 @@ Route2_MapEvents:
 	def_bg_events
 	bg_event  7, 51, BGEVENT_READ, Route2Sign
 	bg_event 11,  9, BGEVENT_READ, Route2DiglettsCaveSign
-	bg_event  7, 23, BGEVENT_ITEM, Route2HiddenMaxEther
-	bg_event  4, 14, BGEVENT_ITEM, Route2HiddenFullHeal
-	bg_event  4, 27, BGEVENT_ITEM, Route2HiddenFullRestore
-	bg_event 11, 30, BGEVENT_ITEM, Route2HiddenRevive
 
 	def_object_events
 	object_event 10, 45, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2HPUp, EVENT_ROUTE_2_HP_UP

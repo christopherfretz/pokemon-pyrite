@@ -602,9 +602,9 @@ InitializeEventsScript:
 ; in place to EVENT_BEAT_ROUTE_24_ROCKET (constants/event_flags.asm, "Route 24 /
 ; Nugget Bridge"), so setting it at new game would have marked Yellow's Nugget
 ; Bridge recruiter as already beaten.  The Route 24 Rocket is meant to be
-; visible from the first visit: his object_event carries no hide flag
-; (hack/maps/Route24.asm:429) and Route24RocketScript branches on
-; EVENT_BEAT_ROUTE_24_ROCKET alone.
+; visible from the first visit; N1e re-gated him on Yellow's single
+; EVENT_GOT_NUGGET_ON_ROUTE_24 and gave him EVENT_GOT_SS_TICKET as a hide
+; flag, so nothing here may pre-set either.
 	setevent EVENT_COPYCATS_HOUSE_2F_DOLL
 	setevent EVENT_VIRIDIAN_GYM_BLUE
 	setevent EVENT_SEAFOAM_GYM_GYM_GUIDE

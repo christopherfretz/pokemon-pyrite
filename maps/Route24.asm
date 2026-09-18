@@ -35,18 +35,22 @@
 ; (docs/M3B-TM-UNION.md) made a real TM item; it shipped as the stand-in
 ; TM_ZAP_CANNON until then.
 ;
-; DEVIATION from Yellow, deliberate: Yellow's Rocket recruiter can be fought
-; exactly once and never disappears. His trigger array is gated on
-; EVENT_GOT_NUGGET, and Yellow sets that flag *before* the battle, so losing
-; to him permanently disarms the fight - afterwards he only ever prints the
-; "top leader" line. We split Yellow's single flag in two:
-; EVENT_GOT_NUGGET_ON_ROUTE_24 records the prize (so the NUGGET is never given
-; twice) and EVENT_BEAT_ROUTE_24_ROCKET records the win. A real loss leaves
-; the beat flag clear, so stepping on (10,15) or talking to him re-arms the
-; battle, matching the Cerulean Rocket thief (6c/6d). He is NOT disappeared
-; on the win: Yellow keeps him standing at the bridge head and gives him the
-; "you could become a top leader in TEAM ROCKET" line, which would otherwise
-; be dead text.
+; The Rocket recruiter is Yellow's ONE-SHOT (N1e, operator ruling; 6h used to
+; split Yellow's flag in two so a loss re-armed the fight).  Yellow's
+; Route24CooltrainerM1Text gates the whole beat on EVENT_GOT_NUGGET and sets
+; that flag *before* engaging the battle, and Route24AfterRocketBattleScript
+; returns straight to the default script on LOST_BATTLE - so a loss
+; permanently disarms the recruiter and the player keeps the NUGGET.  Win or
+; lose, from then on he only prints the "top leader" line.
+; EVENT_GOT_NUGGET_ON_ROUTE_24 is that single gate here; EVENT_BEAT_ROUTE_24_
+; ROCKET is still set on a win (Yellow sets its own EVENT_BEAT_ROUTE24_ROCKET
+; there) but nothing branches on it.
+;
+; He leaves for good once the S.S. TICKET is in hand: Yellow's
+; Route25ToggleBillsScript does `HideObject TOGGLE_NUGGET_BRIDGE_GUY` in the
+; same breath as hiding BILL_1 (vendor/pokeyellow/scripts/Route25.asm:36-38),
+; so EVENT_GOT_SS_TICKET is his hide flag below and the coord trigger tests it
+; too, so it can never fire on an invisible NPC.
 Route24_MapScripts:
 	def_scene_scripts
 
@@ -56,7 +60,11 @@ Route24_MapScripts:
 ; only walkable tile the player can reach coming north up the bridge - the
 ; recruiter's own body blocks (11,15).
 Route24RocketTrigger:
-	checkevent EVENT_BEAT_ROUTE_24_ROCKET
+	checkevent EVENT_GOT_NUGGET_ON_ROUTE_24
+	iftrue .Done
+; Belt and braces: he is hidden from the ticket onwards, so the tile must not
+; talk to a sprite that is not there.
+	checkevent EVENT_GOT_SS_TICKET
 	iftrue .Done
 	jump Route24RocketConfrontation
 
@@ -65,7 +73,7 @@ Route24RocketTrigger:
 
 Route24RocketScript:
 	faceplayer
-	checkevent EVENT_BEAT_ROUTE_24_ROCKET
+	checkevent EVENT_GOT_NUGGET_ON_ROUTE_24
 	iftrue .TopLeader
 	jump Route24RocketConfrontation
 
@@ -77,19 +85,18 @@ Route24RocketScript:
 	end
 
 Route24RocketConfrontation:
-	checkevent EVENT_GOT_NUGGET_ON_ROUTE_24
-	iftrue .Fight
 	opentext
 	writetext Route24RocketYouBeatOurContestText
+; Yellow embeds sound_get_item_1 between "...contest trainers!" and "You just
+; earned a fabulous prize!" (vendor/pokeyellow/scripts/Route24.asm:149-153).
+	playsound SFX_ITEM
+	waitsfx
+	writetext Route24RocketPrizeText
 	promptbutton
 	verbosegiveitem NUGGET
 	iffalse .NoRoom
+; Yellow sets EVENT_GOT_NUGGET here, BEFORE the battle: losing disarms him.
 	setevent EVENT_GOT_NUGGET_ON_ROUTE_24
-	jump .Pitch
-
-.Fight:
-	opentext
-.Pitch:
 	writetext Route24RocketJoinTeamRocketText
 	waitbutton
 	closetext
@@ -105,11 +112,19 @@ Route24RocketConfrontation:
 	closetext
 	end
 
+; Yellow's bag-full path sets EVENT_NUGGET_REWARD_AVAILABLE and simulates
+; PAD_DOWN so the player is shoved back off (10,15); the flag stays clear, so
+; stepping back on re-offers the prize.  applymovement is the GSC spelling.
 .NoRoom:
 	writetext Route24RocketNoRoomText
 	waitbutton
 	closetext
+	applymovement PLAYER, Route24RocketPushBack
 	end
+
+Route24RocketPushBack:
+	step DOWN
+	step_end
 
 TrainerCamperAnsel:
 	trainer CAMPER, ANSEL, EVENT_BEAT_CAMPER_ANSEL, CamperAnselSeenText, CamperAnselBeatenText, 0, .Script
@@ -225,8 +240,10 @@ Route24RocketYouBeatOurContestText:
 	text "Congratulations!"
 	line "You beat our 5"
 	cont "contest trainers!"
+	done
 
-	para "You just earned a"
+Route24RocketPrizeText:
+	text "You just earned a"
 	line "fabulous prize!"
 	done
 
@@ -426,7 +443,7 @@ Route24_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event 11, 15, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route24RocketScript, -1
+	object_event 11, 15, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route24RocketScript, EVENT_GOT_SS_TICKET
 	object_event  5, 20, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 4, TrainerCamperAnsel, -1
 	object_event 11, 19, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerCamperRufus, -1
 	object_event 10, 22, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerLassNorma, -1

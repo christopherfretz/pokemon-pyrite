@@ -438,7 +438,7 @@ YoungsterGroup:
 	db -1 ; end
 
 	; YOUNGSTER (18) - Kanto hack: Route 25, Yellow's YOUNGSTER 6
-	db "ELMER@", TRAINERTYPE_NORMAL
+	db "COLE@", TRAINERTYPE_NORMAL
 	db 17, SLOWPOKE
 	db -1 ; end
 

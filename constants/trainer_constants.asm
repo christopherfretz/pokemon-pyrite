@@ -129,7 +129,7 @@ DEF KRIS EQU __trainer_class__
 	const VICTOR ; Kanto hack: Nugget Bridge No. 3 (Yellow YOUNGSTER 4)
 ; Kanto hack: Route 25 (Yellow YOUNGSTER 5/6/7)
 	const GRANT
-	const ELMER
+	const COLE ; Kanto hack (N1e): renamed from ELMER, too close to Prof. ELM
 	const OSCAR
 
 	trainerclass SCHOOLBOY ; 17

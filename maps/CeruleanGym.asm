@@ -71,7 +71,14 @@ CeruleanGymMistyScript:
 .SpeechAfterTM:
 	writetext MistyTMBubblebeamText
 	waitbutton
+	closetext
+	end
+
+; Yellow's own bag-full line (vendor/pokeyellow/text/CeruleanGym.asm:55-58),
+; restored in N1e to match Brock's BrockTMNoRoomText (N1d edit 50).
 .NoRoomForTM:
+	writetext MistyTMNoRoomText
+	waitbutton
 	closetext
 	end
 
@@ -188,6 +195,11 @@ MistyTMBubblebeamText:
 
 	para "Use it on an"
 	line "aquatic #MON!"
+	done
+
+MistyTMNoRoomText:
+	text "You better make"
+	line "room for this!"
 	done
 
 PicnickerDianaSeenText:

@@ -19,9 +19,11 @@
 ; alias group in data/maps/blocks.asm.  Yellow's interior has a wall-sized
 ; TELEPORTER that TILESET_HOUSE simply has not got, and porting its ~30 8x8
 ; tiles into house.2bpp was not worth it, so the room is re-cut from existing
-; TILESET_HOUSE metatiles: $04 bookshelf, $10 PC desk (the cell-separator
-; console, PC quadrant at map (2,1)), 2x $2c machine bank across the rest of
-; the north wall, open floor, and House1's own bottom row ($06 / $0b door /
+; TILESET_HOUSE metatiles: $10 PC desk (the cell-separator console, PC quadrant
+; at map (2,1)) and 3x $2c machine bank across the rest of the north wall
+; (N1e: block (0,0) was $04 bookshelf, whose COLL_BOOKSHELF quadrants gave
+; Crystal's MagazineBookshelfScript inside Bill's Sea Cottage -- see the N1.1
+; audit note G-5), open floor, and House1's own bottom row ($06 / $0b door /
 ; $0f / $07) so the two door tiles stay at (2,7) and (3,7) and Route 25's
 ; warp is unchanged.  Walkable floor is y=2..7 (x=0 and x=7 are walls on the
 ; bottom row only).  Yellow's choreography is adapted to it 1:1 in shape:
@@ -82,6 +84,11 @@ BillsHouseObjectsCallback:
 ; could not be handed over (full KEY ITEMS pocket): BILL is a #MON again and
 ; the whole cutscene simply replays.
 	clearevent EVENT_BILL_SAID_USE_CELL_SEPARATOR
+; Kanto hack (N1e): Yellow's PC has a SECOND guard, EVENT_USED_CELL_SEPARATOR
+; (vendor/pokeyellow/engine/events/hidden_events/bills_house_pc.asm:6-11), so
+; the machine can't be run twice in a row.  Cleared here beside the first guard
+; so leaving and re-entering still replays the whole beat.
+	clearevent EVENT_USED_CELL_SEPARATOR_ON_BILL
 	endcallback
 
 .Helped:
@@ -140,8 +147,14 @@ BillsHousePCScript:
 	opentext
 	checkevent EVENT_GOT_SS_TICKET
 	iftrue .PokemonList
+; Yellow checks EVENT_USED_CELL_SEPARATOR before EVENT_BILL_SAID_USE_CELL_
+; SEPARATOR, so once the machine has been run the console goes back to its
+; plain monitor text instead of running the cutscene again.
+	checkevent EVENT_USED_CELL_SEPARATOR_ON_BILL
+	iftrue .Monitor
 	checkevent EVENT_BILL_SAID_USE_CELL_SEPARATOR
 	iftrue .CellSeparator
+.Monitor:
 	writetext BillsHouseMonitorText
 	waitbutton
 	closetext
@@ -196,6 +209,7 @@ BillsHousePCScript:
 ; there is nothing for showemote to resolve; the bubble goes over the player.
 	showemote EMOTE_SHOCK, PLAYER, 15
 	applymovement PLAYER, BillsHousePlayerStepAside
+	setevent EVENT_USED_CELL_SEPARATOR_ON_BILL
 	sjump BillsHouseBillThanks
 
 ; Yellow's forced walk is a simulated joypad (RLE_1e219 = PAD_RIGHT x3).  GSC's

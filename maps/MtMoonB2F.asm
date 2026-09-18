@@ -248,7 +248,7 @@ MtMoonB2FDomeFossil:
 	yesorno
 	iffalse .Declined
 	verbosegiveitem DOME_FOSSIL
-	iffalse .Declined
+	iffalse .NoRoom
 	closetext
 	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	disappear MTMOONB2F_DOME_FOSSIL
@@ -265,13 +265,22 @@ MtMoonB2FDomeFossil:
 	closetext
 	end
 
+; Yellow prints its own bag-full line here instead of GiveItemScript's generic
+; page (vendor/pokeyellow/scripts/MtMoonB2F.asm:537). The fossil object stays,
+; exactly as in Yellow.
+.NoRoom:
+	writetext MtMoonB2FNoRoomText
+	waitbutton
+	closetext
+	end
+
 MtMoonB2FHelixFossil:
 	opentext
 	writetext MtMoonB2FHelixFossilText
 	yesorno
 	iffalse .Declined
 	verbosegiveitem HELIX_FOSSIL
-	iffalse .Declined
+	iffalse .NoRoom
 	closetext
 	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
 	disappear MTMOONB2F_HELIX_FOSSIL
@@ -285,6 +294,12 @@ MtMoonB2FHelixFossil:
 	end
 
 .Declined:
+	closetext
+	end
+
+.NoRoom:
+	writetext MtMoonB2FNoRoomText
+	waitbutton
 	closetext
 	end
 
@@ -351,6 +366,11 @@ MtMoonB2FDomeFossilText:
 MtMoonB2FHelixFossilText:
 	text "You want the"
 	line "HELIX FOSSIL?"
+	done
+
+MtMoonB2FNoRoomText:
+	text "Look, you've got"
+	line "no room for this."
 	done
 
 MtMoonB2FRocket1SeenText:
