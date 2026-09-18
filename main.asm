@@ -709,6 +709,9 @@ SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"
 INCLUDE "data/pikachu/pikapic_gfx_headers.asm"
+INCLUDE "data/pikachu/pikapic_anims.asm"
+INCLUDE "data/pikachu/pikapic_objects.asm"
+INCLUDE "data/pikachu/pikapic_tilemaps.asm"
 
 
 INCLUDE "gfx/pikachu.asm"

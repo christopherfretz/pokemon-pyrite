@@ -10,9 +10,8 @@ MACRO ldpikaemotion
 	ld \1, (\2_id - PikachuEmotionTable) / 2
 ENDM
 
-MACRO dpikapic
-	db \1
-ENDM
+; dpikapic now lives in macros/scripts/pikapic.asm (E2): it is Yellow's
+; (PikaPicAnimScriptN_id - PikaPicAnimPointers) / 2 against the real table.
 
 MACRO dpikacry
 	db \1

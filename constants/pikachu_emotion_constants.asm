@@ -43,42 +43,11 @@ DEF FISH_BUBBLE        EQU EMOTE_FISH
 ; Yellow's EmotionBubble holds the bubble up for this many frames.
 DEF PIKAEMOTION_BUBBLE_FRAMES EQU 60
 
-; pikapic animation script indices.  E1-E4 will turn these into real
-; PikaPicAnimScript* pointers; until then pikaemotion_pikapic only records the
-; number in wPikaPicAnimNumber, and `dpikapic PikaPicAnimScriptN` == N exactly
-; as in Yellow (PikaPicAnimPointers is a dw table with no reordering).
-	const_def
-	const PikaPicAnimScript0
-	const PikaPicAnimScript1
-	const PikaPicAnimScript2
-	const PikaPicAnimScript3
-	const PikaPicAnimScript4
-	const PikaPicAnimScript5
-	const PikaPicAnimScript6
-	const PikaPicAnimScript7
-	const PikaPicAnimScript8
-	const PikaPicAnimScript9
-	const PikaPicAnimScript10
-	const PikaPicAnimScript11
-	const PikaPicAnimScript12
-	const PikaPicAnimScript13
-	const PikaPicAnimScript14
-	const PikaPicAnimScript15
-	const PikaPicAnimScript16
-	const PikaPicAnimScript17
-	const PikaPicAnimScript18
-	const PikaPicAnimScript19
-	const PikaPicAnimScript20
-	const PikaPicAnimScript21
-	const PikaPicAnimScript22
-	const PikaPicAnimScript23
-	const PikaPicAnimScript24
-	const PikaPicAnimScript25
-	const PikaPicAnimScript26
-	const PikaPicAnimScript27
-	const PikaPicAnimScript28
-	const PikaPicAnimScript29
-DEF NUM_PIKAPIC_ANIM_SCRIPTS EQU const_value
+; pikapic animation script ids are no longer constants: E2 ported the real
+; PikaPicAnimScript0-29 bodies and PikaPicAnimPointers into
+; data/pikachu/pikapic_anims.asm, so `dpikapic PikaPicAnimScriptN` computes
+; the table index from the label (still == N -- the table is in order).
+DEF NUM_PIKAPIC_ANIM_SCRIPTS EQU 30
 
 ; Pikachu voice-clip ids.  Decision A: we have no PCM engine, so
 ; StarterPikachuEmotionCommand_pcm plays `cry PIKACHU` and hands the clip id to

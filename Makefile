@@ -221,6 +221,14 @@ gfx/pokemon/girafarig/front.animated.tilemap: gfx/pokemon/girafarig/front.2bpp g
 	tools/pokemon_animation_graphics --girafarig -t $@ $^
 
 
+### Pikachu face-box (pikapic) rules
+# The 23 blobs Yellow stored as Gen-1 .pic sprites: pkmncompress transposes
+# tiles before compressing, so the in-game VRAM order of these 5x5 squares is
+# column-major.  Build them with --columns so E3's loader is just
+# FarDecompress + copy (docs/PIKACHU-EMOTIONS.md, E1/E2 findings).
+PIKAPIC_COLUMN_2BPP := gfx/pikachu/unknown_e4000.2bpp gfx/pikachu/unknown_e411c.2bpp gfx/pikachu/unknown_e4272.2bpp gfx/pikachu/unknown_e4383.2bpp gfx/pikachu/unknown_e458b.2bpp gfx/pikachu/unknown_e467b.2bpp gfx/pikachu/unknown_e476e.2bpp gfx/pikachu/unknown_e49d1.2bpp gfx/pikachu/unknown_e4b39.2bpp gfx/pikachu/unknown_e4c3e.2bpp gfx/pikachu/unknown_e5000.2bpp gfx/pikachu/unknown_e523f.2bpp gfx/pikachu/unknown_e548e.2bpp gfx/pikachu/unknown_e56d1.2bpp gfx/pikachu/unknown_e5924.2bpp gfx/pikachu/unknown_e5b7d.2bpp gfx/pikachu/unknown_e5ddd.2bpp gfx/pikachu/unknown_e6340.2bpp gfx/pikachu/unknown_e6587.2bpp gfx/pikachu/unknown_e67d6.2bpp gfx/pikachu/unknown_e77cf.2bpp gfx/pikachu/unknown_f0abf.2bpp gfx/pikachu/unknown_f0cf4.2bpp
+$(PIKAPIC_COLUMN_2BPP): RGBGFXFLAGS += --columns
+
 ### Pokemon and trainer sprite rules
 
 gfx/pokemon/%/back.2bpp: RGBGFXFLAGS += --columns
