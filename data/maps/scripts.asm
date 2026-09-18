@@ -513,4 +513,9 @@ INCLUDE "maps/CeruleanBadgeHouse.asm"
 ; Kanto hack: the Cerulean Cave stub behind it (docs/M3-CERULEAN.md, 6k).
 INCLUDE "maps/CeruleanCave1F.asm"
 
+; Kanto hack: Yellow's VIRIDIAN SCHOOL HOUSE (docs/AUDIT-NPC-TEXT.md, N1c), on
+; the warp Crystal gave the TRAINER HOUSE.  Not in "Map Scripts 23" (bank $6a,
+; the Viridian group) because that bank is the tightest one we have.
+INCLUDE "maps/ViridianSchoolHouse.asm"
+
 ENDSECTION

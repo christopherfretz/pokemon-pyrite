@@ -190,11 +190,13 @@ Route22RivalAfterBattleText:
 	cont "a move on!"
 	done
 
+; Kanto hack (N1c): Yellow's own sign for this building,
+; _Route23VictoryRoadGateSignText, verbatim (text/Route23.asm).  Yellow's Route
+; 22 sign ("#MON LEAGUE / Front Gate") labels the Route 22 gate house, which
+; Crystal's geometry does not have -- this door opens on the VICTORY ROAD GATE.
 VictoryRoadEntranceSignText:
-	text "#MON LEAGUE"
-
-	para "VICTORY ROAD"
-	line "ENTRANCE"
+	text "VICTORY ROAD GATE"
+	line "- #MON LEAGUE"
 	done
 
 Route22_MapEvents:

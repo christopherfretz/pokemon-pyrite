@@ -41,8 +41,28 @@ _VictoryRoadGateBadgeCheckScript:
 	setscene SCENE_VICTORYROADGATE_NOOP
 	end
 
+; Kanto hack (N1c, audit edit 86): the audit assumed EVENT_OPENED_MT_SILVER kept
+; this Black Belt latent during the Kanto act.  It does the opposite - the
+; trailing event flag is a HIDE flag, so with EVENT_OPENED_MT_SILVER clear he is
+; LIVE from day one and points the player at MT.SILVER.  Retexted instead: the
+; MT.SILVER line is kept verbatim for Crystal's Johto act behind ENGINE_POKEGEAR
+; (the N1a Kanto-act predicate), and the Kanto act gets Yellow's Route 22 Gate
+; guard line (_Route22GateGuardNoBoulderbadgeText, first paragraph).
 VictoryRoadGateLeftBlackBeltScript:
-	jumptextfaceplayer VictoryRoadGateLeftBlackBeltText
+	faceplayer
+	opentext
+	checkflag ENGINE_POKEGEAR
+	iftrue .Johto
+	writetext VictoryRoadGateLeftBlackBeltKantoText
+	waitbutton
+	closetext
+	end
+
+.Johto:
+	writetext VictoryRoadGateLeftBlackBeltText
+	waitbutton
+	closetext
+	end
 
 VictoryRoadGateRightBlackBeltScript:
 	jumptextfaceplayer VictoryRoadGateRightBlackBeltText
@@ -57,10 +77,14 @@ VictoryRoadGateOfficerText:
 	cont "selves may pass."
 	done
 
+; Kanto hack (N1c): region-neutral.  Kanto is played first, so "the GYM BADGES
+; of JOHTO" is wrong here; VAR_BADGES counts wJohtoBadges + wKantoBadges and
+; NUM_JOHTO_BADGES - 1 == NUM_KANTO_BADGES - 1 == 7, so the test itself is
+; already right for both acts.  Yellow's Route 23 guard is the wording model
+; (_Route23YouDontHaveTheBadgeYetText / _Route23GoRightAheadText).
 VictoryRoadGateNotEnoughBadgesText:
 	text "You don't have all"
-	line "the GYM BADGES of"
-	cont "JOHTO."
+	line "eight GYM BADGES."
 
 	para "I'm sorry, but I"
 	line "can't let you go"
@@ -68,11 +92,19 @@ VictoryRoadGateNotEnoughBadgesText:
 	done
 
 VictoryRoadGateEightBadgesText:
-	text "Oh! The eight"
-	line "BADGES of JOHTO!"
+	text "Oh! All eight of"
+	line "the GYM BADGES!"
 
 	para "Please, go right"
 	line "on through!"
+	done
+
+; Kanto hack (N1c): Yellow's _Route22GateGuardNoBoulderbadgeText, first
+; paragraph verbatim (the badge sentence belongs to the officer's check).
+VictoryRoadGateLeftBlackBeltKantoText:
+	text "Only truly skilled"
+	line "trainers are"
+	cont "allowed through."
 	done
 
 VictoryRoadGateLeftBlackBeltText:

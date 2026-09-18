@@ -2,7 +2,7 @@
 	const VIRIDIANPOKECENTER1F_NURSE
 	const VIRIDIANPOKECENTER1F_COOLTRAINER_M
 	const VIRIDIANPOKECENTER1F_COOLTRAINER_F
-	const VIRIDIANPOKECENTER1F_BUG_CATCHER
+	const VIRIDIANPOKECENTER1F_CHANSEY
 
 ViridianPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -13,60 +13,46 @@ ViridianPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
 ViridianPokecenter1FCooltrainerMScript:
-	faceplayer
-	opentext
-	checkevent EVENT_BLUE_IN_CINNABAR
-	iftrue .BlueReturned
-	writetext ViridianPokecenter1FCooltrainerMText
-	waitbutton
-	closetext
-	end
-
-.BlueReturned:
-	writetext ViridianPokecenter1FCooltrainerMText_BlueReturned
-	waitbutton
-	closetext
-	end
+	jumptextfaceplayer ViridianPokecenter1FCooltrainerMText
 
 ViridianPokecenter1FCooltrainerFScript:
 	jumptextfaceplayer ViridianPokecenter1FCooltrainerFText
 
-ViridianPokecenter1FBugCatcherScript:
-	jumptextfaceplayer ViridianPokecenter1FBugCatcherText
+; Kanto hack (N1c): Yellow's PokecenterChanseyText
+; (engine/events/pokecenter_chansey.asm) -- one line plus the cry.
+; Same pattern as CeruleanPokecenter1FChanseyScript.
+ViridianPokecenter1FChanseyScript:
+	opentext
+	writetext ViridianPokecenter1FChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
 
+; Kanto hack (N1c): Yellow's _ViridianPokecenterCooltrainerMText, verbatim.
+; Crystal's "where is VIRIDIAN's GYM LEADER" line and its EVENT_BLUE_IN_CINNABAR
+; branch are gone -- both were Blue-as-leader Johto-act flavour.
 ViridianPokecenter1FCooltrainerMText:
-	text "Where in the world"
-	line "is VIRIDIAN's GYM"
+	text "There's a #MON"
+	line "CENTER in every"
+	cont "town ahead."
 
-	para "LEADER? I wanted"
-	line "to challenge him."
+	para "They don't charge"
+	line "any money either!"
 	done
 
-ViridianPokecenter1FCooltrainerMText_BlueReturned:
-	text "There are no GYM"
-	line "TRAINERS at the"
-	cont "VIRIDIAN GYM."
-
-	para "The LEADER claims"
-	line "his policy is to"
-
-	para "win without having"
-	line "any underlings."
-	done
-
+; Kanto hack (N1c): Yellow's _ViridianPokecenterGentlemanText, verbatim.
 ViridianPokecenter1FCooltrainerFText:
-	text "I heard that the"
-	line "GYM in CINNABAR is"
-	cont "gone."
+	text "You can use that"
+	line "PC in the corner."
 
-	para "I wonder what be-"
-	line "came of BLAINE,"
-	cont "the GYM LEADER."
+	para "The receptionist"
+	line "told me. So kind!"
 	done
 
-ViridianPokecenter1FBugCatcherText:
-	text "My dream is to be-"
-	line "come a GYM LEADER."
+ViridianPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
 	done
 
 ViridianPokecenter1F_MapEvents:
@@ -85,4 +71,4 @@ ViridianPokecenter1F_MapEvents:
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianPokecenter1FNurseScript, -1
 	object_event  8,  4, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, ViridianPokecenter1FCooltrainerMScript, -1
 	object_event  5,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianPokecenter1FCooltrainerFScript, -1
-	object_event  1,  6, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ViridianPokecenter1FBugCatcherScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianPokecenter1FChanseyScript, -1

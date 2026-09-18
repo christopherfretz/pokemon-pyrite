@@ -353,34 +353,32 @@ ViridianCityGrampsNearGymLeaderReturnedText:
 	line "LEADER returned!"
 	done
 
+; Kanto hack (N1c): Yellow's ViridianCityFisherYouCanHaveThisText, verbatim
+; (text/ViridianCity.asm).  Crystal's extra box breaks, "Weird, huh?" and the
+; standalone "Huh?" are gone.
 ViridianCityDreamEaterFisherText:
 	text "Yawn!"
+	line "I must have dozed"
+	cont "off in the sun."
 
-	para "I must have dozed"
-	line "off in the sun."
-
-	para "…I had this dream"
+	para "I had this dream"
 	line "about a DROWZEE"
-
-	para "eating my dream."
-	line "Weird, huh?"
-
-	para "Huh?"
-	line "What's this?"
-
-	para "Where did this TM"
-	line "come from?"
+	cont "eating my dream."
+	cont "What's this?"
+	cont "Where did this TM"
+	cont "come from?"
 
 	para "This is spooky!"
-	line "Here, you can have"
-	cont "this TM."
+	line "Here, you can"
+	cont "have this TM."
 	done
 
+; Kanto hack (N1c): Yellow's _ViridianCityFisherTM42ExplanationText, verbatim
+; (one box, "...Snore..." not Crystal's "…Zzzzz…").
 ViridianCityDreamEaterFisherGotDreamEaterText:
 	text "TM42 contains"
-	line "DREAM EATER…"
-
-	para "…Zzzzz…"
+	line "DREAM EATER..."
+	cont "...Snore..."
 	done
 
 ViridianCityYoungsterText:
@@ -484,6 +482,10 @@ ViridianCity_MapEvents:
 	warp_event 21,  9, VIRIDIAN_NICKNAME_SPEECH_HOUSE, 1
 	warp_event 29, 19, VIRIDIAN_MART, 2
 	warp_event 23, 25, VIRIDIAN_POKECENTER_1F, 1
+	; Kanto hack (N1c): Yellow's SCHOOL HOUSE on the door L1 emptied when it
+	; deleted the TRAINER HOUSE.  APPENDED as warp 5 so warps 1-4 keep the
+	; indices ViridianMart.asm and ViridianPokecenter1F.asm already point at.
+	warp_event 23, 15, VIRIDIAN_SCHOOL_HOUSE, 1
 
 	def_coord_events
 	coord_event 17,  3, SCENE_VIRIDIANCITY_GRAMPS_BLOCK, ViridianCityGrampsBlockRight

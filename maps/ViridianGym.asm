@@ -63,25 +63,29 @@ ViridianGymStatue:
 .Beaten:
 	jumpstd GymStatue2Script
 
+; Kanto hack (N1c): de-Johto'd.  Crystal's Blue opens by referring to CINNABAR
+; (a rematch that never happened in this act) and to conquering "the GYMS in
+; JOHTO" / being the "JOHTO CHAMP" -- in a Kanto-first run the player arrives
+; here with seven KANTO badges and no league win.  Blue's voice and beats are
+; unchanged; only the region references are.  (Porting Yellow's GIOVANNI over
+; this gym wholesale is out of scope for N1c -- see docs/AUDIT-NPC-TEXT.md.)
 LeaderBlueBeforeText:
 	text "BLUE: Yo! Finally"
 	line "got here, huh?"
 
-	para "I wasn't in the"
-	line "mood at CINNABAR,"
-
-	para "but now I'm ready"
-	line "to battle you."
+	para "I've been waiting"
+	line "for you to show"
+	cont "up at my GYM."
 
 	para "…"
 
 	para "You're telling me"
 	line "you conquered all"
-	cont "the GYMS in JOHTO?"
+	cont "the other GYMS?"
 
-	para "Heh! JOHTO's GYMS"
+	para "Heh! Then they"
 	line "must be pretty"
-	cont "pathetic then."
+	cont "pathetic."
 
 	para "Hey, don't worry"
 	line "about it."
@@ -92,8 +96,8 @@ LeaderBlueBeforeText:
 	para "battling you right"
 	line "now."
 
-	para "Ready, JOHTO"
-	line "CHAMP?"
+	para "Ready, CHAMP in"
+	line "making?"
 	done
 
 LeaderBlueWinText:
@@ -138,6 +142,10 @@ LeaderBlueEpilogueText:
 	cont "you. Got it?"
 	done
 
+; Kanto hack (N1c): "battled the CHAMPION three years ago" is Crystal's Johto
+; backstory for Blue.  Replaced with Yellow's own line for this GYM's guide
+; (_ViridianGymGuidePreBattleText: "This will be the toughest of all the GYM
+; LEADERs!").
 ViridianGymGuideText:
 	text "Yo, CHAMP in"
 	line "making!"
@@ -146,11 +154,9 @@ ViridianGymGuideText:
 	line "Looks like you're"
 	cont "on a roll."
 
-	para "The GYM LEADER is"
-	line "a guy who battled"
-
-	para "the CHAMPION three"
-	line "years ago."
+	para "This will be the"
+	line "toughest of all"
+	cont "the GYM LEADERs!"
 
 	para "He's no pushover."
 

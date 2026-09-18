@@ -460,6 +460,7 @@ ENDM
 	map_const VIRIDIAN_FOREST_SOUTH_GATE,                   5,  4 ; 15
 	map_const VIRIDIAN_FOREST_NORTH_GATE,                   5,  4 ; 16
 	map_const ROUTE_2_TRADE_HOUSE,                          4,  4 ; 17
+	map_const VIRIDIAN_SCHOOL_HOUSE,                        4,  4 ; 18
 	endgroup
 
 	newgroup NEW_BARK                                             ; 24

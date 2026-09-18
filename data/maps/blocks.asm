@@ -1086,4 +1086,12 @@ CeruleanCave1F_Blocks:
 BillsHouse_Blocks:
 	INCBIN "maps/BillsHouse.blk"
 
+; Kanto hack: Yellow's VIRIDIAN SCHOOL HOUSE (docs/AUDIT-NPC-TEXT.md, N1c).
+; Yellow's 4x4 .blk transfers byte-for-byte: Crystal's TILESET_HOUSE kept
+; Yellow's blackboard ($12/$13) and school-desk ($14/$15/$18/$19) metatiles at
+; the same ids.  In "Map Blocks 3" because "Map Blocks 1" (the Viridian group)
+; and "Map Blocks 2" are both effectively full.
+ViridianSchoolHouse_Blocks:
+	INCBIN "maps/ViridianSchoolHouse.blk"
+
 ENDSECTION
