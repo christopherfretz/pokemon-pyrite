@@ -1638,15 +1638,17 @@
 ; the two POKeDEX props on Oak's desk, and the catch-tutorial old man walking
 ; off to restock at the MART (his object's hidden flag, cleared again by
 ; ViridianMart's NEWMAP callback) -- and three are Yellow hidden items that had
-; never been ported.  506 free -> 500 free.
+; never been ported.  506 free -> 500 free.  N1b appends a seventh:
+; 500 free -> 499 free.
 	const EVENT_GOT_TOWN_MAP ; Daisy has handed over the TOWN MAP (also hides the Blue's House prop)
 	const EVENT_OAKS_LAB_POKEDEX ; the two desk POKeDEX props are gone (set when Oak hands the dex over)
 	const EVENT_VIRIDIAN_OLD_MAN_GONE_TO_MART ; the catch-tutorial old man is off buying # BALLs (his hidden flag)
 	const EVENT_ROUTE_25_HIDDEN_ETHER ; Yellow's hidden ETHER at (38,3)
 	const EVENT_ROUTE_25_HIDDEN_ELIXER ; Yellow's hidden ELIXER at (10,1)
 	const EVENT_CERULEAN_CITY_HIDDEN_RARE_CANDY ; Yellow's hidden RARE CANDY at (15,8)
+	const EVENT_OAKS_LAB_OAK ; OAK is still out looking for #MON (his object's hidden flag, cleared by the lab intro)
 
-; Unused: next 500 events
+; Unused: next 499 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -1,5 +1,5 @@
 	object_const_def
-	const PALLETTOWN_TEACHER
+	const PALLETTOWN_GIRL
 	const PALLETTOWN_FISHER
 	const PALLETTOWN_OAK
 
@@ -103,7 +103,6 @@ PalletTownOakIntoLab:
 	stopfollow
 	disappear PALLETTOWN_OAK
 	setevent EVENT_PALLET_TOWN_OAK
-	clearevent EVENT_OAKS_LAB_RIVAL
 	setmapscene OAKS_LAB, SCENE_OAKSLAB_INTRO
 	setscene SCENE_PALLETTOWN_NOOP
 	special FadeOutMusic
@@ -114,8 +113,8 @@ PalletTownOakIntoLab:
 PalletTownOakScript:
 	jumptextfaceplayer PalletTownOakComeWithMeText
 
-PalletTownTeacherScript:
-	jumptextfaceplayer PalletTownTeacherText
+PalletTownGirlScript:
+	jumptextfaceplayer PalletTownGirlText
 
 PalletTownFisherScript:
 	jumptextfaceplayer PalletTownFisherText
@@ -211,32 +210,34 @@ PalletTownOakComeWithMeText:
 	line "me!"
 	done
 
-PalletTownTeacherText:
-	text "I'm raising #-"
-	line "MON too."
+; Yellow's PALLET TOWN girl (vendor/pokeyellow/text/PalletTown.asm).
+PalletTownGirlText:
+	text "I'm raising"
+	line "#MON too!"
 
-	para "They serve as my"
-	line "private guards."
+	para "When they get"
+	line "strong, they can"
+	cont "protect me!"
 	done
 
 PalletTownFisherText:
 	text "Technology is"
 	line "incredible!"
 
-	para "You can now trade"
-	line "#MON across"
-	cont "time like e-mail."
+	para "You can now store"
+	line "and recall items"
+	cont "and #MON as"
+	cont "data via PC!"
 	done
 
 PalletTownSignText:
 	text "PALLET TOWN"
-
-	para "A Tranquil Setting"
-	line "of Peace & Purity"
+	line "Shades of your"
+	cont "journey await!"
 	done
 
 RedsHouseSignText:
-	text "RED'S HOUSE"
+	text "<PLAYER>'s house "
 	done
 
 OaksLabSignText:
@@ -245,7 +246,7 @@ OaksLabSignText:
 	done
 
 BluesHouseSignText:
-	text "BLUE'S HOUSE"
+	text "<RIVAL>'s house "
 	done
 
 PalletTown_MapEvents:
@@ -267,6 +268,6 @@ PalletTown_MapEvents:
 	bg_event 11,  5, BGEVENT_READ, BluesHouseSign
 
 	def_object_events
-	object_event  3,  8, SPRITE_TEACHER, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PalletTownTeacherScript, -1
-	object_event 12, 14, SPRITE_FISHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PalletTownFisherScript, -1
+	object_event  3,  8, SPRITE_TWIN, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PalletTownGirlScript, -1
+	object_event 11, 14, SPRITE_FISHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 2, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PalletTownFisherScript, -1
 	object_event  8,  5, SPRITE_OAK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PalletTownOakScript, EVENT_PALLET_TOWN_OAK

@@ -85,9 +85,8 @@ Route1LedgeYoungsterText:
 
 Route1SignText:
 	text "ROUTE 1"
-
-	para "PALLET TOWN -"
-	line "VIRIDIAN CITY"
+	line "PALLET TOWN -"
+	cont "VIRIDIAN CITY"
 	done
 
 Route1_MapEvents:

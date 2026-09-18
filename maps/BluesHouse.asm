@@ -58,6 +58,12 @@ DaisyWalkingScript:
 BluesHouseTownMapScript:
 	jumptext BluesHouseTownMapText
 
+; Yellow's three bookcases (vendor/pokeyellow/data/maps/objects/BluesHouse.asm
+; hidden-object texts): all three print _BookcaseText, which our shared
+; PictureBookshelfText already carries verbatim after N1a.
+BluesHouseBookshelf:
+	jumpstd PictureBookshelfScript
+
 DaisyRivalAtLabText:
 	text "Hi <PLAYER>!"
 	line "<RIVAL> is out at"
@@ -104,6 +110,9 @@ BluesHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_READ, BluesHouseBookshelf
+	bg_event  1,  1, BGEVENT_READ, BluesHouseBookshelf
+	bg_event  7,  1, BGEVENT_READ, BluesHouseBookshelf
 
 	def_object_events
 	object_event  2,  3, SPRITE_DAISY, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DaisyScript, -1

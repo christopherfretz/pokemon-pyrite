@@ -288,7 +288,13 @@ _PlayersHousePC:
 	call PC_PlayBootSound
 	ld hl, PlayersPCTurnOnText
 	call PC_DisplayText
+; Kanto hack (N1b): Yellow's bedroom PC is plain item storage, so drop the
+; MAIL BOX and DECORATION options while the game is in the Kanto act.
+	call PCPC_CheckKantoAct ; clobbers b, so probe first
 	ld b, PLAYERSPC_HOUSE
+	jr z, .got_set
+	ld b, PLAYERSPC_NO_MAIL
+.got_set
 	call _PlayersPC
 	and a
 	jr nz, .changed_deco_tiles

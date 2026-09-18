@@ -11,15 +11,17 @@ RedHouse1FNoopScene:
 	end
 
 RedsMom:
-; yellowcrystal: Yellow's intro mom. First talk sends you to Oak; after that she heals.
+; yellowcrystal: Yellow's intro mom -- she sends you to Oak, then heals your party.
+; Yellow's RedsHouse1FPrintMomText gates on BIT_GOT_STARTER, not on having
+; talked to her before: until Oak gives you PIKACHU she always sends you next
+; door, and HealParty is never reachable with an empty party.
 	faceplayer
 	opentext
-	checkevent EVENT_MET_REDS_MOM
+	checkevent EVENT_GOT_STARTER_PIKACHU
 	iftrue .Heal
 	writetext RedsHouse1FMomWakeUpText
 	waitbutton
 	closetext
-	setevent EVENT_MET_REDS_MOM
 	end
 .Heal:
 	writetext RedsHouse1FMomYouShouldRestText
@@ -30,8 +32,22 @@ RedsMom:
 	closetext
 	end
 
+; Yellow's RedsHouse1FPrintTVText: the movie only plays when you watch the TV
+; from the front (facing up); from the side you get "Oops, wrong side."
 RedsHouse1FTV:
-	jumptext RedsHouse1FTVText
+	opentext
+	readvar VAR_FACING
+	ifnotequal UP, .WrongSide
+	writetext RedsHouse1FTVText
+	waitbutton
+	closetext
+	end
+
+.WrongSide:
+	writetext RedsHouse1FTVWrongSideText
+	waitbutton
+	closetext
+	end
 
 RedsHouse1FBookshelf:
 	jumpstd PictureBookshelfScript
@@ -75,6 +91,10 @@ RedsHouse1FTVText:
 	para "I better go too."
 	done
 
+RedsHouse1FTVWrongSideText:
+	text "Oops, wrong side."
+	done
+
 RedsHouse1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -89,6 +109,7 @@ RedsHouse1F_MapEvents:
 	bg_event  0,  1, BGEVENT_READ, RedsHouse1FBookshelf
 	bg_event  1,  1, BGEVENT_READ, RedsHouse1FBookshelf
 	bg_event  2,  1, BGEVENT_READ, RedsHouse1FTV
+	bg_event  3,  1, BGEVENT_READ, RedsHouse1FTV
 
 	def_object_events
 	object_event  5,  3, SPRITE_REDS_MOM, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RedsMom, -1

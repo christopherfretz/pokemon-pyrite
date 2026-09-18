@@ -13,24 +13,28 @@ RedsHouse2FInitializeEventsCallback:
 .Skip:
 	endcallback
 
-RedsHouse2FN64Script:
-	jumptext RedsHouse2FN64Text
+RedsHouse2FSNESScript:
+	jumptext RedsHouse2FSNESText
 
+; Yellow's bedroom PC is a working item-storage PC, so use Crystal's own
+; player's-house PC script (the Kanto act gets Yellow's four-option menu --
+; no MAIL BOX, no DECORATION -- from PCPC_CheckKantoAct).
 RedsHouse2FPCScript:
-	jumptext RedsHouse2FPCText
+	opentext
+	special PlayersHousePC
+	iftrue .Warp
+	closetext
+	end
 
-RedsHouse2FN64Text:
-	text "<PLAYER> played the"
-	line "N64."
+.Warp:
+	warp NONE, 0, 0
+	end
 
-	para "Better get going--"
-	line "no time to lose!"
-	done
-
-RedsHouse2FPCText:
-	text "It looks like it"
-	line "hasn't been used"
-	cont "in a long time…"
+RedsHouse2FSNESText:
+	text "<PLAYER> is"
+	line "playing the SNES!"
+	cont "…Okay!"
+	cont "It's time to go!"
 	done
 
 RedsHouse2F_MapEvents:
@@ -42,7 +46,7 @@ RedsHouse2F_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  3,  5, BGEVENT_READ, RedsHouse2FN64Script
-	bg_event  0,  1, BGEVENT_READ, RedsHouse2FPCScript
+	bg_event  3,  5, BGEVENT_READ, RedsHouse2FSNESScript
+	bg_event  0,  1, BGEVENT_UP, RedsHouse2FPCScript
 
 	def_object_events
