@@ -155,9 +155,13 @@ GetItemName::
 	push bc
 	ld a, [wNamedObjectIndex]
 
-	cp TM01
-	jr nc, .TM
+; Kanto hack (M3b TM union): TM item ids are not contiguous any more, so this
+; is a table lookup instead of "cp TM01".
+	ld c, a
+	farcall IsTMHMItem
+	jr c, .TM
 
+	ld a, [wNamedObjectIndex]
 	ld [wCurSpecies], a
 	ld a, ITEM_NAME
 	ld [wNamedObjectType], a
@@ -180,9 +184,16 @@ GetTMHMName::
 	ld a, [wNamedObjectIndex]
 	push af
 
-; TM/HM prefix
-	cp HM01
+; TM/HM number.  Kanto hack (M3b TM union): the TM item ids are not contiguous
+; any more, so the TM/HM prefix is decided from the TM number rather than from
+; a "cp HM01" on the item id.
+	ld c, a
+	callfar GetTMHMNumber
+	ld a, c
 	push af
+
+; TM/HM prefix
+	cp NUM_TMS + 1
 	jr c, .TM
 
 	ld hl, .HMText
@@ -197,16 +208,9 @@ GetTMHMName::
 	ld de, wStringBuffer1
 	call CopyBytes
 
-; TM/HM number
-	push de
-	ld a, [wNamedObjectIndex]
-	ld c, a
-	callfar GetTMHMNumber
-	pop de
-
-; HM numbers start from 51, not 1
+; HM numbers start from NUM_TMS + 1, not 1
 	pop af
-	ld a, c
+	cp NUM_TMS + 1
 	jr c, .not_hm
 	sub NUM_TMS
 .not_hm

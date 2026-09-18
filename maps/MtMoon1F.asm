@@ -11,7 +11,7 @@
 	const MTMOON1F_RARE_CANDY
 	const MTMOON1F_ESCAPE_ROPE
 	const MTMOON1F_POTION2
-	const MTMOON1F_TM_RAIN_DANCE
+	const MTMOON1F_TM_WATER_GUN
 
 ; Kanto hack: Mt. Moon 1F, from vendor/pokeyellow/maps/MtMoon1F.blk (converted
 ; in 5a) and vendor/pokeyellow/data/maps/objects/MtMoon1F.asm (docs/M2-MTMOON.md).
@@ -31,11 +31,10 @@
 ; from this object list, not from a group list in data/maps/outdoor_sprites.asm;
 ; trim_outdoor_sprites.py does not apply here.
 ;
-; Item substitution (docs/M2-MTMOON.md section 2): Yellow's TM12 WATER GUN has
-; no GSC equivalent (GSC has no water TM), so the itemball at (5,32) gives
-; TM_RAIN_DANCE (GSC TM18) per the operator decision of 2026-09-17. Every other
-; item is Yellow's and exists in Crystal: POTION, MOON_STONE, RARE_CANDY,
-; ESCAPE_ROPE.
+; Items: all Yellow's.  The itemball at (5,32) is Yellow's TM12 WATER GUN,
+; which M3b (docs/M3B-TM-UNION.md) made a real TM item; it shipped as the
+; stand-in TM_RAIN_DANCE from 2026-09-17 until then.  The rest exist in
+; Crystal unchanged: POTION, MOON_STONE, RARE_CANDY, ESCAPE_ROPE.
 ;
 ; Names: Yellow's trainers are anonymous. HIKER 1 -> MARCOS, YOUNGSTER 3 ->
 ; DUSTIN, LASS 5/6 -> MELISSA/NADINE, BUG_CATCHER 7/8 -> TRAVIS/NEIL (all new
@@ -48,7 +47,7 @@
 ; EVENT_BEAT_PICNICKER_SHARON -> EVENT_BEAT_YOUNGSTER_DUSTIN,
 ; EVENT_MT_MOON_RIVAL -> EVENT_MT_MOON_1F_MOON_STONE,
 ; EVENT_MT_MOON_SQUARE_ROCK -> EVENT_MT_MOON_1F_RARE_CANDY and
-; EVENT_MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE -> EVENT_MT_MOON_1F_TM_RAIN_DANCE.
+; EVENT_MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE -> EVENT_MT_MOON_1F_TM_WATER_GUN.
 ; The other seven are new; SUPER_NERD GREGG keeps Crystal's own
 ; EVENT_BEAT_SUPER_NERD_GREGG, which nothing used.
 
@@ -149,8 +148,8 @@ MtMoon1FEscapeRope:
 MtMoon1FPotion2:
 	itemball POTION
 
-MtMoon1FTMRainDance:
-	itemball TM_RAIN_DANCE
+MtMoon1FTMWaterGun:
+	itemball TM_WATER_GUN
 
 MtMoon1FZubatSign:
 	jumptext MtMoon1FZubatSignText
@@ -303,4 +302,4 @@ MtMoon1F_MapEvents:
 	object_event 35, 31, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoon1FRareCandy, EVENT_MT_MOON_1F_RARE_CANDY
 	object_event 36, 23, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoon1FEscapeRope, EVENT_MT_MOON_1F_ESCAPE_ROPE
 	object_event 20, 33, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoon1FPotion2, EVENT_MT_MOON_1F_POTION_2
-	object_event  5, 32, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoon1FTMRainDance, EVENT_MT_MOON_1F_TM_RAIN_DANCE
+	object_event  5, 32, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoon1FTMWaterGun, EVENT_MT_MOON_1F_TM_WATER_GUN

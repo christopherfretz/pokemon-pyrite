@@ -780,7 +780,10 @@ DebugColor_PrintTMHMMove:
 	call PlaceString
 
 	ld a, [wDebugColorCurTMHM]
-	call .GetNumberedTMHM
+	inc a
+	ld c, a
+	farcall GetNumberedTMHM ; Kanto hack (M3b TM union): table-driven now
+	ld a, c
 	ld [wCurItem], a
 	predef CanLearnTMHMMove
 	ld a, c
@@ -799,15 +802,6 @@ DebugColor_PrintTMHMMove:
 .NotAbleText:
 	db "おぼえられない@" ; Not learnable
 
-.GetNumberedTMHM:
-	cp NUM_TMS
-	jr c, .tm
-; hm - skip two gap items
-	inc a
-	inc a
-.tm
-	add TM01
-	ret
 
 .ClearRow:
 	ld bc, 10

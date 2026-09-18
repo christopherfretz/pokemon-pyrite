@@ -92,7 +92,7 @@ GoldenrodPokecenter1FPokefanF:
 	writetext GoldenrodPokecenter1FAskGiveAwayAnEonMailText
 	yesorno
 	iffalse .NoEonMail
-	takeitem EON_MAIL
+	takeitem FLOWER_MAIL ; Kanto hack: EON_MAIL id is TM73 now
 	iffalse .NoEonMail
 	writetext GoldenrodPokecenter1FPlayerGaveAwayTheEonMailText
 	waitbutton
@@ -112,7 +112,7 @@ GoldenrodPokecenter1FPokefanF:
 	end
 
 .NoRoom:
-	giveitem EON_MAIL
+	giveitem FLOWER_MAIL ; Kanto hack: EON_MAIL id is TM73 now
 	writetext GoldenrodPokecenter1FPokefanFAnotherTimeThenText
 	waitbutton
 	closetext
@@ -760,7 +760,7 @@ GoldenrodPokecenter1FPokefanFDoYouHaveEonMailText:
 
 	para "Oh! Do you happen"
 	line "to have something"
-	cont "named EON MAIL?"
+	cont "named FLOWER MAIL?"
 
 	para "My daughter is"
 	line "after one."
@@ -799,7 +799,7 @@ GoldenrodPokecenter1FPokefanFAnotherTimeThenText:
 
 GoldenrodPokecenter1FPlayerGaveAwayTheEonMailText:
 	text "<PLAYER> gave away"
-	line "the EON MAIL."
+	line "the FLOWER MAIL."
 	done
 
 GoldenrodPokecenter1F_MapEvents:

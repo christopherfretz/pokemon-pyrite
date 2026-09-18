@@ -31,6 +31,7 @@ INCLUDE "engine/math/print_num.asm"
 INCLUDE "engine/pokemon/health.asm"
 INCLUDE "engine/events/overworld.asm"
 INCLUDE "engine/items/items.asm"
+INCLUDE "data/items/tmhm_items.asm"
 INCLUDE "engine/overworld/player_step.asm"
 INCLUDE "engine/battle/anim_hp_bar.asm"
 INCLUDE "engine/pokemon/move_mon.asm"
@@ -259,8 +260,16 @@ INCLUDE "engine/pokemon/switchpartymons.asm"
 INCLUDE "engine/gfx/load_pics.asm"
 INCLUDE "engine/pokemon/move_mon_wo_mail.asm"
 INCLUDE "data/pokemon/base_stats.asm"
-INCLUDE "data/pokemon/names.asm"
 INCLUDE "data/pokemon/unused_pic_banks.asm"
+
+
+; Kanto hack (M3b TM union): the tmhm bitfield grew from 8 to 12 bytes per
+; species, which pushed BaseData past the end of "bank14".  PokemonNames
+; (2560 bytes) moved out into this floating section to make room.  Consumers
+; use BANK(PokemonNames) (home/names.asm), so the bank is free to move.
+SECTION "Pokemon Names", ROMX
+
+INCLUDE "data/pokemon/names.asm"
 
 
 SECTION "Crystal Phone Text", ROMX

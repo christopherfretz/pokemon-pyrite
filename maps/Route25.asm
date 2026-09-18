@@ -8,7 +8,7 @@
 	const ROUTE25_HIKER1
 	const ROUTE25_HIKER2
 	const ROUTE25_HIKER3
-	const ROUTE25_TM_ROCK_SMASH
+	const ROUTE25_TM_SEISMIC_TOSS
 
 ; Kanto hack: Yellow's Route 25, the cape trail up to Bill's Sea Cottage
 ; (docs/M3-CERULEAN.md 6i).  6a re-cut the map from Yellow's own .blk
@@ -28,8 +28,9 @@
 ; draws its two Route 25 lasses with SPRITE_COOLTRAINER_F; we keep that, the
 ; same call 6h made for Nugget Bridge's NORMA and PAULINE.
 ;
-; Item substitution (docs/M3-CERULEAN.md 0.8 / 2): Yellow's TM39 SEISMIC TOSS
-; has no Crystal equivalent, so the ball at (22,2) gives TM08 ROCK_SMASH.
+; Items: the ball at (22,2) is Yellow's TM19 SEISMIC TOSS, which M3b
+; (docs/M3B-TM-UNION.md) made a real TM item; it shipped as the stand-in
+; TM_ROCK_SMASH until then.
 ;
 ; DELETED here (all Crystal content, none of it Yellow's):
 ;   * Crystal's eight trainers (SCHOOLBOY DUDLEY/JOE, LASS ELLEN/LAURA/SHANNON,
@@ -189,8 +190,8 @@ TrainerHikerMorton:
 	closetext
 	end
 
-Route25TMRockSmash:
-	itemball TM_ROCK_SMASH
+Route25TMSeismicToss:
+	itemball TM_SEISMIC_TOSS
 
 BillsHouseSign:
 	jumptext BillsHouseSignText
@@ -380,4 +381,4 @@ Route25_MapEvents:
 	object_event  8,  4, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerHikerGraham, -1
 	object_event 23,  9, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerHikerArchie, -1
 	object_event 13,  7, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 2, TrainerHikerMorton, -1
-	object_event 22,  2, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route25TMRockSmash, EVENT_ROUTE_25_TM_ROCK_SMASH
+	object_event 22,  2, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route25TMSeismicToss, EVENT_ROUTE_25_TM_SEISMIC_TOSS

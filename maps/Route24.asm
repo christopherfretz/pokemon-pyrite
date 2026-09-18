@@ -6,7 +6,7 @@
 	const ROUTE24_YOUNGSTER
 	const ROUTE24_LASS2
 	const ROUTE24_BUG_CATCHER
-	const ROUTE24_TM_ZAP_CANNON
+	const ROUTE24_TM_THUNDER_WAVE
 	const ROUTE24_DAMIAN
 
 ; Kanto hack: Yellow's Route 24, Nugget Bridge (docs/M3-CERULEAN.md 6h). The
@@ -31,9 +31,9 @@
 ; grass strip. Encounter order walking north is BUG_CATCHER MERLE (No. 1),
 ; LASS PAULINE (2), YOUNGSTER VICTOR (3), LASS NORMA (4), CAMPER RUFUS (5).
 ;
-; Item substitution (docs/M3-CERULEAN.md 0.8): Yellow's TM45 THUNDER WAVE is
-; GSC TM07 ZAP_CANNON's slot in our table; the ball at (10,5) gives
-; TM_ZAP_CANNON.
+; Items: the ball at (10,5) is Yellow's TM45 THUNDER WAVE, which M3b
+; (docs/M3B-TM-UNION.md) made a real TM item; it shipped as the stand-in
+; TM_ZAP_CANNON until then.
 ;
 ; DEVIATION from Yellow, deliberate: Yellow's Rocket recruiter can be fought
 ; exactly once and never disappears. His trigger array is gated on
@@ -177,8 +177,8 @@ TrainerBugCatcherMerle:
 	closetext
 	end
 
-Route24TMZapCannon:
-	itemball TM_ZAP_CANNON
+Route24TMThunderWave:
+	itemball TM_THUNDER_WAVE
 
 ; Yellow's GivePokemon would have boxed the CHARMANDER; like Melanie's
 ; BULBASAUR (docs/M3-CERULEAN.md 6g) and the Mt. Moon MAGIKARP salesman
@@ -433,5 +433,5 @@ Route24_MapEvents:
 	object_event 11, 25, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerYoungsterVictor, -1
 	object_event 10, 28, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerLassPauline, -1
 	object_event 11, 31, SPRITE_BUG_CATCHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 1, TrainerBugCatcherMerle, -1
-	object_event 10,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route24TMZapCannon, EVENT_ROUTE_24_TM_ZAP_CANNON
+	object_event 10,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route24TMThunderWave, EVENT_ROUTE_24_TM_THUNDER_WAVE
 	object_event  6,  5, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route24DamianScript, -1

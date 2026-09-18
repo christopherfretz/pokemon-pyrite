@@ -456,39 +456,68 @@ CheckTMHM:
 	scf
 	ret
 
+; Kanto hack (M3b TM union, docs/M3B-TM-UNION.md): TM item ids are no longer
+; contiguous -- TM51-TM85 live in reclaimed slots scattered through the item
+; list -- so the item id <-> TM number conversion is a table lookup against
+; TMHMItems (data/items/tmhm_items.asm, same bank) instead of arithmetic.
+
 GetTMHMNumber::
-; Return the number of a TM/HM by item id c.
-	ld a, c
-; Skip any dummy items.
-	cp ITEM_C3 ; TM04-05
-	jr c, .done
-	cp ITEM_DC ; TM28-29
-	jr c, .skip
-	dec a
-.skip
-	dec a
+; Return the number of a TM/HM by item id c, or 0 if c is not a TM/HM.
+	push hl
+	push de
+	ld hl, TMHMItems
+	ld d, NUM_TMS + NUM_HMS
+	ld e, 0
+.loop
+	inc e
+	ld a, [hli]
+	cp c
+	jr z, .found
+	dec d
+	jr nz, .loop
+	ld c, 0
+	jr .done
+.found
+	ld c, e
 .done
-	sub TM01
-	inc a
-	ld c, a
+	pop de
+	pop hl
 	ret
 
-GetNumberedTMHM:
-; Return the item id of a TM/HM by number c.
+GetNumberedTMHM::
+; Return the item id of a TM/HM by number c (1-based), or 0 if out of range.
+	push hl
 	ld a, c
-; Skip any gaps.
-	cp ITEM_C3 - (TM01 - 1)
-	jr c, .done
-	cp ITEM_DC - (TM01 - 1) - 1
-	jr c, .skip_one
-; skip two
-	inc a
-.skip_one
-	inc a
-.done
-	add TM01
+	and a
+	jr z, .out_of_range
+	cp NUM_TMS + NUM_HMS + 1
+	jr nc, .out_of_range
 	dec a
 	ld c, a
+	ld b, 0
+	ld hl, TMHMItems
+	add hl, bc
+	ld c, [hl]
+	pop hl
+	ret
+
+.out_of_range
+	ld c, 0
+	pop hl
+	ret
+
+IsTMHMItem::
+; Return carry if item id c is a TM or an HM.
+; The item id goes in c, NOT a: every caller is in another bank, and the
+; farcall macro loads the bank number into a on the way in.  FarCall passes bc
+; through untouched and restores it on the way out, so c is safe both ways.
+	push bc
+	call GetTMHMNumber
+	ld a, c
+	pop bc
+	and a
+	ret z
+	scf
 	ret
 
 _CheckTossableItem::

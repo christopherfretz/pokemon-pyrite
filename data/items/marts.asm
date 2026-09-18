@@ -175,7 +175,7 @@ MartOlivine:
 	db AWAKENING
 	db ICE_HEAL
 	db SUPER_REPEL
-	db SURF_MAIL
+	db FLOWER_MAIL ; Kanto hack: was SURF_MAIL
 	db -1 ; end
 
 MartEcruteak:
@@ -281,7 +281,7 @@ MartVermilion:
 	db PARLYZ_HEAL
 	db AWAKENING
 	db BURN_HEAL
-	db LITEBLUEMAIL
+	db FLOWER_MAIL ; Kanto hack: was LITEBLUEMAIL
 	db -1 ; end
 
 MartCeladon2F1:
@@ -319,10 +319,9 @@ MartCeladon3F:
 	db -1 ; end
 
 MartCeladon4F:
-	db 3 ; # items
+	db 2 ; # items ; Kanto hack: LOVELY_MAIL/SURF_MAIL became TMs
 	db POKE_DOLL
-	db LOVELY_MAIL
-	db SURF_MAIL
+	db FLOWER_MAIL
 	db -1 ; end
 
 MartCeladon5F1:
@@ -375,7 +374,7 @@ MartMtMoon:
 	db SODA_POP
 	db LEMONADE
 	db REPEL
-	db PORTRAITMAIL
+	db FLOWER_MAIL ; Kanto hack: was PORTRAITMAIL
 	db -1 ; end
 
 MartIndigoPlateau:

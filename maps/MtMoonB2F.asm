@@ -8,7 +8,7 @@
 	const MTMOONB2F_DOME_FOSSIL
 	const MTMOONB2F_HELIX_FOSSIL
 	const MTMOONB2F_HP_UP
-	const MTMOONB2F_TM_DYNAMICPUNCH
+	const MTMOONB2F_TM_MEGA_PUNCH
 
 ; Kanto hack: Mt. Moon B2F, from vendor/pokeyellow/maps/MtMoonB2F.blk (converted
 ; in 5a) and vendor/pokeyellow/data/maps/objects/MtMoonB2F.asm. 5b registered the
@@ -78,8 +78,9 @@
 ; Trainer slots are Crystal's unused GRUNTM_12/22/23/26 and SUPER_NERD 4 (JAY,
 ; renamed MIGUEL), all rewritten in place - no constants appended.
 ;
-; Item substitution (operator decision, 2026-09-17): Yellow's TM01 MEGA PUNCH
-; has no GSC equivalent, so (29,5) gives TM_DYNAMICPUNCH (GSC TM01).
+; Items: (29,5) is Yellow's TM01 MEGA PUNCH, which M3b
+; (docs/M3B-TM-UNION.md) made a real TM item; it shipped as the stand-in
+; TM_DYNAMICPUNCH from 2026-09-17 until then.
 ; DOME_FOSSIL and HELIX_FOSSIL are new key items in Crystal's free ITEM_2D /
 ; ITEM_32 slots; they are inert until a Cinnabar lab exists.
 
@@ -298,8 +299,8 @@ MtMoonB2FMiguelStepUp:
 MtMoonB2FHPUp:
 	itemball HP_UP
 
-MtMoonB2FTMDynamicPunch:
-	itemball TM_DYNAMICPUNCH
+MtMoonB2FTMMegaPunch:
+	itemball TM_MEGA_PUNCH
 
 MtMoonB2FHiddenMoonStone:
 	hiddenitem MOON_STONE, EVENT_MT_MOON_B2F_HIDDEN_MOON_STONE
@@ -452,4 +453,4 @@ MtMoonB2F_MapEvents:
 	object_event 12,  6, SPRITE_FOSSIL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FDomeFossil, EVENT_MT_MOON_B2F_DOME_FOSSIL
 	object_event 13,  6, SPRITE_FOSSIL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonB2FHelixFossil, EVENT_MT_MOON_B2F_HELIX_FOSSIL
 	object_event 25, 21, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FHPUp, EVENT_MT_MOON_B2F_HP_UP
-	object_event 29,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FTMDynamicPunch, EVENT_MT_MOON_B2F_TM_DYNAMICPUNCH
+	object_event 29,  5, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, MtMoonB2FTMMegaPunch, EVENT_MT_MOON_B2F_TM_MEGA_PUNCH

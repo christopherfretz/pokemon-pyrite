@@ -12,6 +12,9 @@
 	const MUSIC_MAIL_INDEX   ; 8
 	const MIRAGE_MAIL_INDEX  ; 9
 DEF NUM_MAIL EQU const_value
+; Kanto hack (M3b TM union): item ids $b5-$bd became TM69-TM77, so only
+; FLOWER_MAIL is still a real item.  These indexes are kept because the mail
+; renderer still compares against PORTRAITMAIL_INDEX / MORPH_MAIL_INDEX.
 
 ReadPartyMonMail:
 	ld a, [wCurPartyMon]
@@ -135,16 +138,7 @@ MailGFXPointers:
 ; entries correspond to *MAIL_INDEX constants
 	table_width 3
 	dbw FLOWER_MAIL,  LoadFlowerMailGFX
-	dbw SURF_MAIL,    LoadSurfMailGFX
-	dbw LITEBLUEMAIL, LoadLiteBlueMailGFX
-	dbw PORTRAITMAIL, LoadPortraitMailGFX
-	dbw LOVELY_MAIL,  LoadLovelyMailGFX
-	dbw EON_MAIL,     LoadEonMailGFX
-	dbw MORPH_MAIL,   LoadMorphMailGFX
-	dbw BLUESKY_MAIL, LoadBlueSkyMailGFX
-	dbw MUSIC_MAIL,   LoadMusicMailGFX
-	dbw MIRAGE_MAIL,  LoadMirageMailGFX
-	assert_table_length NUM_MAIL
+	assert_table_length 1 ; Kanto hack: only FLOWER_MAIL survives (see data/items/mail_items.asm)
 	db -1 ; end
 
 LoadSurfMailGFX:

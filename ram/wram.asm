@@ -3274,8 +3274,9 @@ wErinFightCount::    db
 
 ; Kanto hack (docs/HOUSEKEEPING.md): vanilla reserves 100 unused bytes here.
 ; 64 of them were handed to wEventFlags so NUM_EVENTS could go 2048 -> 2560
-; without moving anything live. 36 are left (good for one more +256-flag bump).
-	ds 36
+; without moving anything live; M3b (docs/M3B-TM-UNION.md) spent another 35 on
+; wTMsHMs when NUM_TMS went 50 -> 85.  ONE byte of slack is left in wPlayerData.
+	ds 1
 
 wEventFlags:: flag_array NUM_EVENTS
 

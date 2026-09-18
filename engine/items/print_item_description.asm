@@ -2,9 +2,12 @@ PrintItemDescription:
 ; Print the description for item [wCurSpecies] at de.
 
 	ld a, [wCurSpecies]
-	cp TM01
-	jr c, .not_a_tm
+; Kanto hack (M3b TM union): TM item ids are no longer one contiguous range.
+	ld c, a
+	farcall IsTMHMItem
+	jr nc, .not_a_tm
 
+	ld a, [wCurSpecies]
 	ld [wCurItem], a
 	push de
 	farcall GetTMHMItemMove

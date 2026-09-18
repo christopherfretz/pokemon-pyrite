@@ -27,14 +27,14 @@
 ; up exactly as they do in Yellow. Until then TAMARA is simply unreachable -
 ; no soft lock, nothing else on the map depends on her.
 ;
-; Item substitutions (docs/M2-MTMOON.md section 2): Yellow's TM04 WHIRLWIND has
-; no GSC equivalent, so the itemball at (57,3) gives TM_ROAR (GSC TM05, the
-; same force-a-switch effect). The hidden item is Yellow's GREAT_BALL at
+; Items (docs/M2-MTMOON.md section 2): the itemball at (57,3) is Yellow's TM04
+; WHIRLWIND, which M3b (docs/M3B-TM-UNION.md) made a real TM item; it shipped
+; as the stand-in TM_ROAR until then. The hidden item is Yellow's GREAT_BALL at
 ; (40,3) - the survey's section 2 claim that Route 4 has no hidden items was
 ; wrong, and its "hidden ULTRA_BALL" was Crystal's, not Yellow's.
 ;
 ; Flags: no new ones. EVENT_BEAT_BIRD_KEEPER_HANK -> EVENT_BEAT_LASS_TAMARA,
-; EVENT_ROUTE_4_HP_UP -> EVENT_ROUTE_4_TM_ROAR and
+; EVENT_ROUTE_4_HP_UP -> EVENT_ROUTE_4_TM_WHIRLWIND and
 ; EVENT_ROUTE_4_HIDDEN_ULTRA_BALL -> EVENT_ROUTE_4_HIDDEN_GREAT_BALL, all
 ; renamed in place (the flag list is positional, so renaming keeps every later
 ; index and existing savestates valid).
@@ -66,8 +66,8 @@ Route4MtMoonSign:
 Route4Sign:
 	jumptext Route4SignText
 
-Route4TMRoar:
-	itemball TM_ROAR
+Route4TMWhirlwind:
+	itemball TM_WHIRLWIND
 
 Route4HiddenGreatBall:
 	hiddenitem GREAT_BALL, EVENT_ROUTE_4_HIDDEN_GREAT_BALL
@@ -127,4 +127,4 @@ Route4_MapEvents:
 	def_object_events
 	object_event  9,  8, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route4LassScript, -1
 	object_event 63,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerLassTamara, -1
-	object_event 57,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route4TMRoar, EVENT_ROUTE_4_TM_ROAR
+	object_event 57,  3, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route4TMWhirlwind, EVENT_ROUTE_4_TM_WHIRLWIND

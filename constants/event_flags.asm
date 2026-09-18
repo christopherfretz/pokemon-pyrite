@@ -247,7 +247,7 @@
 	const EVENT_ROCK_TUNNEL_B1F_HIDDEN_MAX_POTION
 	const EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
 	const EVENT_VERMILION_PORT_HIDDEN_IRON
-	const EVENT_MT_MOON_1F_TM_RAIN_DANCE ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone
+	const EVENT_MT_MOON_1F_TM_WATER_GUN ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone.  M3b: Yellow's TM12 WATER GUN (was TM_RAIN_DANCE)
 	const EVENT_ROUTE_2_HIDDEN_MAX_ETHER
 	const EVENT_ROUTE_2_HIDDEN_FULL_HEAL
 	const EVENT_ROUTE_2_HIDDEN_FULL_RESTORE
@@ -972,7 +972,7 @@
 	const EVENT_BEAT_SUPER_NERD_ERIC
 	const EVENT_BEAT_SUPER_NERD_GREGG ; Kanto hack: now Mt. Moon 1F (Yellow's SUPER_NERD 1); Crystal never used this slot
 	const EVENT_BEAT_SUPER_NERD_MIGUEL ; Kanto hack: renamed in place (5f), was the unused EVENT_BEAT_SUPER_NERD_JAY
-	const EVENT_MT_MOON_B2F_TM_DYNAMICPUNCH ; Kanto hack: renamed in place (5f), was the unused (and misspelled) EVENT_BEAY_SUPER_NERD_DAVE
+	const EVENT_MT_MOON_B2F_TM_MEGA_PUNCH ; Kanto hack: renamed in place (5f), was the unused (and misspelled) EVENT_BEAY_SUPER_NERD_DAVE.  M3b: Yellow's TM01 MEGA PUNCH (was TM_DYNAMICPUNCH)
 	const EVENT_BEAT_SUPER_NERD_SAM
 	const EVENT_BEAT_SUPER_NERD_TOM
 	const EVENT_BEAT_HIKER_GRAHAM ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SUPER_NERD_PAT; Route 25, Yellow's HIKER 2
@@ -1395,11 +1395,11 @@
 	const EVENT_ROUTE_2_HP_UP ; was EVENT_ROUTE_2_MAX_POTION
 	const EVENT_VIRIDIAN_FOREST_POTION_1 ; was the unused EVENT_ROUTE_2_CARBOS
 	const EVENT_VIRIDIAN_FOREST_POTION_2 ; was the unused EVENT_ROUTE_2_ELIXER
-	const EVENT_ROUTE_4_TM_ROAR ; Kanto hack: Route 4, Yellow's TM04 WHIRLWIND itemball (was EVENT_ROUTE_4_HP_UP)
+	const EVENT_ROUTE_4_TM_WHIRLWIND ; Kanto hack: Route 4, Yellow's TM04 WHIRLWIND itemball (was EVENT_ROUTE_4_HP_UP); M3b made it the real TM_WHIRLWIND
 	const EVENT_ROUTE_12_CALCIUM
 	const EVENT_ROUTE_12_NUGGET
 	const EVENT_ROUTE_15_PP_UP
-	const EVENT_ROUTE_25_TM_ROCK_SMASH ; Kanto hack: renamed in place (6i), was EVENT_ROUTE_25_PROTEIN; Route 25, Yellow's TM39 SEISMIC TOSS ball -> TM08 ROCK_SMASH
+	const EVENT_ROUTE_25_TM_SEISMIC_TOSS ; Kanto hack: renamed in place (6i), was EVENT_ROUTE_25_PROTEIN; Route 25, Yellow's TM19 SEISMIC TOSS ball (M3b made it the real TM_SEISMIC_TOSS)
 ; New to Crystal
 	const EVENT_KURTS_HOUSE_GRANDDAUGHTER_1
 	const EVENT_KURTS_HOUSE_GRANDDAUGHTER_2
@@ -1629,7 +1629,7 @@
 	const EVENT_BEAT_LASS_PAULINE ; Nugget Bridge No. 2
 	const EVENT_BEAT_BUG_CATCHER_MERLE ; Nugget Bridge No. 1
 	const EVENT_GOT_NUGGET_ON_ROUTE_24 ; the recruiter has handed over the NUGGET
-	const EVENT_ROUTE_24_TM_ZAP_CANNON ; the TM ball at (10,5) has been picked up
+	const EVENT_ROUTE_24_TM_THUNDER_WAVE ; the TM ball at (10,5) has been picked up (M3b: Yellow's TM45 THUNDER WAVE, was TM_ZAP_CANNON)
 	const EVENT_GOT_CHARMANDER_FROM_DAMIAN ; DAMIAN has handed over the L10 CHARMANDER
 
 ; Unused: next 506 events

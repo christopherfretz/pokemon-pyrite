@@ -4,7 +4,8 @@
 ; statue bg_events -- but everything in it is Yellow's: MISTY with Yellow's
 ; L18 STARYU / L21 STARMIE, Yellow's two gym trainers (JR.TRAINER^F -> a
 ; PICNICKER, SWIMMER -> a SWIMMERM), Yellow's gym guide, the CASCADEBADGE and
-; Yellow's TM reward (TM11 BUBBLEBEAM -> TM18 RAIN_DANCE, §0.8).
+; Yellow's TM reward, TM11 BUBBLEBEAM, made a real TM item by M3b
+; (docs/M3B-TM-UNION.md); it shipped as the stand-in TM_RAIN_DANCE until then.
 ;
 ; Deleted with Crystal's Johto plot: the Rocket grunt object and his
 ; SCENE_CERULEANGYM_GRUNT_RUNS_OUT cutscene, the two "MISTY is out on a date"
@@ -64,13 +65,13 @@ CeruleanGymMistyScript:
 .FightDone:
 	checkevent EVENT_GOT_TM_FROM_MISTY
 	iftrue .SpeechAfterTM
-	verbosegiveitem TM_RAIN_DANCE
-	iffalse .NoRoomForRainDance
+	verbosegiveitem TM_BUBBLEBEAM
+	iffalse .NoRoomForTM
 	setevent EVENT_GOT_TM_FROM_MISTY
 .SpeechAfterTM:
-	writetext MistyTMRainDanceText
+	writetext MistyTMBubblebeamText
 	waitbutton
-.NoRoomForRainDance:
+.NoRoomForTM:
 	closetext
 	end
 
@@ -177,12 +178,14 @@ MistyCascadeBadgeInfoText:
 	line "my favorite TM!"
 	done
 
-MistyTMRainDanceText:
-	text "TM18 teaches"
-	line "RAIN DANCE!"
+MistyTMBubblebeamText:
+; Yellow says "TM11"; our TM union numbers BUBBLEBEAM as TM60
+; (docs/M3B-TM-UNION.md).
+	text "TM60 teaches"
+	line "BUBBLEBEAM!"
 
-	para "Use it on a"
-	line "water-type #MON!"
+	para "Use it on an"
+	line "aquatic #MON!"
 	done
 
 PicnickerDianaSeenText:

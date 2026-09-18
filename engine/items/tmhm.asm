@@ -47,8 +47,10 @@ AskTeachTMHM:
 	push af
 	res NO_TEXT_SCROLL, [hl]
 	ld a, [wCurItem]
-	cp TM01
-	jr c, .NotTMHM
+; Kanto hack (M3b TM union): TM item ids are no longer one contiguous range.
+	ld c, a
+	farcall IsTMHMItem
+	jr nc, .NotTMHM
 	call GetTMHMItemMove
 	ld a, [wTempTMHM]
 	ld [wPutativeTMHMMove], a
@@ -56,8 +58,8 @@ AskTeachTMHM:
 	call CopyName1
 	ld hl, BootedTMText ; Booted up a TM
 	ld a, [wCurItem]
-	cp HM01
-	jr c, .TM
+	call IsHM
+	jr nc, .TM
 	ld hl, BootedHMText ; Booted up an HM
 .TM:
 	call PrintText

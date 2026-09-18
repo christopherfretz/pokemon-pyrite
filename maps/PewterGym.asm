@@ -8,8 +8,9 @@ PewterGym_MapScripts:
 
 	def_callbacks
 
-; Kanto hack (docs/M2-PEWTER-CITY.md): Yellow's BROCK. He hands out TM_ROLLOUT
-; where Yellow gives TM34 BIDE, which Crystal has no TM for.
+; Kanto hack (docs/M2-PEWTER-CITY.md): Yellow's BROCK. He hands out TM_BIDE,
+; exactly as Yellow's TM34 does (the TM item was added by M3b, see
+; docs/M3B-TM-UNION.md; it shipped as TM_ROLLOUT until then).
 PewterGymBrockScript:
 	faceplayer
 	opentext
@@ -36,10 +37,10 @@ PewterGymBrockScript:
 	iftrue .SpeechAfterTM
 	writetext BrockTakeThisText
 	promptbutton
-	verbosegiveitem TM_ROLLOUT
-	iffalse .NoRoomForRollout
+	verbosegiveitem TM_BIDE
+	iffalse .NoRoomForTM
 	setevent EVENT_GOT_TM_FROM_BROCK
-	writetext BrockTMRolloutText
+	writetext BrockTMBideText
 	waitbutton
 	closetext
 	end
@@ -47,7 +48,7 @@ PewterGymBrockScript:
 .SpeechAfterTM:
 	writetext BrockFightDoneText
 	waitbutton
-.NoRoomForRollout:
+.NoRoomForTM:
 	closetext
 	end
 
@@ -148,7 +149,7 @@ BrockTakeThisText:
 	cont "you!"
 	done
 
-BrockTMRolloutText:
+BrockTMBideText:
 	text "A TM contains a"
 	line "technique that"
 	cont "can be taught to"
@@ -160,12 +161,12 @@ BrockTMRolloutText:
 	cont "#MON carefully!"
 
 	para "That TM contains"
-	line "ROLLOUT!"
+	line "BIDE!"
 
 	para "Your #MON will"
-	line "curl up and keep"
-	cont "rolling, hitting"
-	cont "harder each turn!"
+	line "absorb damage in"
+	cont "battle then pay"
+	cont "it back double!"
 	done
 
 BrockFightDoneText:
