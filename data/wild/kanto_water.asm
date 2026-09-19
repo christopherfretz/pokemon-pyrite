@@ -46,17 +46,11 @@ KantoWaterWildMons:
 	db 15, GOLDUCK
 	end_water_wildmons
 
-; Kanto hack (M5 8c): ROUTE_9 deleted -- Yellow's Route 9 has no water
-; encounters (vendor/pokeyellow/data/wild/maps/Route9.asm water rate 0).  The
-; block must be DELETED, not zeroed: FindNest's .FindWater ignores the rate
-; byte, so a zero-rate table still shows the map as a Pokedex AREA habitat.
-	def_water_wildmons ROUTE_10
-	db 4 percent ; encounter rate
-	db 15, GOLDEEN
-	db 10, GOLDEEN
-	db 15, SEAKING
-	end_water_wildmons
-
+; Kanto hack (M5 8c/8d): ROUTE_9 and ROUTE_10 deleted -- Yellow gives both
+; `def_water_wildmons 0` with no entries at all
+; (vendor/pokeyellow/data/wild/maps/Route9.asm, Route10.asm).  The blocks must
+; be DELETED, not zeroed: FindNest's .FindWater ignores the rate byte, so a
+; zero-rate table still shows the map as a Pokedex AREA habitat.
 	def_water_wildmons ROUTE_12
 	db 6 percent ; encounter rate
 	db 25, TENTACOOL

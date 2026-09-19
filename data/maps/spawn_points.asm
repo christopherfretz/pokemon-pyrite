@@ -15,7 +15,11 @@ SpawnPoints:
 	spawn VIRIDIAN_CITY,              23, 26
 	spawn PEWTER_CITY,                13, 26
 	spawn CERULEAN_CITY,              19, 22
-	spawn ROUTE_10,                   11,  2
+; Kanto hack (M5 8d): was 11, 2 -- the front door of the Pokemon Center on the
+; old 10x9 ROUTE_10_NORTH.  8b merged Route 10 back to Yellow's single 10x36
+; map, where y=2 is open water; the Center's door is at (11,19), so the
+; whiteout spawn is the tile in front of it.
+	spawn ROUTE_10,                   11, 20
 	spawn VERMILION_CITY,              9,  6
 	spawn LAVENDER_TOWN,               5,  6
 	spawn SAFFRON_CITY,                9, 30

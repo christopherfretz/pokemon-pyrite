@@ -248,8 +248,8 @@
 	const EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
 	const EVENT_WALKED_PAST_GUARD_AFTER_SS_ANNE_LEFT ; Kanto hack: renamed in place (7g) from EVENT_VERMILION_PORT_HIDDEN_IRON -- Yellow's dock has no hidden IRON and Crystal's was deleted with the FAST SHIP cast.  7j sets/reads this (Yellow: VermilionCityLeftSSAnneCallbackScript, docs/M4-VERMILION.md §3.8); no reader today.
 	const EVENT_MT_MOON_1F_TM_WATER_GUN ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone.  M3b: Yellow's TM12 WATER GUN (was TM_RAIN_DANCE)
-	const EVENT_ROUTE_2_HIDDEN_MAX_ETHER
-	const EVENT_ROUTE_2_HIDDEN_FULL_HEAL
+	const EVENT_ROUTE_10_HIDDEN_SUPER_POTION ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_ROUTE_2_HIDDEN_MAX_ETHER; ROUTE 10's hidden SUPER POTION (Yellow (9,17), moved one tile south -- see maps/Route10.asm)
+	const EVENT_ROUTE_10_HIDDEN_MAX_ETHER ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_ROUTE_2_HIDDEN_FULL_HEAL; ROUTE 10's hidden MAX ETHER at (16,53)
 	const EVENT_ROUTE_2_HIDDEN_FULL_RESTORE
 	const EVENT_ROUTE_2_HIDDEN_REVIVE
 	const EVENT_ROUTE_4_HIDDEN_GREAT_BALL ; Kanto hack: Route 4, Yellow's hidden GREAT_BALL (was EVENT_ROUTE_4_HIDDEN_ULTRA_BALL)
@@ -693,9 +693,9 @@
 	const EVENT_BEAT_HIKER_MARCOS ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_HOPE
 	const EVENT_BEAT_YOUNGSTER_DUSTIN ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_SHARON
 	const EVENT_BEAT_PICNICKER_DEBRA
-	const EVENT_BEAT_PICNICKER_GINA2
+	const EVENT_BEAT_PICNICKER_GRETCHEN ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_PICNICKER_GINA2; ROUTE 10, Yellow's JR_TRAINER_F 7
 	const EVENT_BEAT_PICNICKER_ERIN
-	const EVENT_BEAT_PICNICKER_LIZ2
+	const EVENT_BEAT_PICNICKER_MABEL ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_PICNICKER_LIZ2; ROUTE 10, Yellow's JR_TRAINER_F 8
 	const EVENT_BEAT_PICNICKER_LIZ3
 	const EVENT_BEAT_PICNICKER_HEIDI
 	const EVENT_BEAT_PICNICKER_EDNA
@@ -775,7 +775,7 @@
 ; PokefanM
 	const EVENT_BEAT_POKEFANM_WILLIAM
 	const EVENT_BEAT_POKEFANM_DEREK
-	const EVENT_BEAT_POKEFANM_ROBERT
+	const EVENT_BEAT_POKEFANM_ROBERT ; Kanto hack: DEAD since M5 8d (Crystal's ROUTE 10 POKEFAN deleted -- Yellow has none there).  Free for reuse
 	const EVENT_BEAT_POKEFANM_JOSHUA
 	const EVENT_BEAT_POKEFANM_CARTER
 	const EVENT_BEAT_POKEFANM_TREVOR
@@ -807,8 +807,8 @@
 	const EVENT_BEAT_POKEMANIAC_BRENT
 	const EVENT_BEAT_POKEMANIAC_RON
 	const EVENT_BEAT_POKEMANIAC_ETHAN
-	const EVENT_BEAT_POKEMANIAC_BRENT2
-	const EVENT_BEAT_POKEMANIAC_BRENT3
+	const EVENT_BEAT_POKEMANIAC_ORVILLE ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_POKEMANIAC_BRENT2; ROUTE 10, Yellow's POKEMANIAC 1
+	const EVENT_BEAT_POKEMANIAC_MELVIN ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_POKEMANIAC_BRENT3; ROUTE 10, Yellow's POKEMANIAC 2
 	const EVENT_BEAT_POKEMANIAC_ISSAC
 	const EVENT_BEAT_POKEMANIAC_DONALD
 	const EVENT_BEAT_POKEMANIAC_ZACH
@@ -883,9 +883,9 @@
 	const EVENT_BEAT_HIKER_NOLAND
 	const EVENT_BEAT_HIKER_SIDNEY
 	const EVENT_BEAT_HIKER_KENNY
-	const EVENT_BEAT_HIKER_JIM
+	const EVENT_BEAT_HIKER_JIM ; Kanto hack: kept (M5 8d); ROUTE 10, Yellow's HIKER 7 -- party rewritten in place
 	const EVENT_BEAT_HIKER_DANIEL
-	const EVENT_BEAT_HIKER_PARRY2
+	const EVENT_BEAT_HIKER_ODELL ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_HIKER_PARRY2; ROUTE 10, Yellow's HIKER 8
 	const EVENT_BEAT_HIKER_PARRY3
 ; Bug Catcher
 	const EVENT_BEAT_BUG_CATCHER_DON

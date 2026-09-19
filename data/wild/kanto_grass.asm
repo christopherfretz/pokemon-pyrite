@@ -571,32 +571,41 @@ KantoGrassWildMons:
 	db 20, RATICATE
 	end_grass_wildmons
 
+; Kanto hack (M5 8d): Yellow's Route 10 table
+; (vendor/pokeyellow/data/wild/maps/Route10.asm).  Yellow rate 15/256 ==
+; `6 percent`; Gen 1 has no time of day, so morn = day = nite.  8b merged our
+; two halves back into Yellow's single 10x36 ROUTE_10, so there is one table.
+; Ten Yellow slots fold to seven by dropping the duplicated middle MAGNEMITEs
+; at slots 2 (L18) and 3 (L20) plus the duplicated MACHOP at slot 9 (L18),
+; which keeps slot 0 (L16) and slot 6 (L22) and so both of Yellow's level
+; extremes.  Gone: Crystal's VOLTORB, ELECTABUZZ, MAROWAK, SPEAROW, FEAROW,
+; VENONAT, VENOMOTH, ZUBAT and its nite block.
 	def_grass_wildmons ROUTE_10
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 15, SPEAROW
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, MAROWAK
-	db 16, ELECTABUZZ
-	db 16, ELECTABUZZ
+	db 16, MAGNEMITE
+	db 18, RATTATA
+	db 17, NIDORAN_M
+	db 17, NIDORAN_F
+	db 22, MAGNEMITE
+	db 20, RATICATE
+	db 16, MACHOP
 	; day
-	db 15, SPEAROW
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, MAROWAK
-	db 18, ELECTABUZZ
-	db 18, ELECTABUZZ
+	db 16, MAGNEMITE
+	db 18, RATTATA
+	db 17, NIDORAN_M
+	db 17, NIDORAN_F
+	db 22, MAGNEMITE
+	db 20, RATICATE
+	db 16, MACHOP
 	; nite
-	db 15, VENONAT
-	db 17, VOLTORB
-	db 15, RATICATE
-	db 15, VENOMOTH
-	db 15, ZUBAT
-	db 16, ELECTABUZZ
-	db 16, ELECTABUZZ
+	db 16, MAGNEMITE
+	db 18, RATTATA
+	db 17, NIDORAN_M
+	db 17, NIDORAN_F
+	db 22, MAGNEMITE
+	db 20, RATICATE
+	db 16, MACHOP
 	end_grass_wildmons
 
 ; Kanto hack (7m): Yellow's Route 11 table

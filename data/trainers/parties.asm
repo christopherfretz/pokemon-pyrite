@@ -1386,6 +1386,18 @@ PokemaniacGroup:
 	db 17, NIDOQUEEN
 	db -1 ; end
 
+	; POKEMANIAC (16) - Kanto hack: ROUTE 10, Yellow's POKEMANIAC 1 (docs/M5-LAVENDER.md 5.1)
+	db "ORVILLE@", TRAINERTYPE_NORMAL
+	db 30, RHYHORN
+	db 30, LICKITUNG
+	db -1 ; end
+
+	; POKEMANIAC (17) - Kanto hack: ROUTE 10, Yellow's POKEMANIAC 2
+	db "MELVIN@", TRAINERTYPE_NORMAL
+	db 20, CUBONE
+	db 20, SLOWPOKE
+	db -1 ; end
+
 GruntMGroup:
 	; GRUNTM (1)
 	db "GRUNT@", TRAINERTYPE_NORMAL
@@ -2724,9 +2736,10 @@ HikerGroup:
 	db 29, GRAVELER
 	db -1 ; end
 
-	; HIKER (17)
+	; HIKER (17) - Kanto hack: ROUTE 10, Yellow's HIKER 7 (docs/M5-LAVENDER.md 5.1, 5.3)
 	db "JIM@", TRAINERTYPE_NORMAL
-	db 35, MACHAMP
+	db 21, GEODUDE
+	db 21, ONIX
 	db -1 ; end
 
 	; HIKER (18)
@@ -2790,6 +2803,12 @@ HikerGroup:
 	db "LAMONT@", TRAINERTYPE_NORMAL
 	db 21, GEODUDE
 	db 21, ONIX
+	db -1 ; end
+
+	; HIKER (28) - Kanto hack: ROUTE 10, Yellow's HIKER 8 (docs/M5-LAVENDER.md 5.1)
+	db "ODELL@", TRAINERTYPE_NORMAL
+	db 19, ONIX
+	db 19, GRAVELER
 	db -1 ; end
 
 BikerGroup:
@@ -3315,6 +3334,18 @@ PicnickerGroup:
 	db 16, PIDGEY
 	db -1 ; end
 
+	; PICNICKER (30) - Kanto hack: ROUTE 10, Yellow's JR_TRAINER_F 7 (docs/M5-LAVENDER.md 5.1)
+	db "GRETCHEN@", TRAINERTYPE_NORMAL
+	db 20, JIGGLYPUFF
+	db 20, CLEFAIRY
+	db -1 ; end
+
+	; PICNICKER (31) - Kanto hack: ROUTE 10, Yellow's JR_TRAINER_F 8
+	db "MABEL@", TRAINERTYPE_NORMAL
+	db 21, PIDGEY
+	db 21, PIDGEOTTO
+	db -1 ; end
+
 CamperGroup:
 	; CAMPER (1)
 	db "ROLAND@", TRAINERTYPE_NORMAL
@@ -3651,11 +3682,6 @@ PokefanMGroup:
 	db -1 ; end
 
 	; POKEFANM (3)
-	db "ROBERT@", TRAINERTYPE_ITEM
-	db 33, QUAGSIRE,   BERRY
-	db -1 ; end
-
-	; POKEFANM (4)
 	db "JOSHUA@", TRAINERTYPE_ITEM
 	db 23, PIKACHU,    BERRY
 	db 23, PIKACHU,    BERRY
@@ -3665,46 +3691,46 @@ PokefanMGroup:
 	db 23, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (5)
+	; POKEFANM (4)
 	db "CARTER@", TRAINERTYPE_ITEM
 	db 29, BULBASAUR,  BERRY
 	db 29, CHARMANDER, BERRY
 	db 29, SQUIRTLE,   BERRY
 	db -1 ; end
 
-	; POKEFANM (6)
+	; POKEFANM (5)
 	db "TREVOR@", TRAINERTYPE_ITEM
 	db 33, PSYDUCK,    BERRY
 	db -1 ; end
 
-	; POKEFANM (7)
+	; POKEFANM (6)
 	db "BRANDON@", TRAINERTYPE_ITEM
 	db 13, SNUBBULL,   BERRY
 	db -1 ; end
 
-	; POKEFANM (8)
+	; POKEFANM (7)
 	db "JEREMY@", TRAINERTYPE_ITEM
 	db 28, MEOWTH,     BERRY
 	db 28, MEOWTH,     BERRY
 	db 28, MEOWTH,     BERRY
 	db -1 ; end
 
-	; POKEFANM (9)
+	; POKEFANM (8)
 	db "COLIN@", TRAINERTYPE_ITEM
 	db 32, DELIBIRD,   BERRY
 	db -1 ; end
 
-	; POKEFANM (10)
+	; POKEFANM (9)
 	db "DEREK@", TRAINERTYPE_ITEM
 	db 19, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (11)
+	; POKEFANM (10)
 	db "DEREK@", TRAINERTYPE_ITEM
 	db 36, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (12)
+	; POKEFANM (11)
 	db "ALEX@", TRAINERTYPE_ITEM
 	db 29, NIDOKING,   BERRY
 	db 29, SLOWKING,   BERRY

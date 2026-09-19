@@ -390,8 +390,12 @@ PowerPlant_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2, 17, ROUTE_10, 2
-	warp_event  3, 17, ROUTE_10, 2
+	; Kanto hack (M5 8d): was ROUTE_10, 2 -- which is now the ROCK TUNNEL north
+	; mouth.  The POWER PLANT door is ROUTE_10's warp 4, at (6,39), and it is
+	; Surf-only in Yellow, so nothing here is reachable yet (the Power Plant
+	; itself is deferred, docs/M5-LAVENDER.md 3.9).
+	warp_event  2, 17, ROUTE_10, 4
+	warp_event  3, 17, ROUTE_10, 4
 
 	def_coord_events
 	coord_event  5, 12, SCENE_POWERPLANT_GUARD_GETS_PHONE_CALL, PowerPlantGuardPhoneScript

@@ -307,6 +307,9 @@ DEF KRIS EQU __trainer_class__
 	const ZACH
 	const BRENT4
 	const MILLER
+; Kanto hack: ROUTE 10's two POKEMANIACs (M5 8d, Yellow POKEMANIAC 1/2)
+	const ORVILLE
+	const MELVIN
 
 	trainerclass GRUNTM ; 1f
 	const GRUNTM_1
@@ -568,6 +571,7 @@ DEF KRIS EQU __trainer_class__
 	const ARCHIE
 	const MORTON
 	const LAMONT ; Kanto hack: ROUTE 9 (M5 8c, Yellow HIKER 5)
+	const ODELL ; Kanto hack: ROUTE 10 (M5 8d, Yellow HIKER 8)
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused
@@ -668,6 +672,9 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Route 6's two Jr.Trainers^F (Yellow JR_TRAINER_F 25 / 3)
 	const MARCY
 	const GRETA
+; Kanto hack: ROUTE 10's two Jr.Trainers^F (M5 8d, Yellow JR_TRAINER_F 7/8)
+	const GRETCHEN
+	const MABEL
 
 	trainerclass CAMPER ; 36
 	const ROLAND
@@ -734,7 +741,8 @@ DEF KRIS EQU __trainer_class__
 	trainerclass POKEFANM ; 3b
 	const WILLIAM
 	const DEREK1
-	const ROBERT
+; Kanto hack (M5 8d): ROBERT deleted -- he was Crystal's ROUTE 10 POKEFAN, and
+; Yellow has no POKEFAN anywhere on Route 10 (docs/M5-LAVENDER.md 5.3).
 	const JOSHUA
 	const CARTER
 	const TREVOR

@@ -1,8 +1,20 @@
+; Kanto hack (M5 8d): Yellow's ROCK TUNNEL #MON CENTER
+; (vendor/pokeyellow/data/maps/objects/RockTunnelPokecenter.asm,
+; vendor/pokeyellow/text/RockTunnelPokecenter.asm), re-placed on Crystal's 5x4
+; room the way 6b/7b did Cerulean's and Vermilion's.  Yellow's 11,2
+; LINK_RECEPTIONIST is dropped: Crystal's cable club lives on POKECENTER_2F,
+; which the (0,7) staircase already reaches (and x=11 does not exist in this
+; 10-tile-wide room).  Crystal's own COOLTRAINER_F is gone -- she is not on
+; Yellow's list -- and the GYM_GUIDE's POWER PLANT / TEAM ROCKET-in-JOHTO
+; script went with the deferred Power Plant story (docs/M5-LAVENDER.md 3.9).
+;
+; Yellow's NURSE (3,1), CHANSEY (4,1), GENTLEMAN (7,3) and FISHER (2,5) are all
+; on Yellow's own tiles.
 	object_const_def
 	const ROUTE10POKECENTER1F_NURSE
+	const ROUTE10POKECENTER1F_CHANSEY
 	const ROUTE10POKECENTER1F_GENTLEMAN
-	const ROUTE10POKECENTER1F_GYM_GUIDE
-	const ROUTE10POKECENTER1F_COOLTRAINER_F
+	const ROUTE10POKECENTER1F_FISHER
 
 Route10Pokecenter1F_MapScripts:
 	def_scene_scripts
@@ -12,70 +24,38 @@ Route10Pokecenter1F_MapScripts:
 Route10Pokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
+; Yellow: PokecenterChanseyText (engine/events/pokecenter_chansey.asm).
+Route10Pokecenter1FChanseyScript:
+	opentext
+	writetext Route10Pokecenter1FChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
+
 Route10Pokecenter1FGentlemanScript:
 	jumptextfaceplayer Route10Pokecenter1FGentlemanText
 
-Route10Pokecenter1FGymGuideScript:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .ReturnedMachinePart
-	writetext Route10Pokecenter1FGymGuideText
-	waitbutton
-	closetext
-	end
+Route10Pokecenter1FFisherScript:
+	jumptextfaceplayer Route10Pokecenter1FFisherText
 
-.ReturnedMachinePart:
-	writetext Route10Pokecenter1FGymGuideText_ReturnedMachinePart
-	waitbutton
-	closetext
-	end
-
-Route10Pokecenter1FCooltrainerFScript:
-	jumptextfaceplayer Route10Pokecenter1FCooltrainerFText
+Route10Pokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
+	done
 
 Route10Pokecenter1FGentlemanText:
-	text "A #MON CENTER"
-	line "near a cave?"
-
-	para "That's mighty"
-	line "convenient."
+	text "The element types"
+	line "of #MON make"
+	cont "them stronger"
+	cont "than some types"
+	cont "and weaker than"
+	cont "others!"
 	done
 
-Route10Pokecenter1FGymGuideText:
-	text "The POWER PLANT's"
-	line "MANAGER is looking"
-
-	para "for a strong #-"
-	line "MON trainer."
-
-	para "He needs help"
-	line "getting back"
-
-	para "something that"
-	line "was stolen."
-	done
-
-Route10Pokecenter1FGymGuideText_ReturnedMachinePart:
-	text "I hear TEAM ROCKET"
-	line "got back together"
-
-	para "in JOHTO but fell"
-	line "apart right away."
-
-	para "I didn't know any-"
-	line "thing about that."
-	done
-
-Route10Pokecenter1FCooltrainerFText:
-	text "When you go out-"
-	line "side, you can see"
-
-	para "the roof of a big"
-	line "building."
-
-	para "That's the POWER"
-	line "PLANT."
+Route10Pokecenter1FFisherText:
+	text "I sold a useless"
+	line "NUGGET for ¥5000!"
 	done
 
 Route10Pokecenter1F_MapEvents:
@@ -92,6 +72,6 @@ Route10Pokecenter1F_MapEvents:
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FNurseScript, -1
-	object_event  7,  6, SPRITE_GENTLEMAN, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FGentlemanScript, -1
-	object_event  7,  2, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FGymGuideScript, -1
-	object_event  1,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FCooltrainerFScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FChanseyScript, -1
+	object_event  7,  3, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FGentlemanScript, -1
+	object_event  2,  5, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FFisherScript, -1
