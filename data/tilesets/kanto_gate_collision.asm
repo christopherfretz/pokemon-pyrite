@@ -114,8 +114,8 @@
 	tilecoll WARP_CARPET_LEFT, FLOOR, FLOOR, COUNTER ; 6e  ; warp override
 	tilecoll COUNTER, FLOOR, FLOOR, WARP_CARPET_RIGHT ; 6f  ; warp override
 	tilecoll FLOOR, COUNTER, WARP_CARPET_LEFT, FLOOR ; 70  ; warp override
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 71
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 72
+	tilecoll DOOR, DOOR, FLOOR, FLOOR ; 71  ; warp override
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 72  ; warp override
 	tilecoll WALL, DOOR, FLOOR, FLOOR ; 73  ; warp override
 	tilecoll FLOOR, WALL, FLOOR, WALL ; 74
 	tilecoll WALL, WALL, WALL, WALL ; 75

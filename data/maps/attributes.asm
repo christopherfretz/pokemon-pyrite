@@ -325,19 +325,26 @@ ENDM
 	connection north, Route12, ROUTE_12, 20
 	connection south, Route14, ROUTE_14, 0
 
+; Kanto hack (M5 8l): ROUTE 12 is Yellow's full 10x54 now, not Crystal's 10x27
+; northern half, so the Route 11 seam moves to Yellow's own y-offset --
+; vendor/pokeyellow/data/maps/headers/Route12.asm says west Route11 27, i.e.
+; Route 11's block row 0 sits at Route 12's block row 27, which puts Route 11's
+; east opening at Route 12 tile rows 62/63 -- exactly the SNORLAX junction.
+; The north (Lavender, 0) and south (Route 13, -20) offsets are Yellow's
+; already and are deliberately untouched.
 	map_attributes Route12, ROUTE_12, $43
 	connection north, LavenderTown, LAVENDER_TOWN, 0
 	connection south, Route13, ROUTE_13, -20
-	connection west, Route11, ROUTE_11, 9
+	connection west, Route11, ROUTE_11, 27
 
 ; Kanto hack: Vermilion, Routes 5/6/11 re-cut from Yellow (docs/M4-VERMILION.md,
 ; 7b).  Route 11 is 30x9 now and meets Vermilion City four blocks down its east
 ; edge -- Yellow's own offsets (headers/Route11.asm, headers/VermilionCity.asm),
-; transferred unchanged the way M3 did for Cerulean.  The Route 12 y-offset is
-; untouched: widening Route 11 extends it eastward only.
+; transferred unchanged the way M3 did for Cerulean.  (M5 8l: the Route 12
+; y-offset IS Yellow's now too -- see the Route 12 block above.)
 	map_attributes Route11, ROUTE_11, $0f
 	connection west, VermilionCity, VERMILION_CITY, -4
-	connection east, Route12, ROUTE_12, -9
+	connection east, Route12, ROUTE_12, -27 ; Kanto hack (M5 8l): Yellow's own offset, was -9 while ROUTE_12 was half-height
 
 	map_attributes LavenderTown, LAVENDER_TOWN, $90
 	connection north, Route10, ROUTE_10, 0
@@ -602,6 +609,8 @@ ENDM
 	map_attributes Route8UndergroundPathEntrance, ROUTE_8_UNDERGROUND_PATH_ENTRANCE, $0a
 	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $0a
 	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $0a
+	map_attributes Route12Gate1F, ROUTE_12_GATE_1F, $0a ; Kanto hack (M5 8l)
+	map_attributes Route12Gate2F, ROUTE_12_GATE_2F, $0a ; Kanto hack (M5 8l)
 	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $1d ; Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute11.asm
 	map_attributes RedsHouse1F, REDS_HOUSE_1F, $00
 	map_attributes RedsHouse2F, REDS_HOUSE_2F, $00

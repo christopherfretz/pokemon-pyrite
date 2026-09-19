@@ -100,9 +100,6 @@ BetaSilverCaveOutside_Blocks: ; unreferenced
 BetaSproutTower2_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaSproutTower2.blk"
 
-Route12_Blocks:
-	INCBIN "maps/Route12.blk"
-
 BetaGoldenrodCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaGoldenrodCity.blk"
 
@@ -762,6 +759,12 @@ SECTION "Map Blocks 3", ROMX
 Route10_Blocks:
 	INCBIN "maps/Route10.blk"
 
+; Kanto hack (docs/M5-LAVENDER.md, 8l): ROUTE 12 re-cut to Yellow's full
+; 10x54 (540 bytes).  It was in "Map Blocks 1" at 10x27 (270 bytes); the extra
+; 270 do not fit there, so the whole map moves here.
+Route12_Blocks:
+	INCBIN "maps/Route12.blk"
+
 UndergroundPathWestEast_Blocks:
 	INCBIN "maps/UndergroundPathWestEast.blk"
 
@@ -1090,6 +1093,15 @@ Route17Route18Gate_Blocks:
 	INCBIN "maps/Route11Gate1F.blk"
 
 Route11Gate2F_Blocks:
+	INCBIN "maps/Route11Gate2F.blk"
+
+; Kanto hack (docs/M5-LAVENDER.md, 8l): ROUTE 12 GATE.  Its 2F is
+; byte-for-byte Yellow's Route11Gate2F.blk (Yellow shares one 2F .blk across
+; every east-west gate), so it INCBINs that file rather than shipping a copy.
+Route12Gate1F_Blocks:
+	INCBIN "maps/Route12Gate1F.blk"
+
+Route12Gate2F_Blocks:
 	INCBIN "maps/Route11Gate2F.blk"
 
 DiglettsCaveRoute2_Blocks:

@@ -254,7 +254,7 @@
 	const EVENT_UNDERGROUND_PATH_WEST_EAST_HIDDEN_ELIXER ; Kanto hack: renamed in place (M5 8k), was the dead EVENT_ROUTE_2_HIDDEN_REVIVE; the west-east UNDERGROUND PATH's hidden ELIXER at (21,5)
 	const EVENT_ROUTE_4_HIDDEN_GREAT_BALL ; Kanto hack: Route 4, Yellow's hidden GREAT_BALL (was EVENT_ROUTE_4_HIDDEN_ULTRA_BALL)
 	const EVENT_ROUTE_9_HIDDEN_ETHER
-	const EVENT_ROUTE_12_HIDDEN_ELIXER
+	const EVENT_GOT_TM_SWIFT_FROM_GIRL ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_HIDDEN_ELIXER -- Yellow hides nothing on ROUTE 12, so 8l deleted Crystal's hidden ELIXER and this row pays for the ROUTE 12 GATE 2F girl's one-time TM39 SWIFT
 	const EVENT_ROUTE_13_HIDDEN_CALCIUM
 	const EVENT_ROUTE_11_HIDDEN_ESCAPE_ROPE ; Kanto hack (M4 audit): was EVENT_ROUTE_11_HIDDEN_REVIVE; Yellow's ROUTE 11 hidden item is an ESCAPE_ROPE
 	const EVENT_ROUTE_17_HIDDEN_MAX_ETHER
@@ -589,8 +589,8 @@
 	const EVENT_BEAT_CAMPER_WENDELL ; Kanto hack: renamed in place (6i), was EVENT_BEAT_CAMPER_LLOYD; Route 25, Yellow's JR_TRAINER_M 2
 	const EVENT_BEAT_CAMPER_DEAN
 	const EVENT_BEAT_YOUNGSTER_AJ ; Kanto hack: renamed in place (M5 8c), was EVENT_BEAT_CAMPER_SID (Crystal's Route 9 CAMPER SID, deleted by 8c); ROUTE 9, Yellow's YOUNGSTER 14 "A.J."
-	const EVENT_BEAT_CAMPER_HERVEY
-	const EVENT_BEAT_CAMPER_DALE
+	const EVENT_BEAT_CAMPER_LESTER ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_CAMPER_HERVEY; ROUTE 12, Yellow's JR_TRAINER_M 9
+	const EVENT_BEAT_GUITARIST_SPARKY ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_CAMPER_DALE; ROUTE 12, Yellow's ROCKER 2 (no GUITARIST row is dead -- same out-of-class swap 8j made for SUPER_NERD CLARK)
 	const EVENT_BEAT_CAMPER_TED
 	const EVENT_BEAT_CAMPER_TODD2
 	const EVENT_BEAT_CAMPER_TODD3
@@ -645,7 +645,7 @@
 	const EVENT_BEAT_FISHER_JUSTIN
 	const EVENT_BEAT_FISHER_RALPH
 	const EVENT_BEAT_FISHER_ARNOLD
-	const EVENT_BEAT_FISHER_KYLE
+	const EVENT_BEAT_FISHER_KYLE ; Kanto hack (M5 8l): ROUTE 12, Yellow's FISHER 3 (kept the name, re-partied to Yellow's)
 	const EVENT_BEAT_FISHER_HENRY
 	const EVENT_BEAT_FISHER_MARVIN
 	const EVENT_BEAT_FISHER_TULLY
@@ -654,12 +654,12 @@
 	const EVENT_BEAT_FISHER_WILTON
 	const EVENT_BEAT_FISHER_EDGAR
 	const EVENT_BEAT_FISHER_JONAH
-	const EVENT_BEAT_FISHER_MARTIN
-	const EVENT_BEAT_FISHER_STEPHEN
-	const EVENT_BEAT_FISHER_BARNEY
+	const EVENT_BEAT_FISHER_MARTIN ; Kanto hack (M5 8l): ROUTE 12, Yellow's FISHER 4
+	const EVENT_BEAT_FISHER_STEPHEN ; Kanto hack (M5 8l): ROUTE 12, Yellow's FISHER 5
+	const EVENT_BEAT_FISHER_BARNEY ; Kanto hack (M5 8l): ROUTE 12, Yellow's FISHER 6
 	const EVENT_BEAT_FISHER_DALTON ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH2; S.S. ANNE 2F Rooms, Yellow's FISHER 1
 	const EVENT_BEAT_FISHER_PERCY ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH3; S.S. ANNE B1F Rooms, Yellow's FISHER 2
-	const EVENT_BEAT_FISHER_TULLY2
+	const EVENT_BEAT_FISHER_ELWOOD ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_FISHER_TULLY2; ROUTE 12, Yellow's FISHER 11
 	const EVENT_BEAT_FISHER_TULLY3
 	const EVENT_BEAT_FISHER_WILTON2
 	const EVENT_BEAT_FISHER_SCOTT
@@ -1404,8 +1404,8 @@
 	const EVENT_VIRIDIAN_FOREST_POTION_1 ; was the unused EVENT_ROUTE_2_CARBOS
 	const EVENT_VIRIDIAN_FOREST_POTION_2 ; was the unused EVENT_ROUTE_2_ELIXER
 	const EVENT_ROUTE_4_TM_WHIRLWIND ; Kanto hack: Route 4, Yellow's TM04 WHIRLWIND itemball (was EVENT_ROUTE_4_HP_UP); M3b made it the real TM_WHIRLWIND
-	const EVENT_ROUTE_12_CALCIUM
-	const EVENT_ROUTE_12_NUGGET
+	const EVENT_ROUTE_12_TM_PAY_DAY ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_CALCIUM; ROUTE 12, Yellow's TM16 PAY DAY ball at (14,35) (M3b made it the real TM_PAY_DAY = our TM62)
+	const EVENT_ROUTE_12_IRON ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_NUGGET; ROUTE 12, Yellow's IRON ball at (5,89)
 	const EVENT_ROUTE_15_PP_UP
 	const EVENT_ROUTE_25_TM_SEISMIC_TOSS ; Kanto hack: renamed in place (6i), was EVENT_ROUTE_25_PROTEIN; Route 25, Yellow's TM19 SEISMIC TOSS ball (M3b made it the real TM_SEISMIC_TOSS)
 ; New to Crystal

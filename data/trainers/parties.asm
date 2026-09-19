@@ -1989,11 +1989,14 @@ FisherGroup:
 	db 34, TENTACRUEL
 	db -1 ; end
 
-	; FISHER (4)
+	; FISHER (4) - Kanto hack: ROUTE 12, Yellow's FISHER 3 (M5 8l).  Crystal's
+	; own KYLE (L28 SEAKING / L31 POLIWHIRL / L31 SEAKING) was one of the four
+	; Route 12 fishers 8l replaced; the name and flag are kept, the party is
+	; Yellow's.
 	db "KYLE@", TRAINERTYPE_NORMAL
-	db 28, SEAKING
-	db 31, POLIWHIRL
-	db 31, SEAKING
+	db 22, GOLDEEN
+	db 22, POLIWAG
+	db 22, GOLDEEN
 	db -1 ; end
 
 	; FISHER (5)
@@ -2049,25 +2052,23 @@ FisherGroup:
 	db 29, CLOYSTER
 	db -1 ; end
 
-	; FISHER (13)
+	; FISHER (13) - Kanto hack: ROUTE 12, Yellow's FISHER 4 (M5 8l)
 	db "MARTIN@", TRAINERTYPE_NORMAL
-	db 32, REMORAID
-	db 32, REMORAID
+	db 24, TENTACOOL
+	db 24, GOLDEEN
 	db -1 ; end
 
-	; FISHER (14)
+	; FISHER (14) - Kanto hack: ROUTE 12, Yellow's FISHER 5 (M5 8l)
 	db "STEPHEN@", TRAINERTYPE_NORMAL
-	db 25, MAGIKARP
-	db 25, MAGIKARP
-	db 31, QWILFISH
-	db 31, TENTACRUEL
+	db 27, GOLDEEN
 	db -1 ; end
 
-	; FISHER (15)
+	; FISHER (15) - Kanto hack: ROUTE 12, Yellow's FISHER 6 (M5 8l)
 	db "BARNEY@", TRAINERTYPE_NORMAL
-	db 30, GYARADOS
-	db 30, GYARADOS
-	db 30, GYARADOS
+	db 21, POLIWAG
+	db 21, SHELLDER
+	db 21, GOLDEEN
+	db 21, HORSEA
 	db -1 ; end
 
 	; FISHER (16)
@@ -2145,6 +2146,12 @@ FisherGroup:
 	db 17, TENTACOOL
 	db 17, STARYU
 	db 17, SHELLDER
+	db -1 ; end
+
+	; FISHER (28) - Kanto hack: ROUTE 12, Yellow's FISHER 11 (M5 8l)
+	db "ELWOOD@", TRAINERTYPE_NORMAL
+	db 24, MAGIKARP
+	db 24, MAGIKARP
 	db -1 ; end
 
 SwimmerMGroup:
@@ -2684,6 +2691,13 @@ GuitaristGroup:
 	db 20, VOLTORB
 	db 20, VOLTORB
 	db 20, VOLTORB
+	db -1 ; end
+
+	; GUITARIST (3) - Kanto hack: ROUTE 12, Yellow's ROCKER 2 (M5 8l).
+	; Same class substitution as VINCENT above: Crystal has no ROCKER.
+	db "SPARKY@", TRAINERTYPE_NORMAL
+	db 29, VOLTORB
+	db 29, ELECTRODE
 	db -1 ; end
 
 HikerGroup:
@@ -3648,6 +3662,12 @@ CamperGroup:
 	db "OLIVER@", TRAINERTYPE_NORMAL
 	db 16, SPEAROW
 	db 16, RATICATE
+	db -1 ; end
+
+	; CAMPER (27) - Kanto hack: ROUTE 12, Yellow's JR_TRAINER_M 9 (M5 8l)
+	db "LESTER@", TRAINERTYPE_NORMAL
+	db 29, NIDORAN_M
+	db 29, NIDORINO
 	db -1 ; end
 
 ExecutiveFGroup:

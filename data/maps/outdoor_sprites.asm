@@ -135,7 +135,8 @@ LavenderGroupSprites:
 	db SPRITE_GENTLEMAN
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 10
+	db SPRITE_BIG_SNORLAX ; Kanto hack (M5 8l): the ROUTE 12 SNORLAX
+rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

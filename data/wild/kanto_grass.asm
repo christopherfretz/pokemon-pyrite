@@ -688,6 +688,44 @@ KantoGrassWildMons:
 	db 17, RATICATE
 	end_grass_wildmons
 
+; Kanto hack (M5 8l): Yellow's Route 12 grass table
+; (vendor/pokeyellow/data/wild/maps/Route12.asm). Yellow rate 15/256 ==
+; `6 percent`; no time of day, so morn = day = nite. Yellow lists exactly
+; seven species, so the 10 -> 7 fold keeps every one: dropping slots 4 (L27
+; ODDISH), 5 (L27 BELLSPROUT) and 8 (L26 FARFETCH_D) gives ODDISH 30 /
+; BELLSPROUT 30 / PIDGEY 20 / PIDGEOTTO 10 / GLOOM 5 / WEEPINBELL 4 /
+; FARFETCH_D 1 against Yellow's 29.7 / 29.7 / 15.2 / 9.8 / 5.1 / 5.1 / 5.5,
+; and both level extremes survive (L25 min, L31 FARFETCH_D max -- which is why
+; slot 8 goes and slot 9 stays). Yellow, unlike Red/Blue, gives BOTH ODDISH
+; and BELLSPROUT here; both are kept.
+	def_grass_wildmons ROUTE_12
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEY
+	db 28, PIDGEOTTO
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
+	; day
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEY
+	db 28, PIDGEOTTO
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
+	; nite
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEY
+	db 28, PIDGEOTTO
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
+	end_grass_wildmons
+
 	def_grass_wildmons ROUTE_13
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn

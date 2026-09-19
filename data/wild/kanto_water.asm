@@ -51,11 +51,24 @@ KantoWaterWildMons:
 ; (vendor/pokeyellow/data/wild/maps/Route9.asm, Route10.asm).  The blocks must
 ; be DELETED, not zeroed: FindNest's .FindWater ignores the rate byte, so a
 ; zero-rate table still shows the map as a Pokedex AREA habitat.
+; Kanto hack (M5 8l): Yellow's Route 12 water table
+; (vendor/pokeyellow/data/wild/maps/Route12.asm) -- SLOWPOKE L15 in eight of
+; the ten slots (94.5%), SLOWBRO L15 (4.3%) and SLOWBRO L20 (1.2%). Crystal
+; has three water slots weighted 60/30/10, so the eight SLOWPOKEs become the
+; two commons and SLOWBRO takes the 10% slot: 90 / 10 against Yellow's
+; 94.5 / 5.5. Both levels are Yellow's FLOOR, not its listed level, because
+; ChooseWildEncounter (engine/overworld/wildmons.asm) rolls +0..+4 on any
+; water encounter (35/30/20/10/5%): base 15 yields L15-19, covering Yellow's
+; SLOWBRO L15 exactly and reaching its L20 rare without overshooting it.
+; The rate byte is Yellow's own 3/256: the `percent` macro (`* $ff / 100`)
+; cannot express it -- `1 percent` is 2, `2 percent` is 5 -- so it is written
+; literally, as for ROUTE_6 above. Gone: Crystal's QWILFISH-era TENTACOOL/
+; QUAGSIRE/TENTACRUEL at L25 (QUAGSIRE is a Gen 2 anachronism).
 	def_water_wildmons ROUTE_12
-	db 6 percent ; encounter rate
-	db 25, TENTACOOL
-	db 25, QUAGSIRE
-	db 25, TENTACRUEL
+	db 3 ; encounter rate: Yellow's own 3/256 (~1.2%)
+	db 15, SLOWPOKE
+	db 15, SLOWPOKE
+	db 15, SLOWBRO
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_13

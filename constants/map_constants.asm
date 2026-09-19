@@ -376,7 +376,7 @@ ENDM
 
 	newgroup LAVENDER                                             ; 18
 	map_const ROUTE_8,                                     30,  9 ;  1
-	map_const ROUTE_12,                                    10, 27 ;  2
+	map_const ROUTE_12,                                    10, 54 ;  2 ; Kanto hack (M5 8l): Yellow's full height, was Crystal's 10x27 northern half
 	map_const ROUTE_8_UNDERGROUND_PATH_ENTRANCE,            4,  4 ;  3
 	map_const LAVENDER_TOWN,                               10,  9 ;  4
 	map_const LAVENDER_POKECENTER_1F,                       5,  4 ;  5
@@ -389,6 +389,10 @@ ENDM
 	map_const POKEMON_TOWER_1F,                            10,  9 ; 12
 	map_const ROUTE_8_SAFFRON_GATE,                         3,  4 ; 13
 	map_const ROUTE_12_SUPER_ROD_HOUSE,                     4,  4 ; 14
+	; Kanto hack (docs/M5-LAVENDER.md, 8l): appended at the tail so no
+	; existing map id moves.
+	map_const ROUTE_12_GATE_1F,                             5,  4 ; 15
+	map_const ROUTE_12_GATE_2F,                             4,  4 ; 16
 	endgroup
 
 	newgroup SILVER                                               ; 19

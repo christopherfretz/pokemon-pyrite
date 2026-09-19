@@ -528,6 +528,8 @@ INCLUDE "maps/ViridianSchoolHouse.asm"
 ; to "Map Scripts 27" below (docs/M4-VERMILION.md "## 7h findings", 7h.2).
 INCLUDE "maps/Route11Gate1F.asm"
 INCLUDE "maps/Route11Gate2F.asm"
+INCLUDE "maps/Route12Gate1F.asm"
+INCLUDE "maps/Route12Gate2F.asm"
 INCLUDE "maps/DiglettsCaveRoute2.asm"
 INCLUDE "maps/DiglettsCaveRoute11.asm"
 

@@ -450,6 +450,8 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: S.S. ANNE's fishers (7h) -- Yellow FISHER 1 (2F Rooms) and 2 (B1F Rooms)
 	const DALTON
 	const PERCY
+; Kanto hack: ROUTE 12's fifth fisher (Yellow FISHER 11), M5 8l
+	const ELWOOD
 
 	trainerclass SWIMMERM ; 26
 	const HAROLD
@@ -550,6 +552,8 @@ DEF KRIS EQU __trainer_class__
 	trainerclass GUITARIST ; 2b
 	const CLYDE
 	const VINCENT
+; Kanto hack: ROUTE 12's rocker (Yellow ROCKER 2), M5 8l
+	const SPARKY
 
 	trainerclass HIKER ; 2c
 	const ANTHONY1
@@ -729,6 +733,8 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Route 6's two Jr.Trainers^M (Yellow JR_TRAINER_M 10 / 5)
 	const NOLAN
 	const OLIVER
+; Kanto hack: ROUTE 12's Jr.Trainer^M (Yellow JR_TRAINER_M 9), M5 8l
+	const LESTER
 
 	trainerclass EXECUTIVEF ; 37
 	const EXECUTIVEF_1
