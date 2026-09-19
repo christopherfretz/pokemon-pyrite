@@ -432,7 +432,7 @@ UseItem:
 .dw
 ; entries correspond to ITEMMENU_* constants
 	dw .Oak     ; ITEMMENU_NOUSE
-	dw .Oak
+	dw .TownMap ; ITEMMENU_TOWNMAP
 	dw .Oak
 	dw .Oak
 	dw .Current ; ITEMMENU_CURRENT
@@ -446,6 +446,18 @@ UseItem:
 
 .Current:
 	call DoItemEffect
+	ret
+
+.TownMap:
+; Kanto hack (T1): Yellow's TOWN MAP.  Like .Party -- the effect owns the whole
+; screen, so the pack has to be redrawn afterwards -- but with no party check,
+; because the map does not care whether you are carrying any #MON.
+	call DoItemEffect
+	xor a
+	ldh [hBGMapMode], a
+	call Pack_InitGFX
+	call WaitBGMap_DrawPackGFX
+	call Pack_InitColors
 	ret
 
 .Party:
@@ -845,7 +857,7 @@ TMHMSubmenu:
 .ItemFunctionJumptable:
 ; entries correspond to ITEMMENU_* constants
 	dw .Oak         ; ITEMMENU_NOUSE
-	dw .Oak
+	dw .Oak         ; ITEMMENU_TOWNMAP (Kanto hack T1: field-only, never here)
 	dw .Oak
 	dw .Oak
 	dw .Unused      ; ITEMMENU_CURRENT

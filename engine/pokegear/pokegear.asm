@@ -726,6 +726,20 @@ PokegearMap_UpdateCursorPosition:
 	ret
 
 TownMap_GetKantoLandmarkLimits:
+; Kanto hack (T1): in the Kanto act (no #GEAR) this is Yellow's TOWN MAP, so the
+; cursor walks the whole region the way Yellow's TownMapOrder does -- PALLET TOWN
+; through INDIGO PLATEAU.  Crystal's pre-Hall-of-Fame window is VICTORY ROAD..
+; ROUTE 28, the strip a Johto player can reach through Tohjo Falls; leaving it in
+; would pin a Kanto player's cursor to Johto's doorway, and ROUTE 26/27/TOHJO
+; FALLS/ROUTE 28 are not on Yellow's map at all.  The Johto act keeps Crystal's
+; rule untouched.
+	call TownMap_CheckKantoAct
+	jr z, .johto_act
+	ld d, LANDMARK_INDIGO_PLATEAU
+	ld e, KANTO_LANDMARK
+	ret
+
+.johto_act
 	ld a, [wStatusFlags]
 	bit STATUSFLAGS_HALL_OF_FAME_F, a
 	jr z, .not_hof
@@ -736,6 +750,27 @@ TownMap_GetKantoLandmarkLimits:
 .not_hof
 	ld d, LANDMARK_ROUTE_28
 	ld e, LANDMARK_VICTORY_ROAD
+	ret
+
+TownMap_CheckKantoAct:
+; Kanto hack (T1): returns nz while the game is in the Kanto act.  Clobbers
+; a/bc/de/hl; only the z flag is meaningful.
+	farcall PCPC_CheckKantoAct
+	ret
+
+TownMap_KantoActLandmark:
+; Kanto hack (T1): _TownMap chooses its region from the player's own landmark, so
+; a map with no world-map location (LANDMARK_SPECIAL, i.e. 0) would open the
+; JOHTO map in the middle of the Kanto act.  Yellow's TOWN MAP has exactly one
+; region, so snap anything outside Kanto to PALLET TOWN instead.
+	call TownMap_CheckKantoAct
+	ret z
+	ld a, [wTownMapPlayerIconLandmark]
+	cp KANTO_LANDMARK
+	ret nc
+	ld a, LANDMARK_PALLET_TOWN
+	ld [wTownMapPlayerIconLandmark], a
+	ld [wTownMapCursorLandmark], a
 	ret
 
 PokegearRadio_Init:
@@ -1783,6 +1818,7 @@ _TownMap:
 	call TownMap_GetCurrentLandmark
 	ld [wTownMapPlayerIconLandmark], a
 	ld [wTownMapCursorLandmark], a
+	call TownMap_KantoActLandmark ; Kanto hack (T1)
 	xor a
 	ldh [hBGMapMode], a
 	call .InitTilemap
@@ -1832,7 +1868,8 @@ _TownMap:
 	call JoyTextDelay
 	ld hl, hJoyPressed
 	ld a, [hl]
-	and PAD_B
+	; Kanto hack (T1): Yellow's DisplayTownMap leaves on A or B, not B alone.
+	and PAD_A | PAD_B
 	ret nz
 
 	ld hl, hJoyLast

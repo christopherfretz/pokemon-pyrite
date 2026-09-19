@@ -20,9 +20,10 @@ ItemAttributes:
 	item_attribute 200, HELD_NONE, 0, CANT_SELECT, BALL, ITEMMENU_NOUSE, ITEMMENU_CLOSE
 ; TOWN_MAP
 ; Kanto hack (L1): Yellow's TOWN MAP is Daisy's key-item gift, so it cannot be
-; sold or tossed.  Its *use* stays inert (TownMapEffect opens the Johto
-; Pokegear map) until the Kanto map card lands -- docs/PLAN.md.
-	item_attribute 0, HELD_NONE, 0, CANT_SELECT | CANT_TOSS, KEY_ITEM, ITEMMENU_NOUSE, ITEMMENU_NOUSE
+; sold or tossed.  (T1) USE opens Crystal's standalone town-map viewer -- the
+; Pokegear is not involved -- and it is overworld-only, exactly like Yellow's
+; ItemUseTownMap, which refuses in battle with OAK's "not the time" line.
+	item_attribute 0, HELD_NONE, 0, CANT_SELECT | CANT_TOSS, KEY_ITEM, ITEMMENU_TOWNMAP, ITEMMENU_NOUSE
 ; BICYCLE
 	item_attribute 0, HELD_NONE, 0, CANT_TOSS, KEY_ITEM, ITEMMENU_CLOSE, ITEMMENU_NOUSE
 ; MOON_STONE

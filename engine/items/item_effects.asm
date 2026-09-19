@@ -1130,7 +1130,12 @@ ReturnToBattle_UseBall:
 	ret
 
 TownMapEffect:
-	farcall PokegearMap
+; Kanto hack (T1): Yellow's TOWN MAP.  _TownMap is Crystal's standalone viewer
+; (the one behind the bedroom TOWN MAP poster), NOT the Pokegear map card -- it
+; picks its region from the player's own landmark, has no card tabs and no
+; region switch, so in the Kanto act it can only ever draw Kanto.  See
+; TownMap_GetKantoLandmarkLimits for the Kanto-act cursor range.
+	farcall _TownMap
 	ret
 
 BicycleEffect:

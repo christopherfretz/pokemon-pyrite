@@ -24,7 +24,12 @@ DEF NUM_ITEM_TYPES EQU const_value - 1
 ; UseRegisteredItem.SwitchTo indexes (see engine/overworld/select_menu.asm)
 	const_def
 	const ITEMMENU_NOUSE   ; 0
-	const_skip 3
+; Kanto hack (T1): Yellow's TOWN MAP takes over the whole screen and drops the
+; player back on the item list when they leave it, which neither ITEMMENU_CURRENT
+; (no screen restore) nor ITEMMENU_CLOSE (quits the pack) does.  Slot 1 was one
+; of Crystal's three unused indices, so naming it costs nothing.
+	const ITEMMENU_TOWNMAP ; 1
+	const_skip 2
 	const ITEMMENU_CURRENT ; 4
 	const ITEMMENU_PARTY   ; 5
 	const ITEMMENU_CLOSE   ; 6

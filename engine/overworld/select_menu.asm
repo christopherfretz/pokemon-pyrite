@@ -117,7 +117,7 @@ UseRegisteredItem:
 .SwitchTo:
 ; entries correspond to ITEMMENU_* constants
 	dw .CantUse
-	dw .NoFunction
+	dw .NoFunction ; ITEMMENU_TOWNMAP (Kanto hack T1: TOWN_MAP is CANT_SELECT)
 	dw .NoFunction
 	dw .NoFunction
 	dw .Current
