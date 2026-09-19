@@ -54,6 +54,26 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_QWILFISH
 	const FISHGROUP_REMORAID
 	const FISHGROUP_QWILFISH_NO_SWARM
+; Kanto hack (M5 8m): Yellow-faithful fishing for the Kanto act.  Crystal's
+; own groups leak Gen 2 species into Kanto -- .Shore falls through to
+; TimeFishGroups 0/1 = CORSOLA by day, .Ocean carries CHINCHOU/LANTURN, and
+; .Pond hands out L40 POLIWAG in VIRIDIAN CITY -- so every Kanto map that has
+; water gets a group built from Yellow's own rod tables instead.  One group
+; per distinct Yellow SuperRodFishingSlots row set
+; (vendor/pokeyellow/data/wild/super_rod.asm); the Old and Good Rod lists are
+; global in Yellow and are shared by all of them.  Johto's groups above are
+; untouched.  See docs/M5-LAVENDER.md "## 8m findings".
+	const FISHGROUP_KANTO_PALLET         ; PALLET_TOWN
+	const FISHGROUP_KANTO_VIRIDIAN       ; VIRIDIAN_CITY
+	const FISHGROUP_KANTO_CERULEAN       ; CERULEAN_CITY
+	const FISHGROUP_KANTO_VERMILION      ; VERMILION_CITY, ROUTE_11
+	const FISHGROUP_KANTO_VERMILION_DOCK ; VERMILION_DOCK (our VERMILION_PORT)
+	const FISHGROUP_KANTO_ROUTE_4        ; ROUTE_4, ROUTE_24
+	const FISHGROUP_KANTO_ROUTE_6        ; ROUTE_6 (and CELADON_CITY, in M6)
+	const FISHGROUP_KANTO_ROUTE_10       ; ROUTE_10
+	const FISHGROUP_KANTO_ROUTE_12       ; ROUTE_12
+	const FISHGROUP_KANTO_ROUTE_22       ; ROUTE_22
+	const FISHGROUP_KANTO_ROUTE_25       ; ROUTE_25
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections

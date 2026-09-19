@@ -22,6 +22,18 @@ FishGroups:
 	fishgroup 50 percent + 1, .Qwilfish_Old,         .Qwilfish_Good,         .Qwilfish_Super
 	fishgroup 50 percent + 1, .Remoraid_Old,         .Remoraid_Good,         .Remoraid_Super
 	fishgroup 50 percent + 1, .Qwilfish_NoSwarm_Old, .Qwilfish_NoSwarm_Good, .Qwilfish_NoSwarm_Super
+; Kanto hack (M5 8m): the Kanto act's groups, from Yellow's own rod tables.
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoPallet_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoViridian_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoCerulean_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoVermilion_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoVermilionDock_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute4_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute6_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute10_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute12_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute22_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute25_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -206,6 +218,119 @@ FishGroups:
 	db  70 percent,     time_group 7
 	db  90 percent + 1, MAGIKARP,   40
 	db 100 percent,     REMORAID,   40
+
+; Kanto hack (M5 8m): the Kanto act's fishing, ported from Yellow.
+;
+; Yellow keys fishing off the rod plus a per-map row, not off a group crossed
+; with the rod, so the port is: one shared Old Rod list, one shared Good Rod
+; list, and one Super Rod list per distinct row of Yellow's
+; SuperRodFishingSlots (vendor/pokeyellow/data/wild/super_rod.asm).
+;
+; * Old Rod -- ItemUseOldRod (vendor/pokeyellow/engine/items/item_effects.asm)
+;   hardcodes `lb bc, 5, MAGIKARP` on every map, so one 100% entry covers it.
+; * Good Rod -- ItemUseGoodRod picks one of the two GoodRodMons
+;   (vendor/pokeyellow/data/wild/good_rod.asm) with `and %11 / cp 2`, i.e. a
+;   flat 50/50 between GOLDEEN L10 and POLIWAG L10, on every map.
+; * Super Rod -- GenerateRandomFishingEncounter
+;   (vendor/pokeyellow/engine/items/super_rod.asm) rolls the four slots at
+;   $66 / $b2 / $e5, i.e. 39.8 / 29.7 / 19.9 / 10.5 percent.  Crystal's own
+;   bracket convention (40 / 70 / 90+1 / 100) is the same split to within
+;   1/256, so the four slots transfer in order with no re-weighting.
+;
+; Levels are Yellow's exactly: `Fish` returns d = species, e = level straight
+; from these rows, and only ChooseWildEncounter's water path adds the +0..+4
+; buff, so nothing inflates a fishing level the way it does a surf level.
+;
+; Known deviation: the "bite" chance byte is per GROUP, not per rod, so the
+; Old Rod is 50/50 here where Yellow's never fails.  Making it faithful means
+; special-casing rod 0 in `Fish` (engine/events/fish.asm), which would change
+; Johto too -- left alone, recorded as an open question in
+; docs/M5-LAVENDER.md "## 8m findings".
+.Kanto_Old:
+	db 100 percent,     MAGIKARP,    5
+.Kanto_Good:
+	db  50 percent,     GOLDEEN,    10
+	db 100 percent,     POLIWAG,    10
+
+; db PALLET_TOWN, STARYU, 10, TENTACOOL, 10, STARYU, 5, TENTACOOL, 20
+.KantoPallet_Super:
+	db  40 percent,     STARYU,     10
+	db  70 percent,     TENTACOOL,  10
+	db  90 percent + 1, STARYU,      5
+	db 100 percent,     TENTACOOL,  20
+
+; db VIRIDIAN_CITY, POLIWAG, 5, POLIWAG, 10, POLIWAG, 15, POLIWAG, 10
+.KantoViridian_Super:
+	db  40 percent,     POLIWAG,     5
+	db  70 percent,     POLIWAG,    10
+	db  90 percent + 1, POLIWAG,    15
+	db 100 percent,     POLIWAG,    10
+
+; db CERULEAN_CITY, GOLDEEN, 25, GOLDEEN, 30, SEAKING, 30, SEAKING, 40
+.KantoCerulean_Super:
+	db  40 percent,     GOLDEEN,    25
+	db  70 percent,     GOLDEEN,    30
+	db  90 percent + 1, SEAKING,    30
+	db 100 percent,     SEAKING,    40
+
+; db VERMILION_CITY, TENTACOOL, 15, TENTACOOL, 20, TENTACOOL, 10, HORSEA, 5
+; db ROUTE_11,       TENTACOOL, 15, TENTACOOL, 20, TENTACOOL, 10, HORSEA, 5
+.KantoVermilion_Super:
+	db  40 percent,     TENTACOOL,  15
+	db  70 percent,     TENTACOOL,  20
+	db  90 percent + 1, TENTACOOL,  10
+	db 100 percent,     HORSEA,      5
+
+; db VERMILION_DOCK, TENTACOOL, 10, TENTACOOL, 15, STARYU, 15, SHELLDER, 10
+.KantoVermilionDock_Super:
+	db  40 percent,     TENTACOOL,  10
+	db  70 percent,     TENTACOOL,  15
+	db  90 percent + 1, STARYU,     15
+	db 100 percent,     SHELLDER,   10
+
+; db ROUTE_4,  GOLDEEN, 20, GOLDEEN, 25, GOLDEEN, 30, SEAKING, 30
+; db ROUTE_24, GOLDEEN, 20, GOLDEEN, 25, GOLDEEN, 30, SEAKING, 30
+.KantoRoute4_Super:
+	db  40 percent,     GOLDEEN,    20
+	db  70 percent,     GOLDEEN,    25
+	db  90 percent + 1, GOLDEEN,    30
+	db 100 percent,     SEAKING,    30
+
+; db ROUTE_6, GOLDEEN, 5, GOLDEEN, 10, GOLDEEN, 15, GOLDEEN, 20
+; (CELADON_CITY is the same row; M6 points it here.)
+.KantoRoute6_Super:
+	db  40 percent,     GOLDEEN,     5
+	db  70 percent,     GOLDEEN,    10
+	db  90 percent + 1, GOLDEEN,    15
+	db 100 percent,     GOLDEEN,    20
+
+; db ROUTE_10, KRABBY, 15, KRABBY, 20, HORSEA, 10, KINGLER, 25
+.KantoRoute10_Super:
+	db  40 percent,     KRABBY,     15
+	db  70 percent,     KRABBY,     20
+	db  90 percent + 1, HORSEA,     10
+	db 100 percent,     KINGLER,    25
+
+; db ROUTE_12, HORSEA, 20, HORSEA, 25, SEADRA, 25, SEADRA, 35
+.KantoRoute12_Super:
+	db  40 percent,     HORSEA,     20
+	db  70 percent,     HORSEA,     25
+	db  90 percent + 1, SEADRA,     25
+	db 100 percent,     SEADRA,     35
+
+; db ROUTE_22, POLIWAG, 5, POLIWAG, 10, POLIWAG, 15, POLIWHIRL, 15
+.KantoRoute22_Super:
+	db  40 percent,     POLIWAG,     5
+	db  70 percent,     POLIWAG,    10
+	db  90 percent + 1, POLIWAG,    15
+	db 100 percent,     POLIWHIRL,  15
+
+; db ROUTE_25, KRABBY, 10, KRABBY, 15, KINGLER, 15, KINGLER, 25
+.KantoRoute25_Super:
+	db  40 percent,     KRABBY,     10
+	db  70 percent,     KRABBY,     15
+	db  90 percent + 1, KINGLER,    15
+	db 100 percent,     KINGLER,    25
 
 TimeFishGroups:
 	;  day              nite
