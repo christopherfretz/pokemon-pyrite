@@ -798,8 +798,12 @@
         say('Slot ' + n + ' was written by a different emulator core - cannot load it', true);
         return;
       }
+      // A state embeds WRAM pointers into the ROM's banks, so a state from
+      // another build can corrupt the map the moment it loads.  The battery
+      // save (in-game SAVE) is what carries progress across builds.
       if (entry.romSha && entry.romSha !== romSha) {
-        console.warn('slot ' + n + ' was saved on a different ROM build; loading anyway');
+        say('Slot ' + n + ' was saved on an older ROM build - use the in-game SAVE to carry progress across builds', true);
+        return;
       }
       if (!putState(new Uint8Array(entry.state))) {
         say('Slot ' + n + ' would not load', true);
@@ -817,7 +821,8 @@
       var el = document.querySelector('[data-slotinfo="' + n + '"]');
       kvGet(slotKey(n)).then(function (entry) {
         if (!entry || !entry.date) { el.textContent = 'empty'; return; }
-        el.textContent = (entry.core !== CORE_COMMIT ? 'stale: ' : '') + new Date(entry.date).toLocaleString();
+        var stale = entry.core !== CORE_COMMIT || (entry.romSha && romSha && entry.romSha !== romSha);
+        el.textContent = (stale ? 'stale (older build): ' : '') + new Date(entry.date).toLocaleString();
       }).catch(function () { el.textContent = 'empty'; });
     });
   }
