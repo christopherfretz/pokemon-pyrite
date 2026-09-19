@@ -275,6 +275,7 @@ TilesetHoOhWordRoomAnim:
 TilesetKabutoWordRoomAnim:
 TilesetOmanyteWordRoomAnim:
 TilesetAerodactylWordRoomAnim:
+TilesetKantoGateAnim:
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation

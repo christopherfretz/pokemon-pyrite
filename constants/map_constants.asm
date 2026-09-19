@@ -295,7 +295,7 @@ ENDM
 	map_const VERMILION_MART,                               6,  4 ;  9
 	map_const VERMILION_OLD_ROD_HOUSE,                      4,  4 ; 10
 	map_const VERMILION_GYM,                                5,  9 ; 11
-	map_const ROUTE_6_SAFFRON_GATE,                         5,  4 ; 12
+	map_const ROUTE_6_SAFFRON_GATE,                         4,  3 ; 12
 	map_const ROUTE_6_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 13
 	map_const ROUTE_11_GATE_1F,                             4,  5 ; 14
 	map_const ROUTE_11_GATE_2F,                             4,  4 ; 15
@@ -370,7 +370,7 @@ ENDM
 	map_const FUCHSIA_POKECENTER_1F,                        5,  4 ; 10
 	map_const FUCHSIA_POKECENTER_2F_BETA,                   8,  4 ; 11
 	map_const SAFARI_ZONE_WARDENS_HOME,                     5,  4 ; 12
-	map_const ROUTE_15_FUCHSIA_GATE,                        5,  4 ; 13
+	map_const ROUTE_15_FUCHSIA_GATE,                        4,  5 ; 13
 	endgroup
 
 	newgroup LAVENDER                                             ; 18
@@ -386,7 +386,7 @@ ENDM
 	map_const LAVENDER_MART,                                6,  4 ; 10
 	map_const SOUL_HOUSE,                                   5,  4 ; 11
 	map_const LAV_RADIO_TOWER_1F,                          10,  4 ; 12
-	map_const ROUTE_8_SAFFRON_GATE,                         5,  4 ; 13
+	map_const ROUTE_8_SAFFRON_GATE,                         3,  4 ; 13
 	map_const ROUTE_12_SUPER_ROD_HOUSE,                     4,  4 ; 14
 	endgroup
 
@@ -430,9 +430,9 @@ ENDM
 	map_const CELADON_GYM,                                  5,  9 ; 21
 	map_const CELADON_CAFE,                                 6,  4 ; 22
 	map_const ROUTE_16_FUCHSIA_SPEECH_HOUSE,                4,  4 ; 23
-	map_const ROUTE_16_GATE,                                5,  4 ; 24
-	map_const ROUTE_7_SAFFRON_GATE,                         5,  4 ; 25
-	map_const ROUTE_17_ROUTE_18_GATE,                       5,  4 ; 26
+	map_const ROUTE_16_GATE,                                4,  7 ; 24
+	map_const ROUTE_7_SAFFRON_GATE,                         3,  4 ; 25
+	map_const ROUTE_17_ROUTE_18_GATE,                       4,  5 ; 26
 	endgroup
 
 	newgroup CIANWOOD                                             ; 22
@@ -506,7 +506,7 @@ ENDM
 	map_const COPYCATS_HOUSE_1F,                            4,  4 ; 11
 	map_const COPYCATS_HOUSE_2F,                            5,  3 ; 12
 	map_const ROUTE_5_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 13
-	map_const ROUTE_5_SAFFRON_GATE,                         5,  4 ; 14
+	map_const ROUTE_5_SAFFRON_GATE,                         4,  3 ; 14
 	map_const ROUTE_5_DAY_CARE,                             4,  4 ; 15
 	endgroup
 

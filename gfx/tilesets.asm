@@ -380,3 +380,23 @@ INCBIN "data/tilesets/kanto_dock_metatiles.bin"
 
 TilesetKantoDockColl::
 INCLUDE "data/tilesets/kanto_dock_collision.asm"
+
+
+SECTION "Tileset Data 12", ROMX
+
+; Yellow's GATE tileset (which Yellow aliases MUSEUM and FOREST_GATE onto),
+; ported wholesale by M1 -- the same call 7c made for the S.S. ANNE and 7g-b
+; for Vermilion's dock.  Step 4d had drawn Pewter Museum with Crystal's own
+; TILESET_GATE on the strength of that Yellow alias; Crystal's gate blockset
+; is unrelated art (PC cabinets where the display cases go), and so are
+; Crystal's gates.  Crystal's TILESET_GATE is untouched and still serves every
+; Johto gate.  128 blocks, 96 tiles, no tile animation (Yellow's header says
+; TILEANIM_NONE).
+TilesetKantoGateGFX::
+INCBIN "gfx/tilesets/kanto_gate.2bpp.lz"
+
+TilesetKantoGateMeta::
+INCBIN "data/tilesets/kanto_gate_metatiles.bin"
+
+TilesetKantoGateColl::
+INCLUDE "data/tilesets/kanto_gate_collision.asm"

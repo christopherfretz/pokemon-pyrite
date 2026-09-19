@@ -143,20 +143,16 @@ Route6SaffronGate_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
+	warp_event  3,  0, ROUTE_6, 2
 	warp_event  4,  0, ROUTE_6, 2
-	warp_event  5,  0, ROUTE_6, 2
-	warp_event  4,  7, ROUTE_6, 3
-	warp_event  5,  7, ROUTE_6, 3
+	warp_event  3,  5, ROUTE_6, 3
+	warp_event  4,  5, ROUTE_6, 3
 
 	def_coord_events
-	coord_event  2,  4, -1, Route6SaffronGateBlockScript
-	coord_event  3,  4, -1, Route6SaffronGateBlockScript
-	coord_event  4,  4, -1, Route6SaffronGateBlockScript
-	coord_event  5,  4, -1, Route6SaffronGateBlockScript
-	coord_event  6,  4, -1, Route6SaffronGateBlockScript
-	coord_event  7,  4, -1, Route6SaffronGateBlockScript
+	coord_event  3,  2, -1, Route6SaffronGateBlockScript
+	coord_event  4,  2, -1, Route6SaffronGateBlockScript
 
 	def_bg_events
 
 	def_object_events
-	object_event  9,  4, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route6SaffronGateGuardScript, -1
+	object_event  6,  2, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route6SaffronGateGuardScript, -1

@@ -529,7 +529,7 @@ ENDM
 	map_attributes MoveDeletersHouse, MOVE_DELETERS_HOUSE, $00
 	map_attributes CinnabarPokecenter1F, CINNABAR_POKECENTER_1F, $00
 	map_attributes CinnabarPokecenter2FBeta, CINNABAR_POKECENTER_2F_BETA, $00
-	map_attributes Route19FuchsiaGate, ROUTE_19_FUCHSIA_GATE, $00
+	map_attributes Route19FuchsiaGate, ROUTE_19_FUCHSIA_GATE, $0a
 	map_attributes SeafoamGym, SEAFOAM_GYM, $09
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
@@ -596,10 +596,10 @@ ENDM
 	map_attributes VermilionMart, VERMILION_MART, $00
 	map_attributes VermilionOldRodHouse, VERMILION_OLD_ROD_HOUSE, $00
 	map_attributes VermilionGym, VERMILION_GYM, $00
-	map_attributes Route6SaffronGate, ROUTE_6_SAFFRON_GATE, $00
-	map_attributes Route6UndergroundPathEntrance, ROUTE_6_UNDERGROUND_PATH_ENTRANCE, $00
-	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $27
-	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $27
+	map_attributes Route6SaffronGate, ROUTE_6_SAFFRON_GATE, $0a
+	map_attributes Route6UndergroundPathEntrance, ROUTE_6_UNDERGROUND_PATH_ENTRANCE, $0a
+	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $0a
+	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $0a
 	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $00
 	map_attributes RedsHouse1F, REDS_HOUSE_1F, $00
 	map_attributes RedsHouse2F, REDS_HOUSE_2F, $00
@@ -611,8 +611,8 @@ ENDM
 	map_attributes PewterPokecenter1F, PEWTER_POKECENTER_1F, $00
 	map_attributes PewterPokecenter2FBeta, PEWTER_POKECENTER_2F_BETA, $00
 	map_attributes PewterSnoozeSpeechHouse, PEWTER_SNOOZE_SPEECH_HOUSE, $00
-	map_attributes Museum1F, MUSEUM_1F, $00
-	map_attributes Museum2F, MUSEUM_2F, $00
+	map_attributes Museum1F, MUSEUM_1F, $0a
+	map_attributes Museum2F, MUSEUM_2F, $0a
 	map_attributes OlivinePort, OLIVINE_PORT, $0a
 	map_attributes VermilionPort, VERMILION_PORT, $0f
 	map_attributes FastShip1F, FAST_SHIP_1F, $00
@@ -646,7 +646,7 @@ ENDM
 	map_attributes FuchsiaPokecenter1F, FUCHSIA_POKECENTER_1F, $00
 	map_attributes FuchsiaPokecenter2FBeta, FUCHSIA_POKECENTER_2F_BETA, $00
 	map_attributes SafariZoneWardensHome, SAFARI_ZONE_WARDENS_HOME, $00
-	map_attributes Route15FuchsiaGate, ROUTE_15_FUCHSIA_GATE, $00
+	map_attributes Route15FuchsiaGate, ROUTE_15_FUCHSIA_GATE, $0a
 	map_attributes LavenderPokecenter1F, LAVENDER_POKECENTER_1F, $00
 	map_attributes LavenderPokecenter2FBeta, LAVENDER_POKECENTER_2F_BETA, $00
 	map_attributes MrFujisHouse, MR_FUJIS_HOUSE, $00
@@ -655,7 +655,7 @@ ENDM
 	map_attributes LavenderMart, LAVENDER_MART, $00
 	map_attributes SoulHouse, SOUL_HOUSE, $00
 	map_attributes LavRadioTower1F, LAV_RADIO_TOWER_1F, $00
-	map_attributes Route8SaffronGate, ROUTE_8_SAFFRON_GATE, $00
+	map_attributes Route8SaffronGate, ROUTE_8_SAFFRON_GATE, $0a
 	map_attributes Route12SuperRodHouse, ROUTE_12_SUPER_ROD_HOUSE, $00
 	map_attributes SilverCavePokecenter1F, SILVER_CAVE_POKECENTER_1F, $00
 	map_attributes Route28SteelWingHouse, ROUTE_28_STEEL_WING_HOUSE, $00
@@ -684,9 +684,9 @@ ENDM
 	map_attributes CeladonGym, CELADON_GYM, $00
 	map_attributes CeladonCafe, CELADON_CAFE, $00
 	map_attributes Route16FuchsiaSpeechHouse, ROUTE_16_FUCHSIA_SPEECH_HOUSE, $00
-	map_attributes Route16Gate, ROUTE_16_GATE, $00
-	map_attributes Route7SaffronGate, ROUTE_7_SAFFRON_GATE, $00
-	map_attributes Route17Route18Gate, ROUTE_17_ROUTE_18_GATE, $00
+	map_attributes Route16Gate, ROUTE_16_GATE, $0a
+	map_attributes Route7SaffronGate, ROUTE_7_SAFFRON_GATE, $0a
+	map_attributes Route17Route18Gate, ROUTE_17_ROUTE_18_GATE, $0a
 	map_attributes ManiasHouse, MANIAS_HOUSE, $00
 	map_attributes CianwoodGym, CIANWOOD_GYM, $00
 	map_attributes CianwoodPokecenter1F, CIANWOOD_POKECENTER_1F, $00
@@ -708,11 +708,11 @@ ENDM
 	map_attributes ViridianPokecenter1F, VIRIDIAN_POKECENTER_1F, $00
 	map_attributes ViridianPokecenter2FBeta, VIRIDIAN_POKECENTER_2F_BETA, $00
 	map_attributes Route2NuggetHouse, ROUTE_2_NUGGET_HOUSE, $00
-	map_attributes Route2Gate, ROUTE_2_GATE, $00
+	map_attributes Route2Gate, ROUTE_2_GATE, $0a
 	map_attributes VictoryRoadGate, VICTORY_ROAD_GATE, $00
 	map_attributes ViridianForest, VIRIDIAN_FOREST, $0f
-	map_attributes ViridianForestSouthGate, VIRIDIAN_FOREST_SOUTH_GATE, $00
-	map_attributes ViridianForestNorthGate, VIRIDIAN_FOREST_NORTH_GATE, $00
+	map_attributes ViridianForestSouthGate, VIRIDIAN_FOREST_SOUTH_GATE, $0a
+	map_attributes ViridianForestNorthGate, VIRIDIAN_FOREST_NORTH_GATE, $0a
 	map_attributes Route2TradeHouse, ROUTE_2_TRADE_HOUSE, $00
 	map_attributes ViridianSchoolHouse, VIRIDIAN_SCHOOL_HOUSE, $00
 	map_attributes DiglettsCaveRoute2, DIGLETTS_CAVE_ROUTE_2, $00
@@ -735,8 +735,8 @@ ENDM
 	map_attributes SilphCo1F, SILPH_CO_1F, $00
 	map_attributes CopycatsHouse1F, COPYCATS_HOUSE_1F, $00
 	map_attributes CopycatsHouse2F, COPYCATS_HOUSE_2F, $00
-	map_attributes Route5UndergroundPathEntrance, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, $00
-	map_attributes Route5SaffronGate, ROUTE_5_SAFFRON_GATE, $00
+	map_attributes Route5UndergroundPathEntrance, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, $0a
+	map_attributes Route5SaffronGate, ROUTE_5_SAFFRON_GATE, $0a
 	map_attributes Route5DayCare, ROUTE_5_DAY_CARE, $00
 	map_attributes CherrygroveMart, CHERRYGROVE_MART, $00
 	map_attributes CherrygrovePokecenter1F, CHERRYGROVE_POKECENTER_1F, $00

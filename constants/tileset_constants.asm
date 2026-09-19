@@ -38,6 +38,7 @@
 	const TILESET_AERODACTYL_WORD_ROOM ; 24
 	const TILESET_SHIP ; 25
 	const TILESET_KANTO_DOCK ; 26
+	const TILESET_KANTO_GATE ; 27
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

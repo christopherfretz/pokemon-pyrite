@@ -279,7 +279,7 @@ ViridianForest_MapEvents:
 	def_warp_events
 	warp_event  1,  0, VIRIDIAN_FOREST_NORTH_GATE, 3
 	warp_event  2,  0, VIRIDIAN_FOREST_NORTH_GATE, 4
-	warp_event 16, 47, VIRIDIAN_FOREST_SOUTH_GATE, 1
+	warp_event 16, 47, VIRIDIAN_FOREST_SOUTH_GATE, 2 ; M1: Yellow's gate has only ONE north door tile (the west half is wall); warp 1 is Yellow's dead duplicate
 	warp_event 17, 47, VIRIDIAN_FOREST_SOUTH_GATE, 2
 
 	def_coord_events

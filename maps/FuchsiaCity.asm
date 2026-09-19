@@ -135,7 +135,7 @@ FuchsiaCity_MapEvents:
 	warp_event 18,  3, SAFARI_ZONE_FUCHSIA_GATE_BETA, 3 ; inaccessible
 	warp_event 37, 22, ROUTE_15_FUCHSIA_GATE, 1
 	warp_event 37, 23, ROUTE_15_FUCHSIA_GATE, 2
-	warp_event  7, 35, ROUTE_19_FUCHSIA_GATE, 1
+	warp_event  7, 35, ROUTE_19_FUCHSIA_GATE, 2 ; M1: Yellow's gate has only ONE north door tile (the west half is wall); warp 1 is Yellow's dead duplicate
 	warp_event  8, 35, ROUTE_19_FUCHSIA_GATE, 2
 
 	def_coord_events

@@ -25,7 +25,7 @@ Route5UndergroundPathEntrance_MapEvents:
 	def_warp_events
 	warp_event  3,  7, ROUTE_5, 4
 	warp_event  4,  7, ROUTE_5, 4
-	warp_event  4,  3, UNDERGROUND_PATH, 1
+	warp_event  4,  4, UNDERGROUND_PATH, 1
 
 	def_coord_events
 

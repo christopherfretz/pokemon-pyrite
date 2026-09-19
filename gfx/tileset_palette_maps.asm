@@ -116,6 +116,9 @@ INCLUDE "gfx/tilesets/ship_palette_map.asm"
 TilesetKantoDockPalMap:
 INCLUDE "gfx/tilesets/kanto_dock_palette_map.asm"
 
+TilesetKantoGatePalMap:
+INCLUDE "gfx/tilesets/kanto_gate_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

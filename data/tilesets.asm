@@ -52,4 +52,5 @@ Tilesets::
 	tileset TilesetAerodactylWordRoom
 	tileset TilesetShip
 	tileset TilesetKantoDock
+	tileset TilesetKantoGate
 	assert_table_length NUM_TILESETS + 1

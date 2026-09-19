@@ -193,19 +193,13 @@ Route30BerryHouse_Blocks:
 	INCBIN "maps/House1.blk"
 
 SafariZoneFuchsiaGateBeta_Blocks:
-Route19FuchsiaGate_Blocks:
 Route43MahoganyGate_Blocks:
 Route43Gate_Blocks:
 Route35GoldenrodGate_Blocks:
 Route36RuinsOfAlphGate_Blocks:
 Route34IlexForestGate_Blocks:
-Route6SaffronGate_Blocks:
 Route40BattleTowerGate_Blocks:
-Route2Gate_Blocks:
-ViridianForestSouthGate_Blocks:
-ViridianForestNorthGate_Blocks:
 Route29Route46Gate_Blocks:
-Route5SaffronGate_Blocks:
 	INCBIN "maps/NorthSouthGate.blk"
 
 BetaEcruteakCity_Blocks: ; unreferenced
@@ -263,11 +257,6 @@ Route38EcruteakGate_Blocks:
 Route42EcruteakGate_Blocks:
 Route32RuinsOfAlphGate_Blocks:
 IlexForestAzaleaGate_Blocks:
-Route15FuchsiaGate_Blocks:
-Route8SaffronGate_Blocks:
-Route16Gate_Blocks:
-Route7SaffronGate_Blocks:
-Route17Route18Gate_Blocks:
 Route31VioletGate_Blocks:
 	INCBIN "maps/EastWestGate.blk"
 
@@ -1096,6 +1085,8 @@ ViridianSchoolHouse_Blocks:
 ; Crystal has no slot for.  All of them go in "Map Blocks 3": "Map Blocks 1"
 ; (the Viridian/Saffron groups) and "Map Blocks 2" are both effectively full.
 Route11Gate1F_Blocks:
+Route15FuchsiaGate_Blocks:
+Route17Route18Gate_Blocks:
 	INCBIN "maps/Route11Gate1F.blk"
 
 Route11Gate2F_Blocks:
@@ -1143,5 +1134,24 @@ SSAnne2FRooms_Blocks:
 
 SSAnneB1FRooms_Blocks:
 	INCBIN "maps/SSAnneB1FRooms.blk"
+
+; M1: Yellow's Kanto gates, on TILESET_KANTO_GATE.  Crystal's NorthSouthGate.blk
+; and EastWestGate.blk above stay for the Johto gates.
+Route2Gate_Blocks:
+ViridianForestSouthGate_Blocks:
+ViridianForestNorthGate_Blocks:
+Route19FuchsiaGate_Blocks:
+	INCBIN "maps/KantoGateNorthSouth.blk"
+
+Route5SaffronGate_Blocks:
+Route6SaffronGate_Blocks:
+	INCBIN "maps/KantoGateSaffronNorthSouth.blk"
+
+Route7SaffronGate_Blocks:
+Route8SaffronGate_Blocks:
+	INCBIN "maps/KantoGateSaffronEastWest.blk"
+
+Route16Gate_Blocks:
+	INCBIN "maps/Route16Gate.blk"
 
 ENDSECTION

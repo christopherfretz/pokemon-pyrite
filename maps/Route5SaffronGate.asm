@@ -6,11 +6,11 @@
 ; renamed EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH), shared by every
 ; SAFFRON gate exactly as Yellow's bit is.
 ; Yellow's guard stands at (1,3) on the west side of a 2-wide corridor and the
-; trigger is the whole corridor width, dbmapcoord 3,3 / 4,3.  Crystal's
-; NorthSouthGate.blk is 6 tiles wide between the counters, so the faithful
-; "whole corridor" band is the six tiles (2..7, 4) -- the guard's row.  The
-; guard keeps Crystal's (0,4) niche behind the west counter, which is the same
-; side Yellow puts him on.
+; trigger is the whole corridor width, dbmapcoord 3,3 / 4,3.  M1 re-cut this map
+; onto TILESET_KANTO_GATE with Yellow's own 4x3 blockset, so the corridor really
+; is 2 tiles wide here: the guard is at (1,3) and the band is (3,3) / (4,3),
+; exactly Yellow's.  (Before M1 this was Crystal's 5x4 NorthSouthGate.blk, whose
+; corridor is 6 tiles wide, and the band had to be stretched to (2..7, 4).)
 	object_const_def
 	const ROUTE5SAFFRONGATE_OFFICER
 
@@ -146,20 +146,16 @@ Route5SaffronGate_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4,  0, ROUTE_5, 2
-	warp_event  5,  0, ROUTE_5, 1
-	warp_event  4,  7, ROUTE_5, 3
-	warp_event  5,  7, ROUTE_5, 3
+	warp_event  3,  0, ROUTE_5, 2
+	warp_event  4,  0, ROUTE_5, 1
+	warp_event  3,  5, ROUTE_5, 3
+	warp_event  4,  5, ROUTE_5, 3
 
 	def_coord_events
-	coord_event  2,  4, -1, Route5SaffronGateBlockScript
-	coord_event  3,  4, -1, Route5SaffronGateBlockScript
-	coord_event  4,  4, -1, Route5SaffronGateBlockScript
-	coord_event  5,  4, -1, Route5SaffronGateBlockScript
-	coord_event  6,  4, -1, Route5SaffronGateBlockScript
-	coord_event  7,  4, -1, Route5SaffronGateBlockScript
+	coord_event  3,  3, -1, Route5SaffronGateBlockScript
+	coord_event  4,  3, -1, Route5SaffronGateBlockScript
 
 	def_bg_events
 
 	def_object_events
-	object_event  0,  4, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route5SaffronGateGuardScript, -1
+	object_event  1,  3, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route5SaffronGateGuardScript, -1

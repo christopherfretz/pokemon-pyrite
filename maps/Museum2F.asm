@@ -112,13 +112,13 @@ Museum2F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  7,  6, MUSEUM_1F, 5
+	warp_event  7,  7, MUSEUM_1F, 5
 
 	def_coord_events
 
 	def_bg_events
 	bg_event 11,  2, BGEVENT_READ, Museum2FSpaceShuttleSign
-	bg_event  2,  4, BGEVENT_READ, Museum2FMoonStoneSign
+	bg_event  2,  5, BGEVENT_READ, Museum2FMoonStoneSign
 
 	def_object_events
 	object_event  1,  7, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Museum2FYoungsterScript, -1
