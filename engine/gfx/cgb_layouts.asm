@@ -907,10 +907,22 @@ _CGB_PlayerOrMonFrontpicPals:
 ; SCGB_1E, which no shipped code used.
 ;
 ; E4a (default): keep the map's own palettes and just colour the 7x7 box with
-; the tileset's yellow BG palette, the way _CGB_Pokepic colours its box gray.
+; a BG palette slot, the way _CGB_Pokepic colours its box gray.
 ; E4b (PIKAPIC_TRUE_PALETTE): additionally overwrite that BG slot with
 ; Pikachu's real mon palette for the duration of the box.
+;
+; J10 fix (operator playtest, 2026-09-19): that slot used to be PAL_BG_YELLOW,
+; which the Pewter #MON Center's sofas also use (gfx/tilesets/
+; pokecenter_palette_map.asm tiles $48/$49/$58/$59), so E4b visibly recoloured
+; them -- yellow -> orange -- for as long as the face box was up.  Yellow has
+; no such interference (one screen palette, the map keeps its colours), so the
+; faithful answer is a slot no map tile can be using: PAL_BG_TEXT.  **No
+; `*_palette_map.asm` in the game names TEXT** -- it is the text engine's slot,
+; and Pikapic redraws the whole tilemap/attrmap from the map and hides the
+; window (hWY = $90) before the box goes up, so nothing on screen wants the
+; text palette while we borrow it.  RestorePikapicMapPals puts it back.
 DEF PIKAPIC_TRUE_PALETTE EQU 1
+DEF PIKAPIC_BG_PAL EQU PAL_BG_TEXT
 
 _CGB_Pikapic:
 	call _CGB_MapPals
@@ -919,14 +931,14 @@ IF PIKAPIC_TRUE_PALETTE
 	push af
 	ld a, PIKACHU
 	ld [wCurPartySpecies], a
-	ld e, PAL_BG_YELLOW
+	ld e, PIKAPIC_BG_PAL
 	call LoadMonPaletteAsNthBGPal
 	pop af
 	ld [wCurPartySpecies], a
 ENDC
 	hlcoord PIKAPIC_BOX_X, PIKAPIC_BOX_Y, wAttrmap
 	lb bc, PIKAPIC_BOX_H, PIKAPIC_BOX_W
-	ld a, PAL_BG_YELLOW
+	ld a, PIKAPIC_BG_PAL
 	call FillBoxCGB
 	call ApplyAttrmap
 	call ApplyPals
@@ -939,8 +951,9 @@ RestorePikapicMapPals::
 ; ClosePikapicBox's counterpart to _CGB_Pikapic.  GetMemSGBLayout -> SCGB_MAPPALS
 ; -> _CGB_MapPals only refills wBGPals1; the copy into the shadow buffer is
 ; ApplyPals, which is local to this bank.  Without it, the Pikachu palette
-; _CGB_Pikapic leaves in BG slot 4 survives the box and keeps recolouring any
-; map tile that uses PAL_BG_YELLOW.
+; _CGB_Pikapic leaves in BG slot PIKAPIC_BG_PAL survives the box -- since J10
+; that is the text slot, so every later textbox would render in Pikachu's
+; colours.
 	call CheckCGB
 	ret z
 	call _CGB_MapPals

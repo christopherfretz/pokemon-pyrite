@@ -506,11 +506,29 @@ StarterPikachuEmotionCommand_subcmd:
 ; restores the map after a face box, so this only has to matter for the four
 ; scripts that use the subcommand on its own; doing the restore here as well
 ; is idempotent and keeps Yellow's timing.
+;
+; J9 fix (operator playtest, 2026-09-19): ApplyTilemap LEAVES hBGMapMode = 1,
+; and in Crystal's overworld that is poison.  The overworld runs at
+; hBGMapMode = 0 and scrolls by writing single rows/columns into the BG map at
+; wBGMapAnchor; with mode 1 latched on, VBlank instead re-copies the frozen
+; wTilemap over vBGMap0 in thirds, every frame, while the anchor and hSCX/hSCY
+; walk away from it -- the "map bugs out" symptom (black rows, stale objects)
+; that lasted until the next map load re-anchored everything.  Unlike Pikapic,
+; which brackets its whole run, this subcommand had no save/restore, so it was
+; the last writer before the script handed control back to the overworld.
+; Yellow has the same shape and no hazard (its overworld runs with
+; hAutoBGTransferEnabled on), so giving the caller its mode back is both the
+; minimal and the faithful fix.  Emotion 26 -- the Pewter JIGGLYPUFF wake -- is
+; the only *reachable* user today, which is why only the sleep path showed it.
+	ldh a, [hBGMapMode]
+	push af
 	call LoadOverworldTilemapAndAttrmapPals
 	call ApplyTilemap
 	call UpdateSprites
 	ld c, 3
 	call DelayFrames
+	pop af
+	ldh [hBGMapMode], a
 	ret
 
 .WaitButtonPress:
