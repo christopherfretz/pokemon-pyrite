@@ -3858,6 +3858,20 @@ KantoRivalGroup:
 	db 17, EEVEE
 	db -1 ; end
 
+	; KANTO_RIVAL (4): S.S. ANNE 2F, outside the CAPTAIN's room -- Yellow's
+	; fourth rival fight (OPP_RIVAL2 / wTrainerNo = 1, Rival2Data #1 at
+	; vendor/pokeyellow/data/trainers/parties.asm:688).  Fixed, like #1-#3:
+	; Yellow only branches the Pokemon Tower / Silph Co. / Champion parties on
+	; wRivalStarter, and the EEVEE here is still an unevolved EEVEE -- the
+	; JOLTEON/FLAREON/VAPOREON rule (docs/M3-CERULEAN.md 6d.5) first matters at
+	; Pokemon Tower 2F.
+	db "?@", TRAINERTYPE_NORMAL
+	db 19, SPEAROW
+	db 16, RATTATA
+	db 18, SANDSHREW
+	db 20, EEVEE
+	db -1 ; end
+
 JessieJamesGroup:
 	; JESSIE_JAMES (1): Mt. Moon B2F (Yellow's OPP_ROCKET $2a)
 	; Name is empty: PlaceEnemysName prints the class name "JESSIE&JAMES" alone.

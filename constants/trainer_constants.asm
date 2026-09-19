@@ -779,6 +779,7 @@ DEF KRIS EQU __trainer_class__
 	const KANTO_RIVAL_1 ; Oak's Lab
 	const KANTO_RIVAL_2 ; Route 22
 	const KANTO_RIVAL_3 ; Cerulean City, the south end of Nugget Bridge (6d)
+	const KANTO_RIVAL_4 ; S.S. ANNE 2F, the corridor outside the CAPTAIN's room (7i)
 
 ; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h).
 ; One class, one party id per Yellow encounter: Mt. Moon B2F now, then Rocket
