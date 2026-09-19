@@ -495,32 +495,40 @@ KantoGrassWildMons:
 	db  7, JIGGLYPUFF
 	end_grass_wildmons
 
+; Kanto hack (M5 8k): Yellow's Route 7 table
+; (vendor/pokeyellow/data/wild/maps/Route7.asm). Yellow rate 15/256 ==
+; `6 percent`; no time of day, so morn = day = nite. Ten slots fold to seven
+; by dropping the three duplicated middles: slot 1 (L22 PIDGEY), slot 4 (L19
+; ABRA) and slot 9 (the third L24 JIGGLYPUFF). All five species survive and so
+; do both level extremes (L15 ABRA min, L26 ABRA max). Gone: Crystal's
+; SPEAROW, SNUBBULL, RATICATE and its separate MEOWTH/MURKROW/HOUNDOUR/PERSIAN
+; nite block; Crystal's 10% rate drops to Yellow's 6%.
 	def_grass_wildmons ROUTE_7
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 17, RATTATA
-	db 17, SPEAROW
-	db 18, SNUBBULL
-	db 18, RATICATE
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 26, ABRA
+	db 19, JIGGLYPUFF
+	db 24, JIGGLYPUFF
 	; day
-	db 17, RATTATA
-	db 17, SPEAROW
-	db 18, SNUBBULL
-	db 18, RATICATE
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 26, ABRA
+	db 19, JIGGLYPUFF
+	db 24, JIGGLYPUFF
 	; nite
-	db 17, MEOWTH
-	db 17, MURKROW
-	db 18, HOUNDOUR
-	db 18, PERSIAN
-	db 18, JIGGLYPUFF
-	db 16, ABRA
-	db 16, ABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 26, ABRA
+	db 19, JIGGLYPUFF
+	db 24, JIGGLYPUFF
 	end_grass_wildmons
 
 ; Kanto hack (M5 8j): Yellow's Route 8 table

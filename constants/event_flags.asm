@@ -250,8 +250,8 @@
 	const EVENT_MT_MOON_1F_TM_WATER_GUN ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone.  M3b: Yellow's TM12 WATER GUN (was TM_RAIN_DANCE)
 	const EVENT_ROUTE_10_HIDDEN_SUPER_POTION ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_ROUTE_2_HIDDEN_MAX_ETHER; ROUTE 10's hidden SUPER POTION (Yellow (9,17), moved one tile south -- see maps/Route10.asm)
 	const EVENT_ROUTE_10_HIDDEN_MAX_ETHER ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_ROUTE_2_HIDDEN_FULL_HEAL; ROUTE 10's hidden MAX ETHER at (16,53)
-	const EVENT_ROUTE_2_HIDDEN_FULL_RESTORE
-	const EVENT_ROUTE_2_HIDDEN_REVIVE
+	const EVENT_UNDERGROUND_PATH_WEST_EAST_HIDDEN_NUGGET ; Kanto hack: renamed in place (M5 8k), was the dead EVENT_ROUTE_2_HIDDEN_FULL_RESTORE (Yellow hides nothing on ROUTE 2); the west-east UNDERGROUND PATH's hidden NUGGET at (12,2)
+	const EVENT_UNDERGROUND_PATH_WEST_EAST_HIDDEN_ELIXER ; Kanto hack: renamed in place (M5 8k), was the dead EVENT_ROUTE_2_HIDDEN_REVIVE; the west-east UNDERGROUND PATH's hidden ELIXER at (21,5)
 	const EVENT_ROUTE_4_HIDDEN_GREAT_BALL ; Kanto hack: Route 4, Yellow's hidden GREAT_BALL (was EVENT_ROUTE_4_HIDDEN_ULTRA_BALL)
 	const EVENT_ROUTE_9_HIDDEN_ETHER
 	const EVENT_ROUTE_12_HIDDEN_ELIXER

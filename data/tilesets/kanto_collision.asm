@@ -184,3 +184,18 @@
 ; A second $77 twin: $9f above carries the LADDER on its top-RIGHT, and
 ; merging the two would open a phantom warp at (0,10) and (9,10).
 	tilecoll LADDER, FLOOR, WALL, WALL ; a1
+; M5 8k (docs/M5-LAVENDER.md 3.7): ROUTE 7 gate, east door tile (18,9) -- block (9,4), bottom-left
+; quadrant.  Twin of kanto $01 (plain grass); $9e is the same block with
+; the LADDER on its bottom-RIGHT, so the two cannot be merged.
+	tilecoll FLOOR, FLOOR, LADDER, FLOOR ; a2
+; M5 8k (docs/M5-LAVENDER.md 3.7): ROUTE 7 gate, west door tile (11,9) -- block (5,4), bottom-right
+; quadrant.  Twin of kanto $5f (fence post over grass); its other three
+; quadrants already match Yellow's Overworld_Coll exactly.
+	tilecoll FLOOR, WALL, FLOOR, LADDER ; a3
+; M5 8k (docs/M5-LAVENDER.md 3.7): ROUTE 7 gate, west door tile (11,10) -- block (5,5), top-right
+; quadrant.  Twin of kanto $1a, whose top row is HOP_DOWN, HOP_DOWN in
+; Crystal but plain walkable tile $39 in Yellow (Gen 1 implements the
+; ledge hop outside the collision table).  The top-LEFT is therefore
+; FLOOR here, not HOP_DOWN: without it tile (10,10) is unstandable and
+; the gate's lower west door cannot be reached on foot.
+	tilecoll FLOOR, LADDER, WALL, WALL ; a4
