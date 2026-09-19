@@ -148,14 +148,15 @@ ENDM
 	map_const TOHJO_FALLS,                                 15,  9 ; 83
 	map_const DIGLETTS_CAVE,                               20, 18 ; 84
 	map_const UNDERGROUND_PATH,                             4, 23 ; 85
-	map_const ROCK_TUNNEL_1F,                              15, 18 ; 86
-	map_const ROCK_TUNNEL_B1F,                             15, 18 ; 87
+	map_const ROCK_TUNNEL_1F,                              20, 18 ; 86
+	map_const ROCK_TUNNEL_B1F,                             20, 18 ; 87
 	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88
 	map_const SAFARI_ZONE_BETA,                            10, 18 ; 89
 	map_const VICTORY_ROAD,                                10, 36 ; 90
 	map_const MT_MOON_1F,                                  20, 18 ; 91
 	map_const MT_MOON_B1F,                                 14, 14 ; 92
 	map_const MT_MOON_B2F,                                 20, 18 ; 93
+	map_const UNDERGROUND_PATH_WEST_EAST,                  25,  4 ; 94
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4
@@ -208,7 +209,7 @@ ENDM
 	map_const BILLS_HOUSE,                                  4,  4 ; 11
 	map_const ROUTE_4,                                     45,  9 ; 12
 	map_const ROUTE_9,                                     30,  9 ; 13
-	map_const ROUTE_10_NORTH,                              10,  9 ; 14
+	map_const ROUTE_10,                                    10, 36 ; 14
 	map_const ROUTE_24,                                    10, 18 ; 15
 	map_const ROUTE_25,                                    30,  9 ; 16
 	map_const CERULEAN_CITY,                               20, 18 ; 17
@@ -374,9 +375,9 @@ ENDM
 	endgroup
 
 	newgroup LAVENDER                                             ; 18
-	map_const ROUTE_8,                                     20,  9 ;  1
+	map_const ROUTE_8,                                     30,  9 ;  1
 	map_const ROUTE_12,                                    10, 27 ;  2
-	map_const ROUTE_10_SOUTH,                              10,  9 ;  3
+	map_const ROUTE_8_UNDERGROUND_PATH_ENTRANCE,            4,  4 ;  3
 	map_const LAVENDER_TOWN,                               10,  9 ;  4
 	map_const LAVENDER_POKECENTER_1F,                       5,  4 ;  5
 	map_const LAVENDER_POKECENTER_2F_BETA,                  8,  4 ;  6
@@ -385,7 +386,7 @@ ENDM
 	map_const LAVENDER_NAME_RATER,                          4,  4 ;  9
 	map_const LAVENDER_MART,                                6,  4 ; 10
 	map_const SOUL_HOUSE,                                   5,  4 ; 11
-	map_const LAV_RADIO_TOWER_1F,                          10,  4 ; 12
+	map_const POKEMON_TOWER_1F,                            10,  9 ; 12
 	map_const ROUTE_8_SAFFRON_GATE,                         3,  4 ; 13
 	map_const ROUTE_12_SUPER_ROD_HOUSE,                     4,  4 ; 14
 	endgroup
@@ -433,6 +434,7 @@ ENDM
 	map_const ROUTE_16_GATE,                                4,  7 ; 24
 	map_const ROUTE_7_SAFFRON_GATE,                         3,  4 ; 25
 	map_const ROUTE_17_ROUTE_18_GATE,                       4,  5 ; 26
+	map_const ROUTE_7_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 27
 	endgroup
 
 	newgroup CIANWOOD                                             ; 22

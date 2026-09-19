@@ -51,9 +51,6 @@ Route19_Blocks:
 BetaBlackthornCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaBlackthornCity.blk"
 
-Route10South_Blocks:
-	INCBIN "maps/Route10South.blk"
-
 Pokecenter2F_Blocks:
 CinnabarPokecenter2FBeta_Blocks:
 CeruleanPokecenter2FBeta_Blocks:
@@ -314,9 +311,6 @@ SaffronMart_Blocks:
 CherrygroveMart_Blocks:
 	INCBIN "maps/Mart.blk"
 
-Route10North_Blocks:
-	INCBIN "maps/Route10North.blk"
-
 BetaLakeOfRage_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaLakeOfRage.blk"
 
@@ -445,6 +439,8 @@ NationalParkBugContest_Blocks:
 
 Route5UndergroundPathEntrance_Blocks:
 Route6UndergroundPathEntrance_Blocks:
+Route7UndergroundPathEntrance_Blocks:
+Route8UndergroundPathEntrance_Blocks:
 	INCBIN "maps/UndergroundPathEntrance.blk"
 
 BetaCapsuleHouse_Blocks: ; unreferenced
@@ -759,6 +755,14 @@ OlivineLighthouse6F_Blocks:
 
 SECTION "Map Blocks 3", ROMX
 
+; Kanto hack (docs/M5-LAVENDER.md, 8b): the merged Route 10 (10x36) and the
+; west-east Underground Path corridor live here; "Map Blocks 2" has no room.
+Route10_Blocks:
+	INCBIN "maps/Route10.blk"
+
+UndergroundPathWestEast_Blocks:
+	INCBIN "maps/UndergroundPathWestEast.blk"
+
 BetaSlowpokeWell1F_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaSlowpokeWell1F.blk"
 
@@ -875,8 +879,8 @@ OaksLab_Blocks:
 MrFujisHouse_Blocks:
 	INCBIN "maps/MrFujisHouse.blk"
 
-LavRadioTower1F_Blocks:
-	INCBIN "maps/LavRadioTower1F.blk"
+PokemonTower1F_Blocks:
+	INCBIN "maps/PokemonTower1F.blk"
 
 SilverCaveItemRooms_Blocks:
 	INCBIN "maps/SilverCaveItemRooms.blk"

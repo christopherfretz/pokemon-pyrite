@@ -1,3 +1,9 @@
+; Kanto hack (docs/M5-LAVENDER.md, 8b): was Crystal's LAV_RADIO_TOWER_1F.
+; 8b re-registers the map as POKEMON_TOWER_1F, 10x9, on TILESET_KANTO_TOWER
+; with Yellow's own PokemonTower1F.blk.  The radio-tower NPCs and texts below
+; are 8i's to replace; the south exit sits on a TEMPORARY $12 (down-staircase,
+; LADDER at BL) because the $6e WARP_CARPET_DOWN twin of $0e is 8i's.  Warp 2
+; is therefore inert until then (its quadrant is WALL).
 	object_const_def
 	const LAVRADIOTOWER1F_RECEPTIONIST
 	const LAVRADIOTOWER1F_OFFICER
@@ -5,40 +11,40 @@
 	const LAVRADIOTOWER1F_GENTLEMAN
 	const LAVRADIOTOWER1F_SUPER_NERD2
 
-LavRadioTower1F_MapScripts:
+PokemonTower1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-LavRadioTower1FReceptionistScript:
-	jumptextfaceplayer LavRadioTower1FReceptionistText
+PokemonTower1FReceptionistScript:
+	jumptextfaceplayer PokemonTower1FReceptionistText
 
-LavRadioTower1FOfficerScript:
-	jumptextfaceplayer LavRadioTower1FOfficerText
+PokemonTower1FOfficerScript:
+	jumptextfaceplayer PokemonTower1FOfficerText
 
-LavRadioTower1FSuperNerd1Script:
-	jumptextfaceplayer LavRadioTower1FSuperNerd1Text
+PokemonTower1FSuperNerd1Script:
+	jumptextfaceplayer PokemonTower1FSuperNerd1Text
 
-LavRadioTower1FGentlemanScript:
+PokemonTower1FGentlemanScript:
 	faceplayer
 	opentext
 	checkflag ENGINE_EXPN_CARD
 	iftrue .GotExpnCard
 	checkevent EVENT_RETURNED_MACHINE_PART
 	iftrue .ReturnedMachinePart
-	writetext LavRadioTower1FGentlemanText
+	writetext PokemonTower1FGentlemanText
 	waitbutton
 	closetext
 	end
 
 .ReturnedMachinePart:
-	writetext LavRadioTower1FGentlemanText_ReturnedMachinePart
+	writetext PokemonTower1FGentlemanText_ReturnedMachinePart
 	promptbutton
 	getstring STRING_BUFFER_4, .expncardname
 	scall .receiveitem
 	setflag ENGINE_EXPN_CARD
 .GotExpnCard:
-	writetext LavRadioTower1FGentlemanText_GotExpnCard
+	writetext PokemonTower1FGentlemanText_GotExpnCard
 	waitbutton
 	closetext
 	end
@@ -50,32 +56,32 @@ LavRadioTower1FGentlemanScript:
 .expncardname
 	db "EXPN CARD@"
 
-LavRadioTower1FSuperNerd2Script:
+PokemonTower1FSuperNerd2Script:
 	faceplayer
 	opentext
 	checkflag ENGINE_EXPN_CARD
 	iftrue .GotExpnCard
-	writetext LavRadioTower1FSuperNerd2Text
+	writetext PokemonTower1FSuperNerd2Text
 	waitbutton
 	closetext
 	end
 
 .GotExpnCard:
-	writetext LavRadioTower1FSuperNerd2Text_GotExpnCard
+	writetext PokemonTower1FSuperNerd2Text_GotExpnCard
 	waitbutton
 	closetext
 	end
 
-LavRadioTower1FDirectory:
-	jumptext LavRadioTower1FDirectoryText
+PokemonTower1FDirectory:
+	jumptext PokemonTower1FDirectoryText
 
-LavRadioTower1FPokeFluteSign:
-	jumptext LavRadioTower1FPokeFluteSignText
+PokemonTower1FPokeFluteSign:
+	jumptext PokemonTower1FPokeFluteSignText
 
-LavRadioTower1FReferenceLibrary: ; unreferenced
-	jumptext LavRadioTower1FReferenceLibraryText
+PokemonTower1FReferenceLibrary: ; unreferenced
+	jumptext PokemonTower1FReferenceLibraryText
 
-LavRadioTower1FReceptionistText:
+PokemonTower1FReceptionistText:
 	text "Welcome!"
 	line "Feel free to look"
 
@@ -83,7 +89,7 @@ LavRadioTower1FReceptionistText:
 	line "this floor."
 	done
 
-LavRadioTower1FOfficerText:
+PokemonTower1FOfficerText:
 	text "Sorry, but you can"
 	line "only tour the"
 	cont "ground floor."
@@ -98,7 +104,7 @@ LavRadioTower1FOfficerText:
 	line "up our security."
 	done
 
-LavRadioTower1FSuperNerd1Text:
+PokemonTower1FSuperNerd1Text:
 	text "Many people are"
 	line "hard at work here"
 
@@ -110,7 +116,7 @@ LavRadioTower1FSuperNerd1Text:
 	cont "on good shows."
 	done
 
-LavRadioTower1FGentlemanText:
+PokemonTower1FGentlemanText:
 	text "Oh, no, no, no!"
 
 	para "We've been off the"
@@ -128,7 +134,7 @@ LavRadioTower1FGentlemanText:
 	para "I'll be ruined!"
 	done
 
-LavRadioTower1FGentlemanText_ReturnedMachinePart:
+PokemonTower1FGentlemanText_ReturnedMachinePart:
 	text "Ah! So you're the"
 	line "<PLAY_G> who solved"
 
@@ -145,7 +151,7 @@ LavRadioTower1FGentlemanText_ReturnedMachinePart:
 	line "as my thanks."
 	done
 
-LavRadioTower1FGentlemanText_GotExpnCard:
+PokemonTower1FGentlemanText_GotExpnCard:
 	text "With that thing,"
 	line "you can tune into"
 
@@ -155,7 +161,7 @@ LavRadioTower1FGentlemanText_GotExpnCard:
 	para "Gahahahaha!"
 	done
 
-LavRadioTower1FSuperNerd2Text:
+PokemonTower1FSuperNerd2Text:
 	text "Hey there!"
 
 	para "I am the super"
@@ -174,7 +180,7 @@ LavRadioTower1FSuperNerd2Text:
 	line "better get one!"
 	done
 
-LavRadioTower1FSuperNerd2Text_GotExpnCard:
+PokemonTower1FSuperNerd2Text_GotExpnCard:
 	text "Hey there!"
 
 	para "I am the super"
@@ -191,7 +197,7 @@ LavRadioTower1FSuperNerd2Text_GotExpnCard:
 	cont "off the air!"
 	done
 
-LavRadioTower1FDirectoryText:
+PokemonTower1FDirectoryText:
 	text "1F RECEPTION"
 	line "2F SALES"
 
@@ -202,7 +208,7 @@ LavRadioTower1FDirectoryText:
 	line "   OFFICE"
 	done
 
-LavRadioTower1FPokeFluteSignText:
+PokemonTower1FPokeFluteSignText:
 	text "Perk Up #MON"
 	line "with Mellow Sounds"
 
@@ -210,7 +216,7 @@ LavRadioTower1FPokeFluteSignText:
 	line "on CHANNEL 20"
 	done
 
-LavRadioTower1FReferenceLibraryText:
+PokemonTower1FReferenceLibraryText:
 	text "Wow! A full rack"
 	line "of #MON CDs and"
 	cont "videos."
@@ -219,22 +225,22 @@ LavRadioTower1FReferenceLibraryText:
 	line "reference library."
 	done
 
-LavRadioTower1F_MapEvents:
+PokemonTower1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  7, LAVENDER_TOWN, 7
-	warp_event  3,  7, LAVENDER_TOWN, 7
+	warp_event 10, 17, LAVENDER_TOWN, 7
+	warp_event 11, 17, LAVENDER_TOWN, 7
 
 	def_coord_events
 
 	def_bg_events
-	bg_event 11,  0, BGEVENT_READ, LavRadioTower1FDirectory
-	bg_event  5,  0, BGEVENT_READ, LavRadioTower1FPokeFluteSign
+	bg_event 11,  0, BGEVENT_READ, PokemonTower1FDirectory
+	bg_event  5,  0, BGEVENT_READ, PokemonTower1FPokeFluteSign
 
 	def_object_events
-	object_event  6,  6, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, LavRadioTower1FReceptionistScript, -1
-	object_event 15,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, LavRadioTower1FOfficerScript, -1
-	object_event  1,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, LavRadioTower1FSuperNerd1Script, -1
-	object_event  9,  1, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LavRadioTower1FGentlemanScript, -1
-	object_event 14,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LavRadioTower1FSuperNerd2Script, -1
+	object_event  6,  6, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FReceptionistScript, -1
+	object_event 15,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FOfficerScript, -1
+	object_event  1,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PokemonTower1FSuperNerd1Script, -1
+	object_event  9,  1, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonTower1FGentlemanScript, -1
+	object_event 14,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonTower1FSuperNerd2Script, -1

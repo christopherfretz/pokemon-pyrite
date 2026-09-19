@@ -129,6 +129,11 @@ INCLUDE "maps/DiglettsCave.asm"
 INCLUDE "maps/UndergroundPath.asm"
 INCLUDE "maps/RockTunnel1F.asm"
 INCLUDE "maps/RockTunnelB1F.asm"
+; Kanto hack (docs/M5-LAVENDER.md, 8b): the two new Underground Path entrance
+; rooms and the west-east corridor.
+INCLUDE "maps/UndergroundPathWestEast.asm"
+INCLUDE "maps/Route7UndergroundPathEntrance.asm"
+INCLUDE "maps/Route8UndergroundPathEntrance.asm"
 INCLUDE "maps/SafariZoneFuchsiaGateBeta.asm"
 INCLUDE "maps/SafariZoneBeta.asm"
 INCLUDE "maps/VictoryRoad.asm"
@@ -180,7 +185,7 @@ INCLUDE "maps/LavenderSpeechHouse.asm"
 INCLUDE "maps/LavenderNameRater.asm"
 INCLUDE "maps/LavenderMart.asm"
 INCLUDE "maps/SoulHouse.asm"
-INCLUDE "maps/LavRadioTower1F.asm"
+INCLUDE "maps/PokemonTower1F.asm"
 INCLUDE "maps/Route8SaffronGate.asm"
 INCLUDE "maps/Route12SuperRodHouse.asm"
 
@@ -468,7 +473,6 @@ INCLUDE "maps/Route5.asm"
 INCLUDE "maps/Route24.asm"
 INCLUDE "maps/Route3.asm"
 INCLUDE "maps/Route4.asm"
-INCLUDE "maps/Route10South.asm"
 INCLUDE "maps/Route23.asm"
 INCLUDE "maps/SilverCavePokecenter1F.asm"
 INCLUDE "maps/Route28SteelWingHouse.asm"
@@ -480,7 +484,7 @@ INCLUDE "maps/OaksLab.asm" ; Kanto hack: moved from section 19, which overflowed
 INCLUDE "maps/Route9.asm" ; Kanto hack: moved from section 23 (M5 8a), to
 ; leave that bank room for Lavender's and Rock Tunnel's scripts.
 INCLUDE "maps/SilverCaveOutside.asm"
-INCLUDE "maps/Route10North.asm"
+INCLUDE "maps/Route10.asm"
 
 
 SECTION "Map Scripts 26", ROMX

@@ -560,7 +560,7 @@ KantoGrassWildMons:
 	db 18, RATICATE
 	end_grass_wildmons
 
-	def_grass_wildmons ROUTE_10_NORTH
+	def_grass_wildmons ROUTE_10
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
 	db 15, SPEAROW

@@ -303,15 +303,15 @@ ENDM
 
 	map_attributes Route16, ROUTE_16, $0f
 	connection south, Route17, ROUTE_17, 0
-	connection east, CeladonCity, CELADON_CITY, -9
+	connection east, CeladonCity, CELADON_CITY, -4
 
 	map_attributes CeladonCity, CELADON_CITY, $0f
-	connection west, Route16, ROUTE_16, 9
-	connection east, Route7, ROUTE_7, 5
+	connection west, Route16, ROUTE_16, 4
+	connection east, Route7, ROUTE_7, 4
 
 	map_attributes Route7, ROUTE_7, $0f
-	connection west, CeladonCity, CELADON_CITY, -5
-	connection east, SaffronCity, SAFFRON_CITY, -9
+	connection west, CeladonCity, CELADON_CITY, -4
+	connection east, SaffronCity, SAFFRON_CITY, -4
 
 	map_attributes Route15, ROUTE_15, $0f
 	connection west, FuchsiaCity, FUCHSIA_CITY, -9
@@ -339,8 +339,8 @@ ENDM
 	connection west, VermilionCity, VERMILION_CITY, -4
 	connection east, Route12, ROUTE_12, -9
 
-	map_attributes LavenderTown, LAVENDER_TOWN, $2c
-	connection north, Route10South, ROUTE_10_SOUTH, 0
+	map_attributes LavenderTown, LAVENDER_TOWN, $90
+	connection north, Route10, ROUTE_10, 0
 	connection south, Route12, ROUTE_12, 0
 	connection west, Route8, ROUTE_8, 0
 
@@ -355,8 +355,8 @@ ENDM
 	map_attributes SaffronCity, SAFFRON_CITY, $0f
 	connection north, Route5, ROUTE_5, 5
 	connection south, Route6, ROUTE_6, 5
-	connection west, Route7, ROUTE_7, 9
-	connection east, Route8, ROUTE_8, 9
+	connection west, Route7, ROUTE_7, 4
+	connection east, Route8, ROUTE_8, 4
 
 	map_attributes Route5, ROUTE_5, $0f
 	connection north, CeruleanCity, CERULEAN_CITY, -5
@@ -372,9 +372,9 @@ ENDM
 	connection west, Route4, ROUTE_4, 4
 	connection east, Route9, ROUTE_9, 4
 
-	map_attributes Route9, ROUTE_9, $2c
-	connection south, Route10North, ROUTE_10_NORTH, 20
+	map_attributes Route9, ROUTE_9, $90
 	connection west, CeruleanCity, CERULEAN_CITY, -4
+	connection east, Route10, ROUTE_10, 0
 
 	map_attributes Route24, ROUTE_24, $90
 	connection south, CeruleanCity, CERULEAN_CITY, -5
@@ -391,17 +391,13 @@ ENDM
 	connection south, Route3, ROUTE_3, -25
 	connection east, CeruleanCity, CERULEAN_CITY, -4
 
-	map_attributes Route8, ROUTE_8, $2c
-	connection west, SaffronCity, SAFFRON_CITY, -9
+	map_attributes Route8, ROUTE_8, $90
+	connection west, SaffronCity, SAFFRON_CITY, -4
 	connection east, LavenderTown, LAVENDER_TOWN, 0
 
-	map_attributes Route10North, ROUTE_10_NORTH, $2c
-	connection north, Route9, ROUTE_9, -20
-	connection south, Route10South, ROUTE_10_SOUTH, 0
-
-	map_attributes Route10South, ROUTE_10_SOUTH, $2c
-	connection north, Route10North, ROUTE_10_NORTH, 0
+	map_attributes Route10, ROUTE_10, $90
 	connection south, LavenderTown, LAVENDER_TOWN, 0
+	connection west, Route9, ROUTE_9, 0
 
 	map_attributes Route23, ROUTE_23, $0f
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $00
@@ -504,8 +500,10 @@ ENDM
 	map_attributes Route42EcruteakGate, ROUTE_42_ECRUTEAK_GATE, $00
 	map_attributes DiglettsCave, DIGLETTS_CAVE, $09
 	map_attributes UndergroundPath, UNDERGROUND_PATH, $00
-	map_attributes RockTunnel1F, ROCK_TUNNEL_1F, $09
-	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $09
+
+	map_attributes UndergroundPathWestEast, UNDERGROUND_PATH_WEST_EAST, $01
+	map_attributes RockTunnel1F, ROCK_TUNNEL_1F, $2e
+	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $2e
 	map_attributes SafariZoneFuchsiaGateBeta, SAFARI_ZONE_FUCHSIA_GATE_BETA, $00
 	map_attributes SafariZoneBeta, SAFARI_ZONE_BETA, $13
 	map_attributes VictoryRoad, VICTORY_ROAD, $1d
@@ -598,6 +596,10 @@ ENDM
 	map_attributes VermilionGym, VERMILION_GYM, $00
 	map_attributes Route6SaffronGate, ROUTE_6_SAFFRON_GATE, $0a
 	map_attributes Route6UndergroundPathEntrance, ROUTE_6_UNDERGROUND_PATH_ENTRANCE, $0a
+
+	map_attributes Route7UndergroundPathEntrance, ROUTE_7_UNDERGROUND_PATH_ENTRANCE, $0a
+
+	map_attributes Route8UndergroundPathEntrance, ROUTE_8_UNDERGROUND_PATH_ENTRANCE, $0a
 	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $0a
 	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $0a
 	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $1d ; Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute11.asm
@@ -649,14 +651,14 @@ ENDM
 	map_attributes Route15FuchsiaGate, ROUTE_15_FUCHSIA_GATE, $0a
 	map_attributes LavenderPokecenter1F, LAVENDER_POKECENTER_1F, $00
 	map_attributes LavenderPokecenter2FBeta, LAVENDER_POKECENTER_2F_BETA, $00
-	map_attributes MrFujisHouse, MR_FUJIS_HOUSE, $00
-	map_attributes LavenderSpeechHouse, LAVENDER_SPEECH_HOUSE, $00
-	map_attributes LavenderNameRater, LAVENDER_NAME_RATER, $00
+	map_attributes MrFujisHouse, MR_FUJIS_HOUSE, $0a
+	map_attributes LavenderSpeechHouse, LAVENDER_SPEECH_HOUSE, $0a
+	map_attributes LavenderNameRater, LAVENDER_NAME_RATER, $0a
 	map_attributes LavenderMart, LAVENDER_MART, $00
-	map_attributes SoulHouse, SOUL_HOUSE, $00
-	map_attributes LavRadioTower1F, LAV_RADIO_TOWER_1F, $00
+	map_attributes SoulHouse, SOUL_HOUSE, $0a
+	map_attributes PokemonTower1F, POKEMON_TOWER_1F, $01
 	map_attributes Route8SaffronGate, ROUTE_8_SAFFRON_GATE, $0a
-	map_attributes Route12SuperRodHouse, ROUTE_12_SUPER_ROD_HOUSE, $00
+	map_attributes Route12SuperRodHouse, ROUTE_12_SUPER_ROD_HOUSE, $0a
 	map_attributes SilverCavePokecenter1F, SILVER_CAVE_POKECENTER_1F, $00
 	map_attributes Route28SteelWingHouse, ROUTE_28_STEEL_WING_HOUSE, $00
 	map_attributes Pokecenter2F, POKECENTER_2F, $00

@@ -1,8 +1,8 @@
 	object_const_def
-	const ROUTE10SOUTH_POKEFAN_M1
-	const ROUTE10SOUTH_POKEFAN_M2
+	const ROUTE10_POKEFAN_M1
+	const ROUTE10_POKEFAN_M2
 
-Route10South_MapScripts:
+Route10_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
@@ -29,8 +29,18 @@ TrainerPokefanmRobert:
 	closetext
 	end
 
+PowerPlantSign:
+	jumptext PowerPlantSignText
+
+Route10PokecenterSign:
+	jumpstd PokecenterSignScript
+
 Route10Sign:
 	jumptext Route10SignText
+
+PowerPlantSignText:
+	text "KANTO POWER PLANT"
+	done
 
 HikerJimSeenText:
 	text "Hahahah!"
@@ -73,17 +83,21 @@ Route10SignText:
 	line "LAVENDER TOWN"
 	done
 
-Route10South_MapEvents:
+Route10_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  6,  1, ROCK_TUNNEL_1F, 2
+	warp_event 11,  1, ROUTE_10_POKECENTER_1F, 1
+	warp_event  3,  9, POWER_PLANT, 1
+	warp_event  6, 55, ROCK_TUNNEL_1F, 2
 
 	def_coord_events
 
 	def_bg_events
-	bg_event  5,  3, BGEVENT_READ, Route10Sign
+	bg_event  5, 11, BGEVENT_READ, PowerPlantSign
+	bg_event 12,  1, BGEVENT_READ, Route10PokecenterSign
+	bg_event  5, 57, BGEVENT_READ, Route10Sign
 
 	def_object_events
-	object_event 17,  3, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerHikerJim, -1
-	object_event  8, 10, SPRITE_POKEFAN_M, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPokefanmRobert, -1
+	object_event 17, 57, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerHikerJim, -1
+	object_event  8, 64, SPRITE_POKEFAN_M, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPokefanmRobert, -1
