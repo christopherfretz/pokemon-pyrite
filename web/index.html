@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kanto First</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#161a20">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Browser Game Boy Color player for the Kanto-first Pokemon ROM hack.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Kanto First">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <div id="screenwrap">
+    <div id="screen">
+      <canvas id="canvas" width="160" height="144"></canvas>
+      <div id="overlay" hidden><button id="tapstart" type="button">Tap to start</button></div>
+    </div>
+  </div>
+
+  <div id="status" role="status">Starting&hellip;</div>
+
+  <div id="pad">
+    <div id="dpad" class="ctl" aria-label="D-pad">
+      <div class="dpad-bar dpad-v"></div>
+      <div class="dpad-bar dpad-h"></div>
+      <div class="dpad-dot"></div>
+      <div class="dpad-hint dh-u"></div><div class="dpad-hint dh-d"></div>
+      <div class="dpad-hint dh-l"></div><div class="dpad-hint dh-r"></div>
+    </div>
+
+    <div id="face">
+      <button class="ctl btn round" data-btn="B" type="button">B</button>
+      <button class="ctl btn round" data-btn="A" type="button">A</button>
+    </div>
+
+    <div id="startsel">
+      <button class="ctl btn pill" data-btn="SELECT" type="button">SELECT</button>
+      <button class="ctl btn pill" data-btn="START" type="button">START</button>
+    </div>
+  </div>
+
+  <details id="menu">
+    <summary>Menu &amp; saves</summary>
+    <div class="menu-body">
+
+      <div class="row">
+        <button id="btn-mute" type="button">Sound: on</button>
+        <button id="btn-ff" type="button">Speed: 1&times;</button>
+        <button id="btn-reset" type="button">Reset</button>
+      </div>
+
+      <div class="row">
+        <button id="btn-export" type="button">Export .sav</button>
+        <button id="btn-import" type="button">Import .sav</button>
+        <input id="file-sav" type="file" accept=".sav,.srm,application/octet-stream" hidden>
+      </div>
+
+      <div class="slots">
+        <div class="slot"><span>Slot 1</span><button data-save="1" type="button">Save</button><button data-load="1" type="button">Load</button><em data-slotinfo="1">empty</em></div>
+        <div class="slot"><span>Slot 2</span><button data-save="2" type="button">Save</button><button data-load="2" type="button">Load</button><em data-slotinfo="2">empty</em></div>
+        <div class="slot"><span>Slot 3</span><button data-save="3" type="button">Save</button><button data-load="3" type="button">Load</button><em data-slotinfo="3">empty</em></div>
+      </div>
+
+      <div class="row">
+        <button id="btn-rom" type="button">Load ROM file&hellip;</button>
+        <input id="file-rom" type="file" accept=".gbc,.gb,application/octet-stream" hidden>
+      </div>
+
+      <p class="note">
+        <strong>Saves live in this browser.</strong> The in-game save is kept in IndexedDB for
+        this site and is written every 10 seconds and whenever you leave the page. iOS Safari
+        deletes site storage after <strong>7 days without visiting</strong> &mdash; add this page
+        to your Home Screen and open it regularly, and use <em>Export .sav</em> before a long
+        break. The exported file is raw cartridge RAM: it imports straight into Delta.
+      </p>
+      <p class="note">
+        Keyboard: arrows move, <kbd>Z</kbd>/<kbd>A</kbd> = A, <kbd>X</kbd>/<kbd>S</kbd> = B,
+        <kbd>Enter</kbd> = START, <kbd>Shift</kbd> = SELECT, hold <kbd>Space</kbd> to
+        fast-forward.
+      </p>
+      <p class="note" id="corenote"></p>
+    </div>
+  </details>
+
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

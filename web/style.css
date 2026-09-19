@@ -1,0 +1,314 @@
+/* Kanto First - browser GBC player.
+   Portrait: screen on top, controls below.  Landscape: screen centred, controls at the sides. */
+
+:root {
+  --bg: #161a20;
+  --panel: #1e242c;
+  --panel-2: #262e38;
+  --edge: #333d4a;
+  --ink: #e7ecf2;
+  --dim: #94a1b2;
+  --accent: #c8452f;
+  --accent-ink: #ffffff;
+  --scale: 2;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: 500 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--safe-t) var(--safe-r) var(--safe-b) var(--safe-l);
+  overflow: hidden;
+}
+
+/* ---------- screen ---------- */
+
+#screenwrap {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 6px;
+}
+
+#screen {
+  position: relative;
+  width: calc(160px * var(--scale));
+  height: calc(144px * var(--scale));
+  background: #0b0d10;
+  border: 2px solid var(--edge);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+
+/* All canvas styling lives here rather than inline: the canvas is a plain
+   160x144 Canvas2D surface that app.js blits binjgb's frame buffer into, and
+   #screen does the upscaling, so nothing about the size belongs in JS. */
+#canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+  background: #0b0d10;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 13, 16, .72);
+}
+
+#tapstart {
+  font: 600 15px/1 system-ui, sans-serif;
+  color: var(--accent-ink);
+  background: var(--accent);
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 22px;
+}
+
+/* ---------- status ---------- */
+
+#status {
+  flex: 0 0 auto;
+  padding: 2px 10px 6px;
+  text-align: center;
+  font: 500 11px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--dim);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+#status.err { color: #ff8b73; }
+
+/* ---------- controls ---------- */
+
+#pad {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "dpad face" "startsel startsel";
+  align-items: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 4px 14px 8px;
+}
+
+.ctl {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* D-pad: a plain touch area; the cross is drawn with bars. */
+#dpad {
+  grid-area: dpad;
+  position: relative;
+  width: min(42vw, 168px);
+  height: min(42vw, 168px);
+  max-height: 26vh;
+  aspect-ratio: 1 / 1;
+}
+.dpad-bar {
+  position: absolute;
+  background: var(--panel-2);
+  border: 2px solid var(--edge);
+  border-radius: 10px;
+  pointer-events: none;
+}
+.dpad-v { left: 33.5%; top: 0; width: 33%; height: 100%; }
+.dpad-h { top: 33.5%; left: 0; height: 33%; width: 100%; }
+.dpad-dot {
+  position: absolute;
+  left: 41%; top: 41%; width: 18%; height: 18%;
+  border-radius: 50%;
+  background: var(--edge);
+  pointer-events: none;
+}
+.dpad-hint {
+  position: absolute;
+  width: 14%; height: 14%;
+  border-radius: 3px;
+  background: transparent;
+  pointer-events: none;
+  transition: background .04s linear;
+}
+.dh-u { left: 43%; top: 6%; }
+.dh-d { left: 43%; bottom: 6%; }
+.dh-l { top: 43%; left: 6%; }
+.dh-r { top: 43%; right: 6%; }
+#dpad.u .dh-u, #dpad.d .dh-d, #dpad.l .dh-l, #dpad.r .dh-r { background: var(--accent); }
+
+#face {
+  grid-area: face;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transform: rotate(-18deg);
+}
+
+.btn {
+  font: 700 14px/1 system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 2px solid var(--edge);
+  padding: 0;
+}
+.btn.round {
+  width: min(19vw, 76px);
+  height: min(19vw, 76px);
+  max-width: 76px;
+  max-height: 76px;
+  border-radius: 50%;
+}
+.btn.pill {
+  min-width: 96px;
+  height: 34px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+.btn.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+#startsel {
+  grid-area: startsel;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* ---------- menu ---------- */
+
+#menu {
+  flex: 0 0 auto;
+  max-height: 46vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--panel);
+  border-top: 1px solid var(--edge);
+}
+#menu > summary {
+  cursor: pointer;
+  padding: 9px 14px;
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.menu-body { padding: 0 14px 16px; }
+
+.row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.row button, .slot button {
+  font: 600 12px/1 system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 9px 12px;
+  min-height: 36px;
+}
+.row button:active, .slot button:active { background: var(--accent); border-color: var(--accent); }
+
+.slots { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+.slot { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.slot > span { width: 52px; color: var(--dim); }
+.slot > em { font-style: normal; font-size: 11px; color: var(--dim); }
+
+.note { font-size: 11.5px; line-height: 1.5; color: var(--dim); margin: 8px 0 0; }
+.note strong { color: var(--ink); }
+kbd {
+  font: 600 10.5px/1 ui-monospace, Menlo, monospace;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* ---------- landscape ---------- */
+
+@media (orientation: landscape) {
+  #app {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "dpadcol screenwrap facecol" "status status status";
+    align-items: center;
+  }
+  #screenwrap { grid-area: screenwrap; padding: 4px; }
+  #status { grid-area: status; padding-bottom: 4px; }
+
+  #pad {
+    display: contents;
+  }
+  #dpad {
+    grid-area: dpadcol;
+    width: min(30vh, 150px);
+    height: min(30vh, 150px);
+    max-height: none;
+    margin-left: 10px;
+  }
+  #face {
+    grid-area: facecol;
+    margin-right: 10px;
+  }
+  .btn.round { width: min(15vh, 70px); height: min(15vh, 70px); }
+  #startsel {
+    position: fixed;
+    left: 50%;
+    bottom: calc(4px + var(--safe-b));
+    transform: translateX(-50%);
+    z-index: 3;
+  }
+  .btn.pill { min-width: 80px; height: 30px; }
+
+  /* The menu is an overlay sheet in landscape so it never squeezes the screen. */
+  #menu {
+    position: fixed;
+    right: calc(6px + var(--safe-r));
+    top: calc(6px + var(--safe-t));
+    z-index: 5;
+    width: min(340px, 70vw);
+    max-height: 88vh;
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+  }
+  #menu:not([open]) { width: auto; background: transparent; border-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpad-hint { transition: none; }
+}

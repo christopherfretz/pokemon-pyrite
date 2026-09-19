@@ -1,0 +1,5 @@
+# The repo root sets `* text eol=lf`, which would rewrite CRLF byte pairs
+# inside the vendored emulator core.  It is a binary artefact copied verbatim
+# from upstream binjgb; its SHA-256 is recorded in vendor/binjgb/VERSION.txt
+# and must match byte for byte.
+*.wasm binary diff=hex

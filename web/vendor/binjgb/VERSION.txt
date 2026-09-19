@@ -1,0 +1,43 @@
+binjgb — vendored emulator core
+===============================
+
+Upstream:  https://github.com/binji/binjgb
+Licence:   MIT (see LICENSE; docs/simple.js and docs/demo.js, from which this
+           page's core glue was adapted, additionally carry LICENSE.gbstudio)
+Commit:    c60e138da5a795ebb55e56b11b7e90024e41112c
+Date:      2026-06-16 03:14:51 +0200
+Vendored:  2026-09-19
+
+Files taken verbatim from the upstream repository (they are the prebuilt
+emscripten artefacts the upstream project commits under docs/, i.e. what
+`make demo` produces; no emscripten toolchain is needed to use them):
+
+    docs/binjgb.js        -> binjgb.js
+    docs/binjgb.wasm      -> binjgb.wasm
+    LICENSE               -> LICENSE
+    docs/LICENSE.gbstudio -> LICENSE.gbstudio
+
+sha256:
+    a68e5854b5d68339a34c0aa0b6dbeacd615ed316657ee17b63dafa5e00561b09  binjgb.js
+    52c165069441a09180b4bd63464318aa7b861b1d36e0d05e8047b48619fd2f0b  binjgb.wasm
+
+Build configuration of the committed artefacts (from CMakeLists.txt /
+Makefile): emscripten, -s MODULARIZE=1 -s EXPORT_NAME="Binjgb", fixed 16.5 MB
+heap (258 wasm pages, no memory growth), RGBDS_LIVE and GBSTUDIO *off* — which
+is why `_set_audio_channel_mute` is the no-op stub in this build and app.js
+mutes in JavaScript instead.
+
+To refresh:
+
+    git clone --depth 1 https://github.com/binji/binjgb /tmp/binjgb
+    cp /tmp/binjgb/docs/binjgb.js /tmp/binjgb/docs/binjgb.wasm \
+       web/vendor/binjgb/
+    cp /tmp/binjgb/LICENSE /tmp/binjgb/docs/LICENSE.gbstudio \
+       web/vendor/binjgb/
+    # then update CORE_COMMIT in web/app.js and this file.
+
+Changing the core (or even this commit of it) invalidates every save *state*
+and the auto-resume snapshot, because they are raw dumps of binjgb's internal
+`EmulatorState` struct.  app.js therefore stamps each stored state with
+CORE_COMMIT and refuses to load one that does not match.  Battery saves
+(`.sav`) are unaffected: they are plain cartridge RAM.
