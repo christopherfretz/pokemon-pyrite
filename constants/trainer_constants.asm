@@ -106,6 +106,9 @@ DEF KRIS EQU __trainer_class__
 	const JED
 	const MARC
 	const RICH
+; Kanto hack: ROUTE 11's engineers (7l) -- Yellow ENGINEER 2/3
+	const MAXWELL
+	const THURSTON
 
 	trainerclass ERIKA ; 15
 	const ERIKA1
@@ -121,8 +124,8 @@ DEF KRIS EQU __trainer_class__
 	const JOEY3
 	const WARREN
 	const JIMMY
-	const OWEN
-	const JASON
+	const FLOYD ; Kanto hack: renamed in place (7l), was OWEN; ROUTE 11, Yellow's YOUNGSTER 9
+	const RUDY ; Kanto hack: renamed in place (7l), was JASON; ROUTE 11, Yellow's YOUNGSTER 10
 	const JOEY4
 	const JOEY5
 	const DUSTIN ; Kanto hack: Mt. Moon 1F (Yellow YOUNGSTER 3)
@@ -132,6 +135,9 @@ DEF KRIS EQU __trainer_class__
 	const COLE ; Kanto hack (N1e): renamed from ELMER, too close to Prof. ELM
 	const OSCAR
 	const BENJI ; Kanto hack: S.S. ANNE 1F Rooms (7h, Yellow YOUNGSTER 8)
+; Kanto hack: ROUTE 11 (7l) -- Yellow YOUNGSTER 11/12
+	const GORDY
+	const CLIFF
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -338,13 +344,17 @@ DEF KRIS EQU __trainer_class__
 	const PRESTON
 	const EDWARD
 	const GREGORY
-	const VIRGIL ; unused
+	const ARTHUR ; Kanto hack: renamed in place (7l), was the unused VIRGIL; ROUTE 11, Yellow's GAMBLER 1
 	const ALFRED
 ; Kanto hack: S.S. ANNE's gentlemen (7h) -- Yellow GENTLEMAN 1/2 (1F Rooms) and 3/5 (2F Rooms)
 	const THEODORE
 	const BARTON
 	const CLIVE
 	const HUBERT
+; Kanto hack: ROUTE 11's gamblers (7l) -- Yellow GAMBLER 2/3/4 (GAMBLER 1 is ARTHUR above)
+	const LEOPOLD
+	const WINSTON
+	const HORACE
 
 	trainerclass SKIER ; 21
 	const ROXANNE

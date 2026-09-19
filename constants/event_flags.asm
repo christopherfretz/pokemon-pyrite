@@ -239,7 +239,7 @@
 	const EVENT_GOT_SQUIRTLE_FROM_OFFICER_JENNY ; Kanto hack: renamed in place (7e), was EVENT_GOT_HP_UP_FROM_VERMILION_GUY; Yellow's EVENT_GOT_SQUIRTLE_FROM_OFFICER_JENNY
 	const EVENT_GOT_TM29_PSYCHIC
 ; Kanto hidden items
-	const EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE
+	const EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE ; Kanto hack: DEAD as of 7l -- Yellow's DIGLETT'S CAVE has no hidden items; free for the next Kanto hidden item
 	const EVENT_UNDERGROUND_PATH_HIDDEN_FULL_RESTORE
 	const EVENT_UNDERGROUND_PATH_HIDDEN_X_SPECIAL
 	const EVENT_ROCK_TUNNEL_1F_HIDDEN_X_ACCURACY
@@ -614,8 +614,8 @@
 ; Psychic
 	const EVENT_BEAT_PSYCHIC_NATHAN
 	const EVENT_BEAT_PSYCHIC_FRANKLIN
-	const EVENT_BEAT_PSYCHIC_HERMAN
-	const EVENT_BEAT_PSYCHIC_FIDEL
+	const EVENT_BEAT_SCIENTIST_MAXWELL ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_HERMAN; ROUTE 11, Yellow's ENGINEER 2
+	const EVENT_BEAT_SCIENTIST_THURSTON ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_FIDEL; ROUTE 11, Yellow's ENGINEER 3
 	const EVENT_BEAT_PSYCHIC_GREG
 	const EVENT_BEAT_PSYCHIC_NORMAN
 	const EVENT_BEAT_PSYCHIC_MARK
@@ -1021,11 +1021,11 @@
 	const EVENT_BEAT_YOUNGSTER_SAMUEL
 	const EVENT_BEAT_YOUNGSTER_IAN
 	const EVENT_BEAT_YOUNGSTER_BENJI ; Kanto hack: renamed in place (7h), was EVENT_BEAT_YOUNGSTER_JOEY2; S.S. ANNE 1F Rooms, Yellow's YOUNGSTER 8
-	const EVENT_BEAT_YOUNGSTER_JOEY3
+	const EVENT_BEAT_YOUNGSTER_GORDY ; Kanto hack: renamed in place (7l), was EVENT_BEAT_YOUNGSTER_JOEY3; ROUTE 11, Yellow's YOUNGSTER 11
 	const EVENT_BEAT_YOUNGSTER_WARREN ; Kanto hack: Route 3, Yellow's YOUNGSTER 1
 	const EVENT_BEAT_YOUNGSTER_JIMMY ; Kanto hack: Route 3, Yellow's YOUNGSTER 2
-	const EVENT_BEAT_YOUNGSTER_OWEN
-	const EVENT_BEAT_YOUNGSTER_JASON
+	const EVENT_BEAT_YOUNGSTER_FLOYD ; Kanto hack: renamed in place (7l), was EVENT_BEAT_YOUNGSTER_OWEN; ROUTE 11, Yellow's YOUNGSTER 9
+	const EVENT_BEAT_YOUNGSTER_RUDY ; Kanto hack: renamed in place (7l), was EVENT_BEAT_YOUNGSTER_JASON; ROUTE 11, Yellow's YOUNGSTER 10
 ; Teacher
 	const EVENT_BEAT_TEACHER_COLETTE
 	const EVENT_BEAT_TEACHER_HILLARY
@@ -1700,7 +1700,20 @@
 	const EVENT_SS_ANNE_2F_RIVAL_HIDDEN ; the 2F rival is not standing at (36,4) (his hidden flag; owned by SSAnne2FObjectsCallback -- 7i clears it for the corridor scene)
 	const EVENT_BEAT_RIVAL_SS_ANNE ; 7i: the S.S. ANNE 2F rival battle (rival #3) is over
 
-; Unused: next 482 events
+; Kanto hack: M4 step 7l (ROUTE 11 + ROUTE 11 GATE 2F).  Ten Route 11 trainers:
+; three youngster flags and the two dead PSYCHIC_T flags were renamed in place
+; above, the remaining six are appended here.  EVENT_BEAT_ROUTE_12_SNORLAX is
+; Yellow's EVENT_BEAT_ROUTE12_SNORLAX, read by the gate's left binoculars; it
+; could not reuse Crystal's EVENT_FOUGHT_SNORLAX, which is still live in
+; VictoryRoadGate and engine/phone/scripts/irwin_gossip.asm.  482 free -> 476.
+	const EVENT_BEAT_YOUNGSTER_CLIFF ; ROUTE 11, Yellow's YOUNGSTER 12
+	const EVENT_BEAT_GENTLEMAN_ARTHUR ; ROUTE 11, Yellow's GAMBLER 1
+	const EVENT_BEAT_GENTLEMAN_LEOPOLD ; ROUTE 11, Yellow's GAMBLER 2
+	const EVENT_BEAT_GENTLEMAN_WINSTON ; ROUTE 11, Yellow's GAMBLER 3
+	const EVENT_BEAT_GENTLEMAN_HORACE ; ROUTE 11, Yellow's GAMBLER 4
+	const EVENT_BEAT_ROUTE_12_SNORLAX ; the ROUTE 12 SNORLAX has been woken and fought (M5); ROUTE 11 GATE 2F binoculars
+
+; Unused: next 476 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

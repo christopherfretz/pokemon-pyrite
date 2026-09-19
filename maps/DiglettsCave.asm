@@ -1,24 +1,14 @@
 	object_const_def
-	const DIGLETTSCAVE_POKEFAN_M
+
+; Kanto hack: Yellow's DIGLETT'S CAVE (docs/M4-VERMILION.md, 7l).  Yellow's
+; DiglettsCave_Object has NO objects and NO bg_events at all -- just the two
+; warps -- so Crystal's POKeFAN_M at (34,31) and its hidden MAX REVIVE at
+; (6,11) are removed here.  The wild table stays Crystal's until 7m.
 
 DiglettsCave_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-
-DiglettsCavePokefanMScript:
-	jumptextfaceplayer DiglettsCavePokefanMText
-
-DiglettsCaveHiddenMaxRevive:
-	hiddenitem MAX_REVIVE, EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE
-
-DiglettsCavePokefanMText:
-	text "A bunch of DIGLETT"
-	line "popped out of the"
-
-	para "ground! That was"
-	line "shocking."
-	done
 
 DiglettsCave_MapEvents:
 	db 0, 0 ; filler
@@ -30,7 +20,5 @@ DiglettsCave_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  6, 11, BGEVENT_ITEM, DiglettsCaveHiddenMaxRevive
 
 	def_object_events
-	object_event 34, 31, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DiglettsCavePokefanMScript, -1

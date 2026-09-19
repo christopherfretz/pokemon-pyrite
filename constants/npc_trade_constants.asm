@@ -23,6 +23,7 @@ DEF NPCTRADE_STRUCT_LENGTH EQU _RS
 	const NPC_TRADE_FOREST ; 6
 	const NPC_TRADE_MILES  ; 7 ; Kanto hack (docs/M2-PEWTER.md, 4f)
 	const NPC_TRADE_RICKY  ; 8 ; Kanto hack (docs/M4-VERMILION.md, 7d)
+	const NPC_TRADE_GURIO  ; 9 ; Kanto hack (docs/M4-VERMILION.md, 7l)
 DEF NUM_NPC_TRADES EQU const_value
 
 ; trade gender limits

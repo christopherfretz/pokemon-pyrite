@@ -1,12 +1,27 @@
 	object_const_def
+	const DIGLETTSCAVEROUTE2_FISHING_GURU
 
-; Kanto hack: M4 step 7c (docs/M4-VERMILION.md).  Diglett's Cave north entrance room (decision (d)).
-; Warps only -- Yellow's NPCs, trainers and items arrive in 7d-7g.
+; Kanto hack: Yellow's DIGLETT'S CAVE north entrance room (docs/M4-VERMILION.md,
+; 7c decision (d), populated in 7l).  Yellow's single object is the FISHING GURU
+; at (3,3) who wishes for FLASH in ROCK TUNNEL.
 
 DiglettsCaveRoute2_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+
+DiglettsCaveRoute2FishingGuruScript:
+	jumptextfaceplayer DiglettsCaveRoute2FishingGuruText
+
+DiglettsCaveRoute2FishingGuruText:
+	text "I went to ROCK"
+	line "TUNNEL, but it's"
+	cont "dark and scary."
+
+	para "If a #MON's"
+	line "FLASH could light"
+	cont "it up…"
+	done
 
 DiglettsCaveRoute2_MapEvents:
 	db 0, 0 ; filler
@@ -21,3 +36,4 @@ DiglettsCaveRoute2_MapEvents:
 	def_bg_events
 
 	def_object_events
+	object_event  3,  3, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, DiglettsCaveRoute2FishingGuruScript, -1

@@ -148,7 +148,9 @@ VermilionGroupSprites:
 	db SPRITE_MONSTER
 	db SPRITE_FRUIT_TREE
 	db SPRITE_OLD_MAN
-rept MAX_OUTDOOR_SPRITES - 9
+	db SPRITE_GENTLEMAN ; Kanto hack: ROUTE 11's four GAMBLERs (7l)
+	db SPRITE_SUPER_NERD ; Kanto hack: ROUTE 11's two ENGINEERs (7l)
+rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

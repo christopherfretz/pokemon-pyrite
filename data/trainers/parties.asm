@@ -331,6 +331,18 @@ ScientistGroup:
 	db 30, PORYGON,    CONVERSION, CONVERSION2, RECOVER, TRI_ATTACK
 	db -1 ; end
 
+	; SCIENTIST (6) - Kanto hack: ROUTE 11, Yellow's ENGINEER 2 (docs/M4-VERMILION.md 7l)
+	db "MAXWELL@", TRAINERTYPE_NORMAL
+	db 21, MAGNEMITE
+	db -1 ; end
+
+	; SCIENTIST (7) - Kanto hack: ROUTE 11, Yellow's ENGINEER 3 (docs/M4-VERMILION.md 7l)
+	db "THURSTON@", TRAINERTYPE_NORMAL
+	db 18, MAGNEMITE
+	db 18, MAGNEMITE
+	db 18, MAGNETON
+	db -1 ; end
+
 ErikaGroup:
 	; ERIKA (1)
 	db "ERIKA@", TRAINERTYPE_MOVES
@@ -398,15 +410,15 @@ YoungsterGroup:
 	db 14, SPEAROW
 	db -1 ; end
 
-	; YOUNGSTER (11)
-	db "OWEN@", TRAINERTYPE_NORMAL
-	db 35, GROWLITHE
+	; YOUNGSTER (11) - Kanto hack: ROUTE 11, Yellow's YOUNGSTER 9 (docs/M4-VERMILION.md 7l; was the unused OWEN)
+	db "FLOYD@", TRAINERTYPE_NORMAL
+	db 21, EKANS
 	db -1 ; end
 
-	; YOUNGSTER (12)
-	db "JASON@", TRAINERTYPE_NORMAL
-	db 33, SANDSLASH
-	db 33, CROBAT
+	; YOUNGSTER (12) - Kanto hack: ROUTE 11, Yellow's YOUNGSTER 10 (docs/M4-VERMILION.md 7l; was the unused JASON)
+	db "RUDY@", TRAINERTYPE_NORMAL
+	db 19, SANDSHREW
+	db 19, ZUBAT
 	db -1 ; end
 
 	; YOUNGSTER (13)
@@ -453,6 +465,19 @@ YoungsterGroup:
 	; YOUNGSTER (20) - Kanto hack: S.S. ANNE 1F Rooms, Yellow's YOUNGSTER 8 (docs/M4-VERMILION.md 5.1)
 	db "BENJI@", TRAINERTYPE_NORMAL
 	db 21, NIDORAN_M
+	db -1 ; end
+
+	; YOUNGSTER (21) - Kanto hack: ROUTE 11, Yellow's YOUNGSTER 11 (docs/M4-VERMILION.md 7l)
+	db "GORDY@", TRAINERTYPE_NORMAL
+	db 17, RATTATA
+	db 17, RATTATA
+	db 17, RATICATE
+	db -1 ; end
+
+	; YOUNGSTER (22) - Kanto hack: ROUTE 11, Yellow's YOUNGSTER 12 (docs/M4-VERMILION.md 7l)
+	db "CLIFF@", TRAINERTYPE_NORMAL
+	db 18, NIDORAN_M
+	db 18, NIDORINO
 	db -1 ; end
 
 SchoolboyGroup:
@@ -1576,9 +1601,10 @@ GentlemanGroup:
 	db 22, MAGNEMITE
 	db -1 ; end
 
-	; GENTLEMAN (4)
-	db "VIRGIL@", TRAINERTYPE_NORMAL
-	db 20, PONYTA
+	; GENTLEMAN (4) - Kanto hack: ROUTE 11, Yellow's GAMBLER 1 (docs/M4-VERMILION.md 7l; was the unused VIRGIL)
+	db "ARTHUR@", TRAINERTYPE_NORMAL
+	db 18, POLIWAG
+	db 18, HORSEA
 	db -1 ; end
 
 	; GENTLEMAN (5)
@@ -1608,6 +1634,24 @@ GentlemanGroup:
 	db "HUBERT@", TRAINERTYPE_NORMAL
 	db 17, GROWLITHE
 	db 17, PONYTA
+	db -1 ; end
+
+	; GENTLEMAN (10) - Kanto hack: ROUTE 11, Yellow's GAMBLER 2 (docs/M4-VERMILION.md 7l)
+	db "LEOPOLD@", TRAINERTYPE_NORMAL
+	db 18, BELLSPROUT
+	db 18, ODDISH
+	db -1 ; end
+
+	; GENTLEMAN (11) - Kanto hack: ROUTE 11, Yellow's GAMBLER 3 (docs/M4-VERMILION.md 7l)
+	db "WINSTON@", TRAINERTYPE_NORMAL
+	db 18, VOLTORB
+	db 18, MAGNEMITE
+	db -1 ; end
+
+	; GENTLEMAN (12) - Kanto hack: ROUTE 11, Yellow's GAMBLER 4 (docs/M4-VERMILION.md 7l)
+	db "HORACE@", TRAINERTYPE_NORMAL
+	db 18, GROWLITHE
+	db 18, VULPIX
 	db -1 ; end
 
 SkierGroup:
