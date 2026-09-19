@@ -11,6 +11,10 @@
 <link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="stylesheet" href="./style.css">
+<!-- style.css pins <html> to overflow:hidden for the player; the editor is a
+     normal scrolling document.  Duplicated from style.css's :has() rule for
+     browsers without :has(). -->
+<style>html { overflow: auto; height: auto; overscroll-behavior: auto; }</style>
 </head>
 <body class="editor">
 

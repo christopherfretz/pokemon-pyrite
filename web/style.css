@@ -324,10 +324,20 @@ kbd {
    A normal scrolling document, not the player's fixed-viewport layout: the
    editor is a long form and the phone's own scrolling is the right control. */
 
-body.editor {
+/* The player pins <html> to overflow:hidden; that clips the body on iOS
+   Safari even when the body itself says overflow:auto, so the document could
+   not scroll at all (operator, 2026-09-19).  Unpin the root for the editor.
+   edit.html carries the same rule inline for browsers without :has(). */
+html:has(body.editor) {
   overflow: auto;
   height: auto;
+  overscroll-behavior: auto;
+}
+body.editor {
+  overflow: visible;
+  height: auto;
   min-height: 100%;
+  touch-action: pan-y pan-x pinch-zoom;
   user-select: auto;
   -webkit-user-select: auto;
   padding: var(--safe-t) var(--safe-r) calc(var(--safe-b) + 76px) var(--safe-l);
