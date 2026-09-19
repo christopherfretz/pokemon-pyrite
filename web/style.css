@@ -132,10 +132,11 @@ body {
   padding: 4px 14px 8px;
 }
 
-.ctl {
+.ctl, .ctl *, #pad {
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
 

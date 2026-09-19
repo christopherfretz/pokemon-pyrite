@@ -1016,6 +1016,20 @@
 
   // Stop iOS rubber-banding / pinch zoom over the play area.
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+  // iOS Safari decides double-tap zoom, text selection and the magnifier
+  // loupe from the *touch* events, and preventDefault on pointerdown does not
+  // reach them (operator report 2026-09-19: the d-pad zoomed the page on a
+  // double tap and brought up the loupe on a long press).  Cancel the raw
+  // touch events on the whole control pad; pointer events still fire first,
+  // so the joypad handlers above are unaffected.
+  var padEl = document.getElementById('pad');
+  if (padEl) {
+    ['touchstart', 'touchend', 'touchmove', 'touchcancel'].forEach(function (t) {
+      padEl.addEventListener(t, function (e) {
+        if (e.cancelable) { e.preventDefault(); }
+      }, { passive: false });
+    });
+  }
   document.addEventListener('touchmove', function (e) {
     if (e.target && e.target.closest && e.target.closest('#menu')) { return; }
     if (e.cancelable) { e.preventDefault(); }
