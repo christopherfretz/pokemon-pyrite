@@ -130,6 +130,13 @@
 	const SPRITE_SEEL_OW            ; 73 (Yellow's overworld SEEL)
 	const SPRITE_CLEFAIRY_OW        ; 74 (Yellow's overworld CLEFAIRY)
 	const SPRITE_OLD_MAN_ASLEEP_OW  ; 75 (Yellow's lying-asleep gambler)
+; POKeMON TOWER / Lavender (docs/M5-LAVENDER.md 8a).  Neither sheet exists in
+; Crystal: the CHANNELER is Yellow's mourner/Rocket-possessed woman and MR FUJI
+; is the tower's old man.  Both are Yellow's own 16x96 walking sheets, copied
+; byte for byte (Gen 1 and Gen 2 use the same 6-frame overworld layout -- 14 of
+; the two games' sprite PNGs are already bit-identical, e.g. biker and oak).
+	const SPRITE_CHANNELER          ; 76 (Yellow's CHANNELER)
+	const SPRITE_MR_FUJI            ; 77 (Yellow's MR FUJI)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

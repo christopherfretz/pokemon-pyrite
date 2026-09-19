@@ -119,6 +119,10 @@ INCLUDE "gfx/tilesets/kanto_dock_palette_map.asm"
 TilesetKantoGatePalMap:
 INCLUDE "gfx/tilesets/kanto_gate_palette_map.asm"
 
+; Kanto hack: Yellow's CEMETERY tileset, POKeMON TOWER (M5 8a).
+TilesetKantoTowerPalMap:
+INCLUDE "gfx/tilesets/kanto_tower_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

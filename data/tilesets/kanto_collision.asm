@@ -162,3 +162,12 @@
 	tilecoll FLOOR, WALL, LADDER, WALL ; 99
 	tilecoll FLOOR, LADDER, FLOOR, LADDER ; 9a
 	tilecoll LADDER, FLOOR, LADDER, FLOOR ; 9b
+; M5 8a (docs/M5-LAVENDER.md 1.5.1): Lavender's bare dirt/grass verge (Yellow overworld block $7a), which
+; Crystal has no equivalent of.  Yellow's tiles $2c/$30 are pixel-identical
+; to Crystal's kanto $2c/$30, so this is a verbatim record copy, not new art.
+	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 9c
+; M5 8a (docs/M5-LAVENDER.md 1.5.1): A walk-through twin of kanto block $5c (the low fence/ledge corner).
+; Same art; Yellow's counterpart leaves the top-right quadrant plain FLOOR
+; where Crystal's $5c has a HOP_DOWN ledge, which would drop the player off
+; the north side of Lavender's town square.
+	tilecoll FLOOR, FLOOR, FLOOR, WALL ; 9d

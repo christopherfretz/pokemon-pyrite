@@ -156,3 +156,13 @@ ClefairyOwSpriteGFX::          INCBIN "gfx/sprites/clefairy.2bpp"
 ; frame, declared STILL_SPRITE like Crystal's own props, and given PAL_OW_BROWN
 ; so he matches the standing SPRITE_OLD_MAN he is swapped for.
 OldManAsleepSpriteGFX::        INCBIN "gfx/sprites/old_man_asleep.2bpp"
+
+; Kanto hack: POKeMON TOWER's two faces (docs/M5-LAVENDER.md 8a), from
+; pokeyellow gfx/sprites/channeler.png and mr_fuji.png byte for byte.  Full
+; 16x96 walking sheets: Gen 1 and Gen 2 store overworld frames in the same
+; order (standing down/up/left, walking down/up/left), which is why 14 of the
+; two trees' sprite PNGs -- biker, bruno, lance, oak, red ... -- are already
+; bit-identical.  Like every WALKING_SPRITE the table asks for only the first
+; 12 tiles; the file is INCBIN'd whole, as Crystal's own walkers are.
+ChannelerSpriteGFX::           INCBIN "gfx/sprites/channeler.2bpp"
+MrFujiSpriteGFX::              INCBIN "gfx/sprites/mr_fuji.2bpp"

@@ -39,6 +39,7 @@
 	const TILESET_SHIP ; 25
 	const TILESET_KANTO_DOCK ; 26
 	const TILESET_KANTO_GATE ; 27
+	const TILESET_KANTO_TOWER ; 28
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

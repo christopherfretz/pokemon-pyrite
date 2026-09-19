@@ -442,7 +442,6 @@ INCLUDE "maps/ViridianCity.asm"
 INCLUDE "maps/CeladonCity.asm"
 INCLUDE "maps/Route15.asm"
 INCLUDE "maps/VermilionCity.asm"
-INCLUDE "maps/Route9.asm"
 INCLUDE "maps/CinnabarPokecenter1F.asm"
 INCLUDE "maps/CinnabarPokecenter2FBeta.asm"
 INCLUDE "maps/Route19FuchsiaGate.asm"
@@ -478,6 +477,8 @@ INCLUDE "maps/Route28SteelWingHouse.asm"
 SECTION "Map Scripts 25", ROMX
 
 INCLUDE "maps/OaksLab.asm" ; Kanto hack: moved from section 19, which overflowed
+INCLUDE "maps/Route9.asm" ; Kanto hack: moved from section 23 (M5 8a), to
+; leave that bank room for Lavender's and Rock Tunnel's scripts.
 INCLUDE "maps/SilverCaveOutside.asm"
 INCLUDE "maps/Route10North.asm"
 
