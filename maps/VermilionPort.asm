@@ -90,7 +90,25 @@ VermilionPortSSAnneDepartsScene:
 	playsound SFX_BOAT
 	pause 60
 	applymovement PLAYER, VermilionPortSSAnneWalkOutMovement
-	warpcheck
+; 7n: `warp`, not `warpcheck` -- and the difference is a CRASH.
+;
+; `warpcheck` only ARMS the warp (Script_warpcheck -> EnableEvents); the map
+; change happens a frame or two later, from the overworld loop, and
+; DoPlayerMovement gets to run first.  That is fatal here because the walk-out
+; ends on (14,0), the top row of a map with no north connection: the joypad
+; byte the engine latched before the ~22-second cutscene is still UP (hJoyDown
+; is only re-polled by the overworld loop, so UP held while stepping onto the
+; SS ANNE 1F exit warp stays latched all the way through the departure), and
+; `applymovement PLAYER` never re-runs GetMovementPermissions, so the
+; collision cache still describes the gangway tile (14,2) this scene started
+; on, where UP is open.  The player walks off the top of the map, wMapGroup
+; goes to garbage and the ROM resets.  Measured in the harness: holding UP for
+; 60+ frames across the SS ANNE 1F -> VERMILION PORT warp reproduces it every
+; time.  `warp` does the map change inside the script, with no frame in which
+; the player can move -- and it is what Crystal's own port scripts use
+; (OlivinePort.asm, FastShip1F.asm).  VERMILION_CITY (18,31) is warp 6, the
+; destination warp_event 1 below points at.
+	warp VERMILION_CITY, 18, 31
 .not_off_the_gangway:
 	end
 
