@@ -92,6 +92,11 @@ body {
   background: rgba(11, 13, 16, .72);
 }
 
+/* `display: flex` above out-ranks the UA's `[hidden] { display: none }`. */
+#overlay[hidden] {
+  display: none;
+}
+
 #tapstart {
   font: 600 15px/1 system-ui, sans-serif;
   color: var(--accent-ink);

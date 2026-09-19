@@ -282,6 +282,7 @@
   var mod = null;          // the emscripten Module
   var emu = 0;             // Emulator*
   var romPtr = 0;          // wasm-side copy of the ROM (binjgb does not copy it)
+  var joypadBuf = 0;       // JoypadBuffer* the core's input callback records into
   var rom = null;
   var romSha = null;
   var romTitleKey = null;
@@ -432,6 +433,7 @@
   function destroyEmulator() {
     stopLoop();
     if (emu) { mod._emulator_delete(emu); emu = 0; }
+    if (joypadBuf) { mod._joypad_delete(joypadBuf); joypadBuf = 0; }
     if (romPtr) { mod._free(romPtr); romPtr = 0; }
     frameView = null;
     audioView = null;
@@ -453,11 +455,26 @@
       mod._free(romPtr); romPtr = 0;
       throw new Error('binjgb rejected this ROM (unsupported cartridge type?)');
     }
+    // emulator_new_simple installs NO joypad callback: set_joyp_* only write
+    // a static that default_joypad_callback copies from, and that callback is
+    // installed by this call (wrapper.c).  Without it every button is dead
+    // while the game runs on happily — the first real-browser bug (2026-09-19).
+    installJoypad();
     frameView = new Uint8Array(mod.HEAPU8.buffer,
       mod._get_frame_buffer_ptr(emu), mod._get_frame_buffer_size(emu));
     audioView = new Uint8Array(mod.HEAPU8.buffer,
       mod._get_audio_buffer_ptr(emu), mod._get_audio_buffer_capacity(emu));
     measureSizes();
+  }
+
+  /* The callback appends every button change to a JoypadBuffer (binjgb keeps
+     it for rewind, which we never use).  The heap is fixed-size, so recycle
+     the buffer now and then instead of letting it grow for a whole session. */
+  function installJoypad() {
+    if (joypadBuf) { mod._joypad_delete(joypadBuf); joypadBuf = 0; }
+    joypadBuf = mod._joypad_new();
+    if (!joypadBuf) { throw new Error('out of wasm memory for the joypad buffer'); }
+    mod._emulator_set_default_joypad_callback(emu, joypadBuf);
   }
 
   // ------------------------------------------------------------ renderer ---
@@ -1001,7 +1018,14 @@
 
   // ----------------------------------------------------------- lifecycle --
 
-  setInterval(function () { saveProgress(false); }, AUTOSAVE_MS);
+  setInterval(function () {
+    saveProgress(false);
+    if (started && emu) { installJoypad(); }   // drop the recorded-input log
+  }, AUTOSAVE_MS);
+
+  // A menu that is open when the emulator (re)starts shrinks #screenwrap, and
+  // closing it fires no resize event — so refit when it toggles.
+  $('#menu').addEventListener('toggle', function () { setTimeout(fitScreen, 0); });
 
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') {
