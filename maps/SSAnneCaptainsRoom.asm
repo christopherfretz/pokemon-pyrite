@@ -40,6 +40,10 @@ SSAnneCaptainsRoomCaptainScript:
 	waitsfx
 	promptbutton
 	setevent EVENT_GOT_HM01_CUT
+; 7j: Yellow re-tests EVENT_GOT_HM01 on every VERMILION DOCK load; the only
+; moment that test can start passing is this one, so arm the departure scene
+; here instead.  See maps/VermilionPort.asm.
+	setmapscene VERMILION_PORT, SCENE_VERMILIONPORT_SS_ANNE_DEPARTS
 	closetext
 	end
 

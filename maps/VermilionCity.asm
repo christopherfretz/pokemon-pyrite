@@ -35,9 +35,30 @@
 
 VermilionCity_MapScripts:
 	def_scene_scripts
+	scene_script VermilionCityNoopScene,         SCENE_VERMILIONCITY_NOTHING
+	scene_script VermilionCityExitShipScene,     SCENE_VERMILIONCITY_SS_ANNE_DEPARTED
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, VermilionCityFlypointCallback
+
+VermilionCityNoopScene:
+	end
+
+; 7j.  Yellow: VermilionCityLeftSSAnneCallbackScript ->
+; SCRIPT_VERMILIONCITY_PLAYER_EXIT_SHIP (vendor/pokeyellow/scripts/VermilionCity.asm).
+; On the first city load after the ship sails, Yellow ignores the joypad and
+; simulates two PAD_UP presses so the player walks up off the pier instead of
+; standing in the gate; EVENT_WALKED_PAST_GUARD_AFTER_SS_ANNE_LEFT is only the
+; latch that makes it happen once.  A scene armed by the dock is the same latch.
+VermilionCityExitShipScene:
+	setscene SCENE_VERMILIONCITY_NOTHING
+	applymovement PLAYER, VermilionCityExitShipMovement
+	end
+
+VermilionCityExitShipMovement:
+	step UP
+	step UP
+	step_end
 
 VermilionCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_VERMILION

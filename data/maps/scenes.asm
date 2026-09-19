@@ -90,4 +90,5 @@ MapScenes::
 	scene_var ROUTE_22,                                    wRoute22SceneID
 	scene_var PEWTER_CITY,                                 wPewterCitySceneID
 	scene_var BILLS_HOUSE,                                 wBillsHouseSceneID
+	scene_var VERMILION_CITY,                              wVermilionCitySceneID
 	db -1 ; end

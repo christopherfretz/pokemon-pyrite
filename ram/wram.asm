@@ -3263,8 +3263,9 @@ wViridianCitySceneID::                            db
 wRoute22SceneID::                                 db
 wPewterCitySceneID::                              db
 wBillsHouseSceneID::                              db ; 6j
+wVermilionCitySceneID::                           db ; 7j
 
-	ds 43
+	ds 42
 
 ; fight counts
 wJackFightCount::    db

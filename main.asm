@@ -715,6 +715,14 @@ INCLUDE "engine/events/battle_tower/load_trainer.asm"
 INCLUDE "engine/events/odd_egg.asm"
 
 
+; Kanto hack: M4 step 7j (docs/M4-VERMILION.md).  A floating section so the
+; S.S. ANNE departure does not eat into "Map Scripts 8", which already holds
+; every Vermilion map script.
+SECTION "S.S. Anne Departure", ROMX
+
+INCLUDE "engine/events/ss_anne_departure.asm"
+
+
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"

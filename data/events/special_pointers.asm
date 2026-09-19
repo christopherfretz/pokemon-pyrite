@@ -198,3 +198,4 @@ SpecialsPointers::
 	add_special FanClubPhoto
 	add_special FanClubPikachuScene
 	add_special FanClubPikachuFace
+	add_special SSAnneDeparture
