@@ -168,8 +168,8 @@ GetOutdoorSpriteList:
 	ret
 
 RefreshConnectionSprites::
-; Kanto hack (docs/M2-CATCH.md P1/B2).  The outdoor sprite GFX list is per map
-; GROUP, but MapSetupScript_Connection never reloads it: vanilla assumes a
+; Kanto hack (docs/M2-CATCH.md P1/B2, L2).  The outdoor sprite GFX list is per
+; map GROUP, but MapSetupScript_Connection never reloads it: vanilla assumes a
 ; connection stays inside one group, or that the two groups' lists are
 ; identical (vanilla's Pallet/Viridian/Pewter lists are, which is why vanilla
 ; Kanto gets away with it).  Our lists are trimmed per group
@@ -177,16 +177,21 @@ RefreshConnectionSprites::
 ; PALLET's list loaded, SPRITE_OLD_MAN had no vtile, and GetSpriteVTile fell
 ; back to wUsedSprites + 1 -- the PLAYER's tiles -- so the old man was drawn as
 ; Red in the old man's palette.
-; Runs between EnterMapConnection and LoadMapObjects, so every object struct is
-; (re-)spawned from the refreshed list.  Reloading costs ~20 frames, so only do
-; it when the new group needs a sprite that is not already loaded: crossings
-; inside one group, and between groups with compatible lists, stay free.
-	call GetOutdoorSpriteList
-	ld c, MAX_OUTDOOR_SPRITES
+; Runs after LoadMapAttributes and before LoadMapObjects, so wMap1Object.. already
+; holds the NEW map's object events and every struct is (re-)spawned from the
+; refreshed list.
+; RefreshSprites re-copies every sprite's GFX with the LCD on (~27 frames of
+; visible freeze, measured L2), so only do it when an object on the map we are
+; entering asks for a sprite that has no vtile.  Testing the new GROUP's whole
+; list instead was effectively always true across a group boundary -- the lists
+; are disjoint by design -- and stalled every Route 1 <-> VIRIDIAN CITY step in
+; both directions.
+	ld hl, wMap1ObjectSprite
+	ld c, NUM_OBJECTS - 1
 .check
-	ld a, [hli]
+	ld a, [hl]
 	and a
-	jr z, .next ; 0 = list padding
+	jr z, .next ; empty object slot
 	push hl
 	push bc
 	call .IsLoaded
@@ -194,6 +199,8 @@ RefreshConnectionSprites::
 	pop hl
 	jr nc, .refresh
 .next
+	ld de, MAPOBJECT_LENGTH
+	add hl, de
 	dec c
 	jr nz, .check
 	ret

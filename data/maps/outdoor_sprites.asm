@@ -37,8 +37,15 @@ PalletGroupSprites:
 	db SPRITE_TWIN
 	db SPRITE_YOUNGSTER
 	db SPRITE_FISHER
+; Kanto hack (L2): VIRIDIAN CITY's own sprites, so walking Route 1 -> VIRIDIAN
+; CITY finds them already loaded and RefreshConnectionSprites' ~27-frame reload
+; never fires on the line the player crosses most.  A group's list must cover
+; its own outdoor maps plus every map one connection away; trim_outdoor_sprites
+; --report checks both.
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 5
+	db SPRITE_OLD_MAN
+	db SPRITE_OLD_MAN_ASLEEP_OW
+rept MAX_OUTDOOR_SPRITES - 7
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
