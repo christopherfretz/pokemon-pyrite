@@ -4,8 +4,9 @@
 ; Yellow's Route6Gate guard stands at (6,2), on the EAST side of the corridor,
 ; facing LEFT, and the trigger is dbmapcoord 3,2 / 4,2 -- the guard's row, the
 ; full corridor width -- pushing the player back DOWN (south, to VERMILION).
-; Ours keeps the guard on the east side in Crystal's (9,4) niche behind the
-; east counter, and the band is the six corridor tiles (2..7, 4).
+; Ours is Yellow's exactly: guard at (6,2) facing LEFT, band on (3,2)/(4,2).
+; (An earlier draft put the guard in Crystal's (9,4) niche behind the east
+; counter with a six-tile band; that plan was dropped before 7d shipped.)
 ; Crystal's MAGNET TRAIN / POWER PLANT guard text is a Gen 2 anachronism and is
 ; deleted, along with the unusable scene_script.
 	object_const_def

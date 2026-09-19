@@ -156,8 +156,13 @@ Route11DiglettsCaveSign:
 Route11FruitTree:
 	fruittree FRUITTREE_ROUTE_11
 
-Route11HiddenRevive:
-	hiddenitem REVIVE, EVENT_ROUTE_11_HIDDEN_REVIVE
+; Kanto hack (M4 audit): Yellow's only ROUTE 11 hidden item is an ESCAPE_ROPE at
+; (48,5) (vendor/pokeyellow/data/events/hidden_events.asm:226,
+; hidden_item_coords.asm:36). Crystal's REVIVE at (32,5) was a leftover -- the
+; 7l survey kept it on my own judgement, not an operator ruling, and
+; docs/PORTING.md §15 lists no hidden-item carry-over, so it goes.
+Route11HiddenEscapeRope:
+	hiddenitem ESCAPE_ROPE, EVENT_ROUTE_11_HIDDEN_ESCAPE_ROPE
 
 GentlemanArthurSeenText:
 	text "Win, lose or draw!"
@@ -336,7 +341,7 @@ Route11_MapEvents:
 
 	def_bg_events
 	bg_event  1,  5, BGEVENT_READ, Route11DiglettsCaveSign
-	bg_event 32,  5, BGEVENT_ITEM, Route11HiddenRevive
+	bg_event 48,  5, BGEVENT_ITEM, Route11HiddenEscapeRope ; Kanto hack (M4 audit): Yellow's tile; a WALL block, and correctly so -- BGEVENT_ITEM triggers on FACING it, from (48,6) or (49,5)
 
 	def_object_events
 	object_event 10, 14, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerGentlemanArthur, -1

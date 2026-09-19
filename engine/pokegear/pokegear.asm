@@ -2328,17 +2328,25 @@ FlyMap:
 ; To prevent both of these things from happening when the player
 ; enters Kanto, fly access is restricted until Indigo Plateau is
 ; visited and its flypoint enabled.
+; Kanto hack (M4 audit): the gate above is SPAWN_PALLET, not SPAWN_INDIGO.
+; Crystal assumes Kanto is post-game, so it only opens the Kanto fly map once
+; INDIGO PLATEAU is registered; in a Kanto-first game that never happens during
+; the Kanto act, .NoKanto fires, and FLY hands the player the JOHTO map with
+; NEW BARK TOWN under the cursor -- verified live from VERMILION CITY with all
+; three badges.  PALLET TOWN is registered before the player can own any
+; Pokemon, so it preserves the "at least one flypoint is enabled" invariant the
+; comment above is actually about.  The default cursor also moves off INDIGO
+; PLATEAU (which Crystal admits can be flown to unvisited) onto PALLET TOWN.
 	push af
-	ld c, SPAWN_INDIGO
+	ld c, SPAWN_PALLET
 	call HasVisitedSpawn
 	and a
 	jr z, .NoKanto
-; Kanto's map is only loaded if we've visited Indigo Plateau
 	ld a, KANTO_FLYPOINT ; first Kanto flypoint
 	ld [wStartFlypoint], a
+	ld [wTownMapPlayerIconLandmark], a ; first one is default (PALLET TOWN)
 	ld a, NUM_FLYPOINTS - 1 ; last Kanto flypoint
 	ld [wEndFlypoint], a
-	ld [wTownMapPlayerIconLandmark], a ; last one is default (Indigo Plateau)
 ; Fill out the map
 	call FillKantoMap
 	call .MapHud

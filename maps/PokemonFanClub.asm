@@ -4,8 +4,14 @@
 ; vendor/pokeyellow/text/PokemonFanClub.asm.
 ;
 ; Crystal's whole cast is gone with 7f: the RARE CANDY chairman, the CLEFAIRY
-; guy who hands over the LOST_ITEM for Copycat, the CLEFAIRY DOLL object, the
-; BAYLEEF teacher and both bg_events -- Yellow's Fan Club has no signs at all.
+; guy who hands over the LOST_ITEM for Copycat, the CLEFAIRY DOLL object and the
+; BAYLEEF teacher.  Crystal's two signs ("Let's all listen politely" / "If
+; someone brags") are gone too, but the room is NOT signless: the M4 audit found
+; that Yellow registers two readable wall pictures here
+; (vendor/pokeyellow/data/events/hidden_events.asm:425-427), each of which
+; displays a #MON sprite and one line -- "My cute RAPIDASH." and "My beloved
+; FEAROW." -- which is exactly the wall the chairman brags about ("them framed
+; up on that wall").  Ported below.
 ;
 ; Geometry: Yellow's room is 4x4 blocks (8x8 tiles), ours is Crystal's 5x4
 ; (10x8), so the two side columns move out by one tile and everything else is
@@ -383,6 +389,40 @@ PokemonFanClubReceptionistText:
 	cont "#MON."
 	done
 
+; Kanto hack (M4 audit): Yellow's two readable wall pictures
+; (vendor/pokeyellow/engine/events/hidden_events/fanclub_pictures.asm).  Yellow
+; shows the sprite with DisplayMonFrontSpriteInBox and prints the line
+; underneath; GSC's `pokepic` window and its textbox cannot share the screen, so
+; the picture comes first and the line follows on A, the same order ELM's lab
+; uses for the starter Poke Balls (hack/maps/ElmsLab.asm:164-169).
+PokemonFanClubRapidashPicture:
+	pokepic RAPIDASH
+	waitbutton
+	closepokepic
+	opentext
+	writetext PokemonFanClubRapidashPictureText
+	waitbutton
+	closetext
+	end
+
+PokemonFanClubFearowPicture:
+	pokepic FEAROW
+	waitbutton
+	closepokepic
+	opentext
+	writetext PokemonFanClubFearowPictureText
+	waitbutton
+	closetext
+	end
+
+PokemonFanClubRapidashPictureText:
+	text "My cute RAPIDASH."
+	done
+
+PokemonFanClubFearowPictureText:
+	text "My beloved FEAROW."
+	done
+
 PokemonFanClub_MapEvents:
 	db 0, 0 ; filler
 
@@ -395,6 +435,13 @@ PokemonFanClub_MapEvents:
 	coord_event  3,  6, -1, PokemonFanClubPikachuSceneScript
 
 	def_bg_events
+; Kanto hack (M4 audit): Yellow's pictures are at (1,0) and (6,0), the two
+; framed blocks of its own top wall.  Crystal's art puts both framed pictures on
+; the RIGHT half of the top wall -- blocks 3 and 4 of PokemonFanClub.blk are the
+; two $29 portrait blocks, which is why Crystal's own signs sat at (7,0)/(9,0) --
+; so the pair lands there rather than on plain wall at Yellow's x.
+	bg_event  7,  0, BGEVENT_READ, PokemonFanClubRapidashPicture
+	bg_event  9,  0, BGEVENT_READ, PokemonFanClubFearowPicture
 
 	def_object_events
 	object_event  7,  3, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonFanClubClefairyFanScript, -1

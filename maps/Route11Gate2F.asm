@@ -65,7 +65,15 @@ Route11Gate2FOaksAideScript:
 	closetext
 	end
 
+; Kanto hack (M4 audit): Yellow prints the binoculars only when the player is
+; facing UP -- GateUpstairsScript_PrintIfFacingUp
+; (vendor/pokeyellow/scripts/Route12Gate2F.asm:68-79) sets
+; wDoNotWaitForButtonPressAfterDisplayingText and prints nothing at all from the
+; side.  Both binocular tiles are WALL, but the tiles left and right of them are
+; floor in both games, so the side approach is reachable and must stay silent.
 Route11Gate2FLeftBinocularsScript:
+	readvar VAR_FACING
+	ifnotequal UP, .NotFacingUp
 	opentext
 	checkevent EVENT_BEAT_ROUTE_12_SNORLAX
 	iftrue .NoSnorlax
@@ -80,8 +88,16 @@ Route11Gate2FLeftBinocularsScript:
 	closetext
 	end
 
+.NotFacingUp:
+	end
+
 Route11Gate2FRightBinocularsScript:
+	readvar VAR_FACING
+	ifnotequal UP, .NotFacingUp
 	jumptext Route11Gate2FRightBinocularsText
+
+.NotFacingUp:
+	end
 
 Route11Gate2FOaksAideHiText:
 	text "Hi! Remember me?"
