@@ -62,3 +62,8 @@
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 3d
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 3e
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 3f
+; Kanto hack (M4 7k): VERMILION GYM's closed motorized door.  Yellow's gym
+; block $24 is WALL/WALL/FLOOR/FLOOR (its top half is the door, its bottom half
+; the floor the player stands on), derived from Gym_Coll in
+; vendor/pokeyellow/data/tilesets/collision_tile_ids.asm.
+	tilecoll WALL, WALL, FLOOR, FLOOR ; 40

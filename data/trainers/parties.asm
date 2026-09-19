@@ -289,13 +289,15 @@ MistyGroup:
 	db -1 ; end
 
 LtSurgeGroup:
-	; LT_SURGE (1)
+	; LT_SURGE (1) - Kanto hack: Yellow's LT.SURGE (docs/M4-VERMILION.md 5.1),
+	; one L28 RAICHU.  Yellow gives it no explicit moveset, so the game builds
+	; one from RAICHU's base moves -- and RaichuEvosMoves has an empty learnset,
+	; so a L28 RAICHU knows exactly its level-1 four:
+	; THUNDERSHOCK/GROWL/THUNDER_WAVE and an empty slot.  Spelled out with
+	; TRAINERTYPE_MOVES because Gen 2 would otherwise hand it Gen 2's RAICHU
+	; learnset (as with BROCK/MISTY in M2/M3).
 	db "LT.SURGE@", TRAINERTYPE_MOVES
-	db 44, RAICHU,     THUNDER_WAVE, QUICK_ATTACK, THUNDERBOLT, THUNDER
-	db 40, ELECTRODE,  SCREECH, DOUBLE_TEAM, SWIFT, EXPLOSION
-	db 40, MAGNETON,   LOCK_ON, DOUBLE_TEAM, SWIFT, ZAP_CANNON
-	db 40, ELECTRODE,  SCREECH, DOUBLE_TEAM, SWIFT, EXPLOSION
-	db 46, ELECTABUZZ, QUICK_ATTACK, THUNDERPUNCH, LIGHT_SCREEN, THUNDER
+	db 28, RAICHU,     THUNDERSHOCK, GROWL, THUNDER_WAVE, NO_MOVE
 	db -1 ; end
 
 ScientistGroup:
@@ -1568,10 +1570,10 @@ GentlemanGroup:
 	db 33, PERSIAN
 	db -1 ; end
 
-	; GENTLEMAN (3)
+	; GENTLEMAN (3) - Kanto hack: VERMILION GYM, Yellow's GENTLEMAN 3 (docs/M4-VERMILION.md 5.1)
 	db "GREGORY@", TRAINERTYPE_NORMAL
-	db 37, PIKACHU
-	db 33, FLAAFFY
+	db 22, VOLTORB
+	db 22, MAGNEMITE
 	db -1 ; end
 
 	; GENTLEMAN (4)
@@ -2384,6 +2386,11 @@ SailorGroup:
 	db 20, MACHOP
 	db -1 ; end
 
+	; SAILOR (21) - Kanto hack: VERMILION GYM, Yellow's SAILOR 8 (docs/M4-VERMILION.md 5.1)
+	db "DEWEY@", TRAINERTYPE_NORMAL
+	db 24, MAGNEMITE
+	db -1 ; end
+
 SuperNerdGroup:
 	; SUPER_NERD (1)
 	db "STAN@", TRAINERTYPE_NORMAL
@@ -2538,12 +2545,12 @@ GuitaristGroup:
 	db 34, ELECTABUZZ
 	db -1 ; end
 
-	; GUITARIST (2)
+	; GUITARIST (2) - Kanto hack: VERMILION GYM, Yellow's ROCKER 1 (docs/M4-VERMILION.md 5.1).
+	; Crystal has no ROCKER class; GUITARIST is its descendant.
 	db "VINCENT@", TRAINERTYPE_NORMAL
-	db 27, MAGNEMITE
-	db 33, VOLTORB
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
+	db 20, VOLTORB
+	db 20, VOLTORB
+	db 20, VOLTORB
 	db -1 ; end
 
 HikerGroup:

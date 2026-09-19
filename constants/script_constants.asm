@@ -330,3 +330,12 @@ DEF UNOWN_WALL_MENU_HEADER_SIZE EQU 5
 	const_def 1
 	const MOVETUTOR_FLAMETHROWER ; 1
 	const MOVETUTOR_ICE_BEAM     ; 2
+
+; VermilionGymTrashCan return values, read back out of wScriptVar
+; Kanto hack (M4 7k): the special does the arithmetic and the flags, the map
+; script says Yellow's four lines (see engine/events/vermilion_gym_trash.asm).
+	const_def
+	const TRASHCAN_NOTHING  ; 0 -- "Nope, there's only trash here."
+	const TRASHCAN_1ST_LOCK ; 1 -- the 1st electric lock opened
+	const TRASHCAN_2ND_LOCK ; 2 -- the 2nd lock opened; the door slides back
+	const TRASHCAN_RESET    ; 3 -- missed the 2nd switch; both locks reset

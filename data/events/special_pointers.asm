@@ -199,3 +199,5 @@ SpecialsPointers::
 	add_special FanClubPikachuScene
 	add_special FanClubPikachuFace
 	add_special SSAnneDeparture
+	add_special InitVermilionGymTrashCans
+	add_special VermilionGymTrashCan

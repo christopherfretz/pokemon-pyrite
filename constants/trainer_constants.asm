@@ -494,6 +494,8 @@ DEF KRIS EQU __trainer_class__
 	const FORREST
 	const SEAMUS
 	const SILAS
+; Kanto hack: VERMILION GYM's sailor (7k) -- Yellow SAILOR 8
+	const DEWEY
 
 	trainerclass SUPER_NERD ; 29
 	const STAN

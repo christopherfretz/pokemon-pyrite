@@ -26,7 +26,7 @@
 	const EVENT_GOT_HM04_STRENGTH
 	const EVENT_GOT_HM05_FLASH
 	const EVENT_GOT_HM06_WHIRLPOOL
-	const_skip ; unused
+	const EVENT_GOT_TM24_THUNDERBOLT ; Kanto hack (M4 7k): renamed in place, was an unused const_skip; LT.SURGE's TM24 THUNDERBOLT
 ; Rods
 	const EVENT_GOT_OLD_ROD
 	const EVENT_GOT_GOOD_ROD
@@ -65,8 +65,8 @@
 	const EVENT_LAKE_OF_RAGE_EXPLAINED_WEIRD_MAGIKARP
 	const EVENT_LAKE_OF_RAGE_ASKED_FOR_MAGIKARP
 	const EVENT_LAKE_OF_RAGE_ELIXIR_ON_STANDBY
-	const_skip ; unused
-	const_skip ; unused
+	const EVENT_1ST_LOCK_OPENED ; Kanto hack (M4 7k): renamed in place, was an unused const_skip; VERMILION GYM trash cans
+	const EVENT_2ND_LOCK_OPENED ; Kanto hack (M4 7k): renamed in place, was an unused const_skip; VERMILION GYM trash cans
 	const EVENT_HEALED_MOOMOO
 	const EVENT_GOT_TM13_SNORE_FROM_MOOMOO_FARM
 	const EVENT_TALKED_TO_FARMER_ABOUT_MOOMOO
@@ -712,7 +712,7 @@
 ; Juggler
 	const EVENT_BEAT_JUGGLER_IRWIN
 	const EVENT_BEAT_JUGGLER_FRITZ
-	const EVENT_BEAT_JUGGLER_HORTON
+	const EVENT_BEAT_SAILOR_DEWEY ; Kanto hack: renamed in place (7k), was EVENT_BEAT_JUGGLER_HORTON; VERMILION GYM, Yellow's SAILOR 8
 	const EVENT_BEAT_JUGGLER_IRWIN2
 	const EVENT_BEAT_JUGGLER_IRWIN3
 ; Gentleman

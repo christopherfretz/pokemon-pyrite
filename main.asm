@@ -723,6 +723,13 @@ SECTION "S.S. Anne Departure", ROMX
 INCLUDE "engine/events/ss_anne_departure.asm"
 
 
+; Kanto hack: M4 step 7k (docs/M4-VERMILION.md 3.9).  VERMILION GYM's trash-can
+; puzzle, floating for the same reason as the section above.
+SECTION "Vermilion Gym Trash Cans", ROMX
+
+INCLUDE "engine/events/vermilion_gym_trash.asm"
+
+
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"

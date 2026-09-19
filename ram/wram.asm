@@ -1928,6 +1928,23 @@ wHoursSince:: db
 wDaysSince:: db
 
 
+; Kanto hack: M4 step 7k (docs/M4-VERMILION.md 3.9e).  VERMILION GYM's
+; trash-can puzzle.  Yellow keeps these three bytes in its scratch area
+; (ram/wram.asm wFirstLockTrashCanIndex / wSecondLockTrashCanIndex at :2399
+; and wGymTrashCanIndex at :1040), i.e. NOT in the save block: the first
+; switch is re-rolled on every map load anyway.  Ours are WRAM0 rather than
+; WRAM bank 1 for two reasons -- bank 1 is full (docs/HOUSEKEEPING.md 3), and
+; WRAM0 is always mapped, so the special can write them without touching SVBK.
+; They land in the 12-byte hole that follows wOverworldMapBlocksEnd /
+; wLinkDataEnd at $cd14 (the same hole "Pikachu Emotion Scratch" sits in),
+; outside wPlayerData, so no save or savestate changes shape.
+SECTION "Vermilion Gym Trash", WRAM0
+
+wFirstLockTrashCanIndex:: db  ; which can hides the 1st switch (always even)
+wSecondLockTrashCanIndex:: ds 2 ; the two cans that can hide the 2nd switch
+wGymTrashCanIndex:: db        ; the can being read right now
+
+
 SECTION "WRAM 1", WRAMX
 
 wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION
