@@ -17,8 +17,11 @@
 ;          $10-$13 $15-$19 $1c-$1f $20-$29 $2c-$2f $30 $33-$39 $3d $3e.  ROOF is
 ;          white/pale-cyan/blue, which is exactly what Crystal paints the FAST
 ;          SHIP's hull with, so she reads as a white liner with blue trim.
-;   RED    the S.S. ANNE's hull below the deck line - $40-$45 $4d-$4f $51-$53
-;          $55 $5a $5b $5d - giving Crystal's white-over-red ship.
+;   ROOF   also the S.S. ANNE's hull below the deck line - $40-$45 $4d-$4f
+;          $51-$53 $55 $5a $5b $5d.  P1 first painted the hull RED (Crystal's
+;          white-over-red liner); the operator found the red reads pink under
+;          the day/night tint and asked for pure blue/white (2026-09-18), so
+;          the whole ship is ROOF now.  Only the lorry keeps RED.
 ;
 ; Both VRAM banks get identical rows, as Crystal's own port_palette_map.asm does.
 	tilepal 0, ROOF, BROWN, ROOF, ROOF, ROOF, ROOF, ROOF, ROOF
@@ -29,10 +32,10 @@
 	tilepal 0, ROOF, ROOF, GRAY, GRAY, ROOF, ROOF, ROOF, ROOF
 	tilepal 0, ROOF, GRAY, GRAY, ROOF, ROOF, ROOF, ROOF, ROOF
 	tilepal 0, ROOF, ROOF, WATER, GRAY, RED, ROOF, ROOF, GRAY
-	tilepal 0, RED, RED, RED, RED, RED, RED, GRAY, GRAY
-	tilepal 0, RED, RED, RED, RED, RED, RED, RED, RED
-	tilepal 0, BROWN, RED, RED, RED, GRAY, RED, BROWN, BROWN
-	tilepal 0, RED, RED, RED, RED, GRAY, RED, GRAY, GRAY
+	tilepal 0, ROOF, ROOF, ROOF, ROOF, ROOF, ROOF, GRAY, GRAY
+	tilepal 0, RED, RED, RED, RED, RED, ROOF, ROOF, ROOF
+	tilepal 0, BROWN, ROOF, ROOF, ROOF, GRAY, ROOF, BROWN, BROWN
+	tilepal 0, RED, RED, ROOF, ROOF, GRAY, ROOF, GRAY, GRAY
 
 rept 16
 	db $ff
@@ -46,7 +49,7 @@ endr
 	tilepal 1, ROOF, ROOF, GRAY, GRAY, ROOF, ROOF, ROOF, ROOF
 	tilepal 1, ROOF, GRAY, GRAY, ROOF, ROOF, ROOF, ROOF, ROOF
 	tilepal 1, ROOF, ROOF, WATER, GRAY, RED, ROOF, ROOF, GRAY
-	tilepal 1, RED, RED, RED, RED, RED, RED, GRAY, GRAY
-	tilepal 1, RED, RED, RED, RED, RED, RED, RED, RED
-	tilepal 1, BROWN, RED, RED, RED, GRAY, RED, BROWN, BROWN
-	tilepal 1, RED, RED, RED, RED, GRAY, RED, GRAY, GRAY
+	tilepal 1, ROOF, ROOF, ROOF, ROOF, ROOF, ROOF, GRAY, GRAY
+	tilepal 1, RED, RED, RED, RED, RED, ROOF, ROOF, ROOF
+	tilepal 1, BROWN, ROOF, ROOF, ROOF, GRAY, ROOF, BROWN, BROWN
+	tilepal 1, RED, RED, ROOF, ROOF, GRAY, ROOF, GRAY, GRAY

@@ -172,9 +172,19 @@ OaksLabPokedexScript:
 Oak:
 	faceplayer
 	opentext
-	; Yellow's OaksLabOak1Text branch order (docs/M2-PARCEL.md).
+	; Yellow's OaksLabOak1Text state machine, in Yellow's own branch order
+	; (vendor/pokeyellow/scripts/OaksLab.asm:807-882; the table in
+	; docs/M2-PARCEL.md "## O1 findings").  Yellow's first check is
+	; EVENT_PALLET_AFTER_GETTING_POKEBALLS -- set by PALLET_TOWN's map script
+	; once the balls have been given -- but the two gates below it (2+ mons
+	; owned, or POKé BALLs already in the bag) cover every state we can
+	; actually reach, so that flag is not ported.
+	readvar VAR_DEXCAUGHT
+	ifgreater 1, .DexRating
+	checkitem POKE_BALL
+	iftrue .ComeSeeMeSometimes
 	checkevent EVENT_GOT_POKEBALLS_FROM_OAK
-	iftrue .DexCheck
+	iftrue .DexRating
 	checkevent EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
 	iftrue .GivePokeBalls
 	checkflag ENGINE_POKEDEX
@@ -212,22 +222,33 @@ Oak:
 	closetext
 	end
 
+; Yellow's .give_poke_balls: the item first, its result ignored -- with a full
+; BALLS pocket the text still says "got 5 # BALLs!" and they are lost, and the
+; flag is set either way (Yellow's CheckAndSetEvent).  Yellow's ball text ends
+; on "@" so the key-item jingle plays with no button press, and the press then
+; moves on to the explanation.
 .GivePokeBalls:
-	writetext OakReceivedPokeBallsText
-	promptbutton
 	giveitem POKE_BALL, 5
-	playsound SFX_ITEM
-	waitsfx
 	setevent EVENT_GOT_POKEBALLS_FROM_OAK
+	writetext OakReceivedPokeBallsText
+	playsound SFX_KEY_ITEM
+	waitsfx
+	promptbutton
 	writetext OakPokeBallsExplanationText
 	waitbutton
 	closetext
 	end
 
-.DexCheck:
+; Yellow prints HowIsYourPokedexComingText and then the dex rating, and stops
+; there -- "Come see me sometimes" is a separate branch, not a tail.
+.DexRating:
 	writetext OakHowIsYourDexComingText
 	waitbutton
 	special ProfOaksPCBoot
+	closetext
+	end
+
+.ComeSeeMeSometimes:
 	writetext OakComeSeeMeSometimesText
 	waitbutton
 	closetext
@@ -544,7 +565,7 @@ OakDeliverParcelText:
 	line "something for me?"
 
 	para "<PLAYER> delivered"
-	line "OAK'S PARCEL."
+	line "OAK's PARCEL."
 	done
 
 OakParcelThanksText:
