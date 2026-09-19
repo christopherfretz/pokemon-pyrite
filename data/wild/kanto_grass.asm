@@ -2,32 +2,40 @@
 
 KantoGrassWildMons:
 
+; Kanto hack (7m): Yellow's Diglett's Cave table
+; (vendor/pokeyellow/data/wild/maps/DiglettsCave.asm). Yellow rate 20/256 ==
+; `8 percent` exactly, and Gen 1 has no time of day, so morn = day = nite.
+; Yellow's ten slots fold to Crystal's seven by dropping three duplicated
+; middle DIGLETTs -- slot 3 (L20, 9.8%), slot 4 (L16, 9.8%) and slot 6
+; (L21, 5.1%) -- which keeps Yellow's order, both species and both level
+; extremes (L15 min, L22 max). Species weights land at DIGLETT 95% /
+; DUGTRIO 5%, against Yellow's 94.9% / 5.1%.
 	def_grass_wildmons DIGLETTS_CAVE
-	db 4 percent, 2 percent, 8 percent ; encounter rates: morn/day/nite
+	db 8 percent, 8 percent, 8 percent ; encounter rates: morn/day/nite
 	; morn
-	db 3, DIGLETT
-	db 6, DIGLETT
-	db 12, DIGLETT
-	db 24, DIGLETT
-	db 24, DUGTRIO
-	db 24, DUGTRIO
-	db 24, DUGTRIO
+	db 18, DIGLETT
+	db 19, DIGLETT
+	db 17, DIGLETT
+	db 15, DIGLETT
+	db 22, DIGLETT
+	db 29, DUGTRIO
+	db 31, DUGTRIO
 	; day
-	db 2, DIGLETT
-	db 4, DIGLETT
-	db 8, DIGLETT
-	db 16, DIGLETT
-	db 16, DUGTRIO
-	db 16, DUGTRIO
-	db 16, DUGTRIO
+	db 18, DIGLETT
+	db 19, DIGLETT
+	db 17, DIGLETT
+	db 15, DIGLETT
+	db 22, DIGLETT
+	db 29, DUGTRIO
+	db 31, DUGTRIO
 	; nite
-	db 4, DIGLETT
-	db 8, DIGLETT
-	db 16, DIGLETT
-	db 32, DIGLETT
-	db 32, DUGTRIO
-	db 32, DUGTRIO
-	db 32, DUGTRIO
+	db 18, DIGLETT
+	db 19, DIGLETT
+	db 17, DIGLETT
+	db 15, DIGLETT
+	db 22, DIGLETT
+	db 29, DUGTRIO
+	db 31, DUGTRIO
 	end_grass_wildmons
 
 ; Kanto hack (docs/M2-MTMOON.md): Yellow's three Mt. Moon floors, replacing
@@ -398,60 +406,74 @@ KantoGrassWildMons:
 	db 12, SPEAROW
 	end_grass_wildmons
 
+; Kanto hack (7m): Yellow's Route 5 table
+; (vendor/pokeyellow/data/wild/maps/Route5.asm). Yellow rate 15/256 ==
+; `6 percent` exactly; no time of day, so morn = day = nite. Yellow's ten
+; slots fold to seven by dropping the three duplicated middle entries
+; PIDGEY 16 (slot 3, 9.8%), RATTATA 16 (slot 4, 9.8%) and JIGGLYPUFF 5
+; (slot 8, 3.9%), which keeps Yellow's order, all five species and both level
+; extremes (L3 JIGGLYPUFF, L17 PIDGEY/PIDGEOTTO). Resulting species weights
+; PIDGEY 40 / RATTATA 30 / ABRA 20 / PIDGEOTTO 5 / JIGGLYPUFF 5, against
+; Yellow's 39.1 / 29.3 / 14.8 / 5.1 / 10.2. Gone: Crystal's SNUBBULL,
+; HOOTHOOT, MEOWTH, NOCTOWL. No PIKACHU -- the starter stays unique.
 	def_grass_wildmons ROUTE_5
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 13, PIDGEY
-	db 13, SNUBBULL
-	db 15, PIDGEOTTO
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	; day
-	db 13, PIDGEY
-	db 13, SNUBBULL
-	db 15, PIDGEOTTO
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	; nite
-	db 13, HOOTHOOT
-	db 13, MEOWTH
-	db 15, NOCTOWL
-	db 12, ABRA
-	db 14, JIGGLYPUFF
-	db 14, ABRA
-	db 14, ABRA
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	end_grass_wildmons
 
+; Kanto hack (7m): Yellow's Route 6 grass table is byte-identical to Route 5's
+; (vendor/pokeyellow/data/wild/maps/Route6.asm) -- same rate 15, same ten
+; slots -- so the same conversion applies. Gone: Crystal's SNUBBULL,
+; MAGNEMITE, GRANBULL, MEOWTH, DROWZEE, PSYDUCK, RATICATE.
 	def_grass_wildmons ROUTE_6
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 13, RATTATA
-	db 13, SNUBBULL
-	db 14, MAGNEMITE
-	db 15, RATICATE
-	db 12, JIGGLYPUFF
-	db 15, GRANBULL
-	db 15, GRANBULL
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	; day
-	db 13, RATTATA
-	db 13, SNUBBULL
-	db 14, MAGNEMITE
-	db 15, RATICATE
-	db 12, JIGGLYPUFF
-	db 15, GRANBULL
-	db 15, GRANBULL
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	; nite
-	db 13, MEOWTH
-	db 13, DROWZEE
-	db 14, MAGNEMITE
-	db 15, PSYDUCK
-	db 12, JIGGLYPUFF
-	db 15, RATICATE
-	db 15, RATICATE
+	db 15, PIDGEY
+	db 14, RATTATA
+	db  7, ABRA
+	db 17, PIDGEY
+	db 17, PIDGEOTTO
+	db  3, JIGGLYPUFF
+	db  7, JIGGLYPUFF
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_7
@@ -566,32 +588,46 @@ KantoGrassWildMons:
 	db 16, ELECTABUZZ
 	end_grass_wildmons
 
+; Kanto hack (7m): Yellow's Route 11 table
+; (vendor/pokeyellow/data/wild/maps/Route11.asm). Yellow rate 15/256 ==
+; `6 percent` exactly; no time of day, so morn = day = nite. Yellow's ten
+; slots fold to seven by dropping RATTATA 17 (slot 4, 9.8%), PIDGEOTTO 18
+; (slot 6, 5.1%) and DROWZEE 19 (slot 8, 3.9%) -- the three duplicated middle
+; entries whose species survive elsewhere -- keeping Yellow's order, all five
+; species and both level extremes (L15 min, L20 PIDGEOTTO max). NOTE the
+; distribution cost of keeping Yellow's *order*: Yellow puts PIDGEY in slots 0
+; and 2, which Crystal weights 30% + 20%, so PIDGEY rises 34.4 -> 50 and
+; DROWZEE falls 23.5 -> 15 (RATTATA 30, PIDGEOTTO 4, RATICATE 1 are within a
+; point). Swapping this table's slots 2 and 3 would restore DROWZEE at the
+; cost of Yellow's literal order -- an open question in
+; docs/AUDIT-M4-LEFTOVERS.md. Gone: Crystal's HOPPIP, MAGNEMITE, MEOWTH,
+; NOCTOWL, HYPNO.
 	def_grass_wildmons ROUTE_11
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 14, HOPPIP
-	db 13, RATICATE
-	db 15, MAGNEMITE
-	db 16, PIDGEOTTO
-	db 16, RATTATA
-	db 16, HOPPIP
-	db 16, HOPPIP
+	db 16, PIDGEY
+	db 15, RATTATA
+	db 18, PIDGEY
+	db 15, DROWZEE
+	db 17, DROWZEE
+	db 20, PIDGEOTTO
+	db 17, RATICATE
 	; day
-	db 14, HOPPIP
-	db 13, RATICATE
-	db 15, MAGNEMITE
-	db 16, PIDGEOTTO
-	db 16, RATTATA
-	db 16, HOPPIP
-	db 16, HOPPIP
+	db 16, PIDGEY
+	db 15, RATTATA
+	db 18, PIDGEY
+	db 15, DROWZEE
+	db 17, DROWZEE
+	db 20, PIDGEOTTO
+	db 17, RATICATE
 	; nite
-	db 14, DROWZEE
-	db 13, MEOWTH
-	db 15, MAGNEMITE
-	db 16, NOCTOWL
-	db 16, RATICATE
-	db 16, HYPNO
-	db 16, HYPNO
+	db 16, PIDGEY
+	db 15, RATTATA
+	db 18, PIDGEY
+	db 15, DROWZEE
+	db 17, DROWZEE
+	db 20, PIDGEOTTO
+	db 17, RATICATE
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_13

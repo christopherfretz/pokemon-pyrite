@@ -23,11 +23,27 @@ KantoWaterWildMons:
 	db 10, SEAKING
 	end_water_wildmons
 
+; Kanto hack (7m): Yellow's Route 6 water table
+; (vendor/pokeyellow/data/wild/maps/Route6.asm) -- PSYDUCK L15 in eight of the
+; ten slots (94.9%), GOLDUCK L15 (3.9%) and GOLDUCK L20 (1.2%). Crystal has
+; only three water slots, weighted 60/30/10, so the eight identical PSYDUCKs
+; become the two commons and GOLDUCK takes the 10% slot: PSYDUCK 90 /
+; GOLDUCK 10, against Yellow's 94.9 / 5.1.
+; Both levels are Yellow's FLOOR, not its listed level, because Crystal adds
+; surf level variety that Yellow has none of: ChooseWildEncounter
+; (engine/overworld/wildmons.asm) rolls +0..+4 on the level of any *water*
+; encounter (35/30/20/10/5%). So base 15 yields PSYDUCK L15-19 and GOLDUCK
+; L15-19, which covers Yellow's GOLDUCK L15 exactly and reaches its L20 rare
+; without overshooting it -- a base of 20 would hand out L20-24 GOLDUCKs that
+; Yellow never has.
+; The rate byte is Yellow's own 3/256: the `percent` macro (`* $ff / 100`)
+; cannot express it -- `1 percent` is 2 and `2 percent` is 5 -- so it is
+; written literally.
 	def_water_wildmons ROUTE_6
-	db 2 percent ; encounter rate
-	db 10, PSYDUCK
-	db 5, PSYDUCK
-	db 10, GOLDUCK
+	db 3 ; encounter rate: Yellow's own 3/256 (~1.2%)
+	db 15, PSYDUCK
+	db 15, PSYDUCK
+	db 15, GOLDUCK
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_9
@@ -147,12 +163,15 @@ KantoWaterWildMons:
 	db 10, SEAKING
 	end_water_wildmons
 
-	def_water_wildmons VERMILION_CITY
-	db 6 percent ; encounter rate
-	db 35, TENTACOOL
-	db 30, TENTACOOL
-	db 35, TENTACRUEL
-	end_water_wildmons
+; Kanto hack (7m): VERMILION_CITY's surf table is DELETED, not zeroed. Yellow
+; has no data/wild/maps/VermilionCity.asm at all -- the city's water is
+; fishing-only (FISHGROUP_OCEAN, data/maps/maps.asm) -- and unlike 6h's
+; Route 24/25 the row cannot simply drop to `0 percent`, because FindNest
+; (engine/overworld/wildmons.asm:79 `.FindWater`) never reads the rate byte:
+; a 0-rate table still lists the map as a habitat on the Pokedex AREA screen.
+; Deleting the whole block removes both the surf encounters and the bogus
+; TENTACOOL/TENTACRUEL nest. (ROUTE_4, ROUTE_24, ROUTE_25 and CERULEAN_CITY
+; above are still zeroed rather than deleted -- see docs/AUDIT-M4-LEFTOVERS.md.)
 
 	def_water_wildmons CELADON_CITY
 	db 2 percent ; encounter rate
