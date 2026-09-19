@@ -126,6 +126,13 @@ Route12TMPayDay:
 Route12Iron:
 	itemball IRON
 
+; Kanto hack (M5 8n audit): Yellow's one ROUTE 12 hidden item, a HYPER POTION
+; at (2,63) (data/events/hidden_events.asm:429).  8l deleted Crystal's hidden
+; ELIXER but never ported Yellow's own.  (2,63) is a wall tile with walkable
+; (2,62) above it, so it reads the GSC way -- stand north of it and face DOWN.
+Route12HiddenHyperPotion:
+	hiddenitem HYPER_POTION, EVENT_ROUTE_12_HIDDEN_HYPER_POTION
+
 Route12SnorlaxText:
 	text "A sleeping #MON"
 	line "blocks the way!"
@@ -266,6 +273,7 @@ Route12_MapEvents:
 	def_bg_events
 	bg_event 13, 13, BGEVENT_READ, Route12Sign
 	bg_event 11, 63, BGEVENT_READ, Route12SportFishingSign
+	bg_event  2, 63, BGEVENT_ITEM, Route12HiddenHyperPotion
 
 	def_object_events
 	object_event 10, 62, SPRITE_BIG_SNORLAX, SPRITEMOVEDATA_BIGDOLLSYM, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route12Snorlax, EVENT_BEAT_ROUTE_12_SNORLAX ; palette 0 = the sprite's own, as vanilla Crystal's VERMILION CITY SNORLAX has it

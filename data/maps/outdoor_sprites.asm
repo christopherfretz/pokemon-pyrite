@@ -97,7 +97,9 @@ CeruleanGroupSprites:
 	db SPRITE_OFFICER
 	db SPRITE_POKE_BALL
 	db SPRITE_KANTO_RIVAL
-rept MAX_OUTDOOR_SPRITES - 11
+	db SPRITE_TWIN ; Kanto hack (M5 8n): ROUTE 10 -> LAVENDER TOWN, whose TWIN
+	               ; would otherwise cost a RefreshConnectionSprites reload
+rept MAX_OUTDOOR_SPRITES - 12
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
@@ -152,7 +154,13 @@ VermilionGroupSprites:
 	db SPRITE_OLD_MAN
 	db SPRITE_GENTLEMAN ; Kanto hack: ROUTE 11's four GAMBLERs (7l)
 	db SPRITE_SUPER_NERD ; Kanto hack: ROUTE 11's two ENGINEERs (7l)
-rept MAX_OUTDOOR_SPRITES - 11
+	; Kanto hack (M5 8n): ROUTE 11 -> ROUTE 12.  Without these three the
+	; crossing pays a RefreshConnectionSprites reload (~30 frames) for the
+	; SNORLAX, ROUTE 12's FISHERs and its two item balls.
+	db SPRITE_FISHER
+	db SPRITE_BIG_SNORLAX
+	db SPRITE_POKE_BALL
+rept MAX_OUTDOOR_SPRITES - 14
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

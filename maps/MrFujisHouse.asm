@@ -147,6 +147,24 @@ MrFujisHouseMrFujiHasMyFluteHelpedYouText:
 	line "FLUTE helped you?"
 	done
 
+; Kanto hack (M5 8n audit): Yellow hides three PrintMagazinesText hidden events
+; in this room (data/events/hidden_events.asm:410-413, at (0,1), (1,1) and
+; (7,1), all SPRITE_FACING_DOWN).  8h ported the room without them.  GSC has no
+; hidden-event table, so they become BGEVENT_READ bg_events on the same tiles;
+; a bg_event is checked before the tile-collision std script, so the (7,1) row
+; also shadows House1.blk's COLL_RADIO, which was opening Crystal's POKeMON
+; CHANNEL here (see docs/AUDIT-M5-LEFTOVERS.md Q for the project-wide case).
+MrFujisHouseMagazines:
+	jumptext MrFujisHouseMagazinesText
+
+MrFujisHouseMagazinesText:
+	text "#MON magazines!"
+
+	para "#MON notebooks!"
+
+	para "#MON graphs!"
+	done
+
 MrFujisHousePokedexText:
 	text "#MON Monthly"
 	line "Grand Prize"
@@ -169,6 +187,9 @@ MrFujisHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_READ, MrFujisHouseMagazines
+	bg_event  1,  1, BGEVENT_READ, MrFujisHouseMagazines
+	bg_event  7,  1, BGEVENT_READ, MrFujisHouseMagazines
 
 	def_object_events
 	object_event  3,  5, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MrFujisHouseSuperNerdScript, -1

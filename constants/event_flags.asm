@@ -254,7 +254,7 @@
 	const EVENT_UNDERGROUND_PATH_WEST_EAST_HIDDEN_ELIXER ; Kanto hack: renamed in place (M5 8k), was the dead EVENT_ROUTE_2_HIDDEN_REVIVE; the west-east UNDERGROUND PATH's hidden ELIXER at (21,5)
 	const EVENT_ROUTE_4_HIDDEN_GREAT_BALL ; Kanto hack: Route 4, Yellow's hidden GREAT_BALL (was EVENT_ROUTE_4_HIDDEN_ULTRA_BALL)
 	const EVENT_ROUTE_9_HIDDEN_ETHER
-	const EVENT_GOT_TM_SWIFT_FROM_GIRL ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_HIDDEN_ELIXER -- Yellow hides nothing on ROUTE 12, so 8l deleted Crystal's hidden ELIXER and this row pays for the ROUTE 12 GATE 2F girl's one-time TM39 SWIFT
+	const EVENT_GOT_TM_SWIFT_FROM_GIRL ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_HIDDEN_ELIXER -- Crystal's hidden ELIXER is not Yellow's (Yellow's one ROUTE 12 hidden item is a HYPER POTION at (2,63); see EVENT_ROUTE_12_HIDDEN_HYPER_POTION), so 8l deleted it and this row pays for the ROUTE 12 GATE 2F girl's one-time TM39 SWIFT
 	const EVENT_ROUTE_13_HIDDEN_CALCIUM
 	const EVENT_ROUTE_11_HIDDEN_ESCAPE_ROPE ; Kanto hack (M4 audit): was EVENT_ROUTE_11_HIDDEN_REVIVE; Yellow's ROUTE 11 hidden item is an ESCAPE_ROPE
 	const EVENT_ROUTE_17_HIDDEN_MAX_ETHER
@@ -667,7 +667,7 @@
 ; Twins
 	const EVENT_BEAT_TWINS_AMY_AND_MAY
 	const EVENT_BEAT_TWINS_ANN_AND_ANNE
-	const EVENT_BEAT_TWINS_ANN_AND_ANNE2
+	const EVENT_ROUTE_12_HIDDEN_HYPER_POTION ; Kanto hack: renamed in place (M5 8n audit), was EVENT_BEAT_TWINS_ANN_AND_ANNE2 -- a Gen 2 phone-rematch flag, permanently dead here because Route37 sets EVENT_BEAT_TWINS_ANN_AND_ANNE for both parties and the Pokegear is cut.  ROUTE 12's hidden HYPER POTION at (2,63) (Yellow data/events/hidden_events.asm:429)
 	const EVENT_BEAT_TWINS_AMY_AND_MAY2
 	const EVENT_BEAT_TWINS_JO_AND_ZOE
 	const EVENT_BEAT_TWINS_JO_AND_ZOE2

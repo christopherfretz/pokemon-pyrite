@@ -3,10 +3,15 @@
 ; takes Yellow's own tile (5,3) facing LEFT; his SILPH_PRESIDENT sprite is
 ; SPRITE_GENTLEMAN per the substitution table (docs/M5-LAVENDER.md 2.17).
 ;
-; Crystal's `special NameRater` is Yellow's NameRatersHouseNameRaterText
-; rewritten as an engine special -- same flow, same OT check, same texts -- so
-; it is kept as-is (3.4).  The dead scene script and the unreferenced bookshelf
-; are deleted.  Music: Yellow gives this one house MUSIC_CITIES2 and every
+; Crystal's `special NameRater` is Yellow's NameRatersHouse flow rewritten as an
+; engine special: same steps and the same OT check, but NOT the same words --
+; Crystal rewrote all seven boxes ("Hello, hello! I'm / the NAME RATER." vs
+; Yellow's "Hello, hello! / I am the official / NAME RATER!", and so on through
+; data/text/common_2.asm:11-90 vs vendor/pokeyellow/text/NameRatersHouse.asm).
+; The special is shared with maps/GoldenrodNameRater.asm, so re-voicing it to
+; Yellow would change Johto's NAME RATER too; the wording is therefore recorded
+; as a permanent deviation (docs/AUDIT-M5-LEFTOVERS.md Q3) and kept as-is (3.4).
+; The dead scene script and the unreferenced bookshelf are deleted.  Music: Yellow gives this one house MUSIC_CITIES2 and every
 ; other Lavender interior MUSIC_LAVENDER; since the project collapses CITIES1
 ; and CITIES2 onto MUSIC_VIRIDIAN_CITY, being "faithful" here would play
 ; Viridian's theme inside Lavender, so the row keeps MUSIC_LAVENDER_TOWN
