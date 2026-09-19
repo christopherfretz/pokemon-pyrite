@@ -1,0 +1,80 @@
+[
+ {
+  "id": "pallet",
+  "title": "Pallet Town \u2014 new game, outside Red's house",
+  "description": "A genuine new game, walked out of Red's front door. The party is EMPTY: this is before OAK's lab, so there is no starter PIKACHU yet and no follower. Pick 'Viridian City' if you want the starter already in hand.",
+  "sav": "pallet.sav"
+ },
+ {
+  "id": "viridian",
+  "title": "Viridian City",
+  "description": "Walked up Route 1 from Pallet. Nothing faked.",
+  "sav": "viridian.sav"
+ },
+ {
+  "id": "pewter",
+  "title": "Pewter City \u2014 before BROCK",
+  "description": "In Pewter City with the gym untouched: the fixture to start from if you want to fight BROCK yourself. Viridian Forest's five trainers are pre-flagged as beaten so the walk-in wasn't interrupted.",
+  "sav": "pewter.sav"
+ },
+ {
+  "id": "brock",
+  "title": "Pewter City \u2014 BOULDERBADGE won (faked)",
+  "description": "Standing below the PEWTER GYM door with BOULDERBADGE. The badge and the gym's event flags are WRITTEN, not fought \u2014 BROCK is still in there and TM39 is not in the bag. Use the 'before BROCK' preset for the real fight.",
+  "sav": "brock.sav"
+ },
+ {
+  "id": "cerulean",
+  "title": "Cerulean City",
+  "description": "Cerulean's west entrance, walked in through Mt. Moon on foot. Mt. Moon B2F's JESSIE & JAMES are pre-flagged as beaten; everything else is real.",
+  "sav": "cerulean.sav"
+ },
+ {
+  "id": "misty",
+  "title": "Cerulean City \u2014 CASCADEBADGE won (faked)",
+  "description": "One tile below the CERULEAN GYM door with BOULDERBADGE + CASCADEBADGE, so CUT is usable. The badge and the gym flags are WRITTEN, not fought, and TM18 is NOT in the bag. Use 'Cerulean City' for the real fight.",
+  "sav": "misty.sav"
+ },
+ {
+  "id": "ticket",
+  "title": "S.S. TICKET in hand (BILL's house done)",
+  "description": "Outside BILL's Sea Cottage on Route 25 with the whole cutscene really played: S.S. TICKET in KEY ITEMS and the Cerulean guards stood aside. Nothing faked \u2014 this is the state to start anything past Cerulean from.",
+  "sav": "ticket.sav"
+ },
+ {
+  "id": "vermilion",
+  "title": "Vermilion City",
+  "description": "Vermilion's north entrance, walked down Route 6. Six Route 5/6 trainers are pre-flagged as beaten so the walk wasn't interrupted.",
+  "sav": "vermilion.sav"
+ },
+ {
+  "id": "hm01",
+  "title": "HM01 CUT from the CAPTAIN",
+  "description": "In the S.S. ANNE captain's room with HM01 CUT really taken. The 2F rival battle is FAKED (its flag is set so the corridor is walkable), so don't use this one to test that fight.",
+  "sav": "hm01.sav"
+ },
+ {
+  "id": "surge",
+  "title": "Vermilion City \u2014 THUNDERBADGE in hand",
+  "description": "Vermilion's north entrance after the S.S. ANNE has sailed, carrying THUNDERBADGE, HM01 CUT (really earned) and TM86 THUNDERBOLT. LT.SURGE, his three trainers and the trash-can puzzle are all FAKED, not played \u2014 this is a post-Surge start point, not a pre-fight one.",
+  "sav": "surge.sav"
+ },
+ {
+  "id": "route9",
+  "title": "Route 9 (post-Vermilion)",
+  "description": "Route 9's west edge, one step in from Cerulean. CUT IS FAKED here: THUNDERBADGE, HM01 and CUT in the lead POK\u00e9MON's move slot are written in so the route's cut tree can be opened. The route's own trainers are untouched.",
+  "sav": "route9.sav"
+ },
+ {
+  "id": "lavender",
+  "title": "Lavender Town",
+  "description": "The Route 10 arrival tile in Lavender Town, walked through Rock Tunnel. Rock Tunnel's fifteen trainers and Route 10's south-lobe four are pre-flagged as beaten; the rest is real.",
+  "sav": "lavender.sav"
+ },
+ {
+  "id": "route8",
+  "title": "Route 8",
+  "description": "Route 8's east end, one step west of Lavender Town. Nothing faked.",
+  "sav": "route8.sav"
+ }
+]

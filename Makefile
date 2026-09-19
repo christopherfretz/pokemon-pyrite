@@ -72,8 +72,13 @@ RGBGFXFLAGS  ?= -Weverything
 	compare \
 	tools
 
+PYTHON ?= python3
+
 all: crystal
-crystal:         pokecrystal.gbc
+# The browser save editor (web/edit.html) reads web/tables.json: SRAM offsets,
+# name tables and the ROM sha, all derived from this build.  The deployed site
+# runs `make crystal` and nothing else, so tables.json has to be part of it.
+crystal:         pokecrystal.gbc web/tables.json
 crystal11:       pokecrystal11.gbc
 crystal_au:      pokecrystal_au.gbc
 crystal_debug:   pokecrystal_debug.gbc
@@ -111,6 +116,7 @@ tidy:
 	      $(pokecrystal_debug_obj) \
 	      $(pokecrystal11_debug_obj) \
 	      build_rev.txt \
+	      web/tables.json \
 	      rgbdscheck.o
 	$(MAKE) clean -C tools/
 
@@ -191,6 +197,18 @@ pokecrystal11_vc.gbc:    RGBFIXFLAGS += -i BYTE -n 1
 	$(RGBLINK) $(RGBLINKFLAGS) -l layout.link -n $*.sym -m $*.map -o $@ $(filter %.o,$^)
 	$(RGBFIX) $(RGBFIXFLAGS) $@
 	tools/stadium $@
+
+web/tables.json: web/gen_tables.py pokecrystal.gbc pokecrystal.sym \
+                 $(wildcard constants/*.asm) \
+                 data/maps/spawn_points.asm data/growth_rates.asm \
+                 data/items/names.asm data/items/attributes.asm \
+                 data/pokemon/names.asm data/moves/names.asm \
+                 engine/math/get_square_root.asm
+	$(PYTHON) web/gen_tables.py --root . --out $@
+
+# pokecrystal.sym is a side effect of the link rule above.
+pokecrystal.sym: pokecrystal.gbc
+	@test -f $@
 
 
 ### LZ compression rules

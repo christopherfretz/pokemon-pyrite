@@ -26,6 +26,11 @@ STATIC = {
     "/index.html": ("index.html", "text/html; charset=utf-8", False),
     "/app.js": ("app.js", "text/javascript; charset=utf-8", False),
     "/style.css": ("style.css", "text/css; charset=utf-8", False),
+    # the save editor
+    "/edit": ("edit.html", "text/html; charset=utf-8", False),
+    "/edit.html": ("edit.html", "text/html; charset=utf-8", False),
+    "/edit.js": ("edit.js", "text/javascript; charset=utf-8", False),
+    "/tables.json": ("tables.json", "application/json; charset=utf-8", False),
     "/manifest.webmanifest": ("manifest.webmanifest", "application/manifest+json", True),
     "/icon-192.png": ("icon-192.png", "image/png", True),
     "/icon-512.png": ("icon-512.png", "image/png", True),
@@ -40,11 +45,34 @@ STATIC = {
 
 ROM_PATH = "/kanto-first.gbc"
 
+# The save editor's preset saves.  These are generated (scripts/gen_presets.py
+# in the helper repo), so the file names are not known here -- the directory is
+# scanned ONCE at startup and turned into ordinary allowlist entries.  Nothing
+# is read from disk per request, and only these two extensions are picked up.
+PRESET_DIR = "presets"
+PRESET_TYPES = {".sav": "application/octet-stream", ".json": "application/json; charset=utf-8"}
+
+
+def preset_entries():
+    """presets/*.sav + presets/manifest.json -> allowlist entries."""
+    out = {}
+    root = os.path.join(HERE, PRESET_DIR)
+    if not os.path.isdir(root):
+        return out
+    for name in sorted(os.listdir(root)):
+        ctype = PRESET_TYPES.get(os.path.splitext(name)[1].lower())
+        if ctype is None or not os.path.isfile(os.path.join(root, name)):
+            continue
+        out["/%s/%s" % (PRESET_DIR, name)] = ("%s/%s" % (PRESET_DIR, name), ctype, False)
+    return out
+
 
 def load_files(rom_file):
     """Read the allowlist and the ROM into memory once, at startup."""
     served = {}
-    for url, (rel, ctype, cacheable) in STATIC.items():
+    allowed = dict(STATIC)
+    allowed.update(preset_entries())
+    for url, (rel, ctype, cacheable) in allowed.items():
         path = os.path.join(HERE, rel)
         if not os.path.isfile(path):
             if url == "/":

@@ -20,7 +20,11 @@ ROM source it plays. `make crystal` at the repo root builds `pokecrystal.gbc`.
 | --- | --- |
 | `index.html` | the page |
 | `app.js` | all the logic (core loading, ROM loading, input, saves) |
-| `style.css` | portrait + landscape layouts |
+| `style.css` | portrait + landscape layouts (player **and** editor) |
+| `edit.html`, `edit.js` | the save editor (see below) |
+| `gen_tables.py` | generates `tables.json` from the build — run by `make crystal` |
+| `tables.json` | **derived, git-ignored** — symbol/constant tables the editor needs |
+| `presets/*.sav`, `presets/manifest.json` | starting-point saves from the test harness |
 | `manifest.webmanifest`, `icon-192.png`, `icon-512.png` | PWA / add-to-home-screen |
 | `server.py` | optional minimal self-host server (stdlib only) |
 | `vendor/binjgb/binjgb.js` | the emulator core's emscripten loader, vendored (13 KB) |
@@ -81,6 +85,11 @@ Standard library only, no dependencies, no state on disk. It reads an explicit
 allowlist of files plus the ROM into memory at startup and serves only those;
 the URL is never turned into a filesystem path, so there is no directory
 listing and nothing to traverse. `GET`/`HEAD` only, everything else 404/501.
+(The allowlist is fixed but not hand-written for the presets: every file under
+`presets/` is picked up at startup, so a regenerated preset set needs a server
+restart, not a code edit. Same for `tables.json` and `edit.js` — **the server
+caches file contents, so restart it after any edit** or you will test the old
+build.)
 The page and the ROM are sent `Cache-Control: no-store`, so a phone always gets
 the freshly hosted build. It refuses to start if the ROM is missing.
 
@@ -211,6 +220,74 @@ different matter: those are matched on the exact ROM hash and core commit.)
   wipe the save. The export file is the only copy you control.
 - Storage is per-origin: the save on `example.com` is invisible to
   `192.168.1.5:8080`. Pick one URL and stay on it.
+
+---
+
+## Save editor
+
+**Menu → Edit save**, or `/edit` (`edit.html`). Same origin, same stylesheet,
+same battery save the player uses — it is not a separate app, it just opens the
+32 KB of cartridge RAM sitting in IndexedDB and writes it back.
+
+What it edits: **where you are** (a dropdown of every Kanto map with a real
+spawn point — no raw coordinates), **party** (species, level, nickname, four
+moves, current HP, plus "recalculate stats & heal" from the ROM's own base
+stats and growth curve), **badges** (8 Kanto + 8 Johto), **money and coins**,
+**player / rival name**, the **bag** (all four pockets, by name, capacity
+enforced), and **event flags** (all of them, searchable, set ones shown first).
+It also lists the **presets** below, and does `.sav` download/upload with the
+same normalising the player's Import does.
+
+**Apply** writes both save copies with recomputed checksums and magic bytes,
+stashes the pre-edit save as the restore point ("Restore previous save" puts it
+back), deletes the auto-resume snapshot so the game genuinely reboots from the
+edited SRAM, and returns you to the player. **If the player is open in another
+tab, reload it** — that tab still holds the old RAM and will overwrite you on
+its next autosave.
+
+### tables.json
+
+`edit.js` hard-codes no addresses, no species list and no flag numbers. It
+reads `tables.json`, which `web/gen_tables.py` generates from
+`pokecrystal.sym`, `pokecrystal.gbc` and `constants/*.asm` + `data/maps/
+spawn_points.asm` at build time — `make crystal` produces it, and it is
+git-ignored because it is derived. The file is stamped with the ROM's SHA-256
+and **the editor refuses to touch a save if that does not match the ROM the
+page loaded**, so a stale table can never scribble on a save at the wrong
+offsets.
+
+### Presets
+
+`presets/` holds `.sav` files captured from the repo's own playtest fixtures
+(`scripts/gen_states.sh` upstream), with a `manifest.json` describing each one.
+"Load preset" **replaces the whole save** (the previous one becomes the restore
+point). Several fixtures fake progress to reach a state quickly — a badge
+written rather than fought, trainers pre-flagged — and each description says so
+in as many words. Regenerate with `scripts/gen_presets.py` in the helper repo
+after the fixtures change.
+
+### Moving a save to another map: what the editor has to fix
+
+Worth knowing if you ever touch this code, because none of it is obvious. The
+continue path (`MapSetupScript_Continue`) calls `LoadMapAttributes_SkipObjects`
+— it never respawns the player — so almost everything about "standing on a
+tile" is saved state the editor must rebuild:
+
+- the player's **and the follower's** object struct and map object: coordinates
+  (tile + 4), sprite offsets, *and* the motion members, or a save captured
+  mid-step resumes that step on the new map and walks off it;
+- **`wScreenSave`**, the 6×5 metatile window `LoadConnectionBlockData` copies
+  back over the blocks around you — otherwise a patch of the old map is painted
+  onto the new one. `gen_tables.py` precomputes the right window per spawn;
+- **`wCurMapSceneScriptPointer`**, which is saved and never reloaded. It still
+  points at the *old* map's scene id, so the new map runs whichever of its
+  `scene_scripts` happens to have that number. (Found the hard way: a Pewter
+  save moved to Vermilion ran the "left the S.S. Anne" scene.) Repointed from
+  the ROM's `MapScenes` table.
+
+The old map's NPCs are evicted rather than replaced, so a freshly-moved map is
+empty of people until you step out and back in. That is the one visible
+artefact, and the editor says so on the page.
 
 ---
 
@@ -388,6 +465,17 @@ any kind** (no `node`, `deno`, `bun`, `qjs`, `d8`). So:
   frame pacing and the Web Audio scheduling behave on a phone, that iOS unlocks
   audio on the "Tap to start" gesture, and that the `.sav` this page exports
   imports into Delta.
+
+**The save editor is the exception — that one was run in a browser.** Headless
+Chromium (Playwright) against `server.py`: load a preset, move the save to
+Lavender Town, set money to 12345 and tick a badge, **Apply**, then re-open the
+player and watch it boot from the edited SRAM standing in Lavender Town. Both
+save copies' checksums verified, the resume snapshot was deleted and the
+restore point written. Separately, a Python replica of the editor's map-move
+ran all 12 named Kanto spawns through PyBoy: every one lands on the expected
+tile and can walk off it. Not covered there: iOS Safari specifically, the
+`.sav` upload path inside the editor, and the party/bag/flag editors beyond
+"the bytes land where `tables.json` says" (they were not booted field by field).
 
 ### First-run checklist for the operator
 

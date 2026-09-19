@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kanto First &mdash; save editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#161a20">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Edit the browser player's in-game save: where you are, your party, badges, money, bag and event flags.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body class="editor">
+
+<header id="ehead">
+  <a class="back" href="./index.html">&larr; Back to game</a>
+  <h1>Save editor</h1>
+</header>
+
+<div id="status" role="status">Loading&hellip;</div>
+
+<main id="ed" hidden>
+
+  <details class="sec" open>
+    <summary>Put me in&hellip;</summary>
+    <div class="secbody">
+      <label class="field">
+        <span>Location</span>
+        <select id="f-spawn"></select>
+      </label>
+      <p class="note" id="spawn-now"></p>
+      <p class="note">
+        Each entry is a real spawn point in the game data, so you land standing
+        on that map&rsquo;s arrival tile. Indoor spawns put you inside.
+      </p>
+      <p class="note">
+        The game only loads a map&rsquo;s NPCs when you walk into it, so right
+        after a move the new map is empty of people. Step out and back in (or
+        through a door) and everyone appears. Nothing else is affected.
+      </p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Party <em id="party-count"></em></summary>
+    <div class="secbody">
+      <div id="party"></div>
+      <div class="row">
+        <button id="btn-heal" type="button">Recalculate stats &amp; heal all</button>
+      </div>
+      <p class="note">
+        <strong>PIKACHU caveat:</strong> the follower needs the starter PIKACHU
+        in the party. Removing it (or replacing slot 1 with something else)
+        leaves you with no follower until you get it back.
+      </p>
+      <p class="note">
+        Changing a slot&rsquo;s species or level recalculates its stats and sets
+        EXP to the minimum for that level, using the ROM&rsquo;s own base stats
+        and growth curve. Stat EXP is left alone.
+      </p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Badges</summary>
+    <div class="secbody">
+      <div id="badges-kanto" class="checks"></div>
+      <div id="badges-johto" class="checks"></div>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Money &amp; names</summary>
+    <div class="secbody">
+      <label class="field"><span>Money</span>
+        <input id="f-money" type="number" min="0" max="999999" step="1" inputmode="numeric"></label>
+      <label class="field"><span>Coins</span>
+        <input id="f-coins" type="number" min="0" max="9999" step="1" inputmode="numeric"></label>
+      <label class="field"><span>Your name</span>
+        <input id="f-player" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"></label>
+      <label class="field"><span>Rival&rsquo;s name</span>
+        <input id="f-rival" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false"></label>
+      <p class="note" id="name-note"></p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Bag</summary>
+    <div class="secbody">
+      <div id="pockets"></div>
+      <p class="note">
+        HMs cannot be tossed in-game, so an HM you add here stays for good.
+        TMs and HMs share one list because the cartridge stores them that way.
+      </p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Event flags</summary>
+    <div class="secbody">
+      <div class="row">
+        <input id="ev-filter" type="search" placeholder="filter EVENT_ names" autocomplete="off" spellcheck="false">
+      </div>
+      <label class="inline"><input id="ev-onlyset" type="checkbox" checked> show only flags that are set</label>
+      <div id="events" class="checks scroll"></div>
+      <p class="note" id="ev-note"></p>
+      <p class="note">
+        Flags are the game&rsquo;s own bookkeeping. Turning one on out of order
+        can leave an NPC or a scene in a state the script never expects &mdash;
+        use the presets if you just want to be further along.
+      </p>
+    </div>
+  </details>
+
+  <details class="sec">
+    <summary>Presets &amp; files</summary>
+    <div class="secbody">
+      <p class="note">
+        A preset <strong>replaces your whole save</strong> with a fixture from
+        the test harness. Your current save is kept as the restore point.
+      </p>
+      <div id="presets"></div>
+      <div class="row">
+        <button id="btn-download" type="button">Download .sav</button>
+        <button id="btn-upload" type="button">Upload .sav</button>
+        <input id="file-sav" type="file" accept=".sav,.srm,application/octet-stream" hidden>
+      </div>
+    </div>
+  </details>
+
+</main>
+
+<div id="bar">
+  <button id="btn-apply" type="button" class="primary" disabled>Apply &amp; play</button>
+  <button id="btn-restore" type="button" disabled>Restore previous save</button>
+</div>
+
+<script src="./edit.js"></script>
+</body>
+</html>

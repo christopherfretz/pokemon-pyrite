@@ -237,7 +237,7 @@ body {
 .menu-body { padding: 0 14px 16px; }
 
 .row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
-.row button, .slot button {
+.row button, .slot button, .btnlink {
   font: 600 12px/1 system-ui, sans-serif;
   color: var(--ink);
   background: var(--panel-2);
@@ -246,7 +246,9 @@ body {
   padding: 9px 12px;
   min-height: 36px;
 }
-.row button:active, .slot button:active { background: var(--accent); border-color: var(--accent); }
+.row button:active, .slot button:active, .btnlink:active { background: var(--accent); border-color: var(--accent); }
+/* the "Edit save" link is an <a> so it navigates even before the core boots */
+.btnlink { display: inline-flex; align-items: center; text-decoration: none; }
 
 .slots { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
 .slot { display: flex; align-items: center; gap: 8px; font-size: 12px; }
@@ -317,3 +319,122 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   .dpad-hint { transition: none; }
 }
+
+/* ---------- save editor (edit.html) ----------
+   A normal scrolling document, not the player's fixed-viewport layout: the
+   editor is a long form and the phone's own scrolling is the right control. */
+
+body.editor {
+  overflow: auto;
+  height: auto;
+  min-height: 100%;
+  user-select: auto;
+  -webkit-user-select: auto;
+  padding: var(--safe-t) var(--safe-r) calc(var(--safe-b) + 76px) var(--safe-l);
+}
+body.editor #ehead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px 4px;
+}
+body.editor #ehead h1 { font-size: 15px; margin: 0; letter-spacing: .02em; }
+body.editor .back {
+  font: 600 12px/1 system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+body.editor #status { text-align: left; padding: 4px 14px 8px; }
+
+.sec {
+  background: var(--panel);
+  border-top: 1px solid var(--edge);
+}
+.sec > summary {
+  cursor: pointer;
+  padding: 11px 14px;
+  font-size: 12px;
+  color: var(--dim);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.sec > summary em { font-style: normal; text-transform: none; letter-spacing: 0; }
+.secbody { padding: 0 14px 14px; }
+
+.field { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+.field > span { flex: 0 0 96px; color: var(--dim); }
+.inline { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 4px 0 8px; color: var(--dim); }
+
+select, input[type="text"], input[type="number"], input[type="search"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 500 14px/1.2 system-ui, sans-serif;   /* 14px+: iOS zooms smaller fields */
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 9px 10px;
+  min-height: 38px;
+}
+input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+
+.checks { display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; }
+.checks label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 5px 2px;
+  min-height: 32px;
+}
+.checks label code { font: 500 11px/1.3 ui-monospace, Menlo, monospace; color: var(--dim); word-break: break-all; }
+.checks.scroll { max-height: 52vh; overflow: auto; -webkit-overflow-scrolling: touch; }
+
+.mon {
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--panel-2);
+}
+.mon > h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+.mon .field > span { flex: 0 0 74px; }
+.mon .moves { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.mon .moves select { font-size: 13px; padding: 7px 8px; min-height: 34px; }
+
+.bagrow { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.bagrow select { flex: 1 1 auto; font-size: 13px; padding: 7px 8px; min-height: 34px; }
+.bagrow input { flex: 0 0 64px; font-size: 13px; padding: 7px 8px; min-height: 34px; }
+.bagrow button { flex: 0 0 auto; }
+.pocket > h3 { margin: 10px 0 6px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--dim); }
+
+.preset { display: flex; flex-direction: column; gap: 3px; padding: 9px 0; border-bottom: 1px solid var(--edge); }
+.preset > strong { font-size: 12.5px; }
+.preset > span { font-size: 11.5px; line-height: 1.45; color: var(--dim); }
+.preset > button { align-self: flex-start; margin-top: 4px; }
+
+#bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px calc(14px + var(--safe-r)) calc(10px + var(--safe-b)) calc(14px + var(--safe-l));
+  background: var(--panel);
+  border-top: 1px solid var(--edge);
+}
+#bar button, .secbody button, .row button {
+  font: 600 12px/1 system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  padding: 11px 12px;
+  min-height: 40px;
+}
+#bar button.primary { flex: 1 1 auto; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+#bar button:disabled, .secbody button:disabled { opacity: .45; }
