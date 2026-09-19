@@ -1404,6 +1404,24 @@ PokemaniacGroup:
 	db 23, SLOWPOKE
 	db -1 ; end
 
+	; POKEMANIAC (19) - Kanto hack: ROCK TUNNEL B1F, Yellow's POKEMANIAC 3 (M5 8f)
+	db "CEDRIC@", TRAINERTYPE_NORMAL
+	db 20, SLOWPOKE
+	db 20, SLOWPOKE
+	db 20, SLOWPOKE
+	db -1 ; end
+
+	; POKEMANIAC (20) - Kanto hack: ROCK TUNNEL B1F, Yellow's POKEMANIAC 4
+	db "AMOS@", TRAINERTYPE_NORMAL
+	db 22, CHARMANDER
+	db 22, CUBONE
+	db -1 ; end
+
+	; POKEMANIAC (21) - Kanto hack: ROCK TUNNEL B1F, Yellow's POKEMANIAC 5
+	db "WALDO@", TRAINERTYPE_NORMAL
+	db 25, SLOWPOKE
+	db -1 ; end
+
 GruntMGroup:
 	; GRUNTM (1)
 	db "GRUNT@", TRAINERTYPE_NORMAL
@@ -2838,6 +2856,26 @@ HikerGroup:
 	db 21, GRAVELER
 	db -1 ; end
 
+	; HIKER (32) - Kanto hack: ROCK TUNNEL B1F, Yellow's HIKER 9 (M5 8f)
+	db "LOWELL@", TRAINERTYPE_NORMAL
+	db 21, GEODUDE
+	db 21, GEODUDE
+	db 21, GRAVELER
+	db -1 ; end
+
+	; HIKER (33) - Kanto hack: ROCK TUNNEL B1F, Yellow's HIKER 10
+	db "VERNON@", TRAINERTYPE_NORMAL
+	db 25, GEODUDE
+	db -1 ; end
+
+	; HIKER (34) - Kanto hack: ROCK TUNNEL B1F, Yellow's HIKER 11.  Yellow reuses
+	; this one party for both ROUTE 9's hiker (our TIM) and B1F's; the duplicate
+	; is deliberate.
+	db "CONRAD@", TRAINERTYPE_NORMAL
+	db 20, MACHOP
+	db 20, ONIX
+	db -1 ; end
+
 BikerGroup:
 	; BIKER (1)
 	db "BENNY@", TRAINERTYPE_NORMAL
@@ -3392,6 +3430,19 @@ PicnickerGroup:
 	db 19, RATTATA
 	db 19, RATTATA
 	db 19, BELLSPROUT
+	db -1 ; end
+
+	; PICNICKER (35) - Kanto hack: ROCK TUNNEL B1F, Yellow's JR_TRAINER_F 9 (M5 8f)
+	db "RHODA@", TRAINERTYPE_NORMAL
+	db 21, JIGGLYPUFF
+	db 21, PIDGEY
+	db 21, MEOWTH
+	db -1 ; end
+
+	; PICNICKER (36) - Kanto hack: ROCK TUNNEL B1F, Yellow's JR_TRAINER_F 10
+	db "OPAL@", TRAINERTYPE_NORMAL
+	db 22, ODDISH
+	db 22, BULBASAUR
 	db -1 ; end
 
 CamperGroup:

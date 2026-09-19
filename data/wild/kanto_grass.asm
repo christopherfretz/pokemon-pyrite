@@ -132,60 +132,79 @@ KantoGrassWildMons:
 	db 13, CLEFAIRY
 	end_grass_wildmons
 
+; Kanto hack (M5 8f): Yellow's Rock Tunnel 1F table
+; (vendor/pokeyellow/data/wild/maps/RockTunnel1F.asm). Yellow rate 15/256 ==
+; `6 percent`; no time of day, so morn = day = nite. Only three species, so
+; the 10 -> 7 fold is nearly exact: dropping slots 3 (L19 ZUBAT), 4 (L18
+; GEODUDE) and 6 (L21 ZUBAT) gives ZUBAT 50 / GEODUDE 40 / MACHOP 10 against
+; Yellow's 50.0 / 39.5 / 10.6, and keeps both level extremes (L15 ZUBAT min,
+; L21 MACHOP max). Gone: Crystal's CUBONE, MAROWAK, MACHOKE, HAUNTER, GOLBAT
+; and its nite block -- CUBONE is Pokemon Tower only in Yellow (M6), and
+; KANGASKHAN/MACHOKE/HAUNTER/GOLBAT are Gen 2 redistributions.
 	def_grass_wildmons ROCK_TUNNEL_1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 10, CUBONE
-	db 11, GEODUDE
-	db 12, MACHOP
-	db 12, ZUBAT
-	db 15, MACHOKE
-	db 12, MAROWAK
-	db 12, MAROWAK
+	db 15, ZUBAT
+	db 16, GEODUDE
+	db 17, ZUBAT
+	db 20, GEODUDE
+	db 17, MACHOP
+	db 19, MACHOP
+	db 21, MACHOP
 	; day
-	db 10, CUBONE
-	db 11, GEODUDE
-	db 12, MACHOP
-	db 12, ZUBAT
-	db 15, MACHOKE
-	db 12, MAROWAK
-	db 12, MAROWAK
+	db 15, ZUBAT
+	db 16, GEODUDE
+	db 17, ZUBAT
+	db 20, GEODUDE
+	db 17, MACHOP
+	db 19, MACHOP
+	db 21, MACHOP
 	; nite
-	db 12, ZUBAT
-	db 11, GEODUDE
-	db 12, GEODUDE
-	db 17, HAUNTER
 	db 15, ZUBAT
-	db 15, ZUBAT
-	db 15, ZUBAT
+	db 16, GEODUDE
+	db 17, ZUBAT
+	db 20, GEODUDE
+	db 17, MACHOP
+	db 19, MACHOP
+	db 21, MACHOP
 	end_grass_wildmons
 
+; Kanto hack (M5 8f): Yellow's Rock Tunnel B1F table
+; (vendor/pokeyellow/data/wild/maps/RockTunnelB1F.asm) -- a different table
+; from 1F's: B1F is where ONIX lives and where the levels top out. Yellow rate
+; 15/256 == `6 percent`; no time of day, so morn = day = nite. Dropping the
+; three duplicated middles -- slots 4 (L22 ZUBAT), 5 (L21 GEODUDE) and 6 (L20
+; MACHOP) -- fits all four species to within 0.6 points: ZUBAT 40 /
+; GEODUDE 30 / MACHOP 20 / ONIX 10 against Yellow's 39.5 / 29.7 / 20.3 / 10.6,
+; with all three of ONIX's levels kept so L14 min and L22 max both survive.
+; Gone: Crystal's CUBONE, MAROWAK, KANGASKHAN, HAUNTER, GOLBAT and its nite
+; block.
 	def_grass_wildmons ROCK_TUNNEL_B1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 12, CUBONE
-	db 14, GEODUDE
-	db 16, ONIX
-	db 12, ZUBAT
-	db 15, MAROWAK
-	db 15, KANGASKHAN
-	db 15, KANGASKHAN
+	db 20, ZUBAT
+	db 17, GEODUDE
+	db 18, MACHOP
+	db 21, ZUBAT
+	db 14, ONIX
+	db 18, ONIX
+	db 22, ONIX
 	; day
-	db 12, CUBONE
-	db 14, GEODUDE
-	db 16, ONIX
-	db 12, ZUBAT
-	db 15, MAROWAK
-	db 15, KANGASKHAN
-	db 15, KANGASKHAN
+	db 20, ZUBAT
+	db 17, GEODUDE
+	db 18, MACHOP
+	db 21, ZUBAT
+	db 14, ONIX
+	db 18, ONIX
+	db 22, ONIX
 	; nite
-	db 12, ZUBAT
-	db 14, GEODUDE
-	db 16, ONIX
-	db 15, ZUBAT
-	db 15, HAUNTER
-	db 15, GOLBAT
-	db 15, GOLBAT
+	db 20, ZUBAT
+	db 17, GEODUDE
+	db 18, MACHOP
+	db 21, ZUBAT
+	db 14, ONIX
+	db 18, ONIX
+	db 22, ONIX
 	end_grass_wildmons
 
 	def_grass_wildmons VICTORY_ROAD

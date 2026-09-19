@@ -242,9 +242,9 @@
 	const EVENT_ROUTE_9_TM_TELEPORT ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE; ROUTE 9's TM30 TELEPORT ball at (10,15).  Itemball flag living in the hidden-item block: moving the const would renumber every flag after it and break existing saves
 	const EVENT_UNDERGROUND_PATH_HIDDEN_FULL_RESTORE
 	const EVENT_UNDERGROUND_PATH_HIDDEN_X_SPECIAL
-	const EVENT_ROCK_TUNNEL_1F_HIDDEN_X_ACCURACY ; Kanto hack: DEAD since M5 8e (Crystal's ROCK TUNNEL 1F hidden items deleted -- Yellow has none).  Free for reuse
-	const EVENT_ROCK_TUNNEL_1F_HIDDEN_X_DEFEND ; Kanto hack: DEAD since M5 8e.  Free for reuse
-	const EVENT_ROCK_TUNNEL_B1F_HIDDEN_MAX_POTION
+	const EVENT_BEAT_HIKER_CONRAD ; Kanto hack: renamed in place (M5 8f), was the dead EVENT_ROCK_TUNNEL_1F_HIDDEN_X_ACCURACY; ROCK TUNNEL B1F, Yellow's HIKER 11
+	const EVENT_BEAT_POKEMANIAC_WALDO ; Kanto hack: renamed in place (M5 8f), was the dead EVENT_ROCK_TUNNEL_1F_HIDDEN_X_DEFEND; ROCK TUNNEL B1F, Yellow's POKEMANIAC 5
+	const EVENT_BEAT_HIKER_VERNON ; Kanto hack: renamed in place (M5 8f); was Crystal's ROCK TUNNEL B1F hidden MAX_POTION, deleted -- Yellow's B1F has no items.  ROCK TUNNEL B1F, Yellow's HIKER 10
 	const EVENT_OLIVINE_PORT_HIDDEN_PROTEIN
 	const EVENT_WALKED_PAST_GUARD_AFTER_SS_ANNE_LEFT ; Kanto hack: renamed in place (7g) from EVENT_VERMILION_PORT_HIDDEN_IRON -- Yellow's dock has no hidden IRON and Crystal's was deleted with the FAST SHIP cast.  7j sets/reads this (Yellow: VermilionCityLeftSSAnneCallbackScript, docs/M4-VERMILION.md §3.8); no reader today.
 	const EVENT_MT_MOON_1F_TM_WATER_GUN ; Kanto hack: renamed in place (5e); Crystal's Mt. Moon Square is gone.  M3b: Yellow's TM12 WATER GUN (was TM_RAIN_DANCE)
@@ -701,8 +701,8 @@
 	const EVENT_BEAT_PICNICKER_EDNA
 	const EVENT_BEAT_PICNICKER_NELLIE ; Kanto hack: renamed in place (M5 8e), was the dead EVENT_BEAT_PICNICKER_GINA3; ROCK TUNNEL 1F, Yellow's JR_TRAINER_F 18
 	const EVENT_BEAT_PICNICKER_MYRNA ; Kanto hack: renamed in place (M5 8e), was the dead EVENT_BEAT_PICNICKER_TIFFANY2; ROCK TUNNEL 1F, Yellow's JR_TRAINER_F 19
-	const EVENT_BEAT_PICNICKER_TIFFANY3
-	const EVENT_BEAT_PICNICKER_ERIN2
+	const EVENT_BEAT_PICNICKER_RHODA ; Kanto hack: renamed in place (M5 8f), was the dead EVENT_BEAT_PICNICKER_TIFFANY3; ROCK TUNNEL B1F, Yellow's JR_TRAINER_F 9
+	const EVENT_BEAT_PICNICKER_OPAL ; Kanto hack: renamed in place (M5 8f), was the dead EVENT_BEAT_PICNICKER_ERIN2; ROCK TUNNEL B1F, Yellow's JR_TRAINER_F 10
 	const EVENT_BEAT_PICNICKER_TANYA
 	const EVENT_BEAT_PICNICKER_TIFFANY
 	const EVENT_BEAT_PICNICKER_ERIN3
@@ -1388,9 +1388,9 @@
 	const EVENT_PICKED_UP_FOCUS_BAND
 	const EVENT_BEAT_HIKER_NORRIS ; Kanto hack: renamed in place (M5 8e); was Crystal's ROCK TUNNEL 1F ELIXER ball, deleted with the rest of 1F's Crystal items.  ROCK TUNNEL 1F, Yellow's HIKER 14
 	const EVENT_BEAT_POKEMANIAC_JASPER ; Kanto hack: renamed in place (M5 8e); was Crystal's ROCK TUNNEL 1F TM_STEEL_WING ball.  ROCK TUNNEL 1F, Yellow's POKEMANIAC 7
-	const EVENT_ROCK_TUNNEL_B1F_IRON
-	const EVENT_ROCK_TUNNEL_B1F_PP_UP
-	const EVENT_ROCK_TUNNEL_B1F_REVIVE
+	const EVENT_BEAT_HIKER_LOWELL ; Kanto hack: renamed in place (M5 8f); was Crystal's ROCK TUNNEL B1F IRON ball, deleted with the rest of B1F's Crystal items.  ROCK TUNNEL B1F, Yellow's HIKER 9
+	const EVENT_BEAT_POKEMANIAC_CEDRIC ; Kanto hack: renamed in place (M5 8f); was Crystal's ROCK TUNNEL B1F PP_UP ball.  ROCK TUNNEL B1F, Yellow's POKEMANIAC 3
+	const EVENT_BEAT_POKEMANIAC_AMOS ; Kanto hack: renamed in place (M5 8f); was Crystal's ROCK TUNNEL B1F REVIVE ball.  ROCK TUNNEL B1F, Yellow's POKEMANIAC 4
 	const EVENT_ROUTE_2_MOON_STONE ; was EVENT_ROUTE_2_DIRE_HIT
 	const EVENT_ROUTE_2_HP_UP ; was EVENT_ROUTE_2_MAX_POTION
 	const EVENT_VIRIDIAN_FOREST_POTION_1 ; was the unused EVENT_ROUTE_2_CARBOS
