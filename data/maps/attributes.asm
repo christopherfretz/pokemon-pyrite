@@ -652,7 +652,7 @@ ENDM
 	map_attributes LavenderPokecenter1F, LAVENDER_POKECENTER_1F, $00
 	map_attributes LavenderPokecenter2FBeta, LAVENDER_POKECENTER_2F_BETA, $00
 	map_attributes MrFujisHouse, MR_FUJIS_HOUSE, $0a
-	map_attributes LavenderSpeechHouse, LAVENDER_SPEECH_HOUSE, $0a
+	map_attributes LavenderCuboneHouse, LAVENDER_CUBONE_HOUSE, $0a
 	map_attributes LavenderNameRater, LAVENDER_NAME_RATER, $0a
 	map_attributes LavenderMart, LAVENDER_MART, $00
 	map_attributes SoulHouse, SOUL_HOUSE, $0a

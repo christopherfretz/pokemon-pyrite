@@ -74,8 +74,13 @@ SoulHouse_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4,  7, LAVENDER_TOWN, 6
-	warp_event  5,  7, LAVENDER_TOWN, 6
+; Kanto hack (M5 8g, decision D6): Yellow's LAVENDER TOWN has six buildings and
+; Crystal's has seven, so 8g deleted this map's door from the town.  SOUL_HOUSE
+; keeps its map constant, header and blocks but is unreachable; the return warp
+; is re-pointed at the Cubone house's door (town warp 5) only so the index is
+; in range.  Its cast is 8h's to deal with.
+	warp_event  4,  7, LAVENDER_TOWN, 5
+	warp_event  5,  7, LAVENDER_TOWN, 5
 
 	def_coord_events
 

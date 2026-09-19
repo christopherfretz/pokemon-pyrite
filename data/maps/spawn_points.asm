@@ -21,7 +21,10 @@ SpawnPoints:
 ; whiteout spawn is the tile in front of it.
 	spawn ROUTE_10,                   11, 20
 	spawn VERMILION_CITY,              9,  6
-	spawn LAVENDER_TOWN,               5,  6
+; Kanto hack (M5 8g): was 5, 6 -- in front of Crystal's Pokemon Center door.
+; 8g moves the door to Yellow's (3,5), and Yellow's own fly/blackout tile is
+; LAVENDER_TOWN 3, 6 (data/maps/special_warps.asm .LavenderTown).
+	spawn LAVENDER_TOWN,               3,  6
 	spawn SAFFRON_CITY,                9, 30
 	spawn CELADON_CITY,               29, 10
 	spawn FUCHSIA_CITY,               19, 28

@@ -164,7 +164,7 @@ BluesHouse_Blocks:
 PewterNidoranSpeechHouse_Blocks:
 PewterSnoozeSpeechHouse_Blocks:
 BillsOlderSistersHouse_Blocks:
-LavenderSpeechHouse_Blocks:
+LavenderCuboneHouse_Blocks:
 LavenderNameRater_Blocks:
 Route12SuperRodHouse_Blocks:
 Route28SteelWingHouse_Blocks:
