@@ -198,9 +198,9 @@ DEF KRIS EQU __trainer_class__
 	const SHANNON
 	const MICHELLE
 	const DANA1
-	const ELLEN
-	const CONNIE2 ; unused
-	const CONNIE3 ; unused
+	const WINNIE ; Kanto hack: ROUTE 8 (Yellow LASS 15); renamed in place (M5 8j), was the dead ELLEN
+	const ESTHER ; Kanto hack: ROUTE 8 (Yellow LASS 13); renamed in place (M5 8j), was the unused CONNIE2
+	const FLORA ; Kanto hack: ROUTE 8 (Yellow LASS 14); renamed in place (M5 8j), was the unused CONNIE3
 	const DANA2
 	const DANA3
 	const DANA4
@@ -223,6 +223,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: S.S. ANNE's lasses (7h) -- Yellow LASS 11 (1F Rooms) and 12 (2F Rooms)
 	const ODETTE
 	const MARISA
+	const TILDA ; Kanto hack: ROUTE 8 (Yellow LASS 16), appended (M5 8j)
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -364,6 +365,9 @@ DEF KRIS EQU __trainer_class__
 	const LEOPOLD
 	const WINSTON
 	const HORACE
+; Kanto hack: ROUTE 8's gamblers (M5 8j) -- Yellow GAMBLER 5 and 7
+	const ELTON
+	const REUBEN
 
 	trainerclass SKIER ; 21
 	const ROXANNE
@@ -524,7 +528,7 @@ DEF KRIS EQU __trainer_class__
 	const ERIC
 	const GREGG ; Kanto hack: Mt. Moon 1F (Yellow SUPER_NERD 1); was an unused Crystal slot
 	const MIGUEL ; Kanto hack: Mt. Moon B2F fossil rival (was the unused JAY)
-	const DAVE ; unused
+	const CLARK ; Kanto hack: ROUTE 8 (Yellow SUPER_NERD 5); renamed in place (M5 8j), was the unused DAVE
 	const SAM
 	const TOM
 	const PAT

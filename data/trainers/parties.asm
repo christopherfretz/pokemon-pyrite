@@ -822,20 +822,29 @@ LassGroup:
 	db 18, PSYDUCK,    SCRATCH, TAIL_WHIP, DISABLE, CONFUSION
 	db -1 ; end
 
-	; LASS (11)
-	db "ELLEN@", TRAINERTYPE_NORMAL
-	db 30, WIGGLYTUFF
-	db 34, GRANBULL
+	; LASS (11) - Kanto hack: ROUTE 8, Yellow's LASS 15.  Renamed in place
+	; (M5 8j); ELLEN was dead (6i gave her flag to TESSA).
+	db "WINNIE@", TRAINERTYPE_NORMAL
+	db 19, PIDGEY
+	db 19, RATTATA
+	db 19, NIDORAN_F
+	db 19, MEOWTH
+	db 19, NIDORAN_M
 	db -1 ; end
 
-	; LASS (12)
-	db "CONNIE@", TRAINERTYPE_NORMAL
-	db 21, MARILL
+	; LASS (12) - Kanto hack: ROUTE 8, Yellow's LASS 13.  Renamed in place
+	; (M5 8j); CONNIE2 was an unused Crystal rematch slot.
+	db "ESTHER@", TRAINERTYPE_NORMAL
+	db 23, NIDORAN_F
+	db 23, NIDORINA
 	db -1 ; end
 
-	; LASS (13)
-	db "CONNIE@", TRAINERTYPE_NORMAL
-	db 21, MARILL
+	; LASS (13) - Kanto hack: ROUTE 8, Yellow's LASS 14.  Renamed in place
+	; (M5 8j); CONNIE3 was an unused Crystal rematch slot.
+	db "FLORA@", TRAINERTYPE_NORMAL
+	db 24, MEOWTH
+	db 24, MEOWTH
+	db 24, MEOWTH
 	db -1 ; end
 
 	; LASS (14)
@@ -937,6 +946,13 @@ LassGroup:
 	; LASS (30) - Kanto hack: S.S. ANNE 2F Rooms, Yellow's LASS 12 (docs/M4-VERMILION.md 5.1)
 	db "MARISA@", TRAINERTYPE_NORMAL
 	db 20, JIGGLYPUFF
+	db -1 ; end
+
+	; LASS (31) - Kanto hack: ROUTE 8, Yellow's LASS 16 (M5 8j).  Appended --
+	; the LASS group had only three dead slots and ROUTE 8 needs four.
+	db "TILDA@", TRAINERTYPE_NORMAL
+	db 22, CLEFAIRY
+	db 22, CLEFAIRY
 	db -1 ; end
 
 JanineGroup:
@@ -1693,6 +1709,20 @@ GentlemanGroup:
 	db "HORACE@", TRAINERTYPE_NORMAL
 	db 18, GROWLITHE
 	db 18, VULPIX
+	db -1 ; end
+
+	; GENTLEMAN (13) - Kanto hack: ROUTE 8, Yellow's GAMBLER 5 (M5 8j).
+	; Appended: the GENTLEMAN group has no dead slots left.
+	db "ELTON@", TRAINERTYPE_NORMAL
+	db 22, POLIWAG
+	db 22, POLIWAG
+	db 22, POLIWHIRL
+	db -1 ; end
+
+	; GENTLEMAN (14) - Kanto hack: ROUTE 8, Yellow's GAMBLER 7 (M5 8j).
+	db "REUBEN@", TRAINERTYPE_NORMAL
+	db 24, GROWLITHE
+	db 24, VULPIX
 	db -1 ; end
 
 SkierGroup:
@@ -2516,22 +2546,27 @@ SuperNerdGroup:
 	db 12, KOFFING
 	db -1 ; end
 
-	; SUPER_NERD (5)
-	db "DAVE@", TRAINERTYPE_NORMAL
-	db 24, DITTO
+	; SUPER_NERD (5) - Kanto hack: ROUTE 8, Yellow's SUPER_NERD 5.  Renamed in
+	; place (M5 8j); DAVE was an unused Crystal slot.
+	db "CLARK@", TRAINERTYPE_NORMAL
+	db 26, KOFFING
 	db -1 ; end
 
-	; SUPER_NERD (6)
+	; SUPER_NERD (6) - Kanto hack: ROUTE 8, Yellow's SUPER_NERD 3.  Crystal's
+	; own SAM stood on ROUTE 8 too; party rewritten in place (M5 8j).
 	db "SAM@", TRAINERTYPE_NORMAL
-	db 34, GRIMER
-	db 34, MUK
+	db 20, VOLTORB
+	db 20, KOFFING
+	db 20, VOLTORB
+	db 20, MAGNEMITE
 	db -1 ; end
 
-	; SUPER_NERD (7)
+	; SUPER_NERD (7) - Kanto hack: ROUTE 8, Yellow's SUPER_NERD 4.  Crystal's
+	; own TOM stood on ROUTE 8 too; party rewritten in place (M5 8j).
 	db "TOM@", TRAINERTYPE_NORMAL
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
-	db 32, MAGNEMITE
+	db 22, GRIMER
+	db 22, MUK
+	db 22, GRIMER
 	db -1 ; end
 
 	; SUPER_NERD (8)

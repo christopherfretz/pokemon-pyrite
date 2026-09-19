@@ -523,32 +523,43 @@ KantoGrassWildMons:
 	db 16, ABRA
 	end_grass_wildmons
 
+; Kanto hack (M5 8j): Yellow's Route 8 table
+; (vendor/pokeyellow/data/wild/maps/Route8.asm). Yellow rate 15/256 ==
+; `6 percent`; no time of day, so morn = day = nite. Ten slots fold to seven
+; by dropping the three duplicated middles: slot 1 (L22 PIDGEY), slot 4 (L19
+; ABRA) and slot 7 (L24 JIGGLYPUFF). All six species survive and so do both
+; level extremes (L15 ABRA min, L27 KADABRA max). Weights land PIDGEY 30 /
+; RATTATA 30 / ABRA 20 / PIDGEOTTO 10 / JIGGLYPUFF 5 / KADABRA 5 against
+; Yellow's 39.8 / 15.2 / 19.6 / 9.8 / 10.2 / 5.5: RATTATA doubles because it
+; is Yellow's slot 2 and lands in Crystal's 30% bracket -- the same
+; order-vs-weight cost recorded for ROUTE_11. Gone: Crystal's SNUBBULL,
+; GROWLITHE, MEOWTH, NOCTOWL, HAUNTER and its nite block.
 	def_grass_wildmons ROUTE_8
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 17, SNUBBULL
-	db 19, PIDGEOTTO
-	db 16, ABRA
-	db 17, GROWLITHE
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
-	db 18, KADABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 19, JIGGLYPUFF
+	db 20, KADABRA
+	db 27, KADABRA
 	; day
-	db 17, SNUBBULL
-	db 19, PIDGEOTTO
-	db 16, ABRA
-	db 17, GROWLITHE
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
-	db 18, KADABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 19, JIGGLYPUFF
+	db 20, KADABRA
+	db 27, KADABRA
 	; nite
-	db 17, MEOWTH
-	db 20, NOCTOWL
-	db 16, ABRA
-	db 17, HAUNTER
-	db 16, JIGGLYPUFF
-	db 18, KADABRA
-	db 18, KADABRA
+	db 20, PIDGEY
+	db 20, RATTATA
+	db 15, ABRA
+	db 24, PIDGEOTTO
+	db 19, JIGGLYPUFF
+	db 20, KADABRA
+	db 27, KADABRA
 	end_grass_wildmons
 
 ; Kanto hack (M5): Yellow's Route 9 table

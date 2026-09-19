@@ -1,48 +1,25 @@
 	object_const_def
-	const ROUTE8_BIKER1
-	const ROUTE8_BIKER2
-	const ROUTE8_BIKER3
 	const ROUTE8_SUPER_NERD1
+	const ROUTE8_GENTLEMAN1
 	const ROUTE8_SUPER_NERD2
-	const ROUTE8_FRUIT_TREE
+	const ROUTE8_LASS1
+	const ROUTE8_SUPER_NERD3
+	const ROUTE8_LASS2
+	const ROUTE8_LASS3
+	const ROUTE8_GENTLEMAN2
+	const ROUTE8_LASS4
 
 Route8_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-TrainerBikerDwayne:
-	trainer BIKER, DWAYNE, EVENT_BEAT_BIKER_DWAYNE, BikerDwayneSeenText, BikerDwayneBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BikerDwayneAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBikerHarris:
-	trainer BIKER, HARRIS, EVENT_BEAT_BIKER_HARRIS, BikerHarrisSeenText, BikerHarrisBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BikerHarrisAfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerBikerZeke:
-	trainer BIKER, ZEKE, EVENT_BEAT_BIKER_ZEKE, BikerZekeSeenText, BikerZekeBeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext BikerZekeAfterBattleText
-	waitbutton
-	closetext
-	end
+; Kanto hack (M5 8j): ROUTE 8 is Yellow's, trainer for trainer.  The nine are
+; Yellow's SUPER_NERD 3/4/5, GAMBLER 5/7 and LASS 13/14/15/16, in Yellow's
+; object order, at Yellow's coordinates, facings and sight ranges (4, 4, 4, 2,
+; 3, 3, 2, 2, 4 -- vendor/pokeyellow/scripts/Route8.asm's trainer headers).
+; GAMBLER has no GSC counterpart, so it becomes GENTLEMAN, the substitution
+; ROUTE 11 (M4 7l, "ARTHUR") established.
 
 TrainerSupernerdSam:
 	trainer SUPER_NERD, SAM, EVENT_BEAT_SUPER_NERD_SAM, SupernerdSamSeenText, SupernerdSamBeatenText, 0, .Script
@@ -51,6 +28,17 @@ TrainerSupernerdSam:
 	endifjustbattled
 	opentext
 	writetext SupernerdSamAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerGentlemanElton:
+	trainer GENTLEMAN, ELTON, EVENT_BEAT_GENTLEMAN_ELTON, GentlemanEltonSeenText, GentlemanEltonBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext GentlemanEltonAfterBattleText
 	waitbutton
 	closetext
 	end
@@ -66,127 +54,267 @@ TrainerSupernerdTom:
 	closetext
 	end
 
-Route8LockedDoor:
-	jumptext Route8LockedDoorText
+TrainerLassEsther:
+	trainer LASS, ESTHER, EVENT_BEAT_LASS_ESTHER, LassEstherSeenText, LassEstherBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext LassEstherAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerSupernerdClark:
+	trainer SUPER_NERD, CLARK, EVENT_BEAT_SUPER_NERD_CLARK, SupernerdClarkSeenText, SupernerdClarkBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext SupernerdClarkAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerLassFlora:
+	trainer LASS, FLORA, EVENT_BEAT_LASS_FLORA, LassFloraSeenText, LassFloraBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext LassFloraAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerLassWinnie:
+	trainer LASS, WINNIE, EVENT_BEAT_LASS_WINNIE, LassWinnieSeenText, LassWinnieBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext LassWinnieAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerGentlemanReuben:
+	trainer GENTLEMAN, REUBEN, EVENT_BEAT_GENTLEMAN_REUBEN, GentlemanReubenSeenText, GentlemanReubenBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext GentlemanReubenAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerLassTilda:
+	trainer LASS, TILDA, EVENT_BEAT_LASS_TILDA, LassTildaSeenText, LassTildaBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext LassTildaAfterBattleText
+	waitbutton
+	closetext
+	end
 
 Route8UndergroundPathSign:
 	jumptext Route8UndergroundPathSignText
 
-Route8FruitTree:
-	fruittree FRUITTREE_ROUTE_8
-
-BikerDwayneSeenText:
-	text "We're the KANTO"
-	line "#MON FEDERATION"
-	cont "trainer group."
-
-	para "We'll drive you"
-	line "under our wheels!"
-	done
-
-BikerDwayneBeatenText:
-	text "S-sorry!"
-	done
-
-BikerDwayneAfterBattleText:
-	text "The KANTO #MON"
-	line "FEDERATION will"
-	cont "never fall!"
-	done
-
-BikerHarrisSeenText:
-	text "The cops shut down"
-	line "our UNDERGROUND"
-
-	para "PATH! That really"
-	line "fries me!"
-	done
-
-BikerHarrisBeatenText:
-	text "F-forgive me!"
-	done
-
-BikerHarrisAfterBattleText:
-	text "Wiped out by some"
-	line "punk from JOHTO…"
-	done
-
-BikerZekeSeenText:
-	text "We're the KANTO"
-	line "#MON FEDERA-"
-	cont "TION!"
-	cont "Right on!"
-	done
-
-BikerZekeBeatenText:
-	text "Yikes! Sorry!"
-	done
-
-BikerZekeAfterBattleText:
-	text "We'll try not to"
-	line "disturb anyone"
-	cont "from now on…"
-	done
-
+; Yellow's _Route8SuperNerd1*Text
 SupernerdSamSeenText:
-	text "How does the MAG-"
-	line "NET TRAIN work?"
+	text "You look good at"
+	line "#MON, but"
+	cont "how's your chem?"
 	done
 
 SupernerdSamBeatenText:
-	text "I just want to see"
-	line "the MAGNET TRAIN…"
+	text "Ow!"
+	line "Meltdown!"
 	done
 
 SupernerdSamAfterBattleText:
-	text "The power of mag-"
-	line "nets is awesome!"
+	text "I am better at"
+	line "school than this!"
 	done
 
+; Yellow's _Route8Gambler1*Text
+GentlemanEltonSeenText:
+	text "All right! Let's"
+	line "roll the dice!"
+	done
+
+GentlemanEltonBeatenText:
+	text "Drat!"
+	line "Came up short!"
+	done
+
+GentlemanEltonAfterBattleText:
+	text "Lady Luck's not"
+	line "with me today!"
+	done
+
+; Yellow's _Route8SuperNerd2*Text
 SupernerdTomSeenText:
-	text "Hm… You've got"
-	line "many GYM BADGES."
+	text "You need strategy"
+	line "to win at this!"
 	done
 
 SupernerdTomBeatenText:
-	text "Just as I thought…"
-	line "You're tough!"
+	text "It's"
+	line "not logical!"
 	done
 
 SupernerdTomAfterBattleText:
-	text "GYM BADGES give"
-	line "you advantages in"
-	cont "battles."
+	text "Go with GRIMER"
+	line "first…and…"
+	cont "…and…then…"
 	done
 
-Route8LockedDoorText:
-	text "It's locked…"
+; Yellow's _Route8CooltrainerF1*Text
+LassEstherSeenText:
+	text "I like NIDORAN, so"
+	line "I collect them!"
 	done
 
+LassEstherBeatenText:
+	text "Why? Why??"
+	done
+
+LassEstherAfterBattleText:
+	text "When #MON grow"
+	line "up they get ugly!"
+	cont "They shouldn't"
+	cont "evolve!"
+	done
+
+; Yellow's _Route8SuperNerd3*Text
+SupernerdClarkSeenText:
+	text "School is fun, but"
+	line "so are #MON."
+	done
+
+SupernerdClarkBeatenText:
+	text "I'll"
+	line "stay with school."
+	done
+
+SupernerdClarkAfterBattleText:
+	text "We're stuck here"
+	line "because of the"
+	cont "gates at SAFFRON."
+	done
+
+; Yellow's _Route8CooltrainerF2*Text
+LassFloraSeenText:
+	text "MEOWTH is so cute,"
+	line "meow, meow, meow!"
+	done
+
+LassFloraBeatenText:
+	text "Meow!"
+	done
+
+LassFloraAfterBattleText:
+	text "I think PIDGEY"
+	line "and RATTATA"
+	cont "are cute too!"
+	done
+
+; Yellow's _Route8CooltrainerF3*Text
+LassWinnieSeenText:
+	text "We must look"
+	line "silly standing"
+	cont "here like this!"
+	done
+
+LassWinnieBeatenText:
+	text "Look what"
+	line "you did!"
+	done
+
+LassWinnieAfterBattleText:
+	text "SAFFRON's gate-"
+	line "keeper won't let"
+	cont "us through."
+	cont "He's so mean!"
+	done
+
+; Yellow's _Route8Gambler2*Text
+GentlemanReubenSeenText:
+	text "I'm a rambling,"
+	line "gambling dude!"
+	done
+
+GentlemanReubenBeatenText:
+	text "Missed"
+	line "the big score!"
+	done
+
+GentlemanReubenAfterBattleText:
+	text "Gambling and"
+	line "#MON are like"
+	cont "eating peanuts!"
+	cont "Just can't stop!"
+	done
+
+; Yellow's _Route8CooltrainerF4*Text
+LassTildaSeenText:
+	text "What's a cute,"
+	line "round and fluffy"
+	cont "#MON?"
+	done
+
+LassTildaBeatenText:
+	text "Stop!"
+
+	para "Don't be so mean"
+	line "to my CLEFAIRY!"
+	done
+
+LassTildaAfterBattleText:
+	text "I heard that"
+	line "CLEFAIRY evolves"
+	cont "when it's exposed"
+	cont "to a MOON STONE."
+	done
+
+; Yellow's _Route8UndergroundSignText
 Route8UndergroundPathSignText:
-	text "The flyer's torn."
-
-	para "It's impossible to"
-	line "read…"
+	text "UNDERGROUND PATH"
+	line "CELADON CITY -"
+	cont "LAVENDER TOWN"
 	done
 
 Route8_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4,  4, ROUTE_8_SAFFRON_GATE, 3
-	warp_event  4,  5, ROUTE_8_SAFFRON_GATE, 4
+; Yellow's ROUTE 8 gate has BOTH its doors on ROUTE 8 -- SAFFRON is reached by
+; walking off the route's west map edge (Yellow's `connection west, SaffronCity`),
+; never through a warp.  So warps 1/2 are the hut's west door into the little
+; pocket at (0..1, 8..10), which is reachable ONLY through the hut, and nothing
+; here needs re-pointing at the SAFFRON milestone.
+	warp_event  1,  9, ROUTE_8_SAFFRON_GATE, 1
+	warp_event  1, 10, ROUTE_8_SAFFRON_GATE, 1
+	warp_event  8,  9, ROUTE_8_SAFFRON_GATE, 3
+	warp_event  8, 10, ROUTE_8_SAFFRON_GATE, 3
+	warp_event 13,  3, ROUTE_8_UNDERGROUND_PATH_ENTRANCE, 1
 
 	def_coord_events
 
 	def_bg_events
-	bg_event 11,  7, BGEVENT_READ, Route8UndergroundPathSign
-	bg_event 10,  5, BGEVENT_READ, Route8LockedDoor
+	bg_event 17,  3, BGEVENT_READ, Route8UndergroundPathSign
 
 	def_object_events
-	object_event 10,  8, SPRITE_BIKER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 5, TrainerBikerDwayne, -1
-	object_event 10,  9, SPRITE_BIKER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 5, TrainerBikerHarris, -1
-	object_event 10, 10, SPRITE_BIKER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 5, TrainerBikerZeke, -1
-	object_event 23,  2, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerSupernerdSam, -1
-	object_event 31, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerSupernerdTom, -1
-	object_event 33,  5, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route8FruitTree, -1
+	object_event  8,  5, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerSupernerdSam, -1
+	object_event 13,  9, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerGentlemanElton, -1
+	object_event 42,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerSupernerdTom, -1
+	object_event 26,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerLassEsther, -1
+	object_event 26,  4, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerSupernerdClark, -1
+	object_event 26,  5, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerLassFlora, -1
+	object_event 26,  6, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerLassWinnie, -1
+	object_event 46, 13, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerGentlemanReuben, -1
+	object_event 51, 12, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerLassTilda, -1

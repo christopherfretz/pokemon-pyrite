@@ -608,6 +608,10 @@
 ; Biker
 	const EVENT_BEAT_BIKER_BENNY
 	const EVENT_BEAT_BIKER_KAZU
+; Kanto hack: these three were Crystal's ROUTE 8 bikers, deleted by M5 8j
+; (Yellow has no bikers there).  DEAD but RESERVED, not free: their parties in
+; data/trainers/parties.asm are kept for Yellow's ROUTE 16/17/18 CUE_BALLs --
+; see docs/M5-LAVENDER.md 5.3.  Rename them there, not somewhere else.
 	const EVENT_BEAT_BIKER_DWAYNE
 	const EVENT_BEAT_BIKER_HARRIS
 	const EVENT_BEAT_BIKER_ZEKE
@@ -868,8 +872,8 @@
 	const EVENT_BEAT_LASS_TESSA ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_ELLEN; Route 25, Yellow's LASS 10
 	const EVENT_BEAT_LASS_ODETTE ; Kanto hack: renamed in place (7h), was EVENT_BEAT_LASS_CONNIE2; S.S. ANNE 1F Rooms, Yellow's LASS 11
 	const EVENT_BEAT_LASS_MARISA ; Kanto hack: renamed in place (7h), was EVENT_BEAT_LASS_CONNIE3; S.S. ANNE 2F Rooms, Yellow's LASS 12
-	const EVENT_BEAT_LASS_DANA2
-	const EVENT_BEAT_LASS_DANA3
+	const EVENT_BEAT_LASS_ESTHER ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_LASS_DANA2; ROUTE 8, Yellow's LASS 13
+	const EVENT_BEAT_LASS_FLORA ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_LASS_DANA3; ROUTE 8, Yellow's LASS 14
 ; Hiker
 	const EVENT_BEAT_HIKER_LAMONT ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_BEAT_HIKER_ANTHONY2; ROUTE 9, Yellow's HIKER 5
 	const EVENT_BEAT_HIKER_RUSSELL
@@ -915,14 +919,14 @@
 	const EVENT_BEAT_COOLTRAINERM_PAUL
 	const EVENT_BEAT_COOLTRAINERM_CODY
 	const EVENT_BEAT_COOLTRAINERM_MIKE
-	const EVENT_BEAT_COOLTRAINERM_GAVEN2
-	const EVENT_BEAT_COOLTRAINERM_GAVEN3
+	const EVENT_BEAT_SUPER_NERD_CLARK ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERM_GAVEN2; ROUTE 8, Yellow's SUPER_NERD 5.  Out of class: no SUPER_NERD row is dead
+	const EVENT_BEAT_GENTLEMAN_ELTON ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERM_GAVEN3; ROUTE 8, Yellow's GAMBLER 5.  Out of class: no GENTLEMAN row is dead
 	const EVENT_BEAT_COOLTRAINERM_RYAN
 	const EVENT_BEAT_COOLTRAINERM_JAKE
 	const EVENT_BEAT_COOLTRAINERM_GAVEN
 	const EVENT_BEAT_COOLTRAINERM_BLAKE
 	const EVENT_BEAT_COOLTRAINERM_BRIAN
-	const EVENT_BEAT_COOLTRAINERM_ERICK
+	const EVENT_BEAT_GENTLEMAN_REUBEN ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERM_ERICK; ROUTE 8, Yellow's GAMBLER 7
 	const EVENT_BEAT_COOLTRAINERM_ANDY
 	const EVENT_BEAT_COOLTRAINERM_TYLER
 	const EVENT_BEAT_COOLTRAINERM_SEAN
@@ -941,9 +945,9 @@
 	const EVENT_BEAT_COOLTRAINERF_BETH
 	const EVENT_BEAT_COOLTRAINERF_REENA
 	const EVENT_BEAT_COOLTRAINERF_MEGAN
-	const EVENT_BEAT_COOLTRAINERF_BETH2
+	const EVENT_BEAT_LASS_WINNIE ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERF_BETH2; ROUTE 8, Yellow's LASS 15.  Out of class: the LASS block had only two dead rows left and ROUTE 8 needs four, and a rename in place beats an append (HANDOFF flag budget)
 	const EVENT_BEAT_COOLTRAINERF_CAROL
-	const EVENT_BEAT_COOLTRAINERF_QUINN
+	const EVENT_BEAT_LASS_TILDA ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERF_QUINN; ROUTE 8, Yellow's LASS 16
 	const EVENT_BEAT_COOLTRAINERF_EMMA
 	const EVENT_BEAT_COOLTRAINERF_CYBIL
 	const EVENT_BEAT_COOLTRAINERF_JENN

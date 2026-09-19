@@ -171,3 +171,16 @@
 ; where Crystal's $5c has a HOP_DOWN ledge, which would drop the player off
 ; the north side of Lavender's town square.
 	tilecoll FLOOR, FLOOR, FLOOR, WALL ; 9d
+; M5 8j (docs/M5-LAVENDER.md 3.6): ROUTE 8 gate, west door tile (1,9) -- block (0,4), bottom-right
+; quadrant.  Twin of kanto $01 (plain grass), same art.
+	tilecoll FLOOR, FLOOR, FLOOR, LADDER ; 9e
+; M5 8j (docs/M5-LAVENDER.md 3.6): ROUTE 8 gate, west door tile (1,10) -- block (0,5), top-right
+; quadrant.  Twin of kanto $77 (the gate hut's south wall/step row).
+	tilecoll FLOOR, LADDER, WALL, WALL ; 9f
+; M5 8j (docs/M5-LAVENDER.md 3.6): ROUTE 8 gate, east door tile (8,9) -- block (4,4), bottom-left
+; quadrant.  Twin of kanto $51, same art.
+	tilecoll WALL, WALL, LADDER, FLOOR ; a0
+; M5 8j (docs/M5-LAVENDER.md 3.6): ROUTE 8 gate, east door tile (8,10) -- block (4,5), top-LEFT quadrant.
+; A second $77 twin: $9f above carries the LADDER on its top-RIGHT, and
+; merging the two would open a phantom warp at (0,10) and (9,10).
+	tilecoll LADDER, FLOOR, WALL, WALL ; a1
