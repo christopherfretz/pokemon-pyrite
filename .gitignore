@@ -37,3 +37,6 @@ gfx/pokemon/*/frames.asm
 *.sn*
 *.sa*
 *.sg1
+
+# build id stamp
+build_rev.txt

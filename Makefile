@@ -110,6 +110,7 @@ tidy:
 	      $(pokecrystal_au_obj) \
 	      $(pokecrystal_debug_obj) \
 	      $(pokecrystal11_debug_obj) \
+	      build_rev.txt \
 	      rgbdscheck.o
 	$(MAKE) clean -C tools/
 
@@ -121,6 +122,12 @@ tools:
 
 
 RGBASMFLAGS += -Q8 -P includes.asm
+
+# Bake the short commit hash into the ROM; the title screen prints it
+# (engine/movie/title.asm), so a build pulled from the rolling release can be
+# identified on sight.  Override with `make BUILD_REV=...`.
+BUILD_REV ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+RGBASMFLAGS += -D BUILD_REV=$(BUILD_REV)
 # Create a sym/map for debug purposes if `make` run with `DEBUG=1`
 ifeq ($(DEBUG),1)
 RGBASMFLAGS += -E
@@ -162,6 +169,12 @@ $(foreach obj, $(pokecrystal_au_obj), $(eval $(call DEP,$(obj),$(obj:_au.o=.asm)
 $(foreach obj, $(pokecrystal_debug_obj), $(eval $(call DEP,$(obj),$(obj:_debug.o=.asm))))
 $(foreach obj, $(pokecrystal11_debug_obj), $(eval $(call DEP,$(obj),$(obj:11_debug.o=.asm))))
 $(foreach obj, $(pokecrystal11_vc_obj), $(eval $(call DEP,$(obj),$(obj:11_vc.o=.asm))))
+
+# Only the objects built from main.asm embed BUILD_REV, so rebuild just those
+# when HEAD moves.  build_rev.txt is rewritten only when the hash changes, so a
+# rebuild with no new commit is still a no-op.
+$(shell [ "`cat build_rev.txt 2>/dev/null`" = "$(BUILD_REV)" ] || echo "$(BUILD_REV)" > build_rev.txt)
+main.o main11.o main_au.o main_debug.o main11_debug.o main11_vc.o: build_rev.txt
 
 endif
 

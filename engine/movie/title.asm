@@ -1,3 +1,21 @@
+; The build id ("build <short git hash>") printed across the top of the title
+; screen, so a ROM downloaded from the rolling release can be identified on
+; sight.  BUILD_REV is passed in by the Makefile (rgbasm -D BUILD_REV=...).
+IF !DEF(BUILD_REV)
+DEF BUILD_REV EQUS "unknown"
+ENDC
+DEF BUILD_ID_TEXT EQUS "build {BUILD_REV}"
+; Row 1 is the blank strip above the logo (row 0 is scrolled off the top by
+; hSCY).  It is the only full-width row the logo, Suicune, the copyright window
+; and the background crystal sprites all keep clear.
+DEF BUILD_ID_ROW EQU 1
+DEF BUILD_ID_COL EQU (SCREEN_WIDTH - STRLEN("{BUILD_ID_TEXT}")) / 2
+; The logo overwrites the standard font at vTiles1 (and spills into vTiles2
+; tiles $00-$1b), so the build id gets its own copy of the glyphs it needs in
+; the free vTiles2 space above that.
+DEF BUILD_ID_LETTER_TILE EQU $20 ; 'a' to 'z'
+DEF BUILD_ID_DIGIT_TILE  EQU $3a ; '0' to '9'
+
 _TitleScreen:
 	call ClearBGPalettes
 	call ClearSprites
@@ -78,6 +96,12 @@ _TitleScreen:
 	ld a, 1
 	call ByteFill
 
+; build id
+	hlbgcoord 0, BUILD_ID_ROW
+	ld bc, TILEMAP_WIDTH
+	ld a, 1 ; palette
+	call ByteFill
+
 ; Suicune gfx
 	hlbgcoord 0, 12
 	ld bc, 6 * TILEMAP_WIDTH ; the rest of the screen
@@ -98,6 +122,16 @@ _TitleScreen:
 	ld de, vTiles0
 	call Decompress
 
+; Load the glyphs the build id needs (the logo just overwrote the font)
+	ld de, Font + (CHARVAL("a") - CHARVAL("A")) * TILE_1BPP_SIZE
+	ld hl, vTiles2 tile BUILD_ID_LETTER_TILE
+	lb bc, BANK(Font), CHARVAL("z") - CHARVAL("a") + 1
+	call Copy1bpp
+	ld de, Font + (CHARVAL("0") - CHARVAL("A")) * TILE_1BPP_SIZE
+	ld hl, vTiles2 tile BUILD_ID_DIGIT_TILE
+	lb bc, BANK(Font), CHARVAL("9") - CHARVAL("0") + 1
+	call Copy1bpp
+
 ; Clear screen tiles
 	hlbgcoord 0, 0
 	ld bc, 64 * TILEMAP_WIDTH
@@ -117,6 +151,11 @@ _TitleScreen:
 	ld d, $c
 	ld e, 16
 	call DrawTitleGraphic
+
+; Draw the build id
+	hlcoord BUILD_ID_COL, BUILD_ID_ROW
+	ld de, BuildIDString
+	call PlaceBuildID
 
 ; Initialize running Suicune?
 	ld d, $0
@@ -271,6 +310,30 @@ LoadSuicuneFrame:
 	dec b
 	jr nz, .bgrows
 	ret
+
+PlaceBuildID:
+; Print the build id at de to the tilemap at hl.  The title screen has no font
+; loaded, so this maps each character onto the glyphs copied into vTiles2 by
+; _TitleScreen instead of going through PlaceString.
+.loop
+	ld a, [de]
+	cp CHARVAL("@")
+	ret z
+	inc de
+	cp CHARVAL(" ") ; already a blank tile
+	jr z, .place
+	cp CHARVAL("0")
+	jr c, .letter
+	sub CHARVAL("0") - BUILD_ID_DIGIT_TILE
+	jr .place
+.letter
+	sub CHARVAL("a") - BUILD_ID_LETTER_TILE
+.place
+	ld [hli], a
+	jr .loop
+
+BuildIDString:
+	db "{BUILD_ID_TEXT}", "@"
 
 DrawTitleGraphic:
 ; input:
