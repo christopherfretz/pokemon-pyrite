@@ -1,15 +1,36 @@
-; Kanto hack (docs/M5-LAVENDER.md, 8b): was Crystal's LAV_RADIO_TOWER_1F.
-; 8b re-registers the map as POKEMON_TOWER_1F, 10x9, on TILESET_KANTO_TOWER
-; with Yellow's own PokemonTower1F.blk.  The radio-tower NPCs and texts below
-; are 8i's to replace; the south exit sits on a TEMPORARY $12 (down-staircase,
-; LADDER at BL) because the $6e WARP_CARPET_DOWN twin of $0e is 8i's.  Warp 2
-; is therefore inert until then (its quadrant is WALL).
+; Kanto hack (M5 8i): Yellow's POKEMON_TOWER_1F
+; (vendor/pokeyellow/data/maps/objects/PokemonTower1F.asm,
+; scripts/PokemonTower1F.asm, text/PokemonTower1F.asm).  8b registered the map
+; (10x9, TILESET_KANTO_TOWER, Yellow's own PokemonTower1F.blk); 8i replaces
+; Crystal's LAV RADIO TOWER cast, texts and bg_events with Yellow's.
+;
+; Yellow's 1F script is two instructions -- `EnableAutoTextBoxDrawing` / `ret`.
+; There are no flags, no trainers, no items and no bg_events on this floor:
+; five NPCs and a staircase, nothing else.
+;
+; Sprite substitutions (docs/M5-LAVENDER.md 2.12/2.17): MIDDLE_AGED_WOMAN ->
+; SPRITE_POKEFAN_F, BALDING_GUY -> SPRITE_POKEFAN_M, GIRL -> SPRITE_LASS.
+; LINK_RECEPTIONIST and the ported $76 SPRITE_CHANNELER are Yellow's own.
+; Yellow's `STAY, NONE` is "stationary, faces down", which is
+; SPRITEMOVEDATA_STANDING_DOWN plus the `faceplayer` every Kanto interior in
+; this tree already uses (8g/8h house style).
+;
+; The Kanto-radio plot that used to live here -- the DJ, the MUSIC DIRECTOR,
+; the EXPN CARD give, the floor directory and the "# FLUTE on CHANNEL 20"
+; sign -- is deleted wholesale: Gen 2 anachronism, and Yellow's 1F has no
+; bg_events at all.
+;
+; 2F-7F are M6's Silph Scope arc.  The staircase at (18,9) is drawn and is a
+; LADDER tile, but carries NO warp_event (decision D8, docs/M5-LAVENDER.md
+; 3.3); the TEMPORARY coord_event band below turns the player back with one
+; line of invented text.  Everything marked TEMPORARY goes when M6 adds the
+; 2F warp.
 	object_const_def
-	const LAVRADIOTOWER1F_RECEPTIONIST
-	const LAVRADIOTOWER1F_OFFICER
-	const LAVRADIOTOWER1F_SUPER_NERD1
-	const LAVRADIOTOWER1F_GENTLEMAN
-	const LAVRADIOTOWER1F_SUPER_NERD2
+	const POKEMONTOWER1F_RECEPTIONIST
+	const POKEMONTOWER1F_MIDDLE_AGED_WOMAN
+	const POKEMONTOWER1F_BALDING_GUY
+	const POKEMONTOWER1F_GIRL
+	const POKEMONTOWER1F_CHANNELER
 
 PokemonTower1F_MapScripts:
 	def_scene_scripts
@@ -19,211 +40,78 @@ PokemonTower1F_MapScripts:
 PokemonTower1FReceptionistScript:
 	jumptextfaceplayer PokemonTower1FReceptionistText
 
-PokemonTower1FOfficerScript:
-	jumptextfaceplayer PokemonTower1FOfficerText
+PokemonTower1FMiddleAgedWomanScript:
+	jumptextfaceplayer PokemonTower1FMiddleAgedWomanText
 
-PokemonTower1FSuperNerd1Script:
-	jumptextfaceplayer PokemonTower1FSuperNerd1Text
+PokemonTower1FBaldingGuyScript:
+	jumptextfaceplayer PokemonTower1FBaldingGuyText
 
-PokemonTower1FGentlemanScript:
-	faceplayer
+PokemonTower1FGirlScript:
+	jumptextfaceplayer PokemonTower1FGirlText
+
+PokemonTower1FChannelerScript:
+	jumptextfaceplayer PokemonTower1FChannelerText
+
+; TEMPORARY (M5 8i, D8) — delete in M6 with the 2F warp
+; Yellow has no 1F->2F gate at all; the real gate is the SILPH SCOPE
+; (IsGhostBattle) and the 6F MAROWAK.  Until M6 ships 2F-7F the staircase is a
+; dead end, so this band gives it an in-world reason instead of a silent
+; nothing.  Unconditional: no flag, no scene, nothing for M6 to migrate --
+; delete the three coord_events, this script, the movement and the text.
+PokemonTower1FStairsBlockScript:
 	opentext
-	checkflag ENGINE_EXPN_CARD
-	iftrue .GotExpnCard
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .ReturnedMachinePart
-	writetext PokemonTower1FGentlemanText
+	writetext PokemonTower1FStairsBlockText
 	waitbutton
 	closetext
+	applymovement PLAYER, PokemonTower1FStepBackMovement
 	end
 
-.ReturnedMachinePart:
-	writetext PokemonTower1FGentlemanText_ReturnedMachinePart
-	promptbutton
-	getstring STRING_BUFFER_4, .expncardname
-	scall .receiveitem
-	setflag ENGINE_EXPN_CARD
-.GotExpnCard:
-	writetext PokemonTower1FGentlemanText_GotExpnCard
-	waitbutton
-	closetext
-	end
-
-.receiveitem:
-	jumpstd ReceiveItemScript
-	end
-
-.expncardname
-	db "EXPN CARD@"
-
-PokemonTower1FSuperNerd2Script:
-	faceplayer
-	opentext
-	checkflag ENGINE_EXPN_CARD
-	iftrue .GotExpnCard
-	writetext PokemonTower1FSuperNerd2Text
-	waitbutton
-	closetext
-	end
-
-.GotExpnCard:
-	writetext PokemonTower1FSuperNerd2Text_GotExpnCard
-	waitbutton
-	closetext
-	end
-
-PokemonTower1FDirectory:
-	jumptext PokemonTower1FDirectoryText
-
-PokemonTower1FPokeFluteSign:
-	jumptext PokemonTower1FPokeFluteSignText
-
-PokemonTower1FReferenceLibrary: ; unreferenced
-	jumptext PokemonTower1FReferenceLibraryText
+PokemonTower1FStepBackMovement:
+	step LEFT
+	step_end
+; END TEMPORARY
 
 PokemonTower1FReceptionistText:
-	text "Welcome!"
-	line "Feel free to look"
-
-	para "around anywhere on"
-	line "this floor."
+	text "#MON TOWER was"
+	line "erected in the"
+	cont "memory of #MON"
+	cont "that had died."
 	done
 
-PokemonTower1FOfficerText:
-	text "Sorry, but you can"
-	line "only tour the"
-	cont "ground floor."
-
-	para "Ever since JOHTO's"
-	line "RADIO TOWER was"
-
-	para "taken over by a"
-	line "criminal gang, we"
-
-	para "have had to step"
-	line "up our security."
+PokemonTower1FMiddleAgedWomanText:
+	text "Did you come to"
+	line "pay respects?"
+	cont "Bless you!"
 	done
 
-PokemonTower1FSuperNerd1Text:
-	text "Many people are"
-	line "hard at work here"
+PokemonTower1FBaldingGuyText:
+	text "I came to pray"
+	line "for my CLEFAIRY."
 
-	para "in the RADIO"
-	line "TOWER."
-
-	para "They must be doing"
-	line "their best to put"
-	cont "on good shows."
+	para "Sniff! I can't"
+	line "stop crying…"
 	done
 
-PokemonTower1FGentlemanText:
-	text "Oh, no, no, no!"
-
-	para "We've been off the"
-	line "air ever since the"
-
-	para "POWER PLANT shut"
-	line "down."
-
-	para "All my efforts to"
-	line "start this station"
-
-	para "would be wasted if"
-	line "I can't broadcast."
-
-	para "I'll be ruined!"
+PokemonTower1FGirlText:
+	text "My GROWLITHE…"
+	line "Why did you die?"
 	done
 
-PokemonTower1FGentlemanText_ReturnedMachinePart:
-	text "Ah! So you're the"
-	line "<PLAY_G> who solved"
-
-	para "the POWER PLANT's"
-	line "problem?"
-
-	para "Thanks to you, I"
-	line "never lost my job."
-
-	para "I tell you, you're"
-	line "a real lifesaver!"
-
-	para "Please take this"
-	line "as my thanks."
+PokemonTower1FChannelerText:
+	text "I am a CHANNELER!"
+	line "There are spirits"
+	cont "up to mischief!"
 	done
 
-PokemonTower1FGentlemanText_GotExpnCard:
-	text "With that thing,"
-	line "you can tune into"
+; TEMPORARY (M5 8i, D8) — delete in M6 with the 2F warp
+PokemonTower1FStairsBlockText:
+	text "A cold draft pours"
+	line "down the stairs…"
 
-	para "the radio programs"
-	line "here in KANTO."
-
-	para "Gahahahaha!"
+	para "Your legs won't"
+	line "carry you up."
 	done
-
-PokemonTower1FSuperNerd2Text:
-	text "Hey there!"
-
-	para "I am the super"
-	line "MUSIC DIRECTOR!"
-
-	para "Huh? Your #GEAR"
-	line "can't tune into my"
-
-	para "music programs."
-	line "How unfortunate!"
-
-	para "If you get an EXPN"
-	line "CARD upgrade, you"
-
-	para "can tune in. You'd"
-	line "better get one!"
-	done
-
-PokemonTower1FSuperNerd2Text_GotExpnCard:
-	text "Hey there!"
-
-	para "I am the super"
-	line "MUSIC DIRECTOR!"
-
-	para "I'm responsible"
-	line "for the gorgeous"
-
-	para "melodies that go"
-	line "out over the air."
-
-	para "Don't be square."
-	line "Grab your music"
-	cont "off the air!"
-	done
-
-PokemonTower1FDirectoryText:
-	text "1F RECEPTION"
-	line "2F SALES"
-
-	para "3F PERSONNEL"
-	line "4F PRODUCTION"
-
-	para "5F DIRECTOR'S"
-	line "   OFFICE"
-	done
-
-PokemonTower1FPokeFluteSignText:
-	text "Perk Up #MON"
-	line "with Mellow Sounds"
-
-	para "of the # FLUTE"
-	line "on CHANNEL 20"
-	done
-
-PokemonTower1FReferenceLibraryText:
-	text "Wow! A full rack"
-	line "of #MON CDs and"
-	cont "videos."
-
-	para "This must be the"
-	line "reference library."
-	done
+; END TEMPORARY
 
 PokemonTower1F_MapEvents:
 	db 0, 0 ; filler
@@ -233,14 +121,22 @@ PokemonTower1F_MapEvents:
 	warp_event 11, 17, LAVENDER_TOWN, 2
 
 	def_coord_events
+; TEMPORARY (M5 8i, D8) — delete in M6 with the 2F warp
+; The staircase tile (18,9) is reachable from (18,8), (18,10) AND (17,9) --
+; it sits on the open east wall of the room, not in an alcove -- so the band
+; covers the stair itself plus its two north/south approaches.  A band on the
+; two approaches alone would let the player walk in sideways and stand on an
+; inert staircase (docs/M5-LAVENDER.md "## 8i findings").
+	coord_event 18,  8, -1, PokemonTower1FStairsBlockScript
+	coord_event 18,  9, -1, PokemonTower1FStairsBlockScript
+	coord_event 18, 10, -1, PokemonTower1FStairsBlockScript
+; END TEMPORARY
 
 	def_bg_events
-	bg_event 11,  0, BGEVENT_READ, PokemonTower1FDirectory
-	bg_event  5,  0, BGEVENT_READ, PokemonTower1FPokeFluteSign
 
 	def_object_events
-	object_event  6,  6, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FReceptionistScript, -1
-	object_event 15,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FOfficerScript, -1
-	object_event  1,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PokemonTower1FSuperNerd1Script, -1
-	object_event  9,  1, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonTower1FGentlemanScript, -1
-	object_event 14,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PokemonTower1FSuperNerd2Script, -1
+	object_event 15, 13, SPRITE_LINK_RECEPTIONIST, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PokemonTower1FReceptionistScript, -1
+	object_event  6,  8, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FMiddleAgedWomanScript, -1
+	object_event  8, 12, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, PokemonTower1FBaldingGuyScript, -1
+	object_event 13,  7, SPRITE_LASS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, PokemonTower1FGirlScript, -1
+	object_event 17,  7, SPRITE_CHANNELER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, PokemonTower1FChannelerScript, -1

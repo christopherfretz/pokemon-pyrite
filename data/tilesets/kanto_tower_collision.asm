@@ -111,3 +111,8 @@
 	tilecoll WALL, WALL, FLOOR, WALL ; 6b
 	tilecoll WALL, WALL, WALL, WALL ; 6c
 	tilecoll WALL, WALL, WALL, WALL ; 6d
+; M5 8i: a twin of $0e (plain floor) carrying WARP_CARPET_DOWN on its two
+; bottom quadrants -- Pokemon Tower 1F's door out to LAVENDER TOWN, tiles
+; (10,17)/(11,17).  $0e itself is ordinary floor on all seven floors and
+; must not be overridden; see the module docstring of scripts/lavender_blk.py.
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 6e
