@@ -133,8 +133,12 @@ NamingScreenJumptable:
 	db "YOUR NAME?@"
 
 .Rival:
-	ld de, RivalSpriteGFX
-	ld b, BANK(RivalSpriteGFX)
+; Kanto hack (docs/RIVAL-NAMING.md): the rival being named is Yellow's young
+; Blue, not Silver, so this screen shows SPRITE_KANTO_RIVAL.  Yellow's own
+; naming screen shows no icon at all and captions it "RIVAL's NAME?" -- the
+; caption is matched here; the icon is Crystal's layout, kept.
+	ld de, KantoRivalSpriteGFX
+	ld b, BANK(KantoRivalSpriteGFX)
 	call .LoadSprite
 	hlcoord 5, 2
 	ld de, .RivalNameString
@@ -143,7 +147,7 @@ NamingScreenJumptable:
 	ret
 
 .RivalNameString:
-	db "RIVAL'S NAME?@"
+	db "RIVAL's NAME?@"
 
 .Mom:
 	ld de, MomSpriteGFX
@@ -219,6 +223,16 @@ NamingScreenJumptable:
 	jr nz, .not_kris
 	ld b, SPRITE_ANIM_OBJ_BLUE_WALK
 .not_kris
+; Kanto hack: SPRITE_KANTO_RIVAL is a PAL_OW_BLUE sheet (data/sprites/sprites.asm),
+; so it needs the BLUE_WALK anim object or it draws in Red's palette.
+	ld a, d
+	cp HIGH(KantoRivalSpriteGFX)
+	jr nz, .not_kanto_rival
+	ld a, e
+	cp LOW(KantoRivalSpriteGFX)
+	jr nz, .not_kanto_rival
+	ld b, SPRITE_ANIM_OBJ_BLUE_WALK
+.not_kanto_rival
 	ld a, b
 	depixel 4, 4, 4, 0
 	call InitSpriteAnimStruct

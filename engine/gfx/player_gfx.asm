@@ -69,7 +69,90 @@ ShowPlayerNamingChoices:
 	call CloseWindow
 	ret
 
+; Kanto hack (docs/RIVAL-NAMING.md): the same menu for the Kanto rival, with
+; Yellow's NEW NAME / BLUE / GARY / JOHN list.
+ShowRivalNamingChoices:
+	ld hl, RivalNameMenuHeader
+	call LoadMenuHeader
+	call VerticalMenu
+	ld a, [wMenuCursorY]
+	dec a
+	call CopyNameFromMenu
+	call CloseWindow
+	ret
+
+; Kanto hack (docs/RIVAL-NAMING.md): NamePlayer's twin for the Kanto rival, and
+; the pic prep OakSpeech farcalls to put his front pic on screen.  These live in
+; this bank rather than beside OakSpeech because bank 1 is nearly full; every
+; helper they use except ApplyMonOrTrainerPals / NamingScreen is in ROM0.
+; Yellow's ChooseRivalName does exactly what ChoosePlayerName does -- slide the
+; pic aside, offer the default-name list, and on NEW NAME drop into the naming
+; screen, re-opening it if the name came back empty
+; (vendor/pokeyellow/engine/movie/oak_speech/oak_speech2.asm).
+NameRival_Intro:
+	call MovePlayerPicRight
+	call ShowRivalNamingChoices
+	ld a, [wMenuCursorY]
+	dec a
+	jr z, .NewName
+	call StoreRivalName
+	farcall ApplyMonOrTrainerPals
+	call MovePlayerPicLeft
+	ret
+
+.NewName:
+	ld b, NAME_RIVAL
+	ld de, wRivalName
+	farcall NamingScreen
+
+; Yellow re-opens the naming screen on an empty name instead of falling back to
+; a default, so the rival can never end up nameless.
+	ld a, [wRivalName]
+	cp '@'
+	jr z, .NewName
+
+	call RotateThreePalettesRight
+	call ClearTilemap
+
+	call LoadFontsExtra
+	call WaitBGMap
+
+	call Intro_PrepKantoRivalPic
+
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call RotateThreePalettesLeft
+	ret
+
+StoreRivalName:
+	ld a, '@'
+	ld bc, NAME_LENGTH
+	ld hl, wRivalName
+	call ByteFill
+	ld hl, wRivalName
+	ld de, wStringBuffer2
+	call CopyName2
+	ret
+
+; Intro_PrepTrainerPic (bank 1) for the KANTO_RIVAL class pic -- Yellow's
+; Rival1Pic, the same young-Blue front pic his battles use.
+Intro_PrepKantoRivalPic:
+	xor a
+	ld [wCurPartySpecies], a
+	ld a, KANTO_RIVAL
+	ld [wTrainerClass], a
+	ld de, vTiles2
+	farcall GetTrainerPic
+	xor a
+	ldh [hGraphicStartTile], a
+	hlcoord 6, 4
+	lb bc, 7, 7
+	predef PlaceGraphic
+	ret
+
 INCLUDE "data/player_names.asm"
+
+INCLUDE "data/rival_names.asm"
 
 GetPlayerNameArray: ; unreferenced
 	ld hl, wPlayerName

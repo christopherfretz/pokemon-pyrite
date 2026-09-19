@@ -25,6 +25,24 @@ _OakText7::
 	line "later!"
 	done
 
+; Kanto hack (docs/RIVAL-NAMING.md): Yellow's _IntroduceRivalText and
+; _HisNameIsText, verbatim (vendor/pokeyellow/data/text/text_3.asm).
+_IntroduceRivalText::
+	text "This is my grand-"
+	line "son. He's been"
+	cont "your rival since"
+	cont "you were a baby."
+
+	para "...Erm, what is"
+	line "his name again?"
+	prompt
+
+_HisNameIsText::
+	text "That's right! I"
+	line "remember now! His"
+	cont "name is <RIVAL>!"
+	prompt
+
 _ClockTimeMayBeWrongText::
 	text "The clock's time"
 	line "may be wrong."

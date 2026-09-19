@@ -298,7 +298,9 @@ InitializeNPCNames:
 	call CopyBytes
 	ret
 
-.Rival:  db "BLUE@" ; Kanto hack: the Kanto rival is named from the start
+.Rival:  db "BLUE@" ; Kanto hack: pre-set fallback; OakSpeech's rival naming
+                   ; beat (docs/RIVAL-NAMING.md) overwrites it with the player's
+                   ; choice, and BLUE is also the first default the menu offers
 .Red:    db "RED@"
 .Green:  db "GREEN@"
 .Mom:    db "MOM@"
@@ -698,6 +700,39 @@ OakSpeech:
 	ld hl, OakText6
 	call PrintText
 	call NamePlayer
+
+; Kanto hack (docs/RIVAL-NAMING.md): Yellow's rival-naming beat, in Yellow's
+; position and order -- after the player's name, before Oak's send-off.  Yellow
+; fades to the rival's front pic (Rival1Pic, our KANTO_RIVAL class pic), prints
+; IntroduceRivalText, runs the same default-name menu / naming screen the player
+; just used, then HisNameIsText, and only then goes back to the player's pic for
+; the closing speech (vendor/pokeyellow/engine/movie/oak_speech/oak_speech.asm).
+	call RotateThreePalettesRight
+	call ClearTilemap
+
+	farcall Intro_PrepKantoRivalPic
+
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call Intro_RotatePalettesLeftFrontpic
+
+	ld hl, IntroduceRivalText
+	call PrintText
+	farcall NameRival_Intro
+	ld hl, HisNameIsText
+	call PrintText
+
+	call RotateThreePalettesRight
+	call ClearTilemap
+
+	xor a
+	ld [wCurPartySpecies], a
+	farcall DrawIntroPlayerPic
+
+	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	call GetSGBLayout
+	call Intro_RotatePalettesLeftFrontpic
+
 	ld hl, OakText7
 	call PrintText
 	ret
@@ -733,6 +768,16 @@ OakText6:
 
 OakText7:
 	text_far _OakText7
+	text_end
+
+; Kanto hack: Yellow's _IntroduceRivalText / _HisNameIsText
+; (vendor/pokeyellow/data/text/text_3.asm), verbatim.
+IntroduceRivalText:
+	text_far _IntroduceRivalText
+	text_end
+
+HisNameIsText:
+	text_far _HisNameIsText
 	text_end
 
 NamePlayer:
