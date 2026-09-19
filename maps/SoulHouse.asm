@@ -1,93 +1,31 @@
+; Kanto hack (M5 8h): SOUL_HOUSE is a Crystal-only building.  Yellow's LAVENDER
+; TOWN has six doors and Crystal's has seven, so 8g deleted this one from the
+; town (decision D6) and 8h emptied the room: MR FUJI belongs in MR_FUJIS_HOUSE
+; (he is the VOLUNTEER #MON HOUSE's owner in Yellow, hidden until the #MON
+; TOWER rescue), and the three mourners have no Yellow counterpart -- the
+; SOUL HOUSE is Crystal's stand-in for the #MON TOWER itself, which 8i ports
+; for real.
+;
+; The map is kept (map constants are positional and savestate-visible) but is
+; unreachable: no town warp points here, the header was re-cut from 5x4 to 4x4
+; to alias maps/House1.blk like every other Lavender house, and the return
+; warps sit on that .blk's door tiles only so the indexes are in range.
 	object_const_def
-	const SOULHOUSE_MRFUJI
-	const SOULHOUSE_TEACHER
-	const SOULHOUSE_LASS
-	const SOULHOUSE_GRANNY
 
 SoulHouse_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-MrFuji:
-	jumptextfaceplayer MrFujiText
-
-SoulHouseTeacherScript:
-	jumptextfaceplayer SoulHouseTeacherText
-
-SoulHouseLassScript:
-	jumptextfaceplayer SoulHouseLassText
-
-SoulHouseGrannyScript:
-	jumptextfaceplayer SoulHouseGrannyText
-
-MrFujiText:
-	text "MR.FUJI: Welcome."
-
-	para "Hmm… You appear to"
-	line "be raising your"
-
-	para "#MON in a kind"
-	line "and loving manner."
-
-	para "#MON lovers"
-	line "come here to pay"
-
-	para "their respects to"
-	line "departed #MON."
-
-	para "Please offer con-"
-	line "dolences for the"
-
-	para "souls of the de-"
-	line "parted #MON."
-
-	para "I'm sure that will"
-	line "make them happy."
-	done
-
-SoulHouseTeacherText:
-	text "There are other"
-	line "graves of #MON"
-	cont "here, I think."
-
-	para "There are many"
-	line "chambers that only"
-	cont "MR.FUJI may enter."
-	done
-
-SoulHouseLassText:
-	text "I came with my mom"
-	line "to visit #MON"
-	cont "graves…"
-	done
-
-SoulHouseGrannyText:
-	text "The #MON that"
-	line "lived with me…"
-
-	para "I loved them like"
-	line "my grandchildren…"
-	done
-
 SoulHouse_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-; Kanto hack (M5 8g, decision D6): Yellow's LAVENDER TOWN has six buildings and
-; Crystal's has seven, so 8g deleted this map's door from the town.  SOUL_HOUSE
-; keeps its map constant, header and blocks but is unreachable; the return warp
-; is re-pointed at the Cubone house's door (town warp 5) only so the index is
-; in range.  Its cast is 8h's to deal with.
-	warp_event  4,  7, LAVENDER_TOWN, 5
-	warp_event  5,  7, LAVENDER_TOWN, 5
+	warp_event  2,  7, LAVENDER_TOWN, 5
+	warp_event  3,  7, LAVENDER_TOWN, 5
 
 	def_coord_events
 
 	def_bg_events
 
 	def_object_events
-	object_event  4,  2, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MrFuji, -1
-	object_event  7,  3, SPRITE_TEACHER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SoulHouseTeacherScript, -1
-	object_event  2,  5, SPRITE_LASS, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SoulHouseLassScript, -1
-	object_event  1,  3, SPRITE_GRANNY, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SoulHouseGrannyScript, -1

@@ -1,20 +1,81 @@
+; Kanto hack (M5 8h): Yellow's MR_FUJIS_HOUSE, the VOLUNTEER #MON HOUSE
+; (vendor/pokeyellow/data/maps/objects/MrFujisHouse.asm,
+; scripts/MrFujisHouse.asm, text/MrFujisHouse.asm).  The room was re-cut from
+; Crystal's 5x4 to Yellow's 4x4 and now aliases maps/House1.blk, which matches
+; Yellow's house block for block: all six of Yellow's objects land on Yellow's
+; own tiles, including the POKEDEX prop on the table at (3,3) (the same tile
+; BluesHouse uses on the same .blk) and the door at (2,7)/(3,7).
+;
+; Sprite substitutions (docs/M5-LAVENDER.md 2.17): LITTLE_GIRL -> SPRITE_TWIN,
+; and the two adopted #MON are SPRITE_MONSTER, replacing the party-icon
+; indexes (SPRITE_RHYDON / SPRITE_GROWLITHE / SPRITE_MOLTRES) Crystal's version
+; of this map used.  Crystal's third #MON, a PIDGEY, is not on Yellow's list
+; and is gone with the bookshelves.
+;
+; MR FUJI himself is only home once the player has cleared the #MON TOWER.
+; Yellow branches on EVENT_RESCUED_MR_FUJI; GSC's object rows carry a HIDE flag
+; (SET means hidden, engine/overworld/scripting.asm), which is the inverse, so
+; the row's flag is the dedicated EVENT_MR_FUJIS_HOUSE_MR_FUJI_HIDDEN and the
+; callback below derives it from the story flag on every map load.  That is the
+; CeruleanCity idiom (docs/PORTING.md 3.1/3.4): it survives white-outs and is
+; correct on saves made before the flag existed.
 	object_const_def
 	const MRFUJISHOUSE_SUPER_NERD
-	const MRFUJISHOUSE_LASS
+	const MRFUJISHOUSE_TWIN
 	const MRFUJISHOUSE_PSYDUCK
 	const MRFUJISHOUSE_NIDORINO
-	const MRFUJISHOUSE_PIDGEY
+	const MRFUJISHOUSE_MR_FUJI
+	const MRFUJISHOUSE_POKEDEX
 
 MrFujisHouse_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, MrFujisHouseObjectsCallback
 
+MrFujisHouseObjectsCallback:
+	checkevent EVENT_RESCUED_MR_FUJI
+	iftrue .MrFujiIsHome
+	setevent EVENT_MR_FUJIS_HOUSE_MR_FUJI_HIDDEN
+	endcallback
+
+.MrFujiIsHome:
+	clearevent EVENT_MR_FUJIS_HOUSE_MR_FUJI_HIDDEN
+	endcallback
+
+; Yellow: MrFujisHouseSuperNerdText branches on EVENT_RESCUED_MR_FUJI.
 MrFujisHouseSuperNerdScript:
-	jumptextfaceplayer MrFujisHouseSuperNerdText
+	faceplayer
+	opentext
+	checkevent EVENT_RESCUED_MR_FUJI
+	iftrue .HadBeenPraying
+	writetext MrFujisHouseSuperNerdMrFujiIsntHereText
+	waitbutton
+	closetext
+	end
 
-MrFujisHouseLassScript:
-	jumptextfaceplayer MrFujisHouseLassText
+.HadBeenPraying:
+	writetext MrFujisHouseSuperNerdMrFujiHadBeenPrayingText
+	waitbutton
+	closetext
+	end
+
+; Yellow: MrFujisHouseLittleGirlText, same branch.
+MrFujisHouseTwinScript:
+	faceplayer
+	opentext
+	checkevent EVENT_RESCUED_MR_FUJI
+	iftrue .NiceToHug
+	writetext MrFujisHouseTwinThisIsMrFujisHouseText
+	waitbutton
+	closetext
+	end
+
+.NiceToHug:
+	writetext MrFujisHouseTwinPokemonAreNiceToHugText
+	waitbutton
+	closetext
+	end
 
 MrFujisPsyduck:
 	opentext
@@ -32,49 +93,70 @@ MrFujisNidorino:
 	closetext
 	end
 
-MrFujisPidgey:
-	opentext
-	writetext MrFujisPidgeyText
-	cry PIDGEY
-	waitbutton
-	closetext
-	end
+; Yellow's MR FUJI hands over the POKE FLUTE here, the first time the player
+; visits after the #MON TOWER rescue, and afterwards asks whether it helped.
+; M5 ships only the afterwards line: the give needs EVENT_GOT_POKE_FLUTE, which
+; is M6's flag append (docs/M5-LAVENDER.md 3.5).  Until M6 sets
+; EVENT_RESCUED_MR_FUJI he is hidden, so this script is unreachable in normal
+; play; M6 replaces it with Yellow's full give.
+MrFujisHouseMrFujiScript:
+	jumptextfaceplayer MrFujisHouseMrFujiHasMyFluteHelpedYouText
 
-MrFujisHouseBookshelf:
-	jumpstd DifficultBookshelfScript
+MrFujisHousePokedexScript:
+	jumptext MrFujisHousePokedexText
 
-MrFujisHouseSuperNerdText:
-	text "MR.FUJI does live"
-	line "here, but he's not"
-
-	para "home now."
-
-	para "He should be at"
-	line "the SOUL HOUSE."
+MrFujisHouseSuperNerdMrFujiIsntHereText:
+	text "That's odd, MR.FUJI"
+	line "isn't here."
+	cont "Where'd he go?"
 	done
 
-MrFujisHouseLassText:
-	text "Some cold-hearted"
-	line "people stop caring"
-	cont "for their #MON."
+MrFujisHouseSuperNerdMrFujiHadBeenPrayingText:
+	text "MR.FUJI had been"
+	line "praying alone for"
+	cont "CUBONE's mother."
+	done
 
-	para "Grandpa takes in"
-	line "the poor homeless"
+MrFujisHouseTwinThisIsMrFujisHouseText:
+	text "This is really"
+	line "MR.FUJI's house."
 
-	para "#MON and takes"
-	line "care of them."
+	para "He's really kind!"
+
+	para "He looks after"
+	line "abandoned and"
+	cont "orphaned #MON!"
+	done
+
+MrFujisHouseTwinPokemonAreNiceToHugText:
+	text "It's so warm!"
+	line "#MON are so"
+	cont "nice to hug!"
 	done
 
 MrFujisPsyduckText:
-	text "PSYDUCK: Gu-guwa?"
+	text "PSYDUCK: Gwappa!"
 	done
 
 MrFujisNidorinoText:
-	text "NIDORINO: Gyun!"
+	text "NIDORINO: Gaoo!"
 	done
 
-MrFujisPidgeyText:
-	text "PIDGEY: Pijji!"
+MrFujisHouseMrFujiHasMyFluteHelpedYouText:
+	text "MR.FUJI: Has my"
+	line "FLUTE helped you?"
+	done
+
+MrFujisHousePokedexText:
+	text "#MON Monthly"
+	line "Grand Prize"
+	cont "Drawing!"
+
+	para "The application"
+	line "form is…"
+
+	para "Gone! It's been"
+	line "clipped out!"
 	done
 
 MrFujisHouse_MapEvents:
@@ -87,12 +169,11 @@ MrFujisHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  0,  1, BGEVENT_READ, MrFujisHouseBookshelf
-	bg_event  1,  1, BGEVENT_READ, MrFujisHouseBookshelf
 
 	def_object_events
-	object_event  4,  1, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MrFujisHouseSuperNerdScript, -1
-	object_event  3,  4, SPRITE_LASS, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MrFujisHouseLassScript, -1
-	object_event  7,  4, SPRITE_RHYDON, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MrFujisPsyduck, -1
-	object_event  5,  5, SPRITE_GROWLITHE, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MrFujisNidorino, -1
-	object_event  1,  3, SPRITE_MOLTRES, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, MrFujisPidgey, -1
+	object_event  3,  5, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MrFujisHouseSuperNerdScript, -1
+	object_event  6,  3, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MrFujisHouseTwinScript, -1
+	object_event  6,  4, SPRITE_MONSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, MrFujisPsyduck, -1
+	object_event  1,  3, SPRITE_MONSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MrFujisNidorino, -1
+	object_event  3,  1, SPRITE_MR_FUJI, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, MrFujisHouseMrFujiScript, EVENT_MR_FUJIS_HOUSE_MR_FUJI_HIDDEN
+	object_event  3,  3, SPRITE_POKEDEX, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MrFujisHousePokedexScript, -1

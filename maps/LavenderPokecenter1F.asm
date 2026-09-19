@@ -1,8 +1,27 @@
+; Kanto hack (M5 8h): Yellow's LAVENDER_POKECENTER
+; (vendor/pokeyellow/data/maps/objects/LavenderPokecenter.asm,
+; vendor/pokeyellow/text/LavenderPokecenter.asm), re-placed on Crystal's 5x4
+; room the way 6b/7b/8d did Cerulean's, Vermilion's and Rock Tunnel's.
+;
+; Yellow's NURSE (3,1), CHANSEY (4,1) and GENTLEMAN (5,3) are on Yellow's own
+; tiles.  Yellow's LITTLE_GIRL walks left-right at (10,5), past the right-hand
+; end of this narrower room and (at x=9) hemmed in by the tables, so she takes
+; the equivalent open tile one row up, (8,4), exactly as 6b re-placed
+; Cerulean's (10,5) walker.  She is SPRITE_TWIN per the sprite substitution
+; table (docs/M5-LAVENDER.md 2.17).
+;
+; Yellow's 11,2 LINK_RECEPTIONIST is dropped: Crystal's cable club lives on
+; POKECENTER_2F, which the (0,7) staircase already reaches (and x=11 does not
+; exist in this 10-tile-wide room).  Crystal's own TEACHER and YOUNGSTER are
+; gone -- they are not on Yellow's list -- and with the YOUNGSTER went the
+; EVENT_RETURNED_MACHINE_PART / MAGNET TRAIN / RADIO STATION branch, which
+; belongs to the deferred Johto Power Plant story (docs/M5-LAVENDER.md 3.9).
+; The flag itself stays live for Johto.
 	object_const_def
 	const LAVENDERPOKECENTER1F_NURSE
+	const LAVENDERPOKECENTER1F_CHANSEY
 	const LAVENDERPOKECENTER1F_GENTLEMAN
-	const LAVENDERPOKECENTER1F_TEACHER
-	const LAVENDERPOKECENTER1F_YOUNGSTER
+	const LAVENDERPOKECENTER1F_TWIN
 
 LavenderPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -12,70 +31,37 @@ LavenderPokecenter1F_MapScripts:
 LavenderPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
+; Yellow: PokecenterChanseyText (engine/events/pokecenter_chansey.asm).
+LavenderPokecenter1FChanseyScript:
+	opentext
+	writetext LavenderPokecenter1FChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
+
 LavenderPokecenter1FGentlemanScript:
 	jumptextfaceplayer LavenderPokecenter1FGentlemanText
 
-LavenderPokecenter1FTeacherScript:
-	jumptextfaceplayer LavenderPokecenter1FTeacherText
+LavenderPokecenter1FTwinScript:
+	jumptextfaceplayer LavenderPokecenter1FTwinText
 
-LavenderPokecenter1FYoungsterScript:
-	faceplayer
-	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .ReturnedMachinePart
-	writetext LavenderPokecenter1FYoungsterText
-	waitbutton
-	closetext
-	end
-
-.ReturnedMachinePart:
-	writetext LavenderPokecenter1FYoungsterText_ReturnedMachinePart
-	waitbutton
-	closetext
-	end
+LavenderPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
+	done
 
 LavenderPokecenter1FGentlemanText:
-	text "To the north of"
-	line "LAVENDER is ROCK"
-
-	para "TUNNEL. Go through"
-	line "it to get to the"
-	cont "POWER PLANT."
+	text "TEAM ROCKET will"
+	line "do anything for"
+	cont "the sake of gold!"
 	done
 
-LavenderPokecenter1FTeacherText:
-	text "There's a radio"
-	line "program that plays"
-	cont "# FLUTE music."
-
-	para "Oh? Ah, your radio"
-	line "needs an EXPN CARD"
-	cont "to tune into it."
-	done
-
-LavenderPokecenter1FYoungsterText:
-	text "If the POWER PLANT"
-	line "isn't running, the"
-
-	para "MAGNET TRAIN won't"
-	line "run either…"
-
-	para "It also means the"
-	line "RADIO STATION"
-	cont "can't broadcast…"
-	done
-
-LavenderPokecenter1FYoungsterText_ReturnedMachinePart:
-	text "The DIRECTOR of"
-	line "the RADIO STATION"
-	cont "sure was happy."
-
-	para "He said they're"
-	line "back on the air"
-
-	para "because the POWER"
-	line "PLANT is running"
-	cont "smoothly again."
+LavenderPokecenter1FTwinText:
+	text "I saw CUBONE's"
+	line "mother die trying"
+	cont "to escape from"
+	cont "TEAM ROCKET!"
 	done
 
 LavenderPokecenter1F_MapEvents:
@@ -92,6 +78,6 @@ LavenderPokecenter1F_MapEvents:
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FNurseScript, -1
-	object_event  7,  6, SPRITE_GENTLEMAN, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FGentlemanScript, -1
-	object_event  5,  3, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FTeacherScript, -1
-	object_event  1,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FYoungsterScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FChanseyScript, -1
+	object_event  5,  3, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FGentlemanScript, -1
+	object_event  8,  4, SPRITE_TWIN, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, LavenderPokecenter1FTwinScript, -1

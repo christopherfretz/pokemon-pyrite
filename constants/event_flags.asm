@@ -539,9 +539,13 @@
 	const EVENT_BEAT_PICNICKER_DIANA ; Kanto hack: renamed in place (6e,
 ; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERF_DIANA; Yellow's Cerulean Gym
 ; JR.TRAINER^F is a PICNICKER named DIANA, so the flag keeps its meaning.
-	const EVENT_BEAT_SWIMMERF_BRIANA ; Kanto hack: dead since 6e (Crystal's
-; third Cerulean Gym swimmer is gone).  Left in place -- flag indexes are
-; positional and savestate-visible, so flags are never deleted.
+	const EVENT_MR_FUJIS_HOUSE_MR_FUJI_HIDDEN ; Kanto hack: renamed in place
+; (M5 8h).  Was EVENT_BEAT_SWIMMERF_BRIANA, dead since 6e (Crystal's third
+; Cerulean Gym swimmer is gone); flag indexes are positional and
+; savestate-visible, so a dead flag is renamed, never deleted.  MR FUJI is not
+; standing at (3,1) in MR_FUJIS_HOUSE (his object's hide flag -- SET means
+; hidden, so it is the inverse of EVENT_RESCUED_MR_FUJI and is owned by
+; MrFujisHouseObjectsCallback, which derives it on every map load).
 ; Bird Keeper
 	const EVENT_BEAT_BIRD_KEEPER_ROD
 	const EVENT_BEAT_BIRD_KEEPER_ABE
@@ -1713,7 +1717,16 @@
 	const EVENT_BEAT_GENTLEMAN_HORACE ; ROUTE 11, Yellow's GAMBLER 4
 	const EVENT_BEAT_ROUTE_12_SNORLAX ; the ROUTE 12 SNORLAX has been woken and fought (M5); ROUTE 11 GATE 2F binoculars
 
-; Unused: next 476 events
+; Kanto hack: M5 step 8h (the Lavender interiors).  One append: Yellow's
+; EVENT_RESCUED_MR_FUJI, the story flag M6 sets when the player clears the
+; #MON TOWER.  Three texts already branch on it (MR FUJI'S HOUSE's SUPER NERD
+; and TWIN, LAVENDER MART's COOLTRAINER_M) and MrFujisHouseObjectsCallback
+; derives MR FUJI's hide flag from it.  The object row's own hide flag reuses
+; the dead EVENT_BEAT_SWIMMERF_BRIANA slot, renamed in place above.
+; 476 free -> 475.
+	const EVENT_RESCUED_MR_FUJI ; MR FUJI is back home from the #MON TOWER (Yellow's EVENT_RESCUED_MR_FUJI); set by M6's tower rescue
+
+; Unused: next 475 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

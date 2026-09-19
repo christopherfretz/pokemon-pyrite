@@ -166,6 +166,8 @@ PewterSnoozeSpeechHouse_Blocks:
 BillsOlderSistersHouse_Blocks:
 LavenderCuboneHouse_Blocks:
 LavenderNameRater_Blocks:
+MrFujisHouse_Blocks: ; Kanto hack (M5 8h): re-cut 5x4 -> 4x4 onto House1
+SoulHouse_Blocks: ; Kanto hack (M5 8h): re-cut 5x4 -> 4x4 onto House1
 Route12SuperRodHouse_Blocks:
 Route28SteelWingHouse_Blocks:
 CeladonMansionRoofHouse_Blocks:
@@ -876,9 +878,6 @@ RedsHouse2F_Blocks:
 OaksLab_Blocks:
 	INCBIN "maps/OaksLab.blk"
 
-MrFujisHouse_Blocks:
-	INCBIN "maps/MrFujisHouse.blk"
-
 PokemonTower1F_Blocks:
 	INCBIN "maps/PokemonTower1F.blk"
 
@@ -887,9 +886,6 @@ SilverCaveItemRooms_Blocks:
 
 DayCare_Blocks:
 	INCBIN "maps/DayCare.blk"
-
-SoulHouse_Blocks:
-	INCBIN "maps/SoulHouse.blk"
 
 PewterGym_Blocks:
 	INCBIN "maps/PewterGym.blk"

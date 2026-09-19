@@ -381,11 +381,11 @@ ENDM
 	map_const LAVENDER_TOWN,                               10,  9 ;  4
 	map_const LAVENDER_POKECENTER_1F,                       5,  4 ;  5
 	map_const LAVENDER_POKECENTER_2F_BETA,                  8,  4 ;  6
-	map_const MR_FUJIS_HOUSE,                               5,  4 ;  7
+	map_const MR_FUJIS_HOUSE,                               4,  4 ;  7
 	map_const LAVENDER_CUBONE_HOUSE,                        4,  4 ;  8
 	map_const LAVENDER_NAME_RATER,                          4,  4 ;  9
 	map_const LAVENDER_MART,                                6,  4 ; 10
-	map_const SOUL_HOUSE,                                   5,  4 ; 11
+	map_const SOUL_HOUSE,                                   4,  4 ; 11
 	map_const POKEMON_TOWER_1F,                            10,  9 ; 12
 	map_const ROUTE_8_SAFFRON_GATE,                         3,  4 ; 13
 	map_const ROUTE_12_SUPER_ROD_HOUSE,                     4,  4 ; 14
