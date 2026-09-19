@@ -532,32 +532,43 @@ KantoGrassWildMons:
 	db 18, KADABRA
 	end_grass_wildmons
 
+; Kanto hack (M5): Yellow's Route 9 table
+; (vendor/pokeyellow/data/wild/maps/Route9.asm). Yellow rate 15/256 ==
+; `6 percent` exactly; no time of day, so morn = day = nite. Yellow lists
+; EIGHT species in ten slots and Crystal has only seven slots, so one species
+; must go: the two duplicated L18 NIDORANs (slots 3-4) and FEAROW (slot 9,
+; 1.2% -- Yellow's rarest slot anywhere, and still obtainable by evolving the
+; SPEAROW that stays). Weights land NIDORAN_M 30 / NIDORAN_F 30 / RATTATA 20 /
+; SPEAROW 10 / NIDORINO 5 / NIDORINA 4 / RATICATE 1 against Yellow's
+; 29.7 / 29.7 / 15.2 / 9.8 / 5.1 / 5.1 / 4.3, and both level extremes (L16
+; min, L20 RATICATE max) survive. Gone: Crystal's VENONAT, VENOMOTH, ZUBAT,
+; MAROWAK and its nite block.
 	def_grass_wildmons ROUTE_9
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 15, RATTATA
-	db 15, SPEAROW
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, FEAROW
-	db 18, MAROWAK
-	db 18, MAROWAK
+	db 16, NIDORAN_M
+	db 16, NIDORAN_F
+	db 18, RATTATA
+	db 17, SPEAROW
+	db 18, NIDORINO
+	db 18, NIDORINA
+	db 20, RATICATE
 	; day
-	db 15, RATTATA
-	db 15, SPEAROW
-	db 15, RATICATE
-	db 15, FEAROW
-	db 15, FEAROW
-	db 18, MAROWAK
-	db 18, MAROWAK
+	db 16, NIDORAN_M
+	db 16, NIDORAN_F
+	db 18, RATTATA
+	db 17, SPEAROW
+	db 18, NIDORINO
+	db 18, NIDORINA
+	db 20, RATICATE
 	; nite
-	db 15, RATTATA
-	db 15, VENONAT
-	db 15, RATICATE
-	db 15, VENOMOTH
-	db 15, ZUBAT
-	db 18, RATICATE
-	db 18, RATICATE
+	db 16, NIDORAN_M
+	db 16, NIDORAN_F
+	db 18, RATTATA
+	db 17, SPEAROW
+	db 18, NIDORINO
+	db 18, NIDORINA
+	db 20, RATICATE
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_10

@@ -239,7 +239,7 @@
 	const EVENT_GOT_SQUIRTLE_FROM_OFFICER_JENNY ; Kanto hack: renamed in place (7e), was EVENT_GOT_HP_UP_FROM_VERMILION_GUY; Yellow's EVENT_GOT_SQUIRTLE_FROM_OFFICER_JENNY
 	const EVENT_GOT_TM29_PSYCHIC
 ; Kanto hidden items
-	const EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE ; Kanto hack: DEAD as of 7l -- Yellow's DIGLETT'S CAVE has no hidden items; free for the next Kanto hidden item
+	const EVENT_ROUTE_9_TM_TELEPORT ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_DIGLETTS_CAVE_HIDDEN_MAX_REVIVE; ROUTE 9's TM30 TELEPORT ball at (10,15).  Itemball flag living in the hidden-item block: moving the const would renumber every flag after it and break existing saves
 	const EVENT_UNDERGROUND_PATH_HIDDEN_FULL_RESTORE
 	const EVENT_UNDERGROUND_PATH_HIDDEN_X_SPECIAL
 	const EVENT_ROCK_TUNNEL_1F_HIDDEN_X_ACCURACY
@@ -584,7 +584,7 @@
 	const EVENT_BEAT_CAMPER_BARRY
 	const EVENT_BEAT_CAMPER_WENDELL ; Kanto hack: renamed in place (6i), was EVENT_BEAT_CAMPER_LLOYD; Route 25, Yellow's JR_TRAINER_M 2
 	const EVENT_BEAT_CAMPER_DEAN
-	const EVENT_BEAT_CAMPER_SID
+	const EVENT_BEAT_YOUNGSTER_AJ ; Kanto hack: renamed in place (M5 8c), was EVENT_BEAT_CAMPER_SID (Crystal's Route 9 CAMPER SID, deleted by 8c); ROUTE 9, Yellow's YOUNGSTER 14 "A.J."
 	const EVENT_BEAT_CAMPER_HERVEY
 	const EVENT_BEAT_CAMPER_DALE
 	const EVENT_BEAT_CAMPER_TED
@@ -867,7 +867,7 @@
 	const EVENT_BEAT_LASS_DANA2
 	const EVENT_BEAT_LASS_DANA3
 ; Hiker
-	const EVENT_BEAT_HIKER_ANTHONY2
+	const EVENT_BEAT_HIKER_LAMONT ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_BEAT_HIKER_ANTHONY2; ROUTE 9, Yellow's HIKER 5
 	const EVENT_BEAT_HIKER_RUSSELL
 	const EVENT_BEAT_HIKER_PHILLIP
 	const EVENT_BEAT_HIKER_LEONARD
@@ -889,8 +889,8 @@
 	const EVENT_BEAT_HIKER_PARRY3
 ; Bug Catcher
 	const EVENT_BEAT_BUG_CATCHER_DON
-	const EVENT_BEAT_BUG_CATCHER_ROB
-	const EVENT_BEAT_BUG_CATCHER_ED
+	const EVENT_BEAT_BUG_CATCHER_ELLIS ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_BEAT_BUG_CATCHER_ROB; ROUTE 9, Yellow's BUG_CATCHER 13
+	const EVENT_BEAT_BUG_CATCHER_MERV ; Kanto hack: renamed in place (M5 8c), was the dead EVENT_BEAT_BUG_CATCHER_ED; ROUTE 9, Yellow's BUG_CATCHER 14
 	const EVENT_BEAT_BUG_CATCHER_WADE
 	const EVENT_BEAT_BUG_CATCHER_BENNY
 	const EVENT_BEAT_BUG_CATCHER_AL

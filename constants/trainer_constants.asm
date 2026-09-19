@@ -138,6 +138,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: ROUTE 11 (7l) -- Yellow YOUNGSTER 11/12
 	const GORDY
 	const CLIFF
+	const AJ ; Kanto hack: ROUTE 9 (M5 8c, Yellow YOUNGSTER 14 -- Yellow's own name)
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -404,6 +405,9 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Route 6's two bug catchers (Yellow BUG_CATCHER 10 / 11)
 	const LOGAN
 	const FELIX
+; Kanto hack: ROUTE 9 (M5 8c) -- Yellow BUG_CATCHER 13 / 14
+	const ELLIS
+	const MERV
 
 	trainerclass FISHER ; 25
 	const JUSTIN
@@ -563,6 +567,7 @@ DEF KRIS EQU __trainer_class__
 	const GRAHAM
 	const ARCHIE
 	const MORTON
+	const LAMONT ; Kanto hack: ROUTE 9 (M5 8c, Yellow HIKER 5)
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused
@@ -672,7 +677,6 @@ DEF KRIS EQU __trainer_class__
 	const BARRY
 	const LLOYD
 	const DEAN
-	const SID
 	const HARVEY ; unused
 	const DALE ; unused
 	const TED

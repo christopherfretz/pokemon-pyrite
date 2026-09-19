@@ -480,6 +480,11 @@ YoungsterGroup:
 	db 18, NIDORINO
 	db -1 ; end
 
+	; YOUNGSTER (23) - Kanto hack: ROUTE 9, Yellow's YOUNGSTER 14 "A.J." (docs/M5-LAVENDER.md 5.1)
+	db "A.J.@", TRAINERTYPE_NORMAL
+	db 24, SANDSHREW
+	db -1 ; end
+
 SchoolboyGroup:
 	; SCHOOLBOY (1)
 	db "JACK@", TRAINERTYPE_NORMAL
@@ -1886,6 +1891,19 @@ BugCatcherGroup:
 	db 20, BUTTERFREE
 	db -1 ; end
 
+	; BUG_CATCHER (32) - Kanto hack: ROUTE 9, Yellow's BUG_CATCHER 13 (docs/M5-LAVENDER.md 5.1)
+	db "ELLIS@", TRAINERTYPE_NORMAL
+	db 19, BEEDRILL
+	db 19, BEEDRILL
+	db -1 ; end
+
+	; BUG_CATCHER (33) - Kanto hack: ROUTE 9, Yellow's BUG_CATCHER 14 (docs/M5-LAVENDER.md 5.1)
+	db "MERV@", TRAINERTYPE_NORMAL
+	db 20, CATERPIE
+	db 20, WEEDLE
+	db 20, VENONAT
+	db -1 ; end
+
 FisherGroup:
 	; FISHER (1)
 	db "JUSTIN@", TRAINERTYPE_NORMAL
@@ -2679,11 +2697,10 @@ HikerGroup:
 	db 29, MACHOKE
 	db -1 ; end
 
-	; HIKER (13)
+	; HIKER (13) - Kanto hack: ROUTE 9, Yellow's HIKER 11 (docs/M5-LAVENDER.md 5.1)
 	db "TIM@", TRAINERTYPE_NORMAL
-	db 31, GRAVELER
-	db 31, GRAVELER
-	db 31, GRAVELER
+	db 20, MACHOP
+	db 20, ONIX
 	db -1 ; end
 
 	; HIKER (14)
@@ -2692,10 +2709,11 @@ HikerGroup:
 	db 33, GOLEM
 	db -1 ; end
 
-	; HIKER (15)
+	; HIKER (15) - Kanto hack: ROUTE 9, Yellow's HIKER 6 (docs/M5-LAVENDER.md 5.1)
 	db "SIDNEY@", TRAINERTYPE_NORMAL
-	db 34, DUGTRIO
-	db 32, ONIX
+	db 20, GEODUDE
+	db 20, MACHOP
+	db 20, GEODUDE
 	db -1 ; end
 
 	; HIKER (16)
@@ -2766,6 +2784,12 @@ HikerGroup:
 	; HIKER (26) - Kanto hack: Route 25, Yellow's HIKER 4
 	db "MORTON@", TRAINERTYPE_NORMAL
 	db 17, ONIX
+	db -1 ; end
+
+	; HIKER (27) - Kanto hack: ROUTE 9, Yellow's HIKER 5 (docs/M5-LAVENDER.md 5.1)
+	db "LAMONT@", TRAINERTYPE_NORMAL
+	db 21, GEODUDE
+	db 21, ONIX
 	db -1 ; end
 
 BikerGroup:
@@ -3185,16 +3209,17 @@ PicnickerGroup:
 	db 21, NIDOQUEEN
 	db -1 ; end
 
-	; PICNICKER (13)
+	; PICNICKER (13) - Kanto hack: ROUTE 9, Yellow's JR_TRAINER_F 5 (docs/M5-LAVENDER.md 5.1)
 	db "HEIDI@", TRAINERTYPE_NORMAL
-	db 32, SKIPLOOM
-	db 32, SKIPLOOM
+	db 18, ODDISH
+	db 18, BELLSPROUT
+	db 18, ODDISH
+	db 18, BELLSPROUT
 	db -1 ; end
 
-	; PICNICKER (14)
+	; PICNICKER (14) - Kanto hack: ROUTE 9, Yellow's JR_TRAINER_F 6 (docs/M5-LAVENDER.md 5.1)
 	db "EDNA@", TRAINERTYPE_NORMAL
-	db 30, NIDORINA
-	db 34, RAICHU
+	db 23, MEOWTH
 	db -1 ; end
 
 	; PICNICKER (15)
@@ -3324,49 +3349,44 @@ CamperGroup:
 	db 34, NIDOKING
 	db -1 ; end
 
-	; CAMPER (7)
+	; CAMPER (7) - Kanto hack: ROUTE 9, Yellow's JR_TRAINER_M 8 (docs/M5-LAVENDER.md 5.1)
 	db "DEAN@", TRAINERTYPE_NORMAL
-	db 33, GOLDUCK
-	db 31, SANDSLASH
+	db 19, RATTATA
+	db 19, DIGLETT
+	db 19, EKANS
+	db 19, SANDSHREW
 	db -1 ; end
 
 	; CAMPER (8)
-	db "SID@", TRAINERTYPE_NORMAL
-	db 32, DUGTRIO
-	db 29, PRIMEAPE
-	db 29, POLIWRATH
-	db -1 ; end
-
-	; CAMPER (9)
 	db "HARVEY@", TRAINERTYPE_NORMAL
 	db 15, NIDORINO
 	db -1 ; end
 
-	; CAMPER (10)
+	; CAMPER (9)
 	db "DALE@", TRAINERTYPE_NORMAL
 	db 15, NIDORINO
 	db -1 ; end
 
-	; CAMPER (11)
+	; CAMPER (10)
 	db "TED@", TRAINERTYPE_NORMAL
 	db 17, MANKEY
 	db -1 ; end
 
-	; CAMPER (12)
+	; CAMPER (11)
 	db "TODD@", TRAINERTYPE_NORMAL
 	db 17, GEODUDE
 	db 17, GEODUDE
 	db 23, PSYDUCK
 	db -1 ; end
 
-	; CAMPER (13)
+	; CAMPER (12)
 	db "TODD@", TRAINERTYPE_NORMAL
 	db 23, GEODUDE
 	db 23, GEODUDE
 	db 26, PSYDUCK
 	db -1 ; end
 
-	; CAMPER (14)
+	; CAMPER (13)
 	db "THOMAS@", TRAINERTYPE_NORMAL
 	db 33, GRAVELER
 	db 36, GRAVELER
@@ -3374,7 +3394,7 @@ CamperGroup:
 	db 42, GOLDUCK
 	db -1 ; end
 
-	; CAMPER (15)
+	; CAMPER (14)
 	db "LEROY@", TRAINERTYPE_NORMAL
 	db 33, GRAVELER
 	db 36, GRAVELER
@@ -3382,7 +3402,7 @@ CamperGroup:
 	db 42, GOLDUCK
 	db -1 ; end
 
-	; CAMPER (16)
+	; CAMPER (15)
 	db "DAVID@", TRAINERTYPE_NORMAL
 	db 33, GRAVELER
 	db 36, GRAVELER
@@ -3390,7 +3410,7 @@ CamperGroup:
 	db 42, GOLDUCK
 	db -1 ; end
 
-	; CAMPER (17)
+	; CAMPER (16)
 	db "JOHN@", TRAINERTYPE_NORMAL
 	db 33, GRAVELER
 	db 36, GRAVELER
@@ -3398,7 +3418,7 @@ CamperGroup:
 	db 42, GOLDUCK
 	db -1 ; end
 
-	; CAMPER (18)
+	; CAMPER (17)
 	; Kanto hack: Yellow's PEWTER GYM JR.TRAINER^M (docs/M2-PEWTER-CITY.md).
 	; Crystal has no JR.TRAINER class, so he stays a CAMPER.
 	db "JERRY@", TRAINERTYPE_NORMAL
@@ -3406,14 +3426,14 @@ CamperGroup:
 	db  9, SANDSHREW
 	db -1 ; end
 
-	; CAMPER (19)
+	; CAMPER (18)
 	db "SPENCER@", TRAINERTYPE_NORMAL
 	db 17, SANDSHREW
 	db 17, SANDSLASH
 	db 19, ZUBAT
 	db -1 ; end
 
-	; CAMPER (20)
+	; CAMPER (19)
 	db "TODD@", TRAINERTYPE_NORMAL
 	db 30, GRAVELER
 	db 30, GRAVELER
@@ -3421,7 +3441,7 @@ CamperGroup:
 	db 32, PSYDUCK
 	db -1 ; end
 
-	; CAMPER (21)
+	; CAMPER (20)
 	db "TODD@", TRAINERTYPE_MOVES
 	db 33, GRAVELER,   SELFDESTRUCT, ROCK_THROW, HARDEN, MAGNITUDE
 	db 33, GRAVELER,   SELFDESTRUCT, ROCK_THROW, HARDEN, MAGNITUDE
@@ -3429,37 +3449,37 @@ CamperGroup:
 	db 34, GOLDUCK,    DISABLE, PSYCHIC_M, SURF, PSYCH_UP
 	db -1 ; end
 
-	; CAMPER (22)
+	; CAMPER (21)
 	db "QUENTIN@", TRAINERTYPE_NORMAL
 	db 30, FEAROW
 	db 30, PRIMEAPE
 	db 30, TAUROS
 	db -1 ; end
 
-	; CAMPER (23) - Kanto hack: Nugget Bridge grass hider, Yellow's JR_TRAINER_M 2
+	; CAMPER (22) - Kanto hack: Nugget Bridge grass hider, Yellow's JR_TRAINER_M 2
 	db "ANSEL@", TRAINERTYPE_NORMAL
 	db 14, RATTATA
 	db 14, EKANS
 	db -1 ; end
 
-	; CAMPER (24) - Kanto hack: Nugget Bridge No. 5, Yellow's JR_TRAINER_M 3
+	; CAMPER (23) - Kanto hack: Nugget Bridge No. 5, Yellow's JR_TRAINER_M 3
 	db "RUFUS@", TRAINERTYPE_NORMAL
 	db 18, MANKEY
 	db -1 ; end
 
-	; CAMPER (25) - Kanto hack: Route 25, Yellow's JR_TRAINER_M 2 (2nd use;
+	; CAMPER (24) - Kanto hack: Route 25, Yellow's JR_TRAINER_M 2 (2nd use;
 	; Nugget Bridge's ANSEL has the same party, so this one needs its own name)
 	db "WENDELL@", TRAINERTYPE_NORMAL
 	db 14, RATTATA
 	db 14, EKANS
 	db -1 ; end
 
-	; CAMPER (26) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 10 (docs/M4-VERMILION.md 5.1)
+	; CAMPER (25) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 10 (docs/M4-VERMILION.md 5.1)
 	db "NOLAN@", TRAINERTYPE_NORMAL
 	db 16, WEEPINBELL
 	db -1 ; end
 
-	; CAMPER (27) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 5
+	; CAMPER (26) - Kanto hack: Route 6, Yellow's JR_TRAINER_M 5
 	db "OLIVER@", TRAINERTYPE_NORMAL
 	db 16, SPEAROW
 	db 16, RATICATE

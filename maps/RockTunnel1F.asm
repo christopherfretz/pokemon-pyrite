@@ -23,7 +23,11 @@ RockTunnel1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 15,  3, ROUTE_9, 1
+	; Kanto hack (M5 8c): was ROUTE_9, 1.  Yellow's ROCK TUNNEL has no ROUTE 9
+	; door at all -- both its mouths are on ROUTE 10 -- so 8c deleted Route 9's
+	; warp, which left this one dangling.  Parked on Route 10's south mouth
+	; until 8d rebuilds the tunnel on Yellow's geometry.
+	warp_event 15,  3, ROUTE_10, 3
 	warp_event 11, 25, ROUTE_10, 3
 	warp_event  5,  3, ROCK_TUNNEL_B1F, 3
 	warp_event 15,  9, ROCK_TUNNEL_B1F, 2
