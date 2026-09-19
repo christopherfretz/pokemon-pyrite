@@ -1398,6 +1398,12 @@ PokemaniacGroup:
 	db 20, SLOWPOKE
 	db -1 ; end
 
+	; POKEMANIAC (18) - Kanto hack: ROCK TUNNEL 1F, Yellow's POKEMANIAC 7 (M5 8e)
+	db "JASPER@", TRAINERTYPE_NORMAL
+	db 23, CUBONE
+	db 23, SLOWPOKE
+	db -1 ; end
+
 GruntMGroup:
 	; GRUNTM (1)
 	db "GRUNT@", TRAINERTYPE_NORMAL
@@ -2811,6 +2817,27 @@ HikerGroup:
 	db 19, GRAVELER
 	db -1 ; end
 
+	; HIKER (29) - Kanto hack: ROCK TUNNEL 1F, Yellow's HIKER 12 (M5 8e)
+	db "ROSCOE@", TRAINERTYPE_NORMAL
+	db 19, GEODUDE
+	db 19, MACHOP
+	db 19, GEODUDE
+	db 19, GEODUDE
+	db -1 ; end
+
+	; HIKER (30) - Kanto hack: ROCK TUNNEL 1F, Yellow's HIKER 13
+	db "WILBUR@", TRAINERTYPE_NORMAL
+	db 20, ONIX
+	db 20, ONIX
+	db 20, GEODUDE
+	db -1 ; end
+
+	; HIKER (31) - Kanto hack: ROCK TUNNEL 1F, Yellow's HIKER 14
+	db "NORRIS@", TRAINERTYPE_NORMAL
+	db 21, GEODUDE
+	db 21, GRAVELER
+	db -1 ; end
+
 BikerGroup:
 	; BIKER (1)
 	db "BENNY@", TRAINERTYPE_NORMAL
@@ -3344,6 +3371,27 @@ PicnickerGroup:
 	db "MABEL@", TRAINERTYPE_NORMAL
 	db 21, PIDGEY
 	db 21, PIDGEOTTO
+	db -1 ; end
+
+	; PICNICKER (32) - Kanto hack: ROCK TUNNEL 1F, Yellow's JR_TRAINER_F 17 (M5 8e)
+	db "THELMA@", TRAINERTYPE_NORMAL
+	db 22, BELLSPROUT
+	db 22, CLEFAIRY
+	db -1 ; end
+
+	; PICNICKER (33) - Kanto hack: ROCK TUNNEL 1F, Yellow's JR_TRAINER_F 18
+	db "NELLIE@", TRAINERTYPE_NORMAL
+	db 20, MEOWTH
+	db 20, ODDISH
+	db 20, PIDGEY
+	db -1 ; end
+
+	; PICNICKER (34) - Kanto hack: ROCK TUNNEL 1F, Yellow's JR_TRAINER_F 19
+	db "MYRNA@", TRAINERTYPE_NORMAL
+	db 19, PIDGEY
+	db 19, RATTATA
+	db 19, RATTATA
+	db 19, BELLSPROUT
 	db -1 ; end
 
 CamperGroup:

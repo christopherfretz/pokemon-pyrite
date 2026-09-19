@@ -223,10 +223,10 @@ Route10_MapEvents:
 	def_warp_events
 	warp_event 11, 19, ROUTE_10_POKECENTER_1F, 1
 	warp_event  8, 17, ROCK_TUNNEL_1F, 1
-	; 8e NOTE: Yellow's south mouth pairs with ROCK_TUNNEL_1F warp 3; our
-	; placeholder tunnel only has two overworld warps, so it is 2 until 8e
-	; re-cuts the tunnel on Yellow's geometry.
-	warp_event  8, 53, ROCK_TUNNEL_1F, 2
+	; M5 8e re-cut the tunnel on Yellow's geometry, which gave it Yellow's
+	; EIGHT warps: the south mouth pairs with ROCK_TUNNEL_1F warp 3 now
+	; (warps 2 and 4 are Yellow's dead duplicates of 1 and 3).
+	warp_event  8, 53, ROCK_TUNNEL_1F, 3
 	; Surf-only in Yellow -- the door sits on a shelf across the water channel.
 	warp_event  6, 39, POWER_PLANT, 1
 

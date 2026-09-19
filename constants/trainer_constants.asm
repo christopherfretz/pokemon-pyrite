@@ -310,6 +310,7 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: ROUTE 10's two POKEMANIACs (M5 8d, Yellow POKEMANIAC 1/2)
 	const ORVILLE
 	const MELVIN
+	const JASPER ; Kanto hack: ROCK TUNNEL 1F (M5 8e, Yellow POKEMANIAC 7)
 
 	trainerclass GRUNTM ; 1f
 	const GRUNTM_1
@@ -572,6 +573,10 @@ DEF KRIS EQU __trainer_class__
 	const MORTON
 	const LAMONT ; Kanto hack: ROUTE 9 (M5 8c, Yellow HIKER 5)
 	const ODELL ; Kanto hack: ROUTE 10 (M5 8d, Yellow HIKER 8)
+; Kanto hack: ROCK TUNNEL 1F's three HIKERs (M5 8e, Yellow HIKER 12/13/14)
+	const ROSCOE
+	const WILBUR
+	const NORRIS
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused
@@ -675,6 +680,10 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: ROUTE 10's two Jr.Trainers^F (M5 8d, Yellow JR_TRAINER_F 7/8)
 	const GRETCHEN
 	const MABEL
+; Kanto hack: ROCK TUNNEL 1F's three Jr.Trainers^F (M5 8e, Yellow JR_TRAINER_F 17/18/19)
+	const THELMA
+	const NELLIE
+	const MYRNA
 
 	trainerclass CAMPER ; 36
 	const ROLAND

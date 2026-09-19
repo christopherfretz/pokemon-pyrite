@@ -24,10 +24,20 @@ RockTunnelB1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  3,  3, ROCK_TUNNEL_1F, 6
-	warp_event 17,  9, ROCK_TUNNEL_1F, 4
-	warp_event 23,  3, ROCK_TUNNEL_1F, 3
-	warp_event 25, 23, ROCK_TUNNEL_1F, 5
+	; Kanto hack (M5 8e): Yellow's own B1F ladder coordinates, paired with
+	; ROCK_TUNNEL_1F warps 5-8 in order (1F 5 <-> B1F 1, ... 1F 8 <-> B1F 4) --
+	; vendor/pokeyellow/data/maps/objects/RockTunnelB1F.asm.  The objects,
+	; items and wild table below are still Crystal's, and so is this map's
+	; .blk: 8f re-cuts B1F on Yellow's geometry.
+	; ⚠ UNTIL 8f LANDS THIS MAP IS A TRAP.  Crystal's blocks put a WALL under
+	; (33,25) with four walled neighbours, so a player who takes 1F's ladder at
+	; (37,3) arrives with nowhere to step and cannot re-trigger the warp
+	; (a warp only fires on a $7x collision).  Do not cut a release from this
+	; state; 8f fixes it by re-cutting the .blk.
+	warp_event 33, 25, ROCK_TUNNEL_1F, 5
+	warp_event 27,  3, ROCK_TUNNEL_1F, 6
+	warp_event 23, 11, ROCK_TUNNEL_1F, 7
+	warp_event  3,  3, ROCK_TUNNEL_1F, 8
 
 	def_coord_events
 
