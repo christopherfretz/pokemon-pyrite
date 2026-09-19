@@ -1,8 +1,8 @@
 	object_const_def
 
-; Kanto hack: M4 step 7c (docs/M4-VERMILION.md).  S.S. ANNE B1F.
-; Warps only -- Yellow's NPCs, trainers and items arrive in 7d-7g.
-
+; Kanto hack: Yellow's SS_ANNE_B1F (docs/M4-VERMILION.md, 7c/7h).  Yellow's
+; SSAnneB1F_Object has no object_events, bg_events or hidden events -- the
+; corridor really is empty; everything is behind the five doors.
 SSAnneB1F_MapScripts:
 	def_scene_scripts
 

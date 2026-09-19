@@ -131,6 +131,7 @@ DEF KRIS EQU __trainer_class__
 	const GRANT
 	const COLE ; Kanto hack (N1e): renamed from ELMER, too close to Prof. ELM
 	const OSCAR
+	const BENJI ; Kanto hack: S.S. ANNE 1F Rooms (7h, Yellow YOUNGSTER 8)
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -212,6 +213,9 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: Route 25 (Yellow LASS 9/10)
 	const JODIE
 	const TESSA
+; Kanto hack: S.S. ANNE's lasses (7h) -- Yellow LASS 11 (1F Rooms) and 12 (2F Rooms)
+	const ODETTE
+	const MARISA
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -336,6 +340,11 @@ DEF KRIS EQU __trainer_class__
 	const GREGORY
 	const VIRGIL ; unused
 	const ALFRED
+; Kanto hack: S.S. ANNE's gentlemen (7h) -- Yellow GENTLEMAN 1/2 (1F Rooms) and 3/5 (2F Rooms)
+	const THEODORE
+	const BARTON
+	const CLIVE
+	const HUBERT
 
 	trainerclass SKIER ; 21
 	const ROXANNE
@@ -412,6 +421,9 @@ DEF KRIS EQU __trainer_class__
 	const RALPH4
 	const RALPH5
 	const TULLY4
+; Kanto hack: S.S. ANNE's fishers (7h) -- Yellow FISHER 1 (2F Rooms) and 2 (B1F Rooms)
+	const DALTON
+	const PERCY
 
 	trainerclass SWIMMERM ; 26
 	const HAROLD
@@ -474,6 +486,14 @@ DEF KRIS EQU __trainer_class__
 	const HUEY2
 	const HUEY3
 	const HUEY4
+; Kanto hack: S.S. ANNE's sailors (7h) -- Yellow SAILOR 1/2 (bow) and 3/4/5/6/7 (B1F Rooms)
+	const MURDOCK
+	const MURPHY
+	const LEO
+	const BRADY
+	const FORREST
+	const SEAMUS
+	const SILAS
 
 	trainerclass SUPER_NERD ; 29
 	const STAN

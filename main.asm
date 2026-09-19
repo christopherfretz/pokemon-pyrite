@@ -163,10 +163,20 @@ INCLUDE "engine/battle/effect_commands.asm"
 
 SECTION "Enemy Trainers", ROMX
 
-INCLUDE "engine/battle/ai/items.asm"
-INCLUDE "engine/battle/ai/scoring.asm"
 INCLUDE "engine/battle/read_trainer_attributes.asm"
 INCLUDE "engine/battle/read_trainer_party.asm"
+
+
+; Kanto hack (M4 7h): the battle AI moved out of "Enemy Trainers" so that
+; data/trainers/parties.asm (INCLUDEd by read_trainer_party.asm) has room for
+; the Kanto trainers. Everything here is only ever reached through
+; callfar/farcall (AI_Switch, AI_SwitchOrTryItem, AIChooseMove) and through
+; BANK(AIScoring), so the bank move needs no other change.
+; See docs/M4-VERMILION.md 5.5 + "## 7h findings".
+SECTION "Battle AI", ROMX
+
+INCLUDE "engine/battle/ai/items.asm"
+INCLUDE "engine/battle/ai/scoring.asm"
 
 
 SECTION "Battle Core", ROMX

@@ -131,6 +131,7 @@ ROMX $2d
 	"Tileset Data 5"
 ROMX $2e
 	"bank2E"
+	"Battle AI"
 ROMX $2f
 	"Phone Scripts 2"
 ROMX $30
@@ -297,6 +298,11 @@ ROMX $73
 	"Pokedex Entries 129-192"
 ROMX $74
 	"Pokedex Entries 193-251"
+	; Kanto hack: the ten S.S. ANNE maps (7h).  With their objects, trainers
+	; and text they no longer fit in "Map Scripts 26"'s bank ($7b), and the
+	; dex-entry banks are the largest stable free tails we have
+	; (docs/M4-VERMILION.md "## 7h findings", 7h.2).
+	"Map Scripts 27"
 ROMX $77
 	"Unown Font"
 	"Print Party"

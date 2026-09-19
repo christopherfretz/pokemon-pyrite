@@ -517,13 +517,24 @@ INCLUDE "maps/CeruleanCave1F.asm"
 ; the Viridian group) because that bank is the tightest one we have.
 INCLUDE "maps/ViridianSchoolHouse.asm"
 
-; Kanto hack: M4 step 7c (docs/M4-VERMILION.md) -- Route 11's gate, the two
-; Diglett's Cave entrance rooms and the ten S.S. ANNE maps.  Warps-only
-; shells; their NPCs, trainers and items land in 7d-7g.
+; Kanto hack: M4 step 7c (docs/M4-VERMILION.md) -- Route 11's gate and the two
+; Diglett's Cave entrance rooms.  The ten S.S. ANNE maps started here too, but
+; 7h's objects/trainers/text overflowed this bank by 1917 bytes, so they moved
+; to "Map Scripts 27" below (docs/M4-VERMILION.md "## 7h findings", 7h.2).
 INCLUDE "maps/Route11Gate1F.asm"
 INCLUDE "maps/Route11Gate2F.asm"
 INCLUDE "maps/DiglettsCaveRoute2.asm"
 INCLUDE "maps/DiglettsCaveRoute11.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 27", ROMX
+
+; Kanto hack: the ten S.S. ANNE maps (docs/M4-VERMILION.md, 7c shells filled in
+; by 7h).  Their own section, pinned in layout.link to bank $74, because with
+; 7h's objects, trainers and text they no longer fit in "Map Scripts 26"'s bank
+; ($7b, shared with "Battle Tower Text").
 INCLUDE "maps/SSAnne1F.asm"
 INCLUDE "maps/SSAnne2F.asm"
 INCLUDE "maps/SSAnne3F.asm"

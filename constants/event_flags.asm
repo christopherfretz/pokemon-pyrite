@@ -229,7 +229,7 @@
 	const EVENT_BEAT_HIKER_MORTON ; Kanto hack: renamed in place (6i), was EVENT_CLEARED_NUGGET_BRIDGE; Route 25, Yellow's HIKER 4
 	const EVENT_TALKED_TO_WARDENS_GRANDDAUGHTER
 	const EVENT_GOT_TM03_CURSE
-	const EVENT_GOT_CLEANSE_TAG
+	const EVENT_SS_ANNE_1F_ROOMS_TM_BODY_SLAM ; Kanto hack: renamed in place (7h), was EVENT_GOT_CLEANSE_TAG; S.S. ANNE 1F Rooms item ball (12,15)
 	const EVENT_GOT_TM19_GIGA_DRAIN
 	const EVENT_GOT_TM06_TOXIC
 	const EVENT_GOT_UP_GRADE
@@ -261,7 +261,7 @@
 	const EVENT_ROUTE_17_HIDDEN_MAX_ELIXER
 	const EVENT_ROUTE_25_HIDDEN_POTION
 	const EVENT_FOUND_LEFTOVERS_IN_CELADON_CAFE
-	const EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY
+	const EVENT_SS_ANNE_2F_ROOMS_MAX_ETHER ; Kanto hack: renamed in place (7h), was EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY; S.S. ANNE 2F Rooms item ball (12,1)
 	const EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
 	const EVENT_VERMILION_CITY_HIDDEN_MAX_ETHER ; Kanto hack: renamed in place (7e), was EVENT_VERMILION_CITY_HIDDEN_FULL_HEAL; Yellow hides a MAX_ETHER at (14,11)
 	const EVENT_CELADON_CITY_HIDDEN_PP_UP
@@ -480,11 +480,11 @@
 	const EVENT_BILLS_HOUSE_BILL_1_HIDDEN ; Kanto hack: renamed in place (6j, docs/M3-CERULEAN.md), was the now-dead EVENT_SHOWED_STARYU_TO_BILLS_GRANDPA
 	const EVENT_BILLS_HOUSE_BILL_2_HIDDEN ; Kanto hack: renamed in place (6j, docs/M3-CERULEAN.md), was the now-dead EVENT_SHOWED_GROWLITHE_VULPIX_TO_BILLS_GRANDPA
 	const EVENT_USED_CELL_SEPARATOR_ON_BILL ; Kanto hack: renamed in place (N1e), was the now-dead EVENT_SHOWED_PICHU_TO_BILLS_GRANDPA
-	const EVENT_GOT_EVERSTONE_FROM_BILLS_GRANDPA
-	const EVENT_GOT_LEAF_STONE_FROM_BILLS_GRANDPA
-	const EVENT_GOT_WATER_STONE_FROM_BILLS_GRANDPA
-	const EVENT_GOT_FIRE_STONE_FROM_BILLS_GRANDPA
-	const EVENT_GOT_THUNDERSTONE_FROM_BILLS_GRANDPA
+	const EVENT_SS_ANNE_2F_ROOMS_RARE_CANDY ; Kanto hack: renamed in place (7h), was EVENT_GOT_EVERSTONE_FROM_BILLS_GRANDPA; S.S. ANNE 2F Rooms item ball (0,12)
+	const EVENT_SS_ANNE_B1F_ROOMS_ETHER ; Kanto hack: renamed in place (7h), was EVENT_GOT_LEAF_STONE_FROM_BILLS_GRANDPA; S.S. ANNE B1F Rooms item ball (20,2)
+	const EVENT_SS_ANNE_B1F_ROOMS_TM_REST ; Kanto hack: renamed in place (7h), was EVENT_GOT_WATER_STONE_FROM_BILLS_GRANDPA; S.S. ANNE B1F Rooms item ball (10,2)
+	const EVENT_SS_ANNE_B1F_ROOMS_MAX_POTION ; Kanto hack: renamed in place (7h), was EVENT_GOT_FIRE_STONE_FROM_BILLS_GRANDPA; S.S. ANNE B1F Rooms item ball (12,11)
+	const EVENT_SS_ANNE_B1F_ROOMS_HIDDEN_HYPER_POTION ; Kanto hack: renamed in place (7h), was EVENT_GOT_THUNDERSTONE_FROM_BILLS_GRANDPA; S.S. ANNE B1F Rooms hidden HYPER POTION (3,1)
 	const EVENT_LISTENED_TO_INITIAL_RADIO
 ; More Crystal-exclusive events in Johto
 	const EVENT_WALL_OPENED_IN_HO_OH_CHAMBER
@@ -649,8 +649,8 @@
 	const EVENT_BEAT_FISHER_MARTIN
 	const EVENT_BEAT_FISHER_STEPHEN
 	const EVENT_BEAT_FISHER_BARNEY
-	const EVENT_BEAT_FISHER_RALPH2
-	const EVENT_BEAT_FISHER_RALPH3
+	const EVENT_BEAT_FISHER_DALTON ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH2; S.S. ANNE 2F Rooms, Yellow's FISHER 1
+	const EVENT_BEAT_FISHER_PERCY ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH3; S.S. ANNE B1F Rooms, Yellow's FISHER 2
 	const EVENT_BEAT_FISHER_TULLY2
 	const EVENT_BEAT_FISHER_TULLY3
 	const EVENT_BEAT_FISHER_WILTON2
@@ -719,7 +719,7 @@
 	const EVENT_BEAT_GENTLEMAN_PRESTON
 	const EVENT_BEAT_GENTLEMAN_EDWARD
 	const EVENT_BEAT_GENTLEMAN_GREGORY
-	const EVENT_BEAT_GENTLEMAN_VIRGIL
+	const EVENT_BEAT_GENTLEMAN_THEODORE ; Kanto hack: renamed in place (7h), was EVENT_BEAT_GENTLEMAN_VIRGIL; S.S. ANNE 1F Rooms, Yellow's GENTLEMAN 1
 	const EVENT_BEAT_GENTLEMAN_ALFRED
 ; Scientist
 	const EVENT_BEAT_SCIENTIST_ROSS
@@ -862,8 +862,8 @@
 	const EVENT_BEAT_LASS_MICHELLE
 	const EVENT_BEAT_LASS_DANA
 	const EVENT_BEAT_LASS_TESSA ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_ELLEN; Route 25, Yellow's LASS 10
-	const EVENT_BEAT_LASS_CONNIE2
-	const EVENT_BEAT_LASS_CONNIE3
+	const EVENT_BEAT_LASS_ODETTE ; Kanto hack: renamed in place (7h), was EVENT_BEAT_LASS_CONNIE2; S.S. ANNE 1F Rooms, Yellow's LASS 11
+	const EVENT_BEAT_LASS_MARISA ; Kanto hack: renamed in place (7h), was EVENT_BEAT_LASS_CONNIE3; S.S. ANNE 2F Rooms, Yellow's LASS 12
 	const EVENT_BEAT_LASS_DANA2
 	const EVENT_BEAT_LASS_DANA3
 ; Hiker
@@ -965,8 +965,8 @@
 	const EVENT_BEAT_SAILOR_KENNETH
 	const EVENT_BEAT_SAILOR_STANLY
 	const EVENT_BEAT_SAILOR_HARRY
-	const EVENT_BEAT_SAILOR_HUEY2
-	const EVENT_BEAT_SAILOR_HUEY3
+	const EVENT_BEAT_SAILOR_MURDOCK ; Kanto hack: renamed in place (7h), was EVENT_BEAT_SAILOR_HUEY2; S.S. ANNE bow, Yellow's SAILOR 1
+	const EVENT_BEAT_SAILOR_MURPHY ; Kanto hack: renamed in place (7h), was EVENT_BEAT_SAILOR_HUEY3; S.S. ANNE bow, Yellow's SAILOR 2
 ; Super Nerd
 	const EVENT_BEAT_SUPER_NERD_STAN
 	const EVENT_BEAT_SUPER_NERD_ERIC
@@ -1020,7 +1020,7 @@
 	const EVENT_BEAT_YOUNGSTER_GORDON
 	const EVENT_BEAT_YOUNGSTER_SAMUEL
 	const EVENT_BEAT_YOUNGSTER_IAN
-	const EVENT_BEAT_YOUNGSTER_JOEY2
+	const EVENT_BEAT_YOUNGSTER_BENJI ; Kanto hack: renamed in place (7h), was EVENT_BEAT_YOUNGSTER_JOEY2; S.S. ANNE 1F Rooms, Yellow's YOUNGSTER 8
 	const EVENT_BEAT_YOUNGSTER_JOEY3
 	const EVENT_BEAT_YOUNGSTER_WARREN ; Kanto hack: Route 3, Yellow's YOUNGSTER 1
 	const EVENT_BEAT_YOUNGSTER_JIMMY ; Kanto hack: Route 3, Yellow's YOUNGSTER 2
@@ -1677,7 +1677,30 @@
 ; 494 free -> 493 free.
 	const EVENT_VIRIDIAN_OLD_MAN_OFF_ROAD ; the awake old man is not standing on (18,9) (his hidden flag; owned by ViridianCityGrampsCallback)
 
-; Unused: next 493 events
+; Kanto hack: S.S. ANNE's trainers, item balls, hidden items and the 2F rival
+; (7h, docs/M4-VERMILION.md).  FIFTEEN renamed in place -- eight dead duplicate
+; rematch trainer flags (EVENT_BEAT_GENTLEMAN_VIRGIL, EVENT_BEAT_YOUNGSTER_JOEY2,
+; EVENT_BEAT_LASS_CONNIE2/CONNIE3, EVENT_BEAT_FISHER_RALPH2/RALPH3,
+; EVENT_BEAT_SAILOR_HUEY2/HUEY3) and seven dead Crystal item flags
+; (EVENT_GOT_CLEANSE_TAG, EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY and the five
+; EVENT_GOT_*_FROM_BILLS_GRANDPA, all left dead and free by M3) -- plus ELEVEN
+; appended: the other eight S.S. ANNE trainers, the KITCHEN's hidden GREAT BALL,
+; and the two rival flags 7i needs.  The rival's object_event field 13 is a HIDE
+; flag, so 3.3's proposed EVENT_SS_ANNE_RIVAL_APPEARED is inverted here to match
+; the engine and the CeruleanCity precedent.  493 free -> 482 free.
+	const EVENT_BEAT_GENTLEMAN_BARTON ; S.S. ANNE 1F Rooms, Yellow's GENTLEMAN 2
+	const EVENT_BEAT_GENTLEMAN_CLIVE ; S.S. ANNE 2F Rooms, Yellow's GENTLEMAN 3
+	const EVENT_BEAT_GENTLEMAN_HUBERT ; S.S. ANNE 2F Rooms, Yellow's GENTLEMAN 5
+	const EVENT_BEAT_SAILOR_LEO ; S.S. ANNE B1F Rooms, Yellow's SAILOR 3
+	const EVENT_BEAT_SAILOR_BRADY ; S.S. ANNE B1F Rooms, Yellow's SAILOR 4
+	const EVENT_BEAT_SAILOR_FORREST ; S.S. ANNE B1F Rooms, Yellow's SAILOR 5
+	const EVENT_BEAT_SAILOR_SEAMUS ; S.S. ANNE B1F Rooms, Yellow's SAILOR 6
+	const EVENT_BEAT_SAILOR_SILAS ; S.S. ANNE B1F Rooms, Yellow's SAILOR 7
+	const EVENT_SS_ANNE_KITCHEN_HIDDEN_GREAT_BALL ; S.S. ANNE KITCHEN hidden GREAT BALL (13,9)
+	const EVENT_SS_ANNE_2F_RIVAL_HIDDEN ; the 2F rival is not standing at (36,4) (his hidden flag; owned by SSAnne2FObjectsCallback -- 7i clears it for the corridor scene)
+	const EVENT_BEAT_RIVAL_SS_ANNE ; 7i: the S.S. ANNE 2F rival battle (rival #3) is over
+
+; Unused: next 482 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

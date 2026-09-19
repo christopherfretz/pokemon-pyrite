@@ -448,6 +448,11 @@ YoungsterGroup:
 	db 14, SANDSHREW
 	db -1 ; end
 
+	; YOUNGSTER (20) - Kanto hack: S.S. ANNE 1F Rooms, Yellow's YOUNGSTER 8 (docs/M4-VERMILION.md 5.1)
+	db "BENJI@", TRAINERTYPE_NORMAL
+	db 21, NIDORAN_M
+	db -1 ; end
+
 SchoolboyGroup:
 	; SCHOOLBOY (1)
 	db "JACK@", TRAINERTYPE_NORMAL
@@ -889,6 +894,17 @@ LassGroup:
 	db 13, ODDISH
 	db 13, PIDGEY
 	db 13, ODDISH
+	db -1 ; end
+
+	; LASS (29) - Kanto hack: S.S. ANNE 1F Rooms, Yellow's LASS 11 (docs/M4-VERMILION.md 5.1)
+	db "ODETTE@", TRAINERTYPE_NORMAL
+	db 18, PIDGEY
+	db 18, NIDORAN_F
+	db -1 ; end
+
+	; LASS (30) - Kanto hack: S.S. ANNE 2F Rooms, Yellow's LASS 12 (docs/M4-VERMILION.md 5.1)
+	db "MARISA@", TRAINERTYPE_NORMAL
+	db 20, JIGGLYPUFF
 	db -1 ; end
 
 JanineGroup:
@@ -1568,6 +1584,30 @@ GentlemanGroup:
 	db 20, NOCTOWL
 	db -1 ; end
 
+	; GENTLEMAN (6) - Kanto hack: S.S. ANNE 1F Rooms, Yellow's GENTLEMAN 1 (docs/M4-VERMILION.md 5.1)
+	db "THEODORE@", TRAINERTYPE_NORMAL
+	db 18, GROWLITHE
+	db 18, GROWLITHE
+	db -1 ; end
+
+	; GENTLEMAN (7) - Kanto hack: S.S. ANNE 1F Rooms, Yellow's GENTLEMAN 2 (docs/M4-VERMILION.md 5.1)
+	db "BARTON@", TRAINERTYPE_NORMAL
+	db 19, NIDORAN_M
+	db 19, NIDORAN_F
+	db -1 ; end
+
+	; GENTLEMAN (8) - Kanto hack: S.S. ANNE 2F Rooms, Yellow's GENTLEMAN 3 (docs/M4-VERMILION.md 5.1)
+	db "CLIVE@", TRAINERTYPE_NORMAL
+	db 22, VOLTORB
+	db 22, MAGNEMITE
+	db -1 ; end
+
+	; GENTLEMAN (9) - Kanto hack: S.S. ANNE 2F Rooms, Yellow's GENTLEMAN 5 (docs/M4-VERMILION.md 5.1)
+	db "HUBERT@", TRAINERTYPE_NORMAL
+	db 17, GROWLITHE
+	db 17, PONYTA
+	db -1 ; end
+
 SkierGroup:
 	; SKIER (1)
 	db "ROXANNE@", TRAINERTYPE_NORMAL
@@ -1963,6 +2003,20 @@ FisherGroup:
 	db 37, QWILFISH,   ROLLOUT, SURF, PIN_MISSILE, TAKE_DOWN
 	db -1 ; end
 
+	; FISHER (26) - Kanto hack: S.S. ANNE 2F Rooms, Yellow's FISHER 1 (docs/M4-VERMILION.md 5.1)
+	db "DALTON@", TRAINERTYPE_NORMAL
+	db 17, GOLDEEN
+	db 17, TENTACOOL
+	db 17, GOLDEEN
+	db -1 ; end
+
+	; FISHER (27) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's FISHER 2 (docs/M4-VERMILION.md 5.1)
+	db "PERCY@", TRAINERTYPE_NORMAL
+	db 17, TENTACOOL
+	db 17, STARYU
+	db 17, SHELLDER
+	db -1 ; end
+
 SwimmerMGroup:
 	; SWIMMERM (1)
 	db "HAROLD@", TRAINERTYPE_NORMAL
@@ -2286,6 +2340,48 @@ SailorGroup:
 	db "HUEY@", TRAINERTYPE_MOVES
 	db 38, POLITOED,   WHIRLPOOL, RAIN_DANCE, BODY_SLAM, PERISH_SONG
 	db 38, POLIWRATH,  SURF, STRENGTH, ICE_PUNCH, SUBMISSION
+	db -1 ; end
+
+	; SAILOR (14) - Kanto hack: S.S. ANNE bow, Yellow's SAILOR 1 (docs/M4-VERMILION.md 5.1)
+	db "MURDOCK@", TRAINERTYPE_NORMAL
+	db 18, MACHOP
+	db 18, SHELLDER
+	db -1 ; end
+
+	; SAILOR (15) - Kanto hack: S.S. ANNE bow, Yellow's SAILOR 2 (docs/M4-VERMILION.md 5.1)
+	db "MURPHY@", TRAINERTYPE_NORMAL
+	db 17, MACHOP
+	db 17, TENTACOOL
+	db -1 ; end
+
+	; SAILOR (16) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's SAILOR 3 (docs/M4-VERMILION.md 5.1)
+	db "LEO@", TRAINERTYPE_NORMAL
+	db 21, SHELLDER
+	db -1 ; end
+
+	; SAILOR (17) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's SAILOR 4 (docs/M4-VERMILION.md 5.1)
+	db "BRADY@", TRAINERTYPE_NORMAL
+	db 17, HORSEA
+	db 17, SHELLDER
+	db 17, TENTACOOL
+	db -1 ; end
+
+	; SAILOR (18) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's SAILOR 5 (docs/M4-VERMILION.md 5.1)
+	db "FORREST@", TRAINERTYPE_NORMAL
+	db 18, TENTACOOL
+	db 18, STARYU
+	db -1 ; end
+
+	; SAILOR (19) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's SAILOR 6 (docs/M4-VERMILION.md 5.1)
+	db "SEAMUS@", TRAINERTYPE_NORMAL
+	db 17, HORSEA
+	db 17, HORSEA
+	db 17, HORSEA
+	db -1 ; end
+
+	; SAILOR (20) - Kanto hack: S.S. ANNE B1F Rooms, Yellow's SAILOR 7 (docs/M4-VERMILION.md 5.1)
+	db "SILAS@", TRAINERTYPE_NORMAL
+	db 20, MACHOP
 	db -1 ; end
 
 SuperNerdGroup:
