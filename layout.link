@@ -44,7 +44,12 @@ ROMX $06
 ROMX $07
 	"Roofs"
 	"Tileset Data 2"
-	"Extra Songs 1"
+	; Kanto hack (MM-fix): "Extra Songs 1" used to sit here.  Mt. Moon's
+	; tile-pair seal appends six cave metatiles ($42-$47, 96 B of metatile +
+	; 24 B of collision) to "Tileset Data 2", which overflowed bank $07 by
+	; 12 bytes.  The songs are reached through `dba` in the song table, so
+	; the section is position-independent; it is now floated (the linker
+	; picks a bank with room) rather than pinned.
 ROMX $08
 	"Clock Reset"
 	"Tileset Data 3"
