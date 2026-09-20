@@ -393,6 +393,17 @@ ENDM
 	; existing map id moves.
 	map_const ROUTE_12_GATE_1F,                             5,  4 ; 15
 	map_const ROUTE_12_GATE_2F,                             4,  4 ; 16
+	; Kanto hack (docs/M6-TOWER.md, 9a / D24): POKéMON TOWER 2F-7F, also
+	; appended at the tail.  1F stays at 12, so 1F and 2F-7F are deliberately
+	; NOT contiguous -- anything that needs "is this a Tower floor?" must use an
+	; explicit map-id table, never Yellow's `cp POKEMON_TOWER_1F / jr c` range
+	; test (D24, docs/M6-TOWER.md 1.5).
+	map_const POKEMON_TOWER_2F,                            10,  9 ; 17
+	map_const POKEMON_TOWER_3F,                            10,  9 ; 18
+	map_const POKEMON_TOWER_4F,                            10,  9 ; 19
+	map_const POKEMON_TOWER_5F,                            10,  9 ; 20
+	map_const POKEMON_TOWER_6F,                            10,  9 ; 21
+	map_const POKEMON_TOWER_7F,                            10,  9 ; 22
 	endgroup
 
 	newgroup SILVER                                               ; 19

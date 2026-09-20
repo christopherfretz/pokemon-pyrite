@@ -666,6 +666,16 @@ ENDM
 	map_attributes LavenderMart, LAVENDER_MART, $00
 	map_attributes SoulHouse, SOUL_HOUSE, $0a
 	map_attributes PokemonTower1F, POKEMON_TOWER_1F, $01
+; Kanto hack (docs/M6-TOWER.md, 9a): POKéMON TOWER 2F-7F.  Border block $01 on
+; every floor, exactly as Yellow's `db $1 ; border block`
+; (vendor/pokeyellow/data/maps/objects/PokemonTower{2..7}F.asm), and no
+; connections -- the Tower is reached only by its warps.
+	map_attributes PokemonTower2F, POKEMON_TOWER_2F, $01
+	map_attributes PokemonTower3F, POKEMON_TOWER_3F, $01
+	map_attributes PokemonTower4F, POKEMON_TOWER_4F, $01
+	map_attributes PokemonTower5F, POKEMON_TOWER_5F, $01
+	map_attributes PokemonTower6F, POKEMON_TOWER_6F, $01
+	map_attributes PokemonTower7F, POKEMON_TOWER_7F, $01
 	map_attributes Route8SaffronGate, ROUTE_8_SAFFRON_GATE, $0a
 	map_attributes Route12SuperRodHouse, ROUTE_12_SUPER_ROD_HOUSE, $0a
 	map_attributes SilverCavePokecenter1F, SILVER_CAVE_POKECENTER_1F, $00

@@ -1166,4 +1166,26 @@ Route8SaffronGate_Blocks:
 Route16Gate_Blocks:
 	INCBIN "maps/Route16Gate.blk"
 
+; Kanto hack (docs/M6-TOWER.md, 9a): POKéMON TOWER 2F-7F, six 10x9 maps of 90
+; bytes each.  Byte-identical copies of Yellow's own .blk files -- unlike 1F,
+; none of them uses block (5,8), so none needs the $0e -> $6e re-index M5 8i
+; made for the 1F doorway.  "Map Blocks 2" is full, so they go here (D21).
+PokemonTower2F_Blocks:
+	INCBIN "maps/PokemonTower2F.blk"
+
+PokemonTower3F_Blocks:
+	INCBIN "maps/PokemonTower3F.blk"
+
+PokemonTower4F_Blocks:
+	INCBIN "maps/PokemonTower4F.blk"
+
+PokemonTower5F_Blocks:
+	INCBIN "maps/PokemonTower5F.blk"
+
+PokemonTower6F_Blocks:
+	INCBIN "maps/PokemonTower6F.blk"
+
+PokemonTower7F_Blocks:
+	INCBIN "maps/PokemonTower7F.blk"
+
 ENDSECTION

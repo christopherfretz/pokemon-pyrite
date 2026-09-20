@@ -269,6 +269,17 @@ INCLUDE "maps/TinTower9F.asm"
 INCLUDE "maps/BurnedTower1F.asm"
 INCLUDE "maps/BurnedTowerB1F.asm"
 
+; Kanto hack (docs/M6-TOWER.md, 9a / D21): POKéMON TOWER 2F-7F.  1F is in
+; "Map Scripts 10" (only ~2.9 KB free); this is the largest free section, and
+; the six floors' finished scripts are estimated at ~4.8 KB.  If it ever
+; overflows, move PokemonTower7F.asm to "Map Scripts 24".
+INCLUDE "maps/PokemonTower2F.asm"
+INCLUDE "maps/PokemonTower3F.asm"
+INCLUDE "maps/PokemonTower4F.asm"
+INCLUDE "maps/PokemonTower5F.asm"
+INCLUDE "maps/PokemonTower6F.asm"
+INCLUDE "maps/PokemonTower7F.asm"
+
 
 SECTION "Map Scripts 15", ROMX
 
