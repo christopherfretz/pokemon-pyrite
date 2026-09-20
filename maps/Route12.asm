@@ -29,13 +29,82 @@ Route12_MapScripts:
 
 	def_callbacks
 
-; M6: POKE FLUTE wake branch goes here (docs/M5-LAVENDER.md 3.8).
-; Yellow's Route12DefaultScript wakes the SNORLAX when EVENT_FIGHT_ROUTE12_SNORLAX
-; is set (the POKe FLUTE sets it), prints "SNORLAX woke up!", fights it at L30,
-; hides the object and prints "SNORLAX calmed down!".  8l ships only the
-; sleeping text -- no wake branch, no cry (Yellow plays none with this text).
+; M6 9m: the POKe FLUTE wake branch (docs/M6-TOWER.md 3.10, decision D20).
+;
+; Yellow splits this across two systems: ItemUsePokeFlute
+; (vendor/pokeyellow/engine/items/item_effects.asm:1848-1898) checks that the
+; player is standing on one of Route12SnorlaxFluteCoords, prints
+; _PlayedFluteHadEffectText and plays SFX_POKEFLUTE, then sets
+; EVENT_FIGHT_ROUTE12_SNORLAX; Route12DefaultScript
+; (vendor/pokeyellow/scripts/Route12.asm:24-62) sees that flag on the next
+; frame and runs the woke-up text, the L30 battle and the calmed-down text.
+; D20 collapses both halves onto this object script and tests the bag with
+; `checkitem` instead, which is what ItemUsePokeFlute's coord check amounted
+; to.  Crystal's `special SnorlaxAwake` is deliberately NOT used: it gates on
+; the POKe FLUTE *radio channel*, a Gen 2 concept ruled out of Kanto.
+;
+; The flute tune is Yellow's: _PlayedFluteHadEffectText is a text_promptbutton
+; followed by StopAllMusic / PlayMusic SFX_POKEFLUTE / wait / PlayDefaultMusic,
+; and GSC's own Sfx_Pokeflute (audio/sfx.asm) is note-for-note the same tune,
+; so playmusic MUSIC_NONE + playsound + waitsfx + RestartMapMusic reproduces it.
+; Text_PlayedPokeFlute in data/text/common_3.asm is word-for-word Yellow's line,
+; but it is a text_promptbutton chain meant for a text_asm, so this map carries
+; its own copy.
+;
+; Result handling, matching what Yellow's player actually sees:
+;   - win  -> calmed-down text, flag set, SNORLAX gone.
+;   - run  -> same.  Gen 1 leaves wBattleResult at 0 when you flee a wild
+;             battle, so Route12SnorlaxPostBattleScript prints the calmed-down
+;             text and sets the flag exactly as for a win.  GSC reports a flee
+;             as DRAW, which is likewise "not LOSE", so the branch agrees.
+;   - lose -> no text, and the SNORLAX is still gone: Yellow ran `predef
+;             HideObject` BEFORE the battle and HideObject writes the SAVED
+;             wToggleableObjectFlags, so a whiteout leaves the object hidden
+;             (with EVENT_BEAT_ROUTE12_SNORLAX clear, which nothing else in
+;             Yellow reads).  GSC derives the object from the hide flag alone,
+;             so the faithful equivalent is to set the flag before
+;             reloadmapafterbattle -- that command jp's to the whiteout on
+;             LOSE, so anything after it would never run.
+; Known, accepted deviation: Yellow also skips the calmed-down text when the
+; SNORLAX is CAUGHT (wBattleResult $2).  GSC has no "caught" result -- a catch
+; ends the battle as WIN and the only catch bit in wBattleResult is the Celebi
+; event's -- so catching it prints the calmed-down line too.
 Route12Snorlax:
-	jumptext Route12SnorlaxText
+	opentext
+	checkitem POKE_FLUTE
+	iffalse .Asleep
+	writetext Route12PlayedPokeFluteText
+	promptbutton
+	playmusic MUSIC_NONE
+	playsound SFX_POKEFLUTE
+	waitsfx
+	special RestartMapMusic
+	writetext Route12SnorlaxWokeUpText
+	waitbutton
+	closetext
+	loadwildmon SNORLAX, 30
+	loadvar VAR_BATTLETYPE, BATTLETYPE_NORMAL
+	startbattle
+	ifequal LOSE, .Fainted
+	setevent EVENT_BEAT_ROUTE_12_SNORLAX ; = the object's hide flag
+	disappear ROUTE12_SNORLAX
+	reloadmapafterbattle
+	opentext
+	writetext Route12SnorlaxCalmedDownText
+	waitbutton
+	closetext
+	end
+
+.Fainted:
+	setevent EVENT_BEAT_ROUTE_12_SNORLAX
+	reloadmapafterbattle ; jp's straight to the whiteout
+	end
+
+.Asleep:
+	writetext Route12SnorlaxText
+	waitbutton
+	closetext
+	end
 
 TrainerFisherKyle:
 	trainer FISHER, KYLE, EVENT_BEAT_FISHER_KYLE, FisherKyleSeenText, FisherKyleBeatenText, 0, .Script
@@ -136,6 +205,26 @@ Route12HiddenHyperPotion:
 Route12SnorlaxText:
 	text "A sleeping #MON"
 	line "blocks the way!"
+	done
+
+; Yellow's _PlayedFluteHadEffectText (data/text/text_9.asm:113).
+Route12PlayedPokeFluteText:
+	text "<PLAYER> played the"
+	line "# FLUTE."
+	prompt
+
+Route12SnorlaxWokeUpText:
+	text "SNORLAX woke up!"
+
+	para "It attacked in a"
+	line "grumpy rage!"
+	done
+
+Route12SnorlaxCalmedDownText:
+	text "SNORLAX calmed"
+	line "down! With a big"
+	cont "yawn, it returned"
+	cont "to the mountains!"
 	done
 
 FisherKyleSeenText:
