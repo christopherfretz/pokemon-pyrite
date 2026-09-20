@@ -202,3 +202,4 @@ SpecialsPointers::
 	add_special InitVermilionGymTrashCans
 	add_special VermilionGymTrashCan
 	add_special GetKantoRivalStarter
+	add_special KantoDexCaught

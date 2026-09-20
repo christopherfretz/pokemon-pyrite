@@ -167,7 +167,6 @@ MrFujisHouse_Blocks: ; Kanto hack (M5 8h): re-cut 5x4 -> 4x4 onto House1
 SoulHouse_Blocks: ; Kanto hack (M5 8h): re-cut 5x4 -> 4x4 onto House1
 Route12SuperRodHouse_Blocks:
 Route28SteelWingHouse_Blocks:
-CeladonMansionRoofHouse_Blocks:
 Route16FuchsiaSpeechHouse_Blocks:
 ManiasHouse_Blocks:
 CianwoodPharmacy_Blocks:
@@ -1086,7 +1085,14 @@ BillsHouse_Blocks:
 ; Yellow's blackboard ($12/$13) and school-desk ($14/$15/$18/$19) metatiles at
 ; the same ids.  In "Map Blocks 3" because "Map Blocks 1" (the Viridian group)
 ; and "Map Blocks 2" are both effectively full.
+; Kanto hack (docs/M6-CELADON.md, 9s): Yellow reuses the SCHOOL HOUSE room for
+; the CELADON MANSION ROOF HOUSE -- maps/CeladonMansionRoofHouse.blk in Yellow
+; is byte-for-byte maps/ViridianSchoolHouse.blk, so the Roof House leaves the
+; House1 alias group above and shares this INCBIN.  That restores Yellow's
+; blackboard at (3,0)/(4,0) (the two LinkCableHelp hidden texts) and the desk
+; the EEVEE ball and the TM notebook sit on, at zero cost in "Map Blocks 3".
 ViridianSchoolHouse_Blocks:
+CeladonMansionRoofHouse_Blocks:
 	INCBIN "maps/ViridianSchoolHouse.blk"
 
 ; Kanto hack: M4 step 7c (docs/M4-VERMILION.md) -- the Vermilion-area maps

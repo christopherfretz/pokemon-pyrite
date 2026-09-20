@@ -1,190 +1,234 @@
+; Kanto hack (docs/M6-CELADON.md, 9s): Yellow's CELADON MANSION 3F -- the GAME
+; FREAK development room.  Four devs, three PCs and the sign, all at Yellow's
+; coordinates and with Yellow's text (vendor/pokeyellow/scripts/CeladonMansion3F
+; .asm + text/CeladonMansion3F.asm).
+;
+; All four devs share one gate, Yellow's CeladonMansion3_PokedexCount:
+;   ld hl, wPokedexOwned / ld b, wPokedexOwnedEnd - wPokedexOwned
+;   call CountSetBits / cp NUM_POKEMON - 1 ; discount Mew
+; i.e. "at least 150 of the 151 Kanto species owned" -- MEW is not required, but
+; it does count if you have it.  Crystal's VAR_DEXCAUGHT counts all 251 flags,
+; so `special KantoDexCaught` (engine/events/specials.asm) counts just the first
+; 151 and `ifgreater MEW - 2` is Yellow's `cp NUM_POKEMON - 1`.  Crystal's
+; EVENT_ENABLE_DIPLOMA_PRINTING two-step (designer unlocks, artist prints) is
+; gone: in Yellow both NPCs test the dex directly, so the flag has no users.
 	object_const_def
-	const CELADONMANSION3F_COOLTRAINER_M
-	const CELADONMANSION3F_GYM_GUIDE
-	const CELADONMANSION3F_SUPER_NERD
-	const CELADONMANSION3F_FISHER
+	const CELADONMANSION3F_PROGRAMMER
+	const CELADONMANSION3F_GRAPHIC_ARTIST
+	const CELADONMANSION3F_WRITER
+	const CELADONMANSION3F_GAME_DESIGNER
 
 CeladonMansion3F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-GameFreakGameDesignerScript:
+GameFreakProgrammerScript:
 	faceplayer
 	opentext
-	writetext GameFreakGameDesignerText
-	readvar VAR_DEXCAUGHT
-	ifgreater NUM_POKEMON - 2 - 1, .CompletedPokedex ; ignore Mew and Celebi
+	special KantoDexCaught
+	ifgreater MEW - 2, .CompletedDex
+	writetext GameFreakProgrammerText
 	waitbutton
 	closetext
 	end
 
-.CompletedPokedex:
-	promptbutton
-	writetext GameFreakGameDesignerCompletedPokedexText
-	playsound SFX_DEX_FANFARE_230_PLUS
-	waitsfx
-	writetext GameFreakGameDesignerPauseForDiplomaText
-	promptbutton
-	special Diploma
-	writetext GameFreakGameDesignerAfterDiplomaText
+.CompletedDex
+	writetext GameFreakProgrammerCompletedDexText
 	waitbutton
 	closetext
-	setevent EVENT_ENABLE_DIPLOMA_PRINTING
 	end
 
+; Yellow: Text2 -> YesNoChoice -> PrintDiploma -> Text4 ("All done!"), or Text5
+; if the printer was cancelled, or Text3 if the player declined.  Crystal's
+; `special PrintDiploma` owns the whole printer UI and reports nothing back, so
+; Text5 has no trigger here and is not ported.
 GameFreakGraphicArtistScript:
 	faceplayer
 	opentext
-	checkevent EVENT_ENABLE_DIPLOMA_PRINTING
-	iftrue .CanPrintDiploma
+	special KantoDexCaught
+	ifgreater MEW - 2, .CompletedDex
 	writetext GameFreakGraphicArtistText
 	waitbutton
 	closetext
 	end
 
-.CanPrintDiploma:
+.CompletedDex
 	writetext GameFreakGraphicArtistPrintDiplomaText
 	yesorno
-	iffalse .Refused
+	iffalse .Declined
 	special PrintDiploma
-	closetext
-	end
-
-.Refused:
-	writetext GameFreakGraphicArtistRefusedText
+	writetext GameFreakGraphicArtistAllDoneText
 	waitbutton
 	closetext
 	end
 
-.CancelPrinting: ; unreferenced
-	writetext GameFreakGraphicArtistErrorText
+.Declined
+	writetext GameFreakGraphicArtistDeclinedText
 	waitbutton
 	closetext
 	end
 
-GameFreakProgrammerScript:
-	jumptextfaceplayer GameFreakProgrammerText
+GameFreakWriterScript:
+	faceplayer
+	opentext
+	special KantoDexCaught
+	ifgreater MEW - 2, .CompletedDex
+	writetext GameFreakWriterText
+	waitbutton
+	closetext
+	end
 
-GameFreakCharacterDesignerScript:
-	jumptextfaceplayer GameFreakCharacterDesignerText
+.CompletedDex
+	writetext GameFreakWriterCompletedDexText
+	waitbutton
+	closetext
+	end
+
+; Yellow's GAME DESIGNER is `STAY NONE` -- he does not turn to face the player,
+; so there is no `faceplayer` here.
+GameFreakGameDesignerScript:
+	opentext
+	special KantoDexCaught
+	ifgreater MEW - 2, .CompletedDex
+	writetext GameFreakGameDesignerText
+	waitbutton
+	closetext
+	end
+
+.CompletedDex
+	writetext GameFreakGameDesignerCompletedDexText
+	promptbutton
+	special Diploma
+	writetext GameFreakGameDesignerShowItOffText
+	waitbutton
+	closetext
+	end
+
+CeladonMansion3FGameProgramPC:
+	jumptext CeladonMansion3FGameProgramPCText
+
+CeladonMansion3FPlayingGamePC:
+	jumptext CeladonMansion3FPlayingGamePCText
+
+CeladonMansion3FGameScriptPC:
+	jumptext CeladonMansion3FGameScriptPCText
 
 CeladonMansion3FDevRoomSign:
 	jumptext CeladonMansion3FDevRoomSignText
 
-CeladonMansion3FDrawing:
-	jumptext CeladonMansion3FDrawingText
+GameFreakProgrammerText:
+	text "Me? I'm the"
+	line "programmer!"
+	done
 
-CeladonMansion3FGameProgram:
-	jumptext CeladonMansion3FGameProgramText
+GameFreakProgrammerCompletedDexText:
+	text "Me? I'm the"
+	line "programmer!"
 
-CeladonMansion3FReferenceMaterial:
-	jumptext CeladonMansion3FReferenceMaterialText
+	para "What a surprise!"
+	line "I never expected"
+	cont "anyone to fill a"
+	cont "#DEX."
+	done
+
+GameFreakGraphicArtistText:
+	text "I'm the graphic"
+	line "artist!"
+	cont "I drew you!"
+	done
+
+GameFreakGraphicArtistPrintDiplomaText:
+	text "I'm the graphic"
+	line "artist!"
+
+	para "Wow, you finished"
+	line "your #DEX!"
+	cont "Want me to PRINT"
+	cont "out a DIPLOMA"
+	cont "as proof?"
+	done
+
+GameFreakGraphicArtistDeclinedText:
+	text "Just tell me if"
+	line "you want to PRINT"
+	cont "out a DIPLOMA."
+	done
+
+GameFreakGraphicArtistAllDoneText:
+	text "All done!"
+	done
+
+GameFreakWriterText:
+	text "I wrote the story!"
+	line "Isn't ERIKA cute?"
+
+	para "I like MISTY a"
+	line "lot too!"
+
+	para "Oh, and SABRINA,"
+	line "I like her!"
+	done
+
+GameFreakWriterCompletedDexText:
+	text "I wrote the story!"
+
+	para "It's great you"
+	line "caught all the"
+	cont "#MON! Thanks!"
+	done
 
 GameFreakGameDesignerText:
 	text "Is that right?"
 
-	para "I'm the GAME"
-	line "DESIGNER!"
+	para "I'm the game"
+	line "designer!"
 
 	para "Filling up your"
 	line "#DEX is tough,"
-	cont "but don't give up!"
+	cont "but don't quit!"
+
+	para "When you finish,"
+	line "come tell me!"
 	done
 
-GameFreakGameDesignerCompletedPokedexText:
+GameFreakGameDesignerCompletedDexText:
 	text "Wow! Excellent!"
-	line "You completed your"
-	cont "#DEX!"
-
-	para "Congratulations!"
+	line "You completed"
+	cont "your #DEX!"
+	cont "Congratulations!"
+	cont "…"
 	done
 
-GameFreakGameDesignerPauseForDiplomaText:
-	text "…"
+GameFreakGameDesignerShowItOffText:
+	text "Go show off your"
+	line "DIPLOMA to"
+	cont "the development"
+	cont "crew."
 	done
 
-GameFreakGameDesignerAfterDiplomaText:
-	text "The GRAPHIC ARTIST"
-	line "will print out a"
-	cont "DIPLOMA for you."
-
-	para "You should go show"
-	line "it off."
+CeladonMansion3FGameProgramPCText:
+	text "It's the game"
+	line "program! Messing"
+	cont "with it could bug"
+	cont "out the game!"
 	done
 
-GameFreakGraphicArtistText:
-	text "I'm the GRAPHIC"
-	line "ARTIST."
-
-	para "I drew you!"
+CeladonMansion3FPlayingGamePCText:
+	text "Someone's playing"
+	line "a game instead of"
+	cont "working!"
 	done
 
-GameFreakGraphicArtistPrintDiplomaText:
-	text "I'm the GRAPHIC"
-	line "ARTIST."
-
-	para "Oh, you completed"
-	line "your #DEX?"
-
-	para "Want me to print"
-	line "out your DIPLOMA?"
-	done
-
-GameFreakGraphicArtistRefusedText:
-	text "Give me a shout if"
-	line "you want your"
-	cont "DIPLOMA printed."
-	done
-
-GameFreakGraphicArtistErrorText:
-	text "Something's wrong."
-	line "I'll have to can-"
-	cont "cel printing."
-	done
-
-GameFreakProgrammerText:
-	text "Who, me? I'm the"
-	line "PROGRAMMER."
-
-	para "Play the slot"
-	line "machines!"
-	done
-
-GameFreakCharacterDesignerText:
-	text "Aren't the TWINS"
-	line "adorable?"
-
-	para "JASMINE's pretty"
-	line "too."
-
-	para "Oh, I love them!"
+CeladonMansion3FGameScriptPCText:
+	text "It's the script!"
+	line "Better not look"
+	cont "at the ending!"
 	done
 
 CeladonMansion3FDevRoomSignText:
 	text "GAME FREAK"
-	line "DEVELOPMENT ROOM"
-	done
-
-CeladonMansion3FDrawingText:
-	text "It's a detailed"
-	line "drawing of a"
-	cont "pretty girl."
-	done
-
-CeladonMansion3FGameProgramText:
-	text "It's the game"
-	line "program. Messing"
-
-	para "with it could put"
-	line "a bug in the game!"
-	done
-
-CeladonMansion3FReferenceMaterialText:
-	text "It's crammed with"
-	line "reference materi-"
-	cont "als. There's even"
-	cont "a # DOLL."
+	line "Development Room"
 	done
 
 CeladonMansion3F_MapEvents:
@@ -199,13 +243,13 @@ CeladonMansion3F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  1,  3, BGEVENT_UP, CeladonMansion3FGameProgramPC
+	bg_event  4,  3, BGEVENT_UP, CeladonMansion3FPlayingGamePC
+	bg_event  1,  6, BGEVENT_UP, CeladonMansion3FGameScriptPC
 	bg_event  5,  8, BGEVENT_UP, CeladonMansion3FDevRoomSign
-	bg_event  4,  3, BGEVENT_UP, CeladonMansion3FDrawing
-	bg_event  1,  6, BGEVENT_UP, CeladonMansion3FGameProgram
-	bg_event  1,  3, BGEVENT_UP, CeladonMansion3FReferenceMaterial
 
 	def_object_events
-	object_event  3,  6, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GameFreakGameDesignerScript, -1
-	object_event  3,  4, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GameFreakGraphicArtistScript, -1
-	object_event  0,  7, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GameFreakProgrammerScript, -1
-	object_event  0,  4, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_UP, 2, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GameFreakCharacterDesignerScript, -1
+	object_event  0,  4, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GameFreakProgrammerScript, -1
+	object_event  3,  4, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GameFreakGraphicArtistScript, -1
+	object_event  0,  7, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GameFreakWriterScript, -1
+	object_event  2,  3, SPRITE_SCIENTIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GameFreakGameDesignerScript, -1

@@ -417,6 +417,33 @@ PrintDiploma:
 	call ExitAllMenus
 	ret
 
+KantoDexCaught:
+; Kanto hack (docs/M6-CELADON.md, 9s): how many species of the KANTO dex
+; (1-151) the player owns.  Yellow's CELADON MANSION 3F gate is
+; `ld hl, wPokedexOwned / ld b, wPokedexOwnedEnd - wPokedexOwned / CountSetBits
+; / cp NUM_POKEMON - 1` -- every Yellow species counts (Mew included), and the
+; threshold is 150, i.e. the dex is "complete" without Mew.  Crystal's
+; VAR_DEXCAUGHT counts all 251 flags, so it cannot express that; this counts
+; only the first 151 flags of wPokedexCaught.
+	ld hl, wPokedexCaught
+	ld b, (MEW - 1) / 8 ; 18 whole bytes = species 1-144
+	call CountSetBits
+	ld b, a
+	ld a, [wPokedexCaught + (MEW - 1) / 8]
+	and (1 << (MEW % 8)) - 1 ; $7f: species 145-151, masks off 152 CHIKORITA
+.count_loop
+	and a
+	jr z, .counted
+	srl a
+	jr nc, .count_loop
+	inc b
+	jr .count_loop
+
+.counted
+	ld a, b
+	ld [wScriptVar], a
+	ret
+
 TrainerHouse:
 	ld a, BANK(sMysteryGiftTrainerHouseFlag)
 	call OpenSRAM

@@ -1,34 +1,21 @@
-	object_const_def
-	const CELADONMANSIONROOF_FISHER
-
+; Kanto hack (docs/M6-CELADON.md, 9s): Yellow's CELADON MANSION ROOF.  Yellow
+; has zero objects up here and exactly one sign, immediately right of the roof
+; house's door (Yellow (3,7), ours (3,5) -- our roof is 4x5 blocks against
+; Yellow's 4x6).  Crystal's FISHER and its graffiti bg_event are gone.
+;
+; The roof is deliberately split in two by the COLL_RIGHT_WALL/COLL_LEFT_WALL
+; column pair at x4/x5: only the west half (reached from 3F warp 1, i.e. the
+; back-door staircase chain) can get to the roof house, exactly as in Yellow.
 CeladonMansionRoof_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-CeladonMansionRoofFisherScript:
-	jumptextfaceplayer CeladonMansionRoofFisherText
+CeladonMansionRoofHouseSign:
+	jumptext CeladonMansionRoofHouseSignText
 
-CeladonMansionRoofGraffiti:
-	jumptext CeladonMansionRoofGraffitiText
-
-CeladonMansionRoofFisherText:
-	text "High places--I do"
-	line "love them so!"
-
-	para "I'd say the only"
-	line "thing that loves"
-
-	para "heights as much as"
-	line "me is smoke!"
-	done
-
-CeladonMansionRoofGraffitiText:
-	text "There's graffiti"
-	line "on the wall…"
-
-	para "<PLAYER> added a"
-	line "moustache!"
+CeladonMansionRoofHouseSignText:
+	text "I KNOW EVERYTHING!"
 	done
 
 CeladonMansionRoof_MapEvents:
@@ -42,7 +29,6 @@ CeladonMansionRoof_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event  6,  1, BGEVENT_LEFT, CeladonMansionRoofGraffiti
+	bg_event  3,  5, BGEVENT_UP, CeladonMansionRoofHouseSign
 
 	def_object_events
-	object_event  7,  5, SPRITE_FISHER, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeladonMansionRoofFisherScript, -1
