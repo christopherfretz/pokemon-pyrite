@@ -3850,6 +3850,26 @@ MediumGroup:
 	db 22, HAUNTER
 	db -1 ; end
 
+	; MEDIUM (15)
+	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 19.
+	db "ALMA@", TRAINERTYPE_NORMAL
+	db 22, GASTLY
+	db 22, GASTLY
+	db 22, GASTLY
+	db -1 ; end
+
+	; MEDIUM (16)
+	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 20.
+	db "NORA@", TRAINERTYPE_NORMAL
+	db 24, GASTLY
+	db -1 ; end
+
+	; MEDIUM (17)
+	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 21.
+	db "VERA@", TRAINERTYPE_NORMAL
+	db 24, GASTLY
+	db -1 ; end
+
 BoarderGroup:
 	; BOARDER (1)
 	db "RONALD@", TRAINERTYPE_NORMAL

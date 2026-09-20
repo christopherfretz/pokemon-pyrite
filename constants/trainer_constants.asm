@@ -761,7 +761,7 @@ DEF KRIS EQU __trainer_class__
 ; differ from Yellow.  BETHANY/MARGRET/ETHEL were dead Crystal rows and are
 ; rewritten in place as TOWER 3F's three; AGNES/EDITH/HAZEL are appended for 4F
 ; (D13 -- Yellow gives the channelers no names, so these are invented).
-; 9g (5F) and 9h (6F) append seven more here.
+; 9g (5F) appends four and 9h (6F) three more.
 	trainerclass MEDIUM ; 39
 	const MARTHA
 	const GRACE
@@ -777,6 +777,9 @@ DEF KRIS EQU __trainer_class__
 	const CORA ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 16
 	const RUBY ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 17
 	const MYRTLE ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 18
+	const ALMA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 19
+	const NORA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 20
+	const VERA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 21
 
 	trainerclass BOARDER ; 3a
 	const RONALD

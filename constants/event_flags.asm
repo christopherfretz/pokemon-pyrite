@@ -526,15 +526,25 @@
 	const EVENT_BEAT_SWIMMERF_DENISE
 	const EVENT_BEAT_SWIMMERF_KARA
 	const EVENT_BEAT_SWIMMERF_WENDY
-	const EVENT_BEAT_SWIMMERF_LISA
-	const EVENT_BEAT_SWIMMERF_JILL
-	const EVENT_BEAT_SWIMMERF_MARY
-	const EVENT_BEAT_SWIMMERF_KATIE
+	const EVENT_BEAT_MEDIUM_ALMA ; Kanto hack: renamed in place (M6 9h).  Was
+; EVENT_BEAT_SWIMMERF_LISA, dead in a Kanto-first game.  ALMA is the first
+; CHANNELER on POKéMON TOWER 6F.  Flag indexes are positional and
+; savestate-visible, so a dead flag is renamed, never deleted.
+	const EVENT_BEAT_MEDIUM_NORA ; Kanto hack: renamed in place (M6 9h).
+; Was EVENT_BEAT_SWIMMERF_JILL.  POKéMON TOWER 6F CHANNELER 2.
+	const EVENT_BEAT_MEDIUM_VERA ; Kanto hack: renamed in place (M6 9h).
+; Was EVENT_BEAT_SWIMMERF_MARY.  POKéMON TOWER 6F CHANNELER 3.
+	const EVENT_POKEMON_TOWER_6F_RARE_CANDY ; Kanto hack: renamed in place
+; (M6 9h).  Was EVENT_BEAT_SWIMMERF_KATIE.
 	const EVENT_BEAT_SWIMMERF_DAWN
-	const EVENT_BEAT_SWIMMERF_TARA
+	const EVENT_POKEMON_TOWER_6F_X_ACCURACY ; Kanto hack: renamed in place
+; (M6 9h).  Was EVENT_BEAT_SWIMMERF_TARA.
 	const EVENT_BEAT_SWIMMERF_NICOLE
 	const EVENT_BEAT_SWIMMERF_LORI
-	const EVENT_BEAT_SWIMMERF_JODY
+	const EVENT_BEAT_GHOST_MAROWAK ; Kanto hack: renamed in place (M6 9h).
+; Was EVENT_BEAT_SWIMMERF_JODY.  Yellow's EVENT_BEAT_GHOST_MAROWAK: set when
+; the restless soul on POKéMON TOWER 6F is calmed, which unblocks the 7F
+; stairs at (9,16).
 	const EVENT_BEAT_SWIMMERF_NIKKI
 	const EVENT_BEAT_PICNICKER_DIANA ; Kanto hack: renamed in place (6e,
 ; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERF_DIANA; Yellow's Cerulean Gym
