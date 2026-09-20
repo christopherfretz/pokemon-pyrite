@@ -444,7 +444,7 @@ ENDM
 	map_const CELADON_GAME_CORNER,                         10,  7 ; 19
 	map_const CELADON_GAME_CORNER_PRIZE_ROOM,               3,  3 ; 20
 	map_const CELADON_GYM,                                  5,  9 ; 21
-	map_const CELADON_CAFE,                                 6,  4 ; 22
+	map_const CELADON_CAFE,                                 5,  4 ; 22
 	map_const ROUTE_16_FUCHSIA_SPEECH_HOUSE,                4,  4 ; 23
 	map_const ROUTE_16_GATE,                                4,  7 ; 24
 	map_const ROUTE_7_SAFFRON_GATE,                         3,  4 ; 25

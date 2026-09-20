@@ -614,7 +614,7 @@ ENDM
 	map_attributes RocketHideoutB3F, ROCKET_HIDEOUT_B3F, $2e
 	map_attributes RocketHideoutB4F, ROCKET_HIDEOUT_B4F, $2e
 	map_attributes RocketHideoutElevator, ROCKET_HIDEOUT_ELEVATOR, $00
-	map_attributes CeladonChiefHouse, CELADON_CHIEF_HOUSE, $00
+	map_attributes CeladonChiefHouse, CELADON_CHIEF_HOUSE, $0a
 	map_attributes CeladonHotel, CELADON_HOTEL, $00
 	map_attributes Route16Gate2F, ROUTE_16_GATE_2F, $0a
 	map_attributes Route18Gate2F, ROUTE_18_GATE_2F, $0a

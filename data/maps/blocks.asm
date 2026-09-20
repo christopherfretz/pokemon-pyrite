@@ -185,6 +185,7 @@ CherrygroveGymSpeechHouse_Blocks:
 GuideGentsHouse_Blocks:
 CherrygroveEvolutionSpeechHouse_Blocks:
 Route30BerryHouse_Blocks:
+CeladonChiefHouse_Blocks: ; Kanto hack (M6 9t): Yellow's CHIEF HOUSE 4x4 is byte-identical to House1
 	INCBIN "maps/House1.blk"
 
 SafariZoneFuchsiaGateBeta_Blocks:
@@ -1218,9 +1219,6 @@ RocketHideoutB4F_Blocks:
 
 RocketHideoutElevator_Blocks:
 	INCBIN "maps/RocketHideoutElevator.blk"
-
-CeladonChiefHouse_Blocks:
-	INCBIN "maps/CeladonChiefHouse.blk"
 
 CeladonHotel_Blocks:
 	INCBIN "maps/CeladonHotel.blk"
