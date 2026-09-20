@@ -112,5 +112,23 @@
   "title": "POK\u00e9MON TOWER 7F \u2014 JESSIE & JAMES and MR FUJI",
   "description": "The top of the Tower, at the foot of 6F's south stairs, with 6F's RARE CANDY really taken. Three 6F obstacles are FAKED past: channelers NORA and VERA, and THE GHOST MAROWAK \u2014 its flag is written, so this preset cannot test the SILPH SCOPE reveal (use 'POK\u00e9MON TOWER 6F' for that). JESSIE & JAMES and the MR FUJI rescue are untouched.",
   "sav": "tower7f.sav"
+ },
+ {
+  "id": "celadon",
+  "title": "CELADON CITY",
+  "description": "Celadon's east entrance, walked in from Route 7. The whole city, the GYM, the DEPT. STORE, the MANSION (EEVEE) and the DINER (COIN CASE) are real and unplayed. CUT is faked (HM01 + CUT in the lead POK\u00e9MON) so Erika's cut tree and gym plants can be opened; the GAME CORNER and ROCKET HIDEOUT are not ported yet.",
+  "sav": "celadon.sav"
+ },
+ {
+  "id": "erika",
+  "title": "CELADON CITY \u2014 RAINBOWBADGE won (faked)",
+  "description": "One tile below the CELADON GYM door with the RAINBOWBADGE and TM21 MEGA DRAIN WRITTEN, not fought (ERIKA and her seven trainers are flagged beaten), so STRENGTH is usable. Use 'CELADON CITY' for the real fight.",
+  "sav": "erika.sav"
+ },
+ {
+  "id": "coin_case",
+  "title": "CELADON CITY \u2014 COIN CASE in hand",
+  "description": "One tile below the GAME CORNER door with the COIN CASE really collected from the DINER. Chains from 'CELADON CITY' (CUT faked, no RAINBOWBADGE); nothing else is faked. The GAME CORNER interior is still Crystal's until 9u ships.",
+  "sav": "coin_case.sav"
  }
 ]
