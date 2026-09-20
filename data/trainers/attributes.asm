@@ -410,6 +410,12 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_TYPES | AI_OPPORTUNIST | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
+; Giovanni
+	db NO_ITEM, NO_ITEM ; items
+	db 25 ; base reward
+	dw AI_BASIC | AI_TYPES | AI_OPPORTUNIST | AI_SMART | AI_CAUTIOUS | AI_STATUS | AI_RISKY
+	dw CONTEXT_USE | SWITCH_SOMETIMES
+
 ; Mysticalman
 	db NO_ITEM, NO_ITEM ; items
 	db 25 ; base reward

@@ -69,5 +69,6 @@ TrainerClassNames::
 	li "ROCKET"
 	li "RIVAL"
 	li "JESSIE&JAMES"
+	li "GIOVANNI" ; the class IS the name (Yellow's trainer_const GIOVANNI); every party row leaves the name empty so PlaceEnemysName prints "GIOVANNI" alone
 	li "MYSTICALMAN"
 	assert_list_length NUM_TRAINER_CLASSES

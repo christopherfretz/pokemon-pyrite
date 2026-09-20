@@ -1675,9 +1675,71 @@ GruntMGroup:
 	db 20, ZUBAT
 	db -1 ; end
 
-	; GRUNTM (31)
+	; Kanto hack (M6 9x): the nine ROCKET HIDEOUT grunts, Yellow's RocketData
+	; rows 8-15 and 18 (vendor/pokeyellow/data/trainers/parties.asm).  Row 31
+	; was an unused Crystal row (db 30, GOLBAT); 32-39 are appends.
+
+	; GRUNTM (31) - ROCKET HIDEOUT B1F, (26,8).  Yellow OPP_ROCKET 8.
 	db "GRUNT@", TRAINERTYPE_NORMAL
-	db 30, GOLBAT
+	db 21, DROWZEE
+	db 21, MACHOP
+	db -1 ; end
+
+	; GRUNTM (32) - ROCKET HIDEOUT B1F, (12,6).  Yellow OPP_ROCKET 9.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 21, RATICATE
+	db 21, RATICATE
+	db -1 ; end
+
+	; GRUNTM (33) - ROCKET HIDEOUT B1F, (18,17).  Yellow OPP_ROCKET 10.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 20, GRIMER
+	db 20, KOFFING
+	db 20, KOFFING
+	db -1 ; end
+
+	; GRUNTM (34) - ROCKET HIDEOUT B1F, (15,25).  Yellow OPP_ROCKET 11.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 19, RATTATA
+	db 19, RATICATE
+	db 19, RATICATE
+	db 19, RATTATA
+	db -1 ; end
+
+	; GRUNTM (35) - ROCKET HIDEOUT B1F, (28,18).  Yellow OPP_ROCKET 12.
+	; Beating him opens the locked door at map tile (24,16).
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 22, GRIMER
+	db 22, KOFFING
+	db -1 ; end
+
+	; GRUNTM (36) - ROCKET HIDEOUT B2F, (20,12).  Yellow OPP_ROCKET 13.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 17, ZUBAT
+	db 17, KOFFING
+	db 17, GRIMER
+	db 17, ZUBAT
+	db 17, RATICATE
+	db -1 ; end
+
+	; GRUNTM (37) - ROCKET HIDEOUT B3F, (10,22).  Yellow OPP_ROCKET 14.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 20, RATTATA
+	db 20, RATICATE
+	db 20, DROWZEE
+	db -1 ; end
+
+	; GRUNTM (38) - ROCKET HIDEOUT B3F, (26,12).  Yellow OPP_ROCKET 15.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 21, MACHOP
+	db 21, MACHOP
+	db -1 ; end
+
+	; GRUNTM (39) - ROCKET HIDEOUT B4F, (11,2).  Yellow OPP_ROCKET 18.
+	; Beating him drops the LIFT KEY.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 21, KOFFING
+	db 21, ZUBAT
 	db -1 ; end
 
 GentlemanGroup:
@@ -4297,6 +4359,43 @@ JessieJamesGroup:
 	db 27, MEOWTH
 	db 27, ARBOK
 	db 27, WEEZING
+	db -1 ; end
+
+	; JESSIE_JAMES (3): ROCKET HIDEOUT B4F (Yellow's OPP_ROCKET $2b, RocketData
+	; row 43: db 25, KOFFING, MEOWTH, EKANS).
+	db "@", TRAINERTYPE_NORMAL
+	db 25, KOFFING
+	db 25, MEOWTH
+	db 25, EKANS
+	db -1 ; end
+
+; Kanto hack (M6 9x): GIOVANNI, Yellow's GiovanniData rows 1-3 verbatim
+; (vendor/pokeyellow/data/trainers/parties.asm:535-541).  Yellow's leading $FF
+; means "per-mon levels", which is TRAINERTYPE_NORMAL's default shape here.
+; The name is empty so PlaceEnemysName prints the class name "GIOVANNI" alone.
+GiovanniGroup:
+	; GIOVANNI (1): ROCKET HIDEOUT B4F
+	db "@", TRAINERTYPE_NORMAL
+	db 25, ONIX
+	db 24, RHYHORN
+	db 29, PERSIAN
+	db -1 ; end
+
+	; GIOVANNI (2): SILPH CO. 11F (reserved for M7)
+	db "@", TRAINERTYPE_NORMAL
+	db 37, NIDORINO
+	db 35, PERSIAN
+	db 37, RHYHORN
+	db 41, NIDOQUEEN
+	db -1 ; end
+
+	; GIOVANNI (3): VIRIDIAN GYM (reserved for M8)
+	db "@", TRAINERTYPE_NORMAL
+	db 50, DUGTRIO
+	db 53, PERSIAN
+	db 53, NIDOQUEEN
+	db 55, NIDOKING
+	db 55, RHYDON
 	db -1 ; end
 
 MysticalmanGroup:

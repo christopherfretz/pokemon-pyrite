@@ -71,5 +71,6 @@ TrainerClassDVs:
 	dn  7, 14, 10,  8 ; GRUNTF
 	dn  9,  8,  8,  8 ; KANTO_RIVAL -- Kanto hack: Yellow gives every trainer $9888 (docs/RIVAL1-BALANCE.md)
 	dn  9,  8,  8,  8 ; JESSIE_JAMES
+	dn 13, 13, 13, 13 ; GIOVANNI
 	dn  9,  8,  8,  8 ; MYSTICALMAN
 	assert_table_length NUM_TRAINER_CLASSES

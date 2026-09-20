@@ -350,7 +350,17 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_28
 	const GRUNTM_29
 	const GRUNTM_30 ; Kanto hack (M6 9u): CELADON GAME CORNER's poster guard
-	const GRUNTM_31
+	const GRUNTM_31 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F ROCKET 1 (was unused)
+; Kanto hack (M6 9x): the other eight ROCKET HIDEOUT grunts.  Appending inside
+; an existing class costs only party data -- no class-keyed table grows.
+	const GRUNTM_32 ; ROCKET HIDEOUT B1F ROCKET 2
+	const GRUNTM_33 ; ROCKET HIDEOUT B1F ROCKET 3
+	const GRUNTM_34 ; ROCKET HIDEOUT B1F ROCKET 4
+	const GRUNTM_35 ; ROCKET HIDEOUT B1F ROCKET 5 (drops the door)
+	const GRUNTM_36 ; ROCKET HIDEOUT B2F ROCKET
+	const GRUNTM_37 ; ROCKET HIDEOUT B3F ROCKET 1
+	const GRUNTM_38 ; ROCKET HIDEOUT B3F ROCKET 2
+	const GRUNTM_39 ; ROCKET HIDEOUT B4F ROCKET (drops the LIFT KEY)
 
 	trainerclass GENTLEMAN ; 20
 	const PRESTON
@@ -877,8 +887,20 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	trainerclass JESSIE_JAMES ; 44
 	const JESSIE_JAMES_1 ; Mt. Moon B2F
 	const JESSIE_JAMES_2 ; Pokemon Tower 7F
+	const JESSIE_JAMES_3 ; Rocket Hideout B4F
 
-	trainerclass MYSTICALMAN ; 45
+; Kanto hack: GIOVANNI, the Rocket boss (docs/M6-CELADON.md D33).  Crystal has
+; no such class -- Yellow's `trainer_const GIOVANNI ; $1D`.  Inserted BEFORE
+; MYSTICALMAN because several class-keyed tables end in
+; `assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN`.
+; All three of his Yellow battles get a row now so Saffron and Viridian need
+; no further class work.
+	trainerclass GIOVANNI ; 45
+	const GIOVANNI_1 ; Rocket Hideout B4F
+	const GIOVANNI_2 ; Silph Co. 11F
+	const GIOVANNI_3 ; Viridian Gym
+
+	trainerclass MYSTICALMAN ; 46
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

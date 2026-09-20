@@ -71,5 +71,6 @@ TrainerGroups:
 	dw GruntFGroup
 	dw KantoRivalGroup
 	dw JessieJamesGroup
+	dw GiovanniGroup
 	dw MysticalmanGroup
 	assert_table_length NUM_TRAINER_CLASSES
