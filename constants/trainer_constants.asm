@@ -349,7 +349,7 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_27 ; Kanto hack: Nugget Bridge recruiter (was unused)
 	const GRUNTM_28
 	const GRUNTM_29
-	const GRUNTM_30 ; unused
+	const GRUNTM_30 ; Kanto hack (M6 9u): CELADON GAME CORNER's poster guard
 	const GRUNTM_31
 
 	trainerclass GENTLEMAN ; 20

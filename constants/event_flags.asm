@@ -216,7 +216,7 @@
 ; been beaten; gates the (30,7)/(30,9) coord trigger.
 	const EVENT_MET_REDS_MOM
 	const EVENT_RESTORED_POWER_TO_KANTO
-	const EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON
+	const EVENT_GOT_COINS_FROM_GAME_CORNER_GURU_2 ; Kanto hack: renamed in place (M6 9u), was EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON (Crystal's own CELADON GAME CORNER one-off, this map's only user); CELADON GAME CORNER, Yellow's FISHING GURU 2 (17,13) and his 20 coins
 	const EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
 	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT
 	const EVENT_GOT_PASS_FROM_COPYCAT
@@ -573,9 +573,9 @@
 	const EVENT_BEAT_BIRD_KEEPER_JOSE2
 	const EVENT_BEAT_BIRD_KEEPER_PERRY
 	const EVENT_BEAT_BIRD_KEEPER_BRET
-	const EVENT_BEAT_BIRD_KEEPER_JOSE3
-	const EVENT_BEAT_BIRD_KEEPER_VANCE2
-	const EVENT_BEAT_BIRD_KEEPER_VANCE3
+	const EVENT_CELADON_GAME_CORNER_COIN_1 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_JOSE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (0,8), 10
+	const EVENT_CELADON_GAME_CORNER_COIN_2 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_VANCE2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (1,16), 10
+	const EVENT_CELADON_GAME_CORNER_COIN_3 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_VANCE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (3,11), 20
 ; Boarder
 	const EVENT_BEAT_BOARDER_RONALD
 	const EVENT_BEAT_BOARDER_BRAD
@@ -602,8 +602,8 @@
 	const EVENT_BEAT_CAMPER_LESTER ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_CAMPER_HERVEY; ROUTE 12, Yellow's JR_TRAINER_M 9
 	const EVENT_BEAT_GUITARIST_SPARKY ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_CAMPER_DALE; ROUTE 12, Yellow's ROCKER 2 (no GUITARIST row is dead -- same out-of-class swap 8j made for SUPER_NERD CLARK)
 	const EVENT_BEAT_CAMPER_TED
-	const EVENT_BEAT_CAMPER_TODD2
-	const EVENT_BEAT_CAMPER_TODD3
+	const EVENT_CELADON_GAME_CORNER_COIN_4 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_CAMPER_TODD2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (3,14), 10
+	const EVENT_CELADON_GAME_CORNER_COIN_5 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_CAMPER_TODD3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (4,12), 10
 	const EVENT_BEAT_CAMPER_THOMAS
 	const EVENT_BEAT_CAMPER_LEROY
 	const EVENT_BEAT_CAMPER_DAVID
@@ -670,10 +670,10 @@
 	const EVENT_BEAT_FISHER_DALTON ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH2; S.S. ANNE 2F Rooms, Yellow's FISHER 1
 	const EVENT_BEAT_FISHER_PERCY ; Kanto hack: renamed in place (7h), was EVENT_BEAT_FISHER_RALPH3; S.S. ANNE B1F Rooms, Yellow's FISHER 2
 	const EVENT_BEAT_FISHER_ELWOOD ; Kanto hack: renamed in place (M5 8l), was the dead EVENT_BEAT_FISHER_TULLY2; ROUTE 12, Yellow's FISHER 11
-	const EVENT_BEAT_FISHER_TULLY3
-	const EVENT_BEAT_FISHER_WILTON2
+	const EVENT_CELADON_GAME_CORNER_COIN_6 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_FISHER_TULLY3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (9,12), 20
+	const EVENT_CELADON_GAME_CORNER_COIN_7 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_FISHER_WILTON2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (9,15), 10
 	const EVENT_BEAT_FISHER_SCOTT
-	const EVENT_BEAT_FISHER_WILTON3
+	const EVENT_CELADON_GAME_CORNER_COIN_8 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_FISHER_WILTON3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (16,14), 10
 ; Twins
 	const EVENT_BEAT_TWINS_AMY_AND_MAY
 	const EVENT_BEAT_TWINS_ANN_AND_ANNE
@@ -696,12 +696,12 @@
 	const EVENT_BEAT_SCHOOLBOY_CHAD
 	const EVENT_BEAT_SCHOOLBOY_NATE
 	const EVENT_BEAT_SCHOOLBOY_RICKY
-	const EVENT_BEAT_SCHOOLBOY_JACK2
-	const EVENT_BEAT_SCHOOLBOY_JACK3
-	const EVENT_BEAT_SCHOOLBOY_ALAN2
-	const EVENT_BEAT_SCHOOLBOY_ALAN3
-	const EVENT_BEAT_SCHOOLBOY_CHAD2
-	const EVENT_BEAT_SCHOOLBOY_CHAD3
+	const EVENT_CELADON_GAME_CORNER_COIN_9 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_JACK2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (10,16), 10
+	const EVENT_CELADON_GAME_CORNER_COIN_10 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_JACK3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (11,7), 40
+	const EVENT_CELADON_GAME_CORNER_COIN_11 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_ALAN2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (15,8), 100
+	const EVENT_CELADON_GAME_CORNER_COIN_12 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_ALAN3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (12,15), 10 -- shadowed by the slot machine on the same tile, as in Yellow
+	const EVENT_GOT_COINS_FROM_GAME_CORNER_GURU_1 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_CHAD2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER, Yellow's FISHING GURU 1 (5,11) and his 10 coins
+	const EVENT_GOT_COINS_FROM_GAME_CORNER_MAN ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_SCHOOLBOY_CHAD3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER, Yellow's MIDDLE AGED MAN 2 (14,11) and his 20 coins
 ; Picnicker
 	const EVENT_BEAT_PICNICKER_LIZ
 	const EVENT_BEAT_PICNICKER_GINA
@@ -731,8 +731,8 @@
 	const EVENT_BEAT_JUGGLER_IRWIN
 	const EVENT_BEAT_JUGGLER_FRITZ
 	const EVENT_BEAT_SAILOR_DEWEY ; Kanto hack: renamed in place (7k), was EVENT_BEAT_JUGGLER_HORTON; VERMILION GYM, Yellow's SAILOR 8
-	const EVENT_BEAT_JUGGLER_IRWIN2
-	const EVENT_BEAT_JUGGLER_IRWIN3
+	const EVENT_FOUND_ROCKET_HIDEOUT ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_JUGGLER_IRWIN2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); Yellow's own flag: the poster switch behind the CELADON GAME CORNER Rocket
+	const EVENT_CELADON_GAME_CORNER_ROCKET_HIDDEN ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_JUGGLER_IRWIN3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER, the Rocket guard's object flag (set by disappear)
 ; Gentleman
 	const EVENT_BEAT_GENTLEMAN_PRESTON
 	const EVENT_BEAT_GENTLEMAN_EDWARD
