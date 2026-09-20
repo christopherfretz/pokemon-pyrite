@@ -246,6 +246,11 @@ ROMX $5a
 ROMX $5b
 	"bank5B"
 	"Pics 20"
+	; Kanto hack: ROCKET HIDEOUT's five floors plus the GAME CORNER and its
+	; PRIZE ROOM (M6 9o, docs/M6-CELADON.md D27).  "Map Scripts 7" cannot hold
+	; Celadon's indoors any more, and this bank's tail is the largest one left
+	; outside the dex-entry banks.
+	"Map Scripts 28"
 ROMX $5c
 	"mobile5C"
 	"Pics 21"
@@ -293,6 +298,9 @@ ROMX $6d
 	"Special Phone Text"
 ROMX $6e
 	"Pokedex Entries 065-128"
+	; Kanto hack: SPRITE_GIOVANNI's 192-byte walking sheet (M6 9o).  Pinned, not
+	; floated: bank1 has ~140 bytes free and must not be the bin packer's choice.
+	"Sprites 5"
 ROMX $6f
 	"Text 1"
 ROMX $70
@@ -310,6 +318,14 @@ ROMX $74
 	; dex-entry banks are the largest stable free tails we have
 	; (docs/M4-VERMILION.md "## 7h findings", 7h.2).
 	"Map Scripts 27"
+ROMX $75
+	; Kanto hack: CELADON CITY's indoor maps, moved wholesale out of
+	; "Map Scripts 7" by M6 9o (docs/M6-CELADON.md D27) so ROCKET HIDEOUT's
+	; scripts have somewhere to grow.  D27 named bank $73 for this, but the
+	; block is 8294 bytes and $73's tail is only 9391, which would leave 9x
+	; about a kilobyte to rewrite all of Celadon in.  $75 is one of four
+	; wholly EMPTY banks ($75 $76 $79 $7a) the survey's cost table missed.
+	"Map Scripts 29"
 ROMX $77
 	"Unown Font"
 	"Print Party"

@@ -98,25 +98,11 @@ INCLUDE "maps/IlexForest.asm"
 
 SECTION "Map Scripts 7", ROMX
 
+; Kanto hack (M6 9o, docs/M6-CELADON.md D27): CELADON's indoor maps moved out
+; of here into "Map Scripts 29" ($75), and the GAME CORNER pair into
+; "Map Scripts 28" ($5b), to make room for ROCKET HIDEOUT.  What is left is
+; LAKE OF RAGE plus the CELADON group's four route-side buildings.
 INCLUDE "maps/LakeOfRage.asm"
-INCLUDE "maps/CeladonDeptStore1F.asm"
-INCLUDE "maps/CeladonDeptStore2F.asm"
-INCLUDE "maps/CeladonDeptStore3F.asm"
-INCLUDE "maps/CeladonDeptStore4F.asm"
-INCLUDE "maps/CeladonDeptStore5F.asm"
-INCLUDE "maps/CeladonDeptStore6F.asm"
-INCLUDE "maps/CeladonDeptStoreElevator.asm"
-INCLUDE "maps/CeladonMansion1F.asm"
-INCLUDE "maps/CeladonMansion2F.asm"
-INCLUDE "maps/CeladonMansion3F.asm"
-INCLUDE "maps/CeladonMansionRoof.asm"
-INCLUDE "maps/CeladonMansionRoofHouse.asm"
-INCLUDE "maps/CeladonPokecenter1F.asm"
-INCLUDE "maps/CeladonPokecenter2FBeta.asm"
-INCLUDE "maps/CeladonGameCorner.asm"
-INCLUDE "maps/CeladonGameCornerPrizeRoom.asm"
-INCLUDE "maps/CeladonGym.asm"
-INCLUDE "maps/CeladonCafe.asm"
 INCLUDE "maps/Route16FuchsiaSpeechHouse.asm"
 INCLUDE "maps/Route16Gate.asm"
 INCLUDE "maps/Route7SaffronGate.asm"
@@ -563,5 +549,52 @@ INCLUDE "maps/SSAnneCaptainsRoom.asm"
 INCLUDE "maps/SSAnne1FRooms.asm"
 INCLUDE "maps/SSAnne2FRooms.asm"
 INCLUDE "maps/SSAnneB1FRooms.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 28", ROMX
+
+; Kanto hack (M6 9o, docs/M6-CELADON.md D27): ROCKET HIDEOUT's five floors,
+; plus the GAME CORNER and its PRIZE ROOM -- the hideout's front door and the
+; two maps its scripts talk to most.  Pinned in layout.link to bank $5b.
+; The five hideout maps are 9o skeletons; 9p-9w fill them in.
+INCLUDE "maps/CeladonGameCorner.asm"
+INCLUDE "maps/CeladonGameCornerPrizeRoom.asm"
+INCLUDE "maps/RocketHideoutB1F.asm"
+INCLUDE "maps/RocketHideoutB2F.asm"
+INCLUDE "maps/RocketHideoutB3F.asm"
+INCLUDE "maps/RocketHideoutB4F.asm"
+INCLUDE "maps/RocketHideoutElevator.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 29", ROMX
+
+; Kanto hack (M6 9o, docs/M6-CELADON.md D27): CELADON CITY's indoor maps,
+; moved wholesale out of "Map Scripts 7", plus the four new interiors that are
+; not part of the hideout.  Pinned in layout.link to bank $75 -- D27 said $73,
+; but the block is 8294 bytes and $73 had only 9391 free; see "## 9o findings".
+INCLUDE "maps/CeladonDeptStore1F.asm"
+INCLUDE "maps/CeladonDeptStore2F.asm"
+INCLUDE "maps/CeladonDeptStore3F.asm"
+INCLUDE "maps/CeladonDeptStore4F.asm"
+INCLUDE "maps/CeladonDeptStore5F.asm"
+INCLUDE "maps/CeladonDeptStore6F.asm"
+INCLUDE "maps/CeladonDeptStoreElevator.asm"
+INCLUDE "maps/CeladonMansion1F.asm"
+INCLUDE "maps/CeladonMansion2F.asm"
+INCLUDE "maps/CeladonMansion3F.asm"
+INCLUDE "maps/CeladonMansionRoof.asm"
+INCLUDE "maps/CeladonMansionRoofHouse.asm"
+INCLUDE "maps/CeladonPokecenter1F.asm"
+INCLUDE "maps/CeladonPokecenter2FBeta.asm"
+INCLUDE "maps/CeladonGym.asm"
+INCLUDE "maps/CeladonCafe.asm"
+INCLUDE "maps/CeladonChiefHouse.asm"
+INCLUDE "maps/CeladonHotel.asm"
+INCLUDE "maps/Route16Gate2F.asm"
+INCLUDE "maps/Route18Gate2F.asm"
 
 ENDSECTION

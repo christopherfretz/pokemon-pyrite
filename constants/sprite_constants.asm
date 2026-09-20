@@ -137,6 +137,7 @@
 ; the two games' sprite PNGs are already bit-identical, e.g. biker and oak).
 	const SPRITE_CHANNELER          ; 76 (Yellow's CHANNELER)
 	const SPRITE_MR_FUJI            ; 77 (Yellow's MR FUJI)
+	const SPRITE_GIOVANNI           ; 78 (Yellow's GIOVANNI)
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

@@ -1188,4 +1188,36 @@ PokemonTower6F_Blocks:
 PokemonTower7F_Blocks:
 	INCBIN "maps/PokemonTower7F.blk"
 
+; Kanto hack (M6 9o, docs/M6-CELADON.md 1.4): placeholder .blk files for the
+; nine new CELADON interiors -- Yellow's exact dimensions, filled with each
+; tileset's plain floor block (block $0e for the FACILITY floors -- the
+; checkered floor Yellow's own hideout is paved with).  M6 9p/9w replace the contents with Yellow's own
+; geometry; only the sizes and the labels are load-bearing here.
+RocketHideoutB1F_Blocks:
+	INCBIN "maps/RocketHideoutB1F.blk"
+
+RocketHideoutB2F_Blocks:
+	INCBIN "maps/RocketHideoutB2F.blk"
+
+RocketHideoutB3F_Blocks:
+	INCBIN "maps/RocketHideoutB3F.blk"
+
+RocketHideoutB4F_Blocks:
+	INCBIN "maps/RocketHideoutB4F.blk"
+
+RocketHideoutElevator_Blocks:
+	INCBIN "maps/RocketHideoutElevator.blk"
+
+CeladonChiefHouse_Blocks:
+	INCBIN "maps/CeladonChiefHouse.blk"
+
+CeladonHotel_Blocks:
+	INCBIN "maps/CeladonHotel.blk"
+
+Route16Gate2F_Blocks:
+	INCBIN "maps/Route16Gate2F.blk"
+
+Route18Gate2F_Blocks:
+	INCBIN "maps/Route18Gate2F.blk"
+
 ENDSECTION

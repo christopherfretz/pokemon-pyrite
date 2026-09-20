@@ -166,3 +166,17 @@ OldManAsleepSpriteGFX::        INCBIN "gfx/sprites/old_man_asleep.2bpp"
 ; 12 tiles; the file is INCBIN'd whole, as Crystal's own walkers are.
 ChannelerSpriteGFX::           INCBIN "gfx/sprites/channeler.2bpp"
 MrFujiSpriteGFX::              INCBIN "gfx/sprites/mr_fuji.2bpp"
+
+
+SECTION "Sprites 5", ROMX
+
+; Kanto hack: ROCKET HIDEOUT B4F's GIOVANNI (docs/M6-CELADON.md 9o), from
+; pokeyellow gfx/sprites/giovanni.png byte for byte -- a full 16x96 walking
+; sheet in the same frame order Gen 2 uses.  He gets PAL_OW_BROWN, the palette
+; every other Rocket in the table already carries (SPRITE_ROCKET,
+; SPRITE_ROCKET_GIRL), so the boss reads as the same organisation.
+;
+; "Sprites 4" had 173 bytes free and "Sprites 3" 66, so a 192-byte walking
+; sheet needs a section of its own.  It is pinned in layout.link rather than
+; left floating, because the only floating homes big enough include bank1.
+GiovanniSpriteGFX::            INCBIN "gfx/sprites/giovanni.2bpp"

@@ -605,6 +605,19 @@ ENDM
 	map_attributes Route6UndergroundPathEntrance, ROUTE_6_UNDERGROUND_PATH_ENTRANCE, $0a
 
 	map_attributes Route7UndergroundPathEntrance, ROUTE_7_UNDERGROUND_PATH_ENTRANCE, $0a
+; Kanto hack (M6 9o): Yellow's nine missing CELADON interiors.  Border blocks
+; are Yellow's own for the FACILITY floors ($2e, its solid black surround) and
+; the two gate 2Fs ($0a, the same block Route16Gate already uses); the three
+; Crystal-tileset rooms take the ordinary indoor $00.
+	map_attributes RocketHideoutB1F, ROCKET_HIDEOUT_B1F, $2e
+	map_attributes RocketHideoutB2F, ROCKET_HIDEOUT_B2F, $2e
+	map_attributes RocketHideoutB3F, ROCKET_HIDEOUT_B3F, $2e
+	map_attributes RocketHideoutB4F, ROCKET_HIDEOUT_B4F, $2e
+	map_attributes RocketHideoutElevator, ROCKET_HIDEOUT_ELEVATOR, $00
+	map_attributes CeladonChiefHouse, CELADON_CHIEF_HOUSE, $00
+	map_attributes CeladonHotel, CELADON_HOTEL, $00
+	map_attributes Route16Gate2F, ROUTE_16_GATE_2F, $0a
+	map_attributes Route18Gate2F, ROUTE_18_GATE_2F, $0a
 
 	map_attributes Route8UndergroundPathEntrance, ROUTE_8_UNDERGROUND_PATH_ENTRANCE, $0a
 	map_attributes Route11Gate1F, ROUTE_11_GATE_1F, $0a

@@ -450,6 +450,17 @@ ENDM
 	map_const ROUTE_7_SAFFRON_GATE,                         3,  4 ; 25
 	map_const ROUTE_17_ROUTE_18_GATE,                       4,  5 ; 26
 	map_const ROUTE_7_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 27
+; Kanto hack (M6 9o, docs/M6-CELADON.md 1.1): Yellow's nine missing CELADON
+; interiors.  Dimensions are Yellow's own (its .blk sizes match exactly).
+	map_const ROCKET_HIDEOUT_B1F,                          15, 14 ; 28
+	map_const ROCKET_HIDEOUT_B2F,                          15, 14 ; 29
+	map_const ROCKET_HIDEOUT_B3F,                          15, 14 ; 30
+	map_const ROCKET_HIDEOUT_B4F,                          15, 12 ; 31
+	map_const ROCKET_HIDEOUT_ELEVATOR,                      3,  4 ; 32
+	map_const CELADON_CHIEF_HOUSE,                          4,  4 ; 33
+	map_const CELADON_HOTEL,                                7,  4 ; 34
+	map_const ROUTE_16_GATE_2F,                             4,  4 ; 35
+	map_const ROUTE_18_GATE_2F,                             4,  4 ; 36
 	endgroup
 
 	newgroup CIANWOOD                                             ; 22

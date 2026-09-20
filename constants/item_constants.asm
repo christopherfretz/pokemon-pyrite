@@ -21,7 +21,8 @@
 ; ($3c), for TM_THUNDERBOLT = TM86 (Lt. Surge's TM24), and dropped the
 ; THUNDERBOLT move tutor in exchange so NUM_TM_HM_TUTOR stayed 95.
 ; M6 9c (docs/M6-TOWER.md D11) reclaimed GOLD_LEAF ($4b) for SILPH_SCOPE.
-; Remaining reclaim candidates: NORMAL_BOX ($a7), GORGEOUS_BOX ($a8).
+; M6 9o (docs/M6-CELADON.md D29) reclaimed NORMAL_BOX ($a7) for LIFT_KEY.
+; Remaining reclaim candidate: GORGEOUS_BOX ($a8) -- the LAST one.
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -191,7 +192,7 @@
 	const FRIEND_BALL  ; a4
 	const MOON_BALL    ; a5
 	const LOVE_BALL    ; a6
-	const NORMAL_BOX   ; a7
+	const LIFT_KEY     ; a7 (was NORMAL_BOX; Kanto hack M6 9o)
 	const GORGEOUS_BOX ; a8
 	const SUN_STONE    ; a9
 	const POLKADOT_BOW ; aa

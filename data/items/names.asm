@@ -166,7 +166,7 @@ ItemNames::
 	li "FRIEND BALL"
 	li "MOON BALL"
 	li "LOVE BALL"
-	li "NORMAL BOX"
+	li "LIFT KEY"
 	li "GORGEOUS BOX"
 	li "SUN STONE"
 	li "POLKADOT BOW"

@@ -123,6 +123,10 @@ INCLUDE "gfx/tilesets/kanto_gate_palette_map.asm"
 TilesetKantoTowerPalMap:
 INCLUDE "gfx/tilesets/kanto_tower_palette_map.asm"
 
+; Kanto hack: Yellow's FACILITY tileset, ROCKET HIDEOUT (M6 9o).
+TilesetKantoFacilityPalMap:
+INCLUDE "gfx/tilesets/kanto_facility_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

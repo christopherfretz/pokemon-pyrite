@@ -180,7 +180,7 @@ ItemEffects:
 	dw PokeBallEffect      ; FRIEND_BALL
 	dw PokeBallEffect      ; MOON_BALL
 	dw PokeBallEffect      ; LOVE_BALL
-	dw NormalBoxEffect     ; NORMAL_BOX
+	dw NoEffect            ; LIFT_KEY
 	dw GorgeousBoxEffect   ; GORGEOUS_BOX
 	dw EvoStoneEffect      ; SUN_STONE
 	dw NoEffect            ; POLKADOT_BOW
@@ -2596,10 +2596,6 @@ SacredAshEffect:
 	ret nz
 	call UseDisposableItem
 	ret
-
-NormalBoxEffect:
-	ld c, DECOFLAG_SILVER_TROPHY_DOLL
-	jr OpenBox
 
 GorgeousBoxEffect:
 	ld c, DECOFLAG_GOLD_TROPHY_DOLL

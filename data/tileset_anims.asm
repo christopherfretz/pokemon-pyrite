@@ -277,6 +277,7 @@ TilesetOmanyteWordRoomAnim:
 TilesetAerodactylWordRoomAnim:
 TilesetKantoGateAnim:
 TilesetKantoTowerAnim:
+TilesetKantoFacilityAnim:
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
