@@ -230,7 +230,7 @@
 	const EVENT_TALKED_TO_WARDENS_GRANDDAUGHTER
 	const EVENT_GOT_TM03_CURSE
 	const EVENT_SS_ANNE_1F_ROOMS_TM_BODY_SLAM ; Kanto hack: renamed in place (7h), was EVENT_GOT_CLEANSE_TAG; S.S. ANNE 1F Rooms item ball (12,15)
-	const EVENT_GOT_TM19_GIGA_DRAIN
+	const EVENT_GOT_TM21_MEGA_DRAIN ; Kanto hack: renamed in place (M6 9q), was EVENT_GOT_TM19_GIGA_DRAIN; ERIKA's TM is Yellow's TM21 MEGA DRAIN (our TM67)
 	const EVENT_GOT_TM06_TOXIC
 	const EVENT_GOT_UP_GRADE
 	const EVENT_GOT_TM07_ZAP_CANNON
@@ -679,8 +679,8 @@
 	const EVENT_BEAT_TWINS_ANN_AND_ANNE
 	const EVENT_ROUTE_12_HIDDEN_HYPER_POTION ; Kanto hack: renamed in place (M5 8n audit), was EVENT_BEAT_TWINS_ANN_AND_ANNE2 -- a Gen 2 phone-rematch flag, permanently dead here because Route37 sets EVENT_BEAT_TWINS_ANN_AND_ANNE for both parties and the Pokegear is cut.  ROUTE 12's hidden HYPER POTION at (2,63) (Yellow data/events/hidden_events.asm:429)
 	const EVENT_BEAT_TWINS_AMY_AND_MAY2
-	const EVENT_BEAT_TWINS_JO_AND_ZOE
-	const EVENT_BEAT_TWINS_JO_AND_ZOE2
+	const EVENT_BEAT_BEAUTY_POPPY ; Kanto hack: renamed in place (M6 9q), was EVENT_BEAT_TWINS_JO_AND_ZOE -- Yellow's CELADON GYM has no twins; CELADON GYM trainer 5 (Yellow BEAUTY 3)
+	const EVENT_BEAT_LASS_HOLLY ; Kanto hack: renamed in place (M6 9q), was EVENT_BEAT_TWINS_JO_AND_ZOE2 (a dead Crystal duplicate -- both twins shared the flag above); CELADON GYM trainer 4 (Yellow LASS 18)
 	const EVENT_BEAT_TWINS_MEG_AND_PEG
 	const EVENT_BEAT_TWINS_MEG_AND_PEG2
 ; Schoolboy
@@ -774,7 +774,7 @@
 	const EVENT_BEAT_BEAUTY_RACHAEL
 	const EVENT_BEAT_BEAUTY_ANGELICA
 	const EVENT_BEAT_BEAUTY_KENDRA
-	const EVENT_BEAT_BEAUTY_VERONICA
+	const EVENT_BEAT_BEAUTY_LILY ; Kanto hack: renamed in place (M6 9q), was the dead EVENT_BEAT_BEAUTY_VERONICA; CELADON GYM trainer 1 (Yellow BEAUTY 1)
 	const EVENT_BEAT_BEAUTY_JULIA
 	const EVENT_POKEMON_TOWER_5F_IN_PURIFIED_ZONE ; Kanto hack (M6 9g): was the dead EVENT_BEAT_BEAUTY_THERESA.  D23's heal latch -- set by #MON TOWER 5F's purified-zone coord_events, cleared by its MAPCALLBACK_NEWMAP, so the free heal happens once per visit to the floor
 	const EVENT_BEAT_BEAUTY_VALERIE
@@ -1796,7 +1796,14 @@
 ; 471 free -> 470.
 	const EVENT_GOT_POKE_FLUTE ; MR FUJI has handed over the POKe FLUTE
 
-; Unused: next 470 events
+; Kanto hack: M6 step 9q (CELADON GYM).  ONE append.  Yellow's seven gym
+; trainers need seven flags; six came from renames in place (MICHELLE, TANYA
+; and JULIA keep theirs, the dead BEAUTY VERONICA and the two TWINS JO & ZOE
+; flags became BEAUTY LILY / BEAUTY POPPY / LASS HOLLY), and only the
+; COOLTRAINERF needed a new one.  470 free -> 469.
+	const EVENT_BEAT_COOLTRAINERF_IVY ; CELADON GYM trainer 7 (Yellow COOLTRAINER_F 1)
+
+; Unused: next 469 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

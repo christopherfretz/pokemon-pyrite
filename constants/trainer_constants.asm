@@ -196,7 +196,7 @@ DEF KRIS EQU __trainer_class__
 	const LINDA
 	const LAURA
 	const SHANNON
-	const MICHELLE
+	const MICHELLE ; Kanto hack: CELADON GYM (Yellow LASS 17); kept in place (M6 9q)
 	const DANA1
 	const WINNIE ; Kanto hack: ROUTE 8 (Yellow LASS 15); renamed in place (M5 8j), was the dead ELLEN
 	const ESTHER ; Kanto hack: ROUTE 8 (Yellow LASS 13); renamed in place (M5 8j), was the unused CONNIE2
@@ -224,6 +224,7 @@ DEF KRIS EQU __trainer_class__
 	const ODETTE
 	const MARISA
 	const TILDA ; Kanto hack: ROUTE 8 (Yellow LASS 16), appended (M5 8j)
+	const HOLLY ; Kanto hack: CELADON GYM (Yellow LASS 18), appended (M6 9q)
 
 	trainerclass JANINE ; 1a
 	const JANINE1
@@ -272,6 +273,7 @@ DEF KRIS EQU __trainer_class__
 	const REENA2
 	const REENA3
 	const CARA
+	const IVY ; Kanto hack: CELADON GYM (Yellow COOLTRAINER_F 1), appended (M6 9q)
 
 	trainerclass BEAUTY ; 1d
 	const VICTORIA
@@ -286,9 +288,9 @@ DEF KRIS EQU __trainer_class__
 	const RACHAEL ; unused
 	const ANGELICA ; unused
 	const KENDRA ; unused
-	const VERONICA ; unused
-	const JULIA
-	const THERESA ; unused
+	const LILY ; Kanto hack: CELADON GYM (Yellow BEAUTY 1); renamed in place (M6 9q), was the unused VERONICA
+	const JULIA ; Kanto hack: CELADON GYM (Yellow BEAUTY 2); kept in place (M6 9q)
+	const POPPY ; Kanto hack: CELADON GYM (Yellow BEAUTY 3); renamed in place (M6 9q), was the unused THERESA
 	const VALERIE
 	const OLIVIA
 

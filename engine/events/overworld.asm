@@ -982,7 +982,10 @@ StrengthFunction:
 	ret
 
 .TryStrength:
-	ld de, ENGINE_PLAINBADGE
+; Kanto hack (M6 9q): STRENGTH is unlocked by the RAINBOWBADGE, as ERIKA's
+; badge text says it is (vendor/pokeyellow/text/CeladonGym.asm
+; _CeladonGymRainbowBadgeInfoText).  Was Crystal's PLAINBADGE.
+	ld de, ENGINE_RAINBOWBADGE
 	call CheckBadge
 	jr c, .Failed
 	jr .UseStrength
@@ -1079,7 +1082,9 @@ TryStrengthOW:
 	call CheckPartyMove
 	jr c, .nope
 
-	ld de, ENGINE_PLAINBADGE
+; Kanto hack (M6 9q): RAINBOWBADGE, not Crystal's PLAINBADGE -- see
+; StrengthFunction.TryStrength above.
+	ld de, ENGINE_RAINBOWBADGE
 	call CheckEngineFlag
 	jr c, .nope
 

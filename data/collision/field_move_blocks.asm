@@ -6,6 +6,19 @@ CutTreeBlockPointers:
 	dbw TILESET_KANTO,        .kanto
 	dbw TILESET_PARK,         .park
 	dbw TILESET_FOREST,       .forest
+	; Kanto hack (M6 9q): Yellow's CELADON GYM planter maze seals ERIKA and
+	; three of her trainers into a 4x4 courtyard whose only three openings are
+	; cuttable gym plants (pokeyellow engine/overworld/cut.asm allows CUT in the
+	; GYM tileset on tile $50).  These are Yellow's CutTreeBlockSwaps entries
+	; $3C->$35, $3D->$36, $3F->$35, retranslated to our appended blocks.
+	dbw TILESET_TRAIN_STATION, .train_station
+	db -1 ; end
+
+.train_station:
+; facing block, replacement block, animation
+	db $48, $41, 0 ; gym plant
+	db $49, $42, 0 ; gym plant
+	db $4a, $41, 0 ; gym plant
 	db -1 ; end
 
 .johto:

@@ -1,48 +1,76 @@
 	object_const_def
 	const CELADONGYM_ERIKA
-	const CELADONGYM_LASS1
-	const CELADONGYM_LASS2
-	const CELADONGYM_BEAUTY
-	const CELADONGYM_TWIN1
-	const CELADONGYM_TWIN2
+	const CELADONGYM_COOLTRAINER_F1
+	const CELADONGYM_BEAUTY1
+	const CELADONGYM_COOLTRAINER_F2
+	const CELADONGYM_BEAUTY2
+	const CELADONGYM_COOLTRAINER_F3
+	const CELADONGYM_BEAUTY3
+	const CELADONGYM_COOLTRAINER_F4
 
 CeladonGym_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
+; Kanto hack (M6 9q, docs/M6-CELADON.md 3.2): Yellow's CELADON GYM has no gym
+; guide and no switches.  The gimmick is the planter maze: ERIKA and three of
+; her seven trainers sit inside a sealed 4x4 courtyard whose only three
+; openings are cuttable gym plants at (2,4), (7,5) and (5,7).  Yellow allows
+; CUT on tile $50 in the GYM tileset (vendor/pokeyellow/engine/overworld/cut.asm);
+; ours are COLL_CUT_TREE quadrants in blocks $48/$49/$4a of
+; TILESET_TRAIN_STATION, wired up in data/collision/field_move_blocks.asm.
 CeladonGymErikaScript:
 	faceplayer
 	opentext
 	checkflag ENGINE_RAINBOWBADGE
 	iftrue .FightDone
-	writetext ErikaBeforeBattleText
+	writetext ErikaIntroText
 	waitbutton
 	closetext
-	winlosstext ErikaBeatenText, 0
+	winlosstext ErikaWinLossText, 0
 	loadtrainer ERIKA, ERIKA1
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ERIKA
+	; Yellow's SetEventRange EVENT_BEAT_CELADON_GYM_TRAINER_0 ..
+	; EVENT_BEAT_CELADON_GYM_TRAINER_6 -- beating ERIKA retires all seven gym
+	; trainers, so a player who cut straight through to her is not walled in.
 	setevent EVENT_BEAT_LASS_MICHELLE
+	setevent EVENT_BEAT_BEAUTY_LILY
 	setevent EVENT_BEAT_PICNICKER_TANYA
 	setevent EVENT_BEAT_BEAUTY_JULIA
-	setevent EVENT_BEAT_TWINS_JO_AND_ZOE
+	setevent EVENT_BEAT_LASS_HOLLY
+	setevent EVENT_BEAT_BEAUTY_POPPY
+	setevent EVENT_BEAT_COOLTRAINERF_IVY
 	opentext
-	writetext PlayerReceivedRainbowBadgeText
+	writetext ReceivedRainbowBadgeText
 	playsound SFX_GET_BADGE
 	waitsfx
 	setflag ENGINE_RAINBOWBADGE
+	writetext ErikaRainbowBadgeText
+	waitbutton
 .FightDone:
-	checkevent EVENT_GOT_TM19_GIGA_DRAIN
-	iftrue .GotGigaDrain
-	writetext ErikaExplainTMText
+	checkevent EVENT_GOT_TM21_MEGA_DRAIN
+	iftrue .GotTM21
+	writetext ErikaTakeThisText
 	promptbutton
-	verbosegiveitem TM_GIGA_DRAIN
-	iffalse .GotGigaDrain
-	setevent EVENT_GOT_TM19_GIGA_DRAIN
-.GotGigaDrain:
-	writetext ErikaAfterBattleText
+	verbosegiveitem TM_MEGA_DRAIN
+	iffalse .NoRoomForTM
+	setevent EVENT_GOT_TM21_MEGA_DRAIN
+	writetext ErikaTM21ExplanationText
+	waitbutton
+	closetext
+	end
+
+.GotTM21:
+	writetext ErikaPostBattleAdviceText
+	waitbutton
+	closetext
+	end
+
+.NoRoomForTM:
+	writetext ErikaTM21NoRoomText
 	waitbutton
 	closetext
 	end
@@ -54,6 +82,17 @@ TrainerLassMichelle:
 	endifjustbattled
 	opentext
 	writetext LassMichelleAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerBeautyLily:
+	trainer BEAUTY, LILY, EVENT_BEAT_BEAUTY_LILY, BeautyLilySeenText, BeautyLilyBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext BeautyLilyAfterBattleText
 	waitbutton
 	closetext
 	end
@@ -80,24 +119,35 @@ TrainerBeautyJulia:
 	closetext
 	end
 
-TrainerTwinsJoAndZoe1:
-	trainer TWINS, JOANDZOE1, EVENT_BEAT_TWINS_JO_AND_ZOE, TwinsJoAndZoe1SeenText, TwinsJoAndZoe1BeatenText, 0, .Script
+TrainerLassHolly:
+	trainer LASS, HOLLY, EVENT_BEAT_LASS_HOLLY, LassHollySeenText, LassHollyBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext TwinsJoAndZoe1AfterBattleText
+	writetext LassHollyAfterBattleText
 	waitbutton
 	closetext
 	end
 
-TrainerTwinsJoAndZoe2:
-	trainer TWINS, JOANDZOE2, EVENT_BEAT_TWINS_JO_AND_ZOE, TwinsJoAndZoe2SeenText, TwinsJoAndZoe2BeatenText, 0, .Script
+TrainerBeautyPoppy:
+	trainer BEAUTY, POPPY, EVENT_BEAT_BEAUTY_POPPY, BeautyPoppySeenText, BeautyPoppyBeatenText, 0, .Script
 
 .Script:
 	endifjustbattled
 	opentext
-	writetext TwinsJoAndZoe2AfterBattleText
+	writetext BeautyPoppyAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerCooltrainerfIvy:
+	trainer COOLTRAINERF, IVY, EVENT_BEAT_COOLTRAINERF_IVY, CooltrainerfIvySeenText, CooltrainerfIvyBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext CooltrainerfIvyAfterBattleText
 	waitbutton
 	closetext
 	end
@@ -112,159 +162,232 @@ CeladonGymStatue:
 .Beaten:
 	jumpstd GymStatue2Script
 
-ErikaBeforeBattleText:
-	text "ERIKA: Hello…"
-	line "Lovely weather,"
+ErikaIntroText:
+	text "ERIKA: Hello."
+	line "Lovely weather"
+	cont "isn't it? It's so"
+	cont "pleasant."
 
-	para "isn't it?"
-	line "It's so pleasant…"
-
-	para "…I'm afraid I may"
-	line "doze off…"
+	para "…Oh dear…"
+	line "I must have dozed"
+	cont "off. Welcome."
 
 	para "My name is ERIKA."
-	line "I am the LEADER of"
-	cont "CELADON GYM."
+	line "I am the LEADER"
+	cont "of CELADON GYM."
 
-	para "…Oh? All the way"
-	line "from JOHTO, you"
-	cont "say? How nice…"
+	para "I teach the art of"
+	line "flower arranging."
+	cont "My #MON are of"
+	cont "the grass-type."
 
-	para "Oh. I'm sorry, I"
-	line "didn't realize"
-
-	para "that you wished to"
-	line "challenge me."
+	para "Oh, I'm sorry, I"
+	line "had no idea that"
+	cont "you wished to"
+	cont "challenge me."
 
 	para "Very well, but I"
 	line "shall not lose."
 	done
 
-ErikaBeatenText:
+ErikaWinLossText:
 	text "ERIKA: Oh!"
-	line "I concede defeat…"
+	line "I concede defeat."
 
 	para "You are remarkably"
-	line "strong…"
+	line "strong."
 
-	para "I shall give you"
-	line "RAINBOWBADGE…"
+	para "I must confer you"
+	line "the RAINBOWBADGE."
 	done
 
-PlayerReceivedRainbowBadgeText:
+ReceivedRainbowBadgeText:
 	text "<PLAYER> received"
 	line "RAINBOWBADGE."
 	done
 
-ErikaExplainTMText:
-	text "ERIKA: That was a"
-	line "delightful match."
+ErikaRainbowBadgeText:
+	text "ERIKA: The"
+	line "RAINBOWBADGE"
 
-	para "I felt inspired."
-	line "Please, I wish you"
-	cont "to have this TM."
+	para "will make #MON"
+	line "up to L50 obey."
 
-	para "It is GIGA DRAIN."
-
-	para "It is a wonderful"
-	line "move that drains"
-
-	para "half the damage it"
-	line "inflicts to heal"
-	cont "your #MON."
-
-	para "Please use it if"
-	line "it pleases you…"
+	para "It also allows"
+	line "#MON to use"
+	cont "STRENGTH in and"
+	cont "out of battle."
 	done
 
-ErikaAfterBattleText:
-	text "ERIKA: Losing"
-	line "leaves a bitter"
-	cont "aftertaste…"
+ErikaTakeThisText:
+	text "ERIKA: Please also"
+	line "take this with"
+	cont "you."
+	done
 
-	para "But knowing that"
-	line "there are strong"
+ErikaTM21ExplanationText:
+; Yellow says "TM21"; our TM union numbers MEGA DRAIN as TM67
+; (docs/TM-LEDGER.md, docs/M3B-TM-UNION.md) — same treatment as Misty's TM60
+; and Surge's TM86.
+	text "TM67 contains"
+	line "MEGA DRAIN."
 
-	para "trainers spurs me"
-	line "to do better…"
+	para "Half the damage"
+	line "it inflicts is"
+	cont "drained to heal"
+	cont "your #MON!"
+	done
+
+ErikaTM21NoRoomText:
+	text "ERIKA: You should"
+	line "make room for"
+	cont "this."
+	done
+
+ErikaPostBattleAdviceText:
+	text "ERIKA: You are"
+	line "cataloging"
+	cont "#MON? I must"
+	cont "say I'm impressed."
+
+	para "I would never"
+	line "collect #MON"
+	cont "if they were"
+	cont "unattractive."
 	done
 
 LassMichelleSeenText:
-	text "Do you think a"
-	line "girls-only GYM"
-	cont "is rare?"
+	text "Hey!"
+
+	para "You are not"
+	line "allowed in here!"
 	done
 
 LassMichelleBeatenText:
-	text "Oh, bleah!"
+	text "You're"
+	line "too rough!"
 	done
 
 LassMichelleAfterBattleText:
-	text "I just got care-"
-	line "less, that's all!"
+	text "Bleaah!"
+	line "I hope ERIKA"
+	cont "wipes you out!"
+	done
+
+BeautyLilySeenText:
+	text "I was getting"
+	line "bored."
+	done
+
+BeautyLilyBeatenText:
+	text "My"
+	line "makeup!"
+	done
+
+BeautyLilyAfterBattleText:
+	text "Grass-type #MON"
+	line "are tough against"
+	cont "the water-type!"
+
+	para "They also have an"
+	line "edge on rock and"
+	cont "ground #MON!"
 	done
 
 PicnickerTanyaSeenText:
-	text "Oh, a battle?"
-	line "That's kind of"
-	cont "scary, but OK!"
+	text "Aren't you the"
+	line "peeping Tom?"
 	done
 
 PicnickerTanyaBeatenText:
-	text "Oh, that's it?"
+	text "I'm"
+	line "in shock!"
 	done
 
 PicnickerTanyaAfterBattleText:
-	text "Oh, look at all"
-	line "your BADGES. No"
-
-	para "wonder I couldn't"
-	line "win!"
+	text "Oh, you weren't"
+	line "peeping? We get a"
+	cont "lot of gawkers!"
 	done
 
 BeautyJuliaSeenText:
-	text "Were you looking"
-	line "at these flowers"
-	cont "or at me?"
+	text "Look at my grass"
+	line "#MON!"
+
+	para "They're so easy"
+	line "to raise!"
 	done
 
 BeautyJuliaBeatenText:
-	text "How annoying!"
+	text "No!"
 	done
 
 BeautyJuliaAfterBattleText:
-	text "How do I go about"
-	line "becoming ladylike"
-	cont "like ERIKA?"
+	text "We only use grass-"
+	line "type #MON at"
+	cont "our GYM!"
+
+	para "We also use them"
+	line "for making flower"
+	cont "arrangements!"
 	done
 
-TwinsJoAndZoe1SeenText:
-	text "We'll show you"
-	line "#MON moves that"
-	cont "ERIKA taught us!"
+LassHollySeenText:
+	text "Don't bring any"
+	line "bugs or fire"
+	cont "#MON in here!"
 	done
 
-TwinsJoAndZoe1BeatenText:
-	text "Oh… We lost…"
+LassHollyBeatenText:
+	text "Oh!"
+	line "You!"
 	done
 
-TwinsJoAndZoe1AfterBattleText:
-	text "ERIKA will get you"
-	line "back for us!"
+LassHollyAfterBattleText:
+	text "Our LEADER, ERIKA,"
+	line "might be quiet,"
+	cont "but she's also"
+	cont "very skilled!"
 	done
 
-TwinsJoAndZoe2SeenText:
-	text "We're going to"
-	line "protect ERIKA!"
+BeautyPoppySeenText:
+	text "Pleased to meet"
+	line "you. My hobby is"
+	cont "#MON training."
 	done
 
-TwinsJoAndZoe2BeatenText:
-	text "We couldn't win…"
+BeautyPoppyBeatenText:
+	text "Oh!"
+	line "Splendid!"
 	done
 
-TwinsJoAndZoe2AfterBattleText:
-	text "ERIKA is much,"
-	line "much stronger!"
+BeautyPoppyAfterBattleText:
+	text "I have a blind"
+	line "date coming up."
+	cont "I have to learn"
+	cont "to be polite."
+	done
+
+CooltrainerfIvySeenText:
+	text "Welcome to"
+	line "CELADON GYM!"
+
+	para "You better not"
+	line "underestimate"
+	cont "girl power!"
+	done
+
+CooltrainerfIvyBeatenText:
+	text "Oh!"
+	line "Beaten!"
+	done
+
+CooltrainerfIvyAfterBattleText:
+	text "I didn't bring my"
+	line "best #MON!"
+
+	para "Wait 'til next"
+	line "time!"
 	done
 
 CeladonGym_MapEvents:
@@ -281,9 +404,19 @@ CeladonGym_MapEvents:
 	bg_event  6, 15, BGEVENT_READ, CeladonGymStatue
 
 	def_object_events
-	object_event  5,  3, SPRITE_ERIKA, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGymErikaScript, -1
-	object_event  7,  8, SPRITE_LASS, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerLassMichelle, -1
-	object_event  2,  8, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 2, TrainerPicnickerTanya, -1
-	object_event  3,  5, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerBeautyJulia, -1
-	object_event  4, 10, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerTwinsJoAndZoe1, -1
-	object_event  5, 10, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerTwinsJoAndZoe2, -1
+; Kanto hack (M6 9q): Yellow's eight objects, at Yellow's coordinates and
+; facings (vendor/pokeyellow/data/maps/objects/CeladonGym.asm).  Sight ranges
+; are Yellow's own per-trainer view_range values from CeladonGymTrainerHeaders
+; (2, 2, 4, 4, 2, 2, 3) -- docs/M6-CELADON.md 5.7 claims Gen 1 has no
+; sight-range field and that gym trainers should get 0; the `trainer` macro
+; carries one per header, so the survey is wrong there (see "## 9q findings").
+; Yellow deliberately mismatches sprite and class -- SPRITE_COOLTRAINER_F NPCs
+; battle as LASS / PICNICKER (Yellow's JR.TRAINER-f) / COOLTRAINERF.  Kept.
+	object_event  4,  3, SPRITE_ERIKA, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGymErikaScript, -1
+	object_event  2, 11, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerLassMichelle, -1
+	object_event  7, 10, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerBeautyLily, -1
+	object_event  9,  5, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerPicnickerTanya, -1
+	object_event  1,  5, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 4, TrainerBeautyJulia, -1
+	object_event  6,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 2, TrainerLassHolly, -1
+	object_event  3,  3, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 2, TrainerBeautyPoppy, -1
+	object_event  5,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainerfIvy, -1

@@ -345,11 +345,23 @@ ScientistGroup:
 
 ErikaGroup:
 	; ERIKA (1)
+	; Kanto hack: Yellow's ERIKA (docs/M6-CELADON.md 5.1, M6 9q).  ErikaData is
+	; `db $FF, 30, TANGELA, 32, WEEPINBELL, 32, GLOOM, 0` -- no explicit moves,
+	; so Gen 1's WriteMonMoves (vendor/pokeyellow/engine/pokemon/evos_moves.asm)
+	; seeds each mon with its base_stats level-1 four and then appends every
+	; learnset move at or below its level, shifting slot 1 out when full:
+	;   TANGELA    L30 base CONSTRICT + L24 BIND, L27 ABSORB, L29 VINE_WHIP
+	;   WEEPINBELL L32 base VINE_WHIP/GROWTH/WRAP + L15 POISONPOWDER,
+	;              L18 SLEEP_POWDER, L23 STUN_SPORE, L29 ACID (WRAP is already
+	;              known at L13, and the first three base moves shift out)
+	;   GLOOM      L32 base ABSORB/POISONPOWDER/STUN_SPORE + L19 SLEEP_POWDER,
+	;              L28 ACID (ABSORB shifts out)
+	; Spelled out with TRAINERTYPE_MOVES for the same reason as BROCK/MISTY/
+	; LT.SURGE above: Gen 2 would otherwise use Gen 2's learnsets.
 	db "ERIKA@", TRAINERTYPE_MOVES
-	db 42, TANGELA,    VINE_WHIP, BIND, GIGA_DRAIN, SLEEP_POWDER
-	db 41, JUMPLUFF,   MEGA_DRAIN, LEECH_SEED, COTTON_SPORE, GIGA_DRAIN
-	db 46, VICTREEBEL, SUNNY_DAY, SYNTHESIS, ACID, RAZOR_LEAF
-	db 46, BELLOSSOM,  SUNNY_DAY, SYNTHESIS, PETAL_DANCE, SOLARBEAM
+	db 30, TANGELA,    CONSTRICT, BIND, ABSORB, VINE_WHIP
+	db 32, WEEPINBELL, POISONPOWDER, SLEEP_POWDER, STUN_SPORE, ACID
+	db 32, GLOOM,      POISONPOWDER, STUN_SPORE, SLEEP_POWDER, ACID
 	db -1 ; end
 
 YoungsterGroup:
@@ -809,11 +821,11 @@ LassGroup:
 	db 32, PARASECT
 	db -1 ; end
 
-	; LASS (9)
+	; LASS (9) - Kanto hack: CELADON GYM, Yellow's LASS 17 (M6 9q).  Kept in
+	; place; MICHELLE was already Crystal's Celadon Gym lass.
 	db "MICHELLE@", TRAINERTYPE_NORMAL
-	db 32, SKIPLOOM
-	db 33, HOPPIP
-	db 34, JUMPLUFF
+	db 23, BELLSPROUT
+	db 23, WEEPINBELL
 	db -1 ; end
 
 	; LASS (10)
@@ -953,6 +965,14 @@ LassGroup:
 	db "TILDA@", TRAINERTYPE_NORMAL
 	db 22, CLEFAIRY
 	db 22, CLEFAIRY
+	db -1 ; end
+
+	; LASS (32) - Kanto hack: CELADON GYM, Yellow's LASS 18 (M6 9q).  Appended
+	; -- MICHELLE (9) was the group's only free slot and the gym needs two
+	; lasses; LASS 10/14-17 are Crystal's DANA phone-rematch rows.
+	db "HOLLY@", TRAINERTYPE_NORMAL
+	db 23, ODDISH
+	db 23, GLOOM
 	db -1 ; end
 
 JanineGroup:
@@ -1226,6 +1246,14 @@ CooltrainerFGroup:
 	db 35, SEADRA,     SWIFT, LEER, WATERFALL, TWISTER
 	db -1 ; end
 
+	; COOLTRAINERF (22) - Kanto hack: CELADON GYM, Yellow's COOLTRAINER_F 1
+	; (M6 9q).  Appended -- all 21 Crystal rows are live.
+	db "IVY@", TRAINERTYPE_NORMAL
+	db 24, WEEPINBELL
+	db 24, GLOOM
+	db 24, IVYSAUR
+	db -1 ; end
+
 BeautyGroup:
 	; BEAUTY (1)
 	db "VICTORIA@", TRAINERTYPE_NORMAL
@@ -1293,21 +1321,28 @@ BeautyGroup:
 	db 15, SENTRET
 	db -1 ; end
 
-	; BEAUTY (13)
-	db "VERONICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; BEAUTY (13) - Kanto hack: CELADON GYM, Yellow's BEAUTY 1 (M6 9q).
+	; Renamed in place; VERONICA was one of Crystal's dead `db 15, SENTRET`
+	; placeholder rows.
+	db "LILY@", TRAINERTYPE_NORMAL
+	db 21, ODDISH
+	db 21, BELLSPROUT
+	db 21, ODDISH
+	db 21, BELLSPROUT
 	db -1 ; end
 
-	; BEAUTY (14)
+	; BEAUTY (14) - Kanto hack: CELADON GYM, Yellow's BEAUTY 2 (M6 9q).  Kept
+	; in place; JULIA was already Crystal's Celadon Gym beauty.
 	db "JULIA@", TRAINERTYPE_NORMAL
-	db 32, PARAS
-	db 32, EXEGGCUTE
-	db 35, PARASECT
+	db 24, BELLSPROUT
+	db 24, BELLSPROUT
 	db -1 ; end
 
-	; BEAUTY (15)
-	db "THERESA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; BEAUTY (15) - Kanto hack: CELADON GYM, Yellow's BEAUTY 3 (M6 9q).
+	; Renamed in place; THERESA was another dead `db 15, SENTRET` row (9g had
+	; already taken her event flag).
+	db "POPPY@", TRAINERTYPE_NORMAL
+	db 26, EXEGGCUTE
 	db -1 ; end
 
 	; BEAUTY (16)
@@ -3378,9 +3413,13 @@ PicnickerGroup:
 	db 32, PONYTA
 	db -1 ; end
 
-	; PICNICKER (19)
+	; PICNICKER (19) - Kanto hack: CELADON GYM, Yellow's JR_TRAINER_F 11
+	; (M6 9q).  Kept in place; TANYA was already Crystal's Celadon Gym
+	; picnicker, and PICNICKER is this hack's standing stand-in for Yellow's
+	; JR.TRAINER-f (7d precedent, docs/M5-LAVENDER.md 5.1).
 	db "TANYA@", TRAINERTYPE_NORMAL
-	db 37, EXEGGUTOR
+	db 24, BULBASAUR
+	db 24, IVYSAUR
 	db -1 ; end
 
 	; PICNICKER (20)
@@ -4016,6 +4055,11 @@ TwinsGroup:
 	db 10, SPINARAK
 	db -1 ; end
 
+	; TWINS (5) and (6) - Kanto hack (M6 9q): dead.  JO & ZOE were Crystal's
+	; Celadon Gym twins and Yellow's CELADON GYM has none, so nothing loads
+	; these two rows any more.  Left in place because TWINS (7)-(10) are live
+	; Johto rows and deleting these would renumber them; their two event flags
+	; were re-used for the gym's BEAUTY POPPY and LASS HOLLY.
 	; TWINS (5)
 	db "JO & ZOE@", TRAINERTYPE_NORMAL
 	db 35, VICTREEBEL

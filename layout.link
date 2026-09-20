@@ -53,7 +53,17 @@ ROMX $07
 ROMX $08
 	"Clock Reset"
 	"Tileset Data 3"
-	"Egg Moves"
+	; Kanto hack (M6 9q): "Egg Moves" used to sit here.  Celadon Gym's planter
+	; maze appends 11 metatiles ($40-$4a, 176 B of metatile + 44 B of collision)
+	; to TILESET_TRAIN_STATION in "Tileset Data 3", which overflowed bank $08 by
+	; 177 bytes.  Egg-move data is read exclusively through GetFarWord/GetFarByte
+	; with `BANK(EggMovePointers)` / `BANK("Egg Moves")` (engine/pokemon/breeding.asm),
+	; so the section is position-independent.  Floating it builds fine, but it
+	; is PINNED to bank $1c below (the emptiest bank) so the float pool -- and
+	; with it where the floated "Tileset Data 5".."Tileset Data 13" land -- stays
+	; exactly what it was before 9q.  Bank $01 reads 131 free bytes either way;
+	; that figure is pre-9q (the "~140" in HANDOFF/9p findings is stale, spent by
+	; the G1/P2 commits), and nothing 9q touches feeds bank $01.
 ROMX $09
 	"bank9"
 ROMX $0a
@@ -100,6 +110,7 @@ ROMX $1b
 	"Map Scripts 6"
 ROMX $1c
 	"Map Scripts 7"
+	"Egg Moves" ; Kanto hack (M6 9q): moved out of bank $08, see there
 ROMX $1d
 	"Map Scripts 8"
 ROMX $1e

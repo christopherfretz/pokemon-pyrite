@@ -15,7 +15,10 @@ rept 16
 	db $ff
 endr
 
-	tilepal 1, WATER, WATER, WATER, WATER, GRAY, GRAY, GRAY, GRAY
+	; Kanto hack (M6 9q): $84-$87 are Yellow's cuttable gym plant, ported from
+	; pokeyellow gfx/tilesets/gym.png tiles $40/$41/$50/$51.  GREEN, like the
+	; bushes at $4c/$4d/$5c/$5d that it stands among.
+	tilepal 1, WATER, WATER, WATER, WATER, GREEN, GREEN, GREEN, GREEN
 	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, RED, GRAY
 	tilepal 1, GRAY, GRAY, GREEN, GREEN, GRAY, GRAY, GRAY, GRAY
 	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, RED, GRAY

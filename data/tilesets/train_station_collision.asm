@@ -62,3 +62,15 @@
 	tilecoll WALL, WALL, WALL, WALL ; 3d
 	tilecoll WALL, WALL, WALL, WALL ; 3e
 	tilecoll WALL, WALL, WALL, WALL ; 3f
+; M6 9q: Yellow's CELADON GYM planter quadrants (scripts/celadon_blk.py)
+	tilecoll UP_WALL, UP_WALL, FLOOR, FLOOR ; 40  yellow $01 north wall
+	tilecoll FLOOR, FLOOR, WALL, FLOOR ; 41  yellow $35 bush BL
+	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 42  yellow $36 bush TR
+	tilecoll WALL, WALL, WALL, FLOOR ; 43  yellow $38
+	tilecoll WALL, WALL, FLOOR, WALL ; 44  yellow $39
+	tilecoll WALL, WALL, FLOOR, FLOOR ; 45  yellow $3a
+	tilecoll WALL, FLOOR, WALL, WALL ; 46  yellow $3b
+	tilecoll FLOOR, WALL, WALL, WALL ; 47  yellow $3e
+	tilecoll CUT_TREE, FLOOR, WALL, FLOOR ; 48  yellow $3c, cuts to $41
+	tilecoll FLOOR, WALL, FLOOR, CUT_TREE ; 49  yellow $3d, cuts to $42
+	tilecoll FLOOR, FLOOR, WALL, CUT_TREE ; 4a  yellow $3f, cuts to $41
