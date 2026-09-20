@@ -4242,6 +4242,14 @@ JessieJamesGroup:
 	db 14, KOFFING
 	db -1 ; end
 
+	; JESSIE_JAMES (2): POKEMON TOWER 7F (Yellow's OPP_ROCKET $2c, RocketData
+	; row 44: db 27, MEOWTH, ARBOK, WEEZING).
+	db "@", TRAINERTYPE_NORMAL
+	db 27, MEOWTH
+	db 27, ARBOK
+	db 27, WEEZING
+	db -1 ; end
+
 MysticalmanGroup:
 	; MYSTICALMAN (1)
 	db "EUSINE@", TRAINERTYPE_MOVES

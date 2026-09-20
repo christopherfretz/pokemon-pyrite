@@ -1772,7 +1772,22 @@
 	const EVENT_BEAT_POKEMON_TOWER_RIVAL ; 9e: Yellow's fourth rival battle, POKEMON TOWER 2F, is over
 	const EVENT_POKEMON_TOWER_2F_RIVAL_HIDDEN ; the 2F rival is off the map (derived from the flag above by PokemonTower2FObjectsCallback)
 
-; Unused: next 473 events
+; Kanto hack: M6 step 9j (POKEMON TOWER 7F, JESSIE & JAMES).  TWO appends, and
+; 9k adds none.
+;
+; Yellow's EVENT_POKEMONTOWER_7_JESSIE_JAMES_ON_LEFT is deliberately NOT ported,
+; for the reason given for the 2F rival above: it only exists so that Gen 1's
+; split script states can read back which trigger tile was stepped on, and GSC
+; gives each coord_event its own linear script.  Yellow's EVENT_RESCUED_MR_FUJI_2
+; has no analogue either (it only drove Gen 1's second ShowObject; our
+; MrFujisHouse derives MR FUJI's visibility from EVENT_RESCUED_MR_FUJI, which
+; already exists, and 9k only sets it).  MR FUJI's 7F object row hides on
+; EVENT_RESCUED_MR_FUJI itself -- there the hide polarity already matches the
+; story flag, so it needs no dedicated row.  473 free -> 471.
+	const EVENT_BEAT_POKEMON_TOWER_JESSIE_JAMES ; 9j: Yellow's third JESSIE & JAMES battle, POKEMON TOWER 7F, is over
+	const EVENT_POKEMON_TOWER_7F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map (set unconditionally by PokemonTower7FObjectsCallback)
+
+; Unused: next 471 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

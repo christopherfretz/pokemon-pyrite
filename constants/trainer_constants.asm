@@ -874,6 +874,7 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 ; Hideout B4F, Pokemon Tower 7F and Silph Co. 11F in later milestones.
 	trainerclass JESSIE_JAMES ; 44
 	const JESSIE_JAMES_1 ; Mt. Moon B2F
+	const JESSIE_JAMES_2 ; Pokemon Tower 7F
 
 	trainerclass MYSTICALMAN ; 45
 	const EUSINE

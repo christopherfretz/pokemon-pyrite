@@ -95,10 +95,13 @@ MrFujisNidorino:
 
 ; Yellow's MR FUJI hands over the POKE FLUTE here, the first time the player
 ; visits after the #MON TOWER rescue, and afterwards asks whether it helped.
-; M5 ships only the afterwards line: the give needs EVENT_GOT_POKE_FLUTE, which
-; is M6's flag append (docs/M5-LAVENDER.md 3.5).  Until M6 sets
-; EVENT_RESCUED_MR_FUJI he is hidden, so this script is unreachable in normal
-; play; M6 replaces it with Yellow's full give.
+; M5 ships only the afterwards line (Yellow's .HasMyFluteHelpedYouText): the
+; give needs EVENT_GOT_POKE_FLUTE, which is M6 step 9l's flag append
+; (docs/M5-LAVENDER.md 3.5, docs/M6-TOWER.md 3.9).
+;
+; ⚠ M6 9k now sets EVENT_RESCUED_MR_FUJI, so MR FUJI is home and this script IS
+; reachable: until 9l lands he asks whether a FLUTE he never gave has helped.
+; 9l replaces the body with Yellow's branch and nothing here blocks it.
 MrFujisHouseMrFujiScript:
 	jumptextfaceplayer MrFujisHouseMrFujiHasMyFluteHelpedYouText
 
