@@ -456,7 +456,9 @@ ENDM
 	map_const ROCKET_HIDEOUT_B2F,                          15, 14 ; 29
 	map_const ROCKET_HIDEOUT_B3F,                          15, 14 ; 30
 	map_const ROCKET_HIDEOUT_B4F,                          15, 12 ; 31
-	map_const ROCKET_HIDEOUT_ELEVATOR,                      3,  4 ; 32
+; Kanto hack (M6 9w): Yellow's lift car is 3x4 on its LOBBY tileset, which we
+; do not have; ours is Crystal's own 2x2 DeptStoreElevator on TILESET_MART.
+	map_const ROCKET_HIDEOUT_ELEVATOR,                      2,  2 ; 32
 	map_const CELADON_CHIEF_HOUSE,                          4,  4 ; 33
 	map_const CELADON_HOTEL,                                7,  4 ; 34
 	map_const ROUTE_16_GATE_2F,                             4,  4 ; 35
