@@ -207,6 +207,178 @@ KantoGrassWildMons:
 	db 22, ONIX
 	end_grass_wildmons
 
+; Kanto hack (docs/M6-TOWER.md, 9b): Yellow's POKéMON TOWER tables
+; (vendor/pokeyellow/data/wild/maps/PokemonTower{3..7}F.asm).  Gen 1 has no
+; time of day, so morn = day = nite.  Yellow's encounter rates convert exactly:
+; 10/256 == `4 percent` (3F, 4F), 15/256 == `6 percent` (5F, 6F), 20/256 ==
+; `8 percent` (7F).  1F and 2F are rate 0 in Yellow and get NO table at all --
+; a map absent from this list never rolls.
+;
+; These five floors are the only source of CUBONE in the game, exactly as in
+; Yellow; hack/data/wild/kanto_grass.asm's ROCK_TUNNEL_1F comment (M5 8f)
+; promised it here.
+;
+; The 10 -> 7 fold drops three of Yellow's duplicated middle GASTLY slots on
+; every floor and keeps Yellow's order otherwise.  Gen 1 slot weights /256 are
+; 51,51,39,25,25,25,13,13,10,4 (19.9/19.9/15.2/9.8/9.8/9.8/5.1/5.1/3.9/1.6 %)
+; against GSC's 30/30/20/10/5/4/1.  Species shares land within half a point of
+; Yellow's on every floor (3F/4F GASTLY 95 / HAUNTER 5 vs 94.6/5.5; 5F-7F
+; GASTLY 90 / HAUNTER 5 / CUBONE 5 vs 89.5/5.5/5.1), and both level extremes
+; survive on all five.
+;
+; They live here, in the dungeon cluster at the head of the file rather than in
+; LAVENDER map-id order, because the engine's lookup is a linear scan: order
+; carries no meaning, and the Tower belongs beside Mt. Moon and Rock Tunnel.
+;
+; 3F and 4F share one table in Yellow, byte for byte.  Dropped: slots 3 (22
+; GASTLY), 5 (24 GASTLY) and 6 (19 GASTLY).
+	def_grass_wildmons POKEMON_TOWER_3F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	; day
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	; nite
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	end_grass_wildmons
+
+; 4F is Yellow's 3F table repeated verbatim.
+	def_grass_wildmons POKEMON_TOWER_4F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	; day
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	; nite
+	db 20, GASTLY
+	db 21, GASTLY
+	db 23, GASTLY
+	db 25, GASTLY
+	db 18, GASTLY
+	db 20, HAUNTER
+	db 25, HAUNTER
+	end_grass_wildmons
+
+; 5F: Yellow's rate rises to 15/256 and slot 7 becomes a CUBONE.  Dropped:
+; slots 3 (24 GASTLY), 4 (25 GASTLY) and 5 (26 GASTLY); Yellow's slot 8
+; (27 GASTLY) is promoted to keep the L27 ceiling.
+	def_grass_wildmons POKEMON_TOWER_5F
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 20, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	; day
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 20, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	; nite
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 20, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	end_grass_wildmons
+
+; 6F: identical to 5F except Yellow's CUBONE is L22, not L20.
+	def_grass_wildmons POKEMON_TOWER_6F
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 22, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	; day
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 22, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	; nite
+	db 22, GASTLY
+	db 23, GASTLY
+	db 27, GASTLY
+	db 21, GASTLY
+	db 22, CUBONE
+	db 22, HAUNTER
+	db 27, HAUNTER
+	end_grass_wildmons
+
+; 7F: Yellow's rate is 20/256 and every level is four higher than 5F's.
+; Dropped: slots 3 (26 GASTLY), 4 (27 GASTLY) and 5 (28 GASTLY).
+	def_grass_wildmons POKEMON_TOWER_7F
+	db 8 percent, 8 percent, 8 percent ; encounter rates: morn/day/nite
+	; morn
+	db 24, GASTLY
+	db 25, GASTLY
+	db 29, GASTLY
+	db 23, GASTLY
+	db 24, CUBONE
+	db 24, HAUNTER
+	db 29, HAUNTER
+	; day
+	db 24, GASTLY
+	db 25, GASTLY
+	db 29, GASTLY
+	db 23, GASTLY
+	db 24, CUBONE
+	db 24, HAUNTER
+	db 29, HAUNTER
+	; nite
+	db 24, GASTLY
+	db 25, GASTLY
+	db 29, GASTLY
+	db 23, GASTLY
+	db 24, CUBONE
+	db 24, HAUNTER
+	db 29, HAUNTER
+	end_grass_wildmons
+
 	def_grass_wildmons VICTORY_ROAD
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
