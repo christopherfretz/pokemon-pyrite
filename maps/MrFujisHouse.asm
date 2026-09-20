@@ -93,17 +93,46 @@ MrFujisNidorino:
 	closetext
 	end
 
-; Yellow's MR FUJI hands over the POKE FLUTE here, the first time the player
-; visits after the #MON TOWER rescue, and afterwards asks whether it helped.
-; M5 ships only the afterwards line (Yellow's .HasMyFluteHelpedYouText): the
-; give needs EVENT_GOT_POKE_FLUTE, which is M6 step 9l's flag append
-; (docs/M5-LAVENDER.md 3.5, docs/M6-TOWER.md 3.9).
+; Yellow's MR FUJI hands over the POKe FLUTE here, the first time the player
+; visits after the #MON TOWER rescue, and afterwards asks whether it helped
+; (vendor/pokeyellow/scripts/MrFujisHouse.asm:70-109, M6 9l).  Yellow's branch
+; is CheckEvent EVENT_GOT_POKE_FLUTE -> .HasMyFluteHelpedYouText, else the
+; quest speech, GiveItem POKE_FLUTE, the received text + sound_get_key_item,
+; the explanation paragraph and SetEvent EVENT_GOT_POKE_FLUTE, with
+; .PokeFluteNoRoomText on a full bag.
 ;
-; ⚠ M6 9k now sets EVENT_RESCUED_MR_FUJI, so MR FUJI is home and this script IS
-; reachable: until 9l lands he asks whether a FLUTE he never gave has helped.
-; 9l replaces the body with Yellow's branch and nothing here blocks it.
+; GSC's verbosegiveitem is Yellow's GiveItem + .ReceivedPokeFluteText +
+; sound_get_key_item in one command (it prints "<PLAYER> received # FLUTE!"
+; with the key-item fanfare), so only the explanation paragraph and the
+; no-room line stay as writetexts here -- the BillsHouse S.S.TICKET idiom.
+; The flute lands in the KEY ITEMS pocket (26 slots), so .NoRoom is all but
+; unreachable; it is ported anyway because Yellow has it.
 MrFujisHouseMrFujiScript:
-	jumptextfaceplayer MrFujisHouseMrFujiHasMyFluteHelpedYouText
+	faceplayer
+	opentext
+	checkevent EVENT_GOT_POKE_FLUTE
+	iftrue .GotFlute
+	writetext MrFujisHouseMrFujiIThinkThisMayHelpYourQuestText
+	promptbutton
+	verbosegiveitem POKE_FLUTE
+	iffalse .NoRoom
+	writetext MrFujisHouseMrFujiPokeFluteExplanationText
+	waitbutton
+	setevent EVENT_GOT_POKE_FLUTE
+	closetext
+	end
+
+.GotFlute:
+	writetext MrFujisHouseMrFujiHasMyFluteHelpedYouText
+	waitbutton
+	closetext
+	end
+
+.NoRoom:
+	writetext MrFujisHouseMrFujiPokeFluteNoRoomText
+	waitbutton
+	closetext
+	end
 
 MrFujisHousePokedexScript:
 	jumptext MrFujisHousePokedexText
@@ -143,6 +172,36 @@ MrFujisPsyduckText:
 
 MrFujisNidorinoText:
 	text "NIDORINO: Gaoo!"
+	done
+
+MrFujisHouseMrFujiIThinkThisMayHelpYourQuestText:
+	text "MR.FUJI: <PLAYER>."
+
+	para "Your #DEX quest"
+	line "may fail without"
+	cont "love for your"
+	cont "#MON."
+
+	para "I think this may"
+	line "help your quest."
+	prompt
+
+; Yellow opens this paragraph with text_start, because it continues the box
+; _MrFujisHouseMrFujiReceivedPokeFluteText opened; verbosegiveitem closes its
+; own box, so ours starts a new one with the same words.
+MrFujisHouseMrFujiPokeFluteExplanationText:
+	text "Upon hearing #"
+	line "FLUTE, sleeping"
+	cont "#MON will"
+	cont "spring awake."
+
+	para "It works on all"
+	line "sleeping #MON."
+	done
+
+MrFujisHouseMrFujiPokeFluteNoRoomText:
+	text "You must make"
+	line "room for this!"
 	done
 
 MrFujisHouseMrFujiHasMyFluteHelpedYouText:

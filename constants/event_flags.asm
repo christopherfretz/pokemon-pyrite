@@ -1787,7 +1787,16 @@
 	const EVENT_BEAT_POKEMON_TOWER_JESSIE_JAMES ; 9j: Yellow's third JESSIE & JAMES battle, POKEMON TOWER 7F, is over
 	const EVENT_POKEMON_TOWER_7F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map (set unconditionally by PokemonTower7FObjectsCallback)
 
-; Unused: next 471 events
+; Kanto hack: M6 step 9l (MR FUJI'S HOUSE, the POKe FLUTE give).  ONE append
+; (docs/M6-TOWER.md D19), Yellow's own EVENT_GOT_POKE_FLUTE
+; (vendor/pokeyellow/constants/event_constants.asm).  It is the give's
+; once-only guard in MrFujisHouseMrFujiScript and nothing else reads it:
+; ROUTE 12's wake branch tests the item with `checkitem POKE_FLUTE`, not this
+; flag (D20), exactly as Yellow's ItemUsePokeFlute tested the bag.
+; 471 free -> 470.
+	const EVENT_GOT_POKE_FLUTE ; MR FUJI has handed over the POKe FLUTE
+
+; Unused: next 470 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

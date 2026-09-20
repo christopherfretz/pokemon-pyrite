@@ -123,7 +123,21 @@ ItemAttributes:
 ; ITEMFINDER
 	item_attribute 0, HELD_NONE, 0, CANT_TOSS, KEY_ITEM, ITEMMENU_CLOSE, ITEMMENU_NOUSE
 ; POKE_FLUTE
-	item_attribute $9999, HELD_NONE, 0, NO_LIMITS, ITEM, ITEMMENU_NOUSE, ITEMMENU_NOUSE
+; Kanto hack (M6 9l): item 38 shipped as Crystal's TERU-SAMA dummy (junk price,
+; ITEM pocket, no use anywhere).  Yellow's POKe FLUTE is a KEY ITEM that cannot
+; be tossed, and it is usable BOTH in the field and in battle
+; (vendor/pokeyellow/engine/items/item_effects.asm ItemUsePokeFlute).  Our
+; PokeFluteEffect still has Yellow's in-battle half (it wakes both parties), so
+; the battle menu is ITEMMENU_CLOSE.  The FIELD menu is ITEMMENU_NOUSE on
+; purpose (docs/M6-TOWER.md D26): Crystal's overworld flute branch is dummied
+; out, and the only two things Yellow's overworld half did were the two SNORLAX
+; triggers -- which D20 moved onto the ROUTE 12 object script -- and the Pewter
+; Pokecenter Pikachu emotion, deferred to the Pikachu milestone.  Left as
+; ITEMMENU_CLOSE the dummied branch would fall through into the in-battle code
+; and wake the party in the overworld, which Yellow never does; ITEMMENU_NOUSE
+; gives OAK's "there's a time and place for everything" line instead.
+; CANT_SELECT for the same reason: there is nothing to register it for.
+	item_attribute 0, HELD_NONE, 0, CANT_SELECT | CANT_TOSS, KEY_ITEM, ITEMMENU_NOUSE, ITEMMENU_CLOSE
 ; EXP_SHARE
 	item_attribute 3000, HELD_NONE, 0, CANT_SELECT, ITEM, ITEMMENU_NOUSE, ITEMMENU_NOUSE
 ; OLD_ROD

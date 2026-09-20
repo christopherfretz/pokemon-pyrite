@@ -55,7 +55,7 @@ ItemNames::
 	li "X SPECIAL"
 	li "COIN CASE"
 	li "ITEMFINDER"
-	li "TERU-SAMA"
+	li "# FLUTE" ; M6 9l: item 38 was Crystal's TERU-SAMA dummy; the id is already POKE_FLUTE
 	li "EXP.SHARE"
 	li "OLD ROD"
 	li "GOOD ROD"

@@ -56,7 +56,7 @@ ItemDescriptions:
 	dw XSpecialDesc
 	dw CoinCaseDesc
 	dw ItemfinderDesc
-	dw TeruSama5Desc
+	dw PokeFluteDesc ; M6 9l (was TeruSama5Desc)
 	dw ExpShareDesc
 	dw OldRodDesc
 	dw GoodRodDesc
@@ -481,8 +481,13 @@ ItemfinderDesc:
 	db   "Checks for unseen"
 	next "items in the area.@"
 
-TeruSama5Desc:
-	db   "?@"
+; M6 9l: Gen 1 has no item descriptions, so this is written Crystal-style from
+; Yellow's own explanation paragraph (vendor/pokeyellow/text/MrFujisHouse.asm,
+; _MrFujisHouseMrFujiPokeFluteExplanationText: "Upon hearing # FLUTE, sleeping
+; #MON will spring awake.  It works on all sleeping #MON.")
+PokeFluteDesc:
+	db   "Wakes any sleeping"
+	next "#MON.@"
 
 ExpShareDesc:
 	db   "Shares battle EXP."
