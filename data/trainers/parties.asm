@@ -3827,6 +3827,29 @@ MediumGroup:
 	db 22, GASTLY
 	db -1 ; end
 
+; Kanto hack (M6 9g): #MON TOWER 5F's four channelers -- Yellow ChannelerData
+; rows 14, 16, 17 and 18 (vendor/pokeyellow/data/trainers/parties.asm:734,
+; 738, 739, 740).  Names are invented (D13); 9h appends 6F's three after these.
+	; MEDIUM (11)
+	db "OLIVE@", TRAINERTYPE_NORMAL
+	db 23, HAUNTER
+	db -1 ; end
+
+	; MEDIUM (12)
+	db "CORA@", TRAINERTYPE_NORMAL
+	db 22, GASTLY
+	db -1 ; end
+
+	; MEDIUM (13)
+	db "RUBY@", TRAINERTYPE_NORMAL
+	db 24, GASTLY
+	db -1 ; end
+
+	; MEDIUM (14)
+	db "MYRTLE@", TRAINERTYPE_NORMAL
+	db 22, HAUNTER
+	db -1 ; end
+
 BoarderGroup:
 	; BOARDER (1)
 	db "RONALD@", TRAINERTYPE_NORMAL

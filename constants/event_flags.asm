@@ -766,7 +766,7 @@
 	const EVENT_BEAT_BEAUTY_KENDRA
 	const EVENT_BEAT_BEAUTY_VERONICA
 	const EVENT_BEAT_BEAUTY_JULIA
-	const EVENT_BEAT_BEAUTY_THERESA
+	const EVENT_POKEMON_TOWER_5F_IN_PURIFIED_ZONE ; Kanto hack (M6 9g): was the dead EVENT_BEAT_BEAUTY_THERESA.  D23's heal latch -- set by #MON TOWER 5F's purified-zone coord_events, cleared by its MAPCALLBACK_NEWMAP, so the free heal happens once per visit to the floor
 	const EVENT_BEAT_BEAUTY_VALERIE
 ; Johto Gym Leaders
 	const EVENT_BEAT_FALKNER
@@ -1016,18 +1016,25 @@
 ; the dead EVENT_BEAT_SWIMMERM_HAL / _PATON / _DARYL (no map references); the
 ; MEDIUM block above is full of live Johto rows, and moving a const would
 ; renumber every flag after it.  9g/9h take the next dead SWIMMERM rows.
+;
+; M6 9g took the last five of them -- _WALTER, _TONY, _RICK, _JAMES and _LEWIS --
+; for #MON TOWER 5F's four channelers and its NUGGET ball.  There are NO dead
+; SwimmerM rows left.  66 dead rows remain in this file (9g re-ran the scan);
+; 9h should take plain ones such as EVENT_BEAT_CAMPER_THOMAS / _LEROY / _DAVID /
+; _JOHN or the spare BEAUTY rows -- NOT the `*2`/`*3` rows, which belong to
+; Crystal's phone-rematch system and are only dead by inspection.
 	const EVENT_BEAT_MEDIUM_AGNES
 	const EVENT_BEAT_MEDIUM_EDITH
 	const EVENT_BEAT_MEDIUM_HAZEL
-	const EVENT_BEAT_SWIMMERM_WALTER
-	const EVENT_BEAT_SWIMMERM_TONY
+	const EVENT_BEAT_MEDIUM_OLIVE ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_WALTER; #MON TOWER 5F channeler 1
+	const EVENT_BEAT_MEDIUM_CORA ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_TONY; #MON TOWER 5F channeler 2
 	const EVENT_BEAT_SWIMMERM_JEROME
 	const EVENT_BEAT_SWIMMERM_TUCKER
-	const EVENT_BEAT_SWIMMERM_RICK
+	const EVENT_BEAT_MEDIUM_RUBY ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_RICK; #MON TOWER 5F channeler 3
 	const EVENT_BEAT_SWIMMERM_CAMERON
 	const EVENT_BEAT_SWIMMERM_SETH
-	const EVENT_BEAT_SWIMMERM_JAMES
-	const EVENT_BEAT_SWIMMERM_LEWIS
+	const EVENT_BEAT_MEDIUM_MYRTLE ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_JAMES; #MON TOWER 5F channeler 4
+	const EVENT_POKEMON_TOWER_5F_NUGGET ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_LEWIS; the 5F item ball
 	const EVENT_BEAT_SWIMMERM_LUIS ; Kanto hack: renamed in place (6e,
 ; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERM_PARKER; same object, now
 ; Yellow's Cerulean Gym SWIMMER.

@@ -773,6 +773,10 @@ DEF KRIS EQU __trainer_class__
 	const AGNES ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 9
 	const EDITH ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 10
 	const HAZEL ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 12
+	const OLIVE ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 14
+	const CORA ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 16
+	const RUBY ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 17
+	const MYRTLE ; Kanto hack (M6 9g): #MON TOWER 5F, Yellow's CHANNELER 18
 
 	trainerclass BOARDER ; 3a
 	const RONALD
