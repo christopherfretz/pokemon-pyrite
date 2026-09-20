@@ -116,7 +116,7 @@
  {
   "id": "celadon",
   "title": "CELADON CITY",
-  "description": "Celadon's east entrance, walked in from Route 7. The whole city, the GYM, the DEPT. STORE, the MANSION (EEVEE) and the DINER (COIN CASE) are real and unplayed. CUT is faked (HM01 + CUT in the lead POK\u00e9MON) so Erika's cut tree and gym plants can be opened; the GAME CORNER and ROCKET HIDEOUT are not ported yet.",
+  "description": "Celadon's east entrance, walked in from Route 7. The whole city, the GYM, the DEPT. STORE, the MANSION (EEVEE) and the DINER (COIN CASE) are real and unplayed. CUT is faked (HM01 + CUT in the lead POK\u00e9MON) so Erika's cut tree and gym plants can be opened; the GAME CORNER, PRIZE ROOM and ROCKET HIDEOUT are real and unplayed too.",
   "sav": "celadon.sav"
  },
  {
@@ -128,7 +128,19 @@
  {
   "id": "coin_case",
   "title": "CELADON CITY \u2014 COIN CASE in hand",
-  "description": "One tile below the GAME CORNER door with the COIN CASE really collected from the DINER. Chains from 'CELADON CITY' (CUT faked, no RAINBOWBADGE); nothing else is faked. The GAME CORNER interior is still Crystal's until 9u ships.",
+  "description": "One tile below the GAME CORNER door with the COIN CASE really collected from the DINER. Chains from 'CELADON CITY' (CUT faked, no RAINBOWBADGE); nothing else is faked. The GAME CORNER, PRIZE ROOM and ROCKET HIDEOUT are real and unplayed.",
   "sav": "coin_case.sav"
+ },
+ {
+  "id": "game_corner",
+  "title": "CELADON GAME CORNER \u2014 hideout stairs found",
+  "description": "Inside the GAME CORNER on the tile under the hideout staircase, with the POSTER read for real and the COIN CASE in hand. One thing is FAKED: the Rocket guarding the poster is flagged beaten, not fought. The whole ROCKET HIDEOUT below (grunts, items, LIFT KEY, GIOVANNI) is unplayed.",
+  "sav": "game_corner.sav"
+ },
+ {
+  "id": "scope",
+  "title": "ROCKET HIDEOUT B4F \u2014 SILPH SCOPE in hand",
+  "description": "GIOVANNI's tile on B4F after his defeat, with the SILPH SCOPE really picked up from the ball he leaves behind. FAKED: the LIFT KEY was poked into the bag, JESSIE & JAMES and GIOVANNI are flagged beaten, not fought; the grunts and items on B1F-B3F are untouched. Made for walking back to LAVENDER and testing the POK\u00e9MON TOWER ghost reveal on the real SCOPE.",
+  "sav": "scope.sav"
  }
 ]
