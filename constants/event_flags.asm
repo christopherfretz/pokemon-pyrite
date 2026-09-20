@@ -678,11 +678,11 @@
 	const EVENT_BEAT_TWINS_AMY_AND_MAY
 	const EVENT_BEAT_TWINS_ANN_AND_ANNE
 	const EVENT_ROUTE_12_HIDDEN_HYPER_POTION ; Kanto hack: renamed in place (M5 8n audit), was EVENT_BEAT_TWINS_ANN_AND_ANNE2 -- a Gen 2 phone-rematch flag, permanently dead here because Route37 sets EVENT_BEAT_TWINS_ANN_AND_ANNE for both parties and the Pokegear is cut.  ROUTE 12's hidden HYPER POTION at (2,63) (Yellow data/events/hidden_events.asm:429)
-	const EVENT_BEAT_TWINS_AMY_AND_MAY2
+	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_1 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F (26,8) (was EVENT_BEAT_TWINS_AMY_AND_MAY2, a dead Johto rematch flag)
 	const EVENT_BEAT_BEAUTY_POPPY ; Kanto hack: renamed in place (M6 9q), was EVENT_BEAT_TWINS_JO_AND_ZOE -- Yellow's CELADON GYM has no twins; CELADON GYM trainer 5 (Yellow BEAUTY 3)
 	const EVENT_BEAT_LASS_HOLLY ; Kanto hack: renamed in place (M6 9q), was EVENT_BEAT_TWINS_JO_AND_ZOE2 (a dead Crystal duplicate -- both twins shared the flag above); CELADON GYM trainer 4 (Yellow LASS 18)
 	const EVENT_BEAT_TWINS_MEG_AND_PEG
-	const EVENT_BEAT_TWINS_MEG_AND_PEG2
+	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_2 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F (12,6) (was EVENT_BEAT_TWINS_MEG_AND_PEG2, a dead Johto rematch flag)
 ; Schoolboy
 	const EVENT_BEAT_SCHOOLBOY_JACK
 	const EVENT_BEAT_SCHOOLBOY_KIP
@@ -723,7 +723,7 @@
 	const EVENT_BEAT_PICNICKER_OPAL ; Kanto hack: renamed in place (M5 8f), was the dead EVENT_BEAT_PICNICKER_ERIN2; ROCK TUNNEL B1F, Yellow's JR_TRAINER_F 10
 	const EVENT_BEAT_PICNICKER_TANYA
 	const EVENT_BEAT_PICNICKER_TIFFANY
-	const EVENT_BEAT_PICNICKER_ERIN3
+	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_3 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F (18,17) (was EVENT_BEAT_PICNICKER_ERIN3, a dead Johto rematch flag)
 ; Guitarist
 	const EVENT_BEAT_GUITARIST_CLYDE
 	const EVENT_BEAT_GUITARIST_VINCENT
@@ -746,9 +746,9 @@
 	const EVENT_BEAT_SCIENTIST_MARC
 	const EVENT_BEAT_SCIENTIST_RICH
 ; Blackbelt
-	const EVENT_BEAT_BLACKBELT_KENJI2
+	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_4 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F (15,25) (was EVENT_BEAT_BLACKBELT_KENJI2, a dead Johto rematch flag)
 	const EVENT_BEAT_BLACKBELT_YOSHI
-	const EVENT_BEAT_BLACKBELT_KENJI3
+	const EVENT_BEAT_ROCKET_HIDEOUT_B2F_ROCKET ; Kanto hack (M6 9x): ROCKET HIDEOUT B2F (20,12) (was EVENT_BEAT_BLACKBELT_KENJI3, a dead Johto rematch flag)
 	const EVENT_BEAT_BLACKBELT_LAO
 	const EVENT_BEAT_BLACKBELT_NOB
 	const EVENT_BEAT_BLACKBELT_KIYO
@@ -806,14 +806,14 @@
 	const EVENT_BEAT_POKEFANM_BRANDON
 	const EVENT_BEAT_POKEFANM_JEREMY
 	const EVENT_BEAT_POKEFANM_COLIN
-	const EVENT_BEAT_POKEFANM_DEREK2
-	const EVENT_BEAT_POKEFANM_DEREK3
+	const EVENT_BEAT_ROCKET_HIDEOUT_B3F_ROCKET_1 ; Kanto hack (M6 9x): ROCKET HIDEOUT B3F (10,22) (was EVENT_BEAT_POKEFANM_DEREK2, a dead Johto rematch flag)
+	const EVENT_BEAT_ROCKET_HIDEOUT_B3F_ROCKET_2 ; Kanto hack (M6 9x): ROCKET HIDEOUT B3F (26,12) (was EVENT_BEAT_POKEFANM_DEREK3, a dead Johto rematch flag)
 	const EVENT_BEAT_POKEFANM_ALEX
 ; PokefanF
 	const EVENT_BEAT_POKEFANF_BEVERLY
 	const EVENT_BEAT_POKEFANF_RUTH
-	const EVENT_BEAT_POKEFANF_BEVERLY2
-	const EVENT_BEAT_POKEFANF_BEVERLY3
+	const EVENT_BEAT_ROCKET_HIDEOUT_B4F_ROCKET ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F (11,2), drops the LIFT KEY (was EVENT_BEAT_POKEFANF_BEVERLY2, a dead Johto rematch flag)
+	const EVENT_BEAT_ROCKET_HIDEOUT_GIOVANNI ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F GIOVANNI; also his object hide flag (was EVENT_BEAT_POKEFANF_BEVERLY3, a dead Johto rematch flag)
 	const EVENT_BEAT_POKEFANF_GEORGIA
 ; Kimono Girl
 	const_skip ; unused
@@ -921,7 +921,7 @@
 	const EVENT_BEAT_BUG_CATCHER_JOSH
 	const EVENT_BEAT_BUG_CATCHER_ARNIE
 	const EVENT_BEAT_BUG_CATCHER_KEN
-	const EVENT_BEAT_BUG_CATCHER_WADE2
+	const EVENT_BEAT_ROCKET_HIDEOUT_JESSIE_JAMES ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F JESSIE & JAMES (was EVENT_BEAT_BUG_CATCHER_WADE2, a dead Johto rematch flag)
 	const EVENT_BEAT_BUG_CATCHER_WADE3
 	const EVENT_BEAT_BUG_CATCHER_DOUG
 	const EVENT_BEAT_BUG_CATCHER_ARNIE2
@@ -1803,7 +1803,38 @@
 ; COOLTRAINERF needed a new one.  470 free -> 469.
 	const EVENT_BEAT_COOLTRAINERF_IVY ; CELADON GYM trainer 7 (Yellow COOLTRAINER_F 1)
 
-; Unused: next 469 events
+; Kanto hack: M6 step 9x (ROCKET HIDEOUT population).  28 flags needed; TEN
+; came from renames in place of dead Johto phone-rematch rows (the ten
+; EVENT_BEAT_ROCKET_HIDEOUT_* trainer flags above) and EIGHTEEN are appended
+; here: thirteen item-ball hide flags, the three hidden items, the LIFT KEY
+; drop gate and the JESSIE & JAMES hide flag.  469 free -> 451.
+;
+; The two "revealed" balls need TWO pieces of state each, because a GSC
+; object_event has only one hide flag: the flag below is the ball's own
+; (set by FindItemInBallScript's `disappear LAST_TALKED` once taken), and the
+; B4F MAPCALLBACK_OBJECTS re-hides it while its GATE flag
+; (EVENT_ROCKET_DROPPED_LIFT_KEY / EVENT_BEAT_ROCKET_HIDEOUT_GIOVANNI) is
+; still clear.  The grunt's / GIOVANNI's script `appear`s it.
+	const EVENT_ROCKET_HIDEOUT_B1F_ESCAPE_ROPE ; B1F (11,14)
+	const EVENT_ROCKET_HIDEOUT_B1F_HYPER_POTION ; B1F (9,17)
+	const EVENT_ROCKET_HIDEOUT_B1F_HIDDEN_PP_UP ; B1F (21,15)
+	const EVENT_ROCKET_HIDEOUT_B2F_MOON_STONE ; B2F (1,11)
+	const EVENT_ROCKET_HIDEOUT_B2F_NUGGET ; B2F (16,8)
+	const EVENT_ROCKET_HIDEOUT_B2F_TM_HORN_DRILL ; B2F (6,12), Yellow's TM07
+	const EVENT_ROCKET_HIDEOUT_B2F_SUPER_POTION ; B2F (3,21)
+	const EVENT_ROCKET_HIDEOUT_B3F_TM_DOUBLE_EDGE ; B3F (26,17), Yellow's TM10
+	const EVENT_ROCKET_HIDEOUT_B3F_RARE_CANDY ; B3F (20,14)
+	const EVENT_ROCKET_HIDEOUT_B3F_HIDDEN_NUGGET ; B3F (27,17)
+	const EVENT_ROCKET_HIDEOUT_B4F_HP_UP ; B4F (10,12)
+	const EVENT_ROCKET_HIDEOUT_B4F_TM_RAZOR_WIND ; B4F (9,4), Yellow's TM02
+	const EVENT_ROCKET_HIDEOUT_B4F_IRON ; B4F (12,20)
+	const EVENT_ROCKET_HIDEOUT_B4F_HIDDEN_SUPER_POTION ; B4F (25,1)
+	const EVENT_ROCKET_HIDEOUT_B4F_LIFT_KEY ; B4F (10,2), the dropped ball itself
+	const EVENT_ROCKET_DROPPED_LIFT_KEY ; the B4F Rocket has been beaten and the LIFT KEY ball is on the floor
+	const EVENT_GOT_SILPH_SCOPE ; B4F (25,2), the ball GIOVANNI leaves behind
+	const EVENT_ROCKET_HIDEOUT_B4F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map (set unconditionally by RocketHideoutB4FObjectsCallback)
+
+; Unused: next 451 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
