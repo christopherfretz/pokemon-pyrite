@@ -748,11 +748,17 @@
 ; Beauty
 	const EVENT_BEAT_BEAUTY_VICTORIA
 	const EVENT_BEAT_BEAUTY_SAMANTHA
-	const EVENT_BEAT_BEAUTY_JULIE
-	const EVENT_BEAT_BEAUTY_JACLYN
-	const EVENT_BEAT_BEAUTY_BRENDA
+; Kanto hack (M6 9f): the four #MON TOWER 3F/4F item balls.  Renamed in place
+; from the dead EVENT_BEAT_BEAUTY_JULIE / _JACLYN / _BRENDA / _CAROLINE (Crystal
+; BEAUTY rows no map references); moving the consts instead of renaming them
+; would renumber every flag after this point and break existing saves, so the
+; itemball flags live in the BEAUTY block -- the same trade the ROUTE 9 TM and
+; the ROUTE 12 HYPER POTION rows already make.
+	const EVENT_POKEMON_TOWER_3F_ESCAPE_ROPE
+	const EVENT_POKEMON_TOWER_4F_ELIXER
+	const EVENT_POKEMON_TOWER_4F_AWAKENING
 	const EVENT_BEAT_BEAUTY_CASSIE
-	const EVENT_BEAT_BEAUTY_CAROLINE
+	const EVENT_POKEMON_TOWER_4F_HP_UP
 	const EVENT_BEAT_BEAUTY_CARLENE
 	const EVENT_BEAT_BEAUTY_JESSICA
 	const EVENT_BEAT_BEAUTY_RACHAEL
@@ -989,9 +995,9 @@
 ; Medium
 	const EVENT_BEAT_MEDIUM_MARTHA
 	const EVENT_BEAT_MEDIUM_GRACE
-	const EVENT_BEAT_MEDIUM_BETHANY
-	const EVENT_BEAT_MEDIUM_MARGRET
-	const EVENT_BEAT_MEDIUM_ETHEL
+	const EVENT_BEAT_MEDIUM_BETHANY ; Kanto hack (M6 9f): #MON TOWER 3F channeler 1
+	const EVENT_BEAT_MEDIUM_MARGRET ; Kanto hack (M6 9f): #MON TOWER 3F channeler 2
+	const EVENT_BEAT_MEDIUM_ETHEL ; Kanto hack (M6 9f): #MON TOWER 3F channeler 3
 	const EVENT_BEAT_MEDIUM_REBECCA
 	const EVENT_BEAT_MEDIUM_DORIS
 ; Skier
@@ -1006,9 +1012,13 @@
 	const EVENT_BEAT_SWIMMERM_BERKE
 	const EVENT_BEAT_SWIMMERM_KIRK
 	const EVENT_BEAT_SWIMMERM_MATHEW
-	const EVENT_BEAT_SWIMMERM_HAL
-	const EVENT_BEAT_SWIMMERM_PATON
-	const EVENT_BEAT_SWIMMERM_DARYL
+; Kanto hack (M6 9f): #MON TOWER 4F's three channelers.  Renamed in place from
+; the dead EVENT_BEAT_SWIMMERM_HAL / _PATON / _DARYL (no map references); the
+; MEDIUM block above is full of live Johto rows, and moving a const would
+; renumber every flag after it.  9g/9h take the next dead SWIMMERM rows.
+	const EVENT_BEAT_MEDIUM_AGNES
+	const EVENT_BEAT_MEDIUM_EDITH
+	const EVENT_BEAT_MEDIUM_HAZEL
 	const EVENT_BEAT_SWIMMERM_WALTER
 	const EVENT_BEAT_SWIMMERM_TONY
 	const EVENT_BEAT_SWIMMERM_JEROME

@@ -754,14 +754,25 @@ DEF KRIS EQU __trainer_class__
 	const MASA
 	const KOJI
 
+; Kanto hack (docs/M6-TOWER.md D12): Crystal has no CHANNELER class, and MEDIUM
+; is the stand-in for Yellow's #MON TOWER channelers -- female, psychic-themed,
+; already fights GASTLY/HAUNTER, and its overworld sprite is SPRITE_CHANNELER
+; (byte-identical to pokeyellow's).  Only the battle portrait and the class name
+; differ from Yellow.  BETHANY/MARGRET/ETHEL were dead Crystal rows and are
+; rewritten in place as TOWER 3F's three; AGNES/EDITH/HAZEL are appended for 4F
+; (D13 -- Yellow gives the channelers no names, so these are invented).
+; 9g (5F) and 9h (6F) append seven more here.
 	trainerclass MEDIUM ; 39
 	const MARTHA
 	const GRACE
-	const BETHANY ; unused
-	const MARGRET ; unused
-	const ETHEL ; unused
+	const BETHANY ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 5
+	const MARGRET ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 6
+	const ETHEL ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 8
 	const REBECCA
 	const DORIS
+	const AGNES ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 9
+	const EDITH ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 10
+	const HAZEL ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 12
 
 	trainerclass BOARDER ; 3a
 	const RONALD

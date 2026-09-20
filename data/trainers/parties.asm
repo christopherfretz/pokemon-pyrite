@@ -3776,19 +3776,24 @@ MediumGroup:
 	db 20, HAUNTER
 	db -1 ; end
 
+; Kanto hack (M6 9f, docs/M6-TOWER.md 5.1/5.3): MEDIUM stands in for Yellow's
+; CHANNELER (D12).  These three were dead Crystal rows (`db 25, HAUNTER` each,
+; referenced by no map) and are rewritten in place as #MON TOWER 3F's three
+; channelers -- Yellow ChannelerData rows 5, 6 and 8
+; (vendor/pokeyellow/data/trainers/parties.asm:718,719,723).
 	; MEDIUM (3)
 	db "BETHANY@", TRAINERTYPE_NORMAL
-	db 25, HAUNTER
+	db 23, GASTLY
 	db -1 ; end
 
 	; MEDIUM (4)
 	db "MARGRET@", TRAINERTYPE_NORMAL
-	db 25, HAUNTER
+	db 24, GASTLY
 	db -1 ; end
 
 	; MEDIUM (5)
 	db "ETHEL@", TRAINERTYPE_NORMAL
-	db 25, HAUNTER
+	db 22, GASTLY
 	db -1 ; end
 
 	; MEDIUM (6)
@@ -3801,6 +3806,25 @@ MediumGroup:
 	db "DORIS@", TRAINERTYPE_NORMAL
 	db 34, SLOWPOKE
 	db 36, SLOWBRO
+	db -1 ; end
+
+; Kanto hack (M6 9f): #MON TOWER 4F's three channelers -- Yellow ChannelerData
+; rows 9, 10 and 12 (vendor/pokeyellow/data/trainers/parties.asm:725,726,730).
+; Names are invented (D13); 9g appends 5F's four and 9h 6F's three after these.
+	; MEDIUM (8)
+	db "AGNES@", TRAINERTYPE_NORMAL
+	db 24, GASTLY
+	db -1 ; end
+
+	; MEDIUM (9)
+	db "EDITH@", TRAINERTYPE_NORMAL
+	db 23, GASTLY
+	db 23, GASTLY
+	db -1 ; end
+
+	; MEDIUM (10)
+	db "HAZEL@", TRAINERTYPE_NORMAL
+	db 22, GASTLY
 	db -1 ; end
 
 BoarderGroup:
