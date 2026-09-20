@@ -3309,7 +3309,14 @@ wArnieFightCount::   db
 wAlanFightCount::    db
 wDanaFightCount::    db
 wChadFightCount::    db
-wDerekFightCount::   db ; unreferenced
+; Kanto hack (M6 9r, docs/M6-CELADON.md): wDerekFightCount was here.  Like
+; wIrwinFightCount above it is one byte of Johto phone-rematch state that is
+; unreferenced in vanilla pokecrystal and in this hack, and it was evicted to
+; pay for the byte wTMsHMs needed when NUM_TMS went 86 -> 87 (TM87 ICE BEAM).
+; wTMsHMs is sized NUM_TMS + NUM_HMS, NOT NUM_TM_HM_TUTOR -- trading a move
+; tutor for a TM keeps the base-stats tmhm bitfield at 12 bytes but still costs
+; one byte of the player's TM bag.  wEventFlags and everything after it are
+; unmoved: the byte wTMsHMs gained above is the byte given up here.
 wTullyFightCount::   db
 wBrentFightCount::   db
 wTiffanyFightCount:: db
@@ -3324,7 +3331,9 @@ wErinFightCount::    db
 ; without moving anything live; M3b (docs/M3B-TM-UNION.md) spent another 35 on
 ; wTMsHMs when NUM_TMS went 50 -> 85, and M4 7a spent the LAST one on TM86
 ; THUNDERBOLT (NUM_TMS 85 -> 86).  There is NO slack left in wPlayerData:
-; the next saved byte must evict something (docs/HOUSEKEEPING.md 3).
+; the next saved byte must evict something (docs/HOUSEKEEPING.md 3).  M6 9r did
+; exactly that for TM87 ICE BEAM -- see wDerekFightCount above.  The only
+; evictable byte left in this region is wKenjiFightCount.
 
 wEventFlags:: flag_array NUM_EVENTS
 

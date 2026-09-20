@@ -266,7 +266,7 @@ CeladonCity_MapEvents:
 ; door to CELADON MART 5F that Yellow itself marks "; inaccessible" and walls in
 ; -- is kept as a placeholder rather than deleted, which would renumber 10-13.
 	warp_event  8, 13, CELADON_DEPT_STORE_1F, 1
-	warp_event 10, 13, CELADON_DEPT_STORE_1F, 1 ; Yellow: MART_1F warp 3, its east door; our 1F is Crystal's one-door room until 9q
+	warp_event 10, 13, CELADON_DEPT_STORE_1F, 3 ; Yellow: MART_1F warp 3, its east door -- re-cut and wired up in M6 9r
 	warp_event 24,  9, CELADON_MANSION_1F, 1
 	warp_event 24,  3, CELADON_MANSION_1F, 3
 	warp_event 25,  3, CELADON_MANSION_1F, 3

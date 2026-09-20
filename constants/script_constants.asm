@@ -324,12 +324,12 @@ DEF NUM_UNOWN_WALLS EQU const_value
 DEF UNOWN_WALL_MENU_HEADER_SIZE EQU 5
 
 ; MoveTutor setval arguments
-; Kanto hack (M4 7a): THUNDERBOLT left the tutor list to become TM86, so the
-; tutor offers two moves.  These double as the 1-based indices of the tutor's
-; vertical menu in maps/GoldenrodCity.asm, so they must stay 1..NUM_TUTORS.
+; Kanto hack (M4 7a, M6 9r): THUNDERBOLT became TM86 and ICE_BEAM became TM87,
+; so FLAMETHROWER is the only tutor move left.  These double as the 1-based
+; indices of the tutor's vertical menu in maps/GoldenrodCity.asm, so they must
+; stay 1..NUM_TUTORS.
 	const_def 1
 	const MOVETUTOR_FLAMETHROWER ; 1
-	const MOVETUTOR_ICE_BEAM     ; 2
 
 ; VermilionGymTrashCan return values, read back out of wScriptVar
 ; Kanto hack (M4 7k): the special does the arithmetic and the flags, the map

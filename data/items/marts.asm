@@ -26,7 +26,6 @@ Marts:
 	dw MartVermilion
 	dw MartCeladon2F1
 	dw MartCeladon2F2
-	dw MartCeladon3F
 	dw MartCeladon4F
 	dw MartCeladon5F1
 	dw MartCeladon5F2
@@ -288,24 +287,18 @@ MartVermilion:
 	db REPEL
 	db -1 ; end
 
+; Kanto hack (M6 9r, docs/M6-CELADON.md): Yellow's five CELADON DEPT. STORE
+; rosters, verbatim from vendor/pokeyellow/data/items/marts.asm (CeladonMart2F
+; Clerk1/Clerk2, CeladonMart4FClerk, CeladonMart5F Clerk1/Clerk2), in Yellow's
+; order.  Yellow's 3F is the TV GAME SHOP and sells nothing, so MartCeladon3F
+; and MART_CELADON_3F are gone.  Note Yellow's 5F order: Clerk1 is the X-item
+; counter and Clerk2 the vitamin counter -- the opposite of Crystal's Goldenrod.
 MartCeladon2F1:
-	db 7 ; # items
-	db POTION
+	db 9 ; # items
+	db GREAT_BALL
 	db SUPER_POTION
-	db HYPER_POTION
-	db MAX_POTION
 	db REVIVE
 	db SUPER_REPEL
-	db MAX_REPEL
-	db -1 ; end
-
-MartCeladon2F2:
-	db 10 ; # items
-	db POKE_BALL
-	db GREAT_BALL
-	db ULTRA_BALL
-	db ESCAPE_ROPE
-	db FULL_HEAL
 	db ANTIDOTE
 	db BURN_HEAL
 	db ICE_HEAL
@@ -313,31 +306,33 @@ MartCeladon2F2:
 	db PARLYZ_HEAL
 	db -1 ; end
 
-MartCeladon3F:
-	db 5 ; # items
-	db TM_HIDDEN_POWER
-	db TM_SUNNY_DAY
-	db TM_PROTECT
-	db TM_RAIN_DANCE
-	db TM_SANDSTORM
+MartCeladon2F2:
+; Yellow's TM numbers, mapped through docs/TM-LEDGER.md: TM32 DOUBLE TEAM (ours
+; TM32), TM33 REFLECT (TM72), TM02 RAZOR WIND (TM52), TM07 HORN DRILL (TM56),
+; TM37 EGG BOMB (TM76), TM01 MEGA PUNCH (TM51), TM05 MEGA KICK (TM55),
+; TM09 TAKE DOWN (TM58), TM17 SUBMISSION (TM63).
+	db 9 ; # items
+	db TM_DOUBLE_TEAM
+	db TM_REFLECT
+	db TM_RAZOR_WIND
+	db TM_HORN_DRILL
+	db TM_EGG_BOMB
+	db TM_MEGA_PUNCH
+	db TM_MEGA_KICK
+	db TM_TAKE_DOWN
+	db TM_SUBMISSION
 	db -1 ; end
 
 MartCeladon4F:
-	db 2 ; # items ; Kanto hack: LOVELY_MAIL/SURF_MAIL became TMs
+	db 5 ; # items
 	db POKE_DOLL
-	db FLOWER_MAIL
+	db FIRE_STONE
+	db THUNDERSTONE
+	db WATER_STONE
+	db LEAF_STONE
 	db -1 ; end
 
 MartCeladon5F1:
-	db 5 ; # items
-	db HP_UP
-	db PROTEIN
-	db IRON
-	db CARBOS
-	db CALCIUM
-	db -1 ; end
-
-MartCeladon5F2:
 	db 7 ; # items
 	db X_ACCURACY
 	db GUARD_SPEC
@@ -346,6 +341,15 @@ MartCeladon5F2:
 	db X_DEFEND
 	db X_SPEED
 	db X_SPECIAL
+	db -1 ; end
+
+MartCeladon5F2:
+	db 5 ; # items
+	db HP_UP
+	db PROTEIN
+	db IRON
+	db CARBOS
+	db CALCIUM
 	db -1 ; end
 
 MartFuchsia:

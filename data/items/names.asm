@@ -169,7 +169,7 @@ ItemNames::
 	li "LIFT KEY"
 	li "GORGEOUS BOX"
 	li "SUN STONE"
-	li "POLKADOT BOW"
+	li "TM87"
 	li "TM65"
 	li "UP-GRADE"
 	li "BERRY"

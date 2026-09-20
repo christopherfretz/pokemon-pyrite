@@ -22,7 +22,15 @@
 ; THUNDERBOLT move tutor in exchange so NUM_TM_HM_TUTOR stayed 95.
 ; M6 9c (docs/M6-TOWER.md D11) reclaimed GOLD_LEAF ($4b) for SILPH_SCOPE.
 ; M6 9o (docs/M6-CELADON.md D29) reclaimed NORMAL_BOX ($a7) for LIFT_KEY.
-; Remaining reclaim candidate: GORGEOUS_BOX ($a8) -- the LAST one.
+; M6 9r (docs/M6-CELADON.md 9r findings) reclaimed POLKADOT_BOW ($aa) for
+; TM_ICE_BEAM = TM87 (Celadon rooftop FRESH WATER), and dropped the ICE_BEAM
+; move tutor in exchange so NUM_TM_HM_TUTOR again stayed 95.  POLKADOT_BOW was
+; a byte-identical duplicate of PINK_BOW ($68) -- same item_attribute row, same
+; HELD_NORMAL_BOOST -- and is unobtainable in vanilla Crystal (no mart, no
+; giveitem/itemball, no held item, no script); PINK_BOW keeps the
+; HELD_NORMAL_BOOST / TypeBoostItems row alive.
+; Remaining reclaim candidate: GORGEOUS_BOX ($a8) -- the LAST one.  It is
+; RESERVED for Silph Co.'s CARD KEY; do not spend it on anything else.
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -195,7 +203,7 @@
 	const LIFT_KEY     ; a7 (was NORMAL_BOX; Kanto hack M6 9o)
 	const GORGEOUS_BOX ; a8
 	const SUN_STONE    ; a9
-	const POLKADOT_BOW ; aa
+	const TM_ICE_BEAM  ; aa (was POLKADOT_BOW; Kanto hack M6 9r)
 	const TM_SEISMIC_TOSS ; ab (was ITEM_AB; Kanto hack TM union)
 	const UP_GRADE     ; ac
 	const BERRY        ; ad
@@ -360,6 +368,11 @@ DEF TM_SUBSTITUTE  EQU $fe
 ; tutor; promoting it here and deleting the tutor below keeps NUM_TM_HM_TUTOR at
 ; 95, so the tmhm bitfield stays 12 bytes and no base stats had to be regenerated.
 	add_tm_id THUNDERBOLT  ; 3c = TM86
+; M6 9r (docs/M6-CELADON.md): the Celadon rooftop girl's FRESH WATER reward,
+; Yellow's TM13.  Was Crystal's other move tutor (MT02 ICE_BEAM); same trade as
+; 7a -- promoting it here and deleting the tutor below keeps NUM_TM_HM_TUTOR at
+; 95, so the tmhm bitfield stays 12 bytes and no base stats had to be regrown.
+	add_tm_id ICE_BEAM     ; aa = TM87
 DEF NUM_TMS EQU __tmhm_value__ - 1
 
 MACRO add_hm
@@ -397,7 +410,7 @@ ENDM
 DEF MT01 EQU const_value
 	add_mt FLAMETHROWER
 ; M4 7a: THUNDERBOLT is TM86 now (see the add_tm_id block), not a tutor move.
-	add_mt ICE_BEAM
+; M6 9r: ICE_BEAM is TM87 now, likewise.  FLAMETHROWER is the only tutor left.
 DEF NUM_TUTORS = __tmhm_value__ - NUM_TMS - NUM_HMS - 1
 
 DEF NUM_TM_HM_TUTOR EQU NUM_TMS + NUM_HMS + NUM_TUTORS

@@ -34,7 +34,8 @@ DEF NUM_MART_TYPES EQU const_value
 	const MART_VERMILION
 	const MART_CELADON_2F_1
 	const MART_CELADON_2F_2
-	const MART_CELADON_3F
+; Kanto hack (M6 9r): MART_CELADON_3F was here.  Yellow's CELADON MART 3F is the
+; TV GAME SHOP -- it has no clerk and sells nothing.
 	const MART_CELADON_4F
 	const MART_CELADON_5F_1
 	const MART_CELADON_5F_2

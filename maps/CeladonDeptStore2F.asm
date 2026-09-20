@@ -1,8 +1,12 @@
+; Kanto hack (M6 9r, docs/M6-CELADON.md §3.5): Yellow's CELADON MART 2F, the
+; TRAINER'S MARKET.  Clerk1 sells Yellow's general goods, Clerk2 the nine TMs
+; (see data/items/marts.asm for the Yellow-TM-number mapping).
+
 	object_const_def
 	const CELADONDEPTSTORE2F_CLERK1
 	const CELADONDEPTSTORE2F_CLERK2
-	const CELADONDEPTSTORE2F_POKEFAN_M
-	const CELADONDEPTSTORE2F_YOUNGSTER
+	const CELADONDEPTSTORE2F_MIDDLE_AGED_MAN
+	const CELADONDEPTSTORE2F_GIRL
 
 CeladonDeptStore2F_MapScripts:
 	def_scene_scripts
@@ -23,42 +27,34 @@ CeladonDeptStore2FClerk2Script:
 	closetext
 	end
 
-CeladonDeptStore2FPokefanMScript:
-	jumptextfaceplayer CeladonDeptStore2FPokefanMText
+CeladonDeptStore2FMiddleAgedManScript:
+	jumptextfaceplayer CeladonDeptStore2FMiddleAgedManText
 
-CeladonDeptStore2FYoungsterScript:
-	jumptextfaceplayer CeladonDeptStore2FYoungsterText
+CeladonDeptStore2FGirlScript:
+	jumptextfaceplayer CeladonDeptStore2FGirlText
 
-CeladonDeptStore2FDirectory:
-	jumptext CeladonDeptStore2FDirectoryText
+CeladonDeptStore2FFloorSign:
+	jumptext CeladonDeptStore2FFloorSignText
 
 CeladonDeptStore2FElevatorButton:
 	jumpstd ElevatorButtonScript
 
-CeladonDeptStore2FPokefanMText:
-	text "I just recently"
-	line "became a trainer."
+CeladonDeptStore2FMiddleAgedManText:
+	text "SUPER REPEL keeps"
+	line "weak #MON at"
+	cont "bay…"
 
-	para "My son encouraged"
-	line "me to do it."
-
-	para "I'm impressed by"
-	line "the selection of"
-	cont "convenient items."
+	para "Hmm, it's a more"
+	line "powerful REPEL!"
 	done
 
-CeladonDeptStore2FYoungsterText:
-	text "My dad's having a"
-	line "hard time learning"
-
-	para "the names of items"
-	line "and how they are"
-
-	para "supposed to be"
-	line "used…"
+CeladonDeptStore2FGirlText:
+	text "For long outings,"
+	line "you should buy"
+	cont "REVIVE."
 	done
 
-CeladonDeptStore2FDirectoryText:
+CeladonDeptStore2FFloorSignText:
 	text "Top Grade Items"
 	line "for Trainers!"
 
@@ -71,17 +67,17 @@ CeladonDeptStore2F_MapEvents:
 
 	def_warp_events
 	warp_event 12,  0, CELADON_DEPT_STORE_3F, 1
-	warp_event 15,  0, CELADON_DEPT_STORE_1F, 3
+	warp_event 15,  0, CELADON_DEPT_STORE_1F, 5
 	warp_event  2,  0, CELADON_DEPT_STORE_ELEVATOR, 1
 
 	def_coord_events
 
 	def_bg_events
-	bg_event 14,  0, BGEVENT_READ, CeladonDeptStore2FDirectory
+	bg_event 14,  0, BGEVENT_READ, CeladonDeptStore2FFloorSign
 	bg_event  3,  0, BGEVENT_READ, CeladonDeptStore2FElevatorButton
 
 	def_object_events
 	object_event 13,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FClerk1Script, -1
 	object_event 14,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FClerk2Script, -1
-	object_event  5,  2, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FPokefanMScript, -1
-	object_event  6,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FYoungsterScript, -1
+	object_event  5,  2, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FMiddleAgedManScript, -1
+	object_event  9,  3, SPRITE_LASS, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore2FGirlScript, -1

@@ -67,18 +67,10 @@ MoveTutorScript:
 	verticalmenu
 	closewindow
 	ifequal MOVETUTOR_FLAMETHROWER, .Flamethrower
-	ifequal MOVETUTOR_ICE_BEAM, .IceBeam
 	sjump .Incompatible
 
 .Flamethrower:
 	setval MOVETUTOR_FLAMETHROWER
-	writetext GoldenrodCityMoveTutorMoveText
-	special MoveTutor
-	ifequal FALSE, .TeachMove
-	sjump .Incompatible
-
-.IceBeam:
-	setval MOVETUTOR_ICE_BEAM
 	writetext GoldenrodCityMoveTutorMoveText
 	special MoveTutor
 	ifequal FALSE, .TeachMove
@@ -93,10 +85,10 @@ MoveTutorScript:
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 ; Kanto hack (M4 7a): THUNDERBOLT is TM86 now (Lt. Surge), so it left the menu.
+; Kanto hack (M6 9r): ICE BEAM is TM87 now (Celadon rooftop), likewise.
 ; The entries are indexed 1..n and compared against the MOVETUTOR_* constants.
-	db 3 ; items
+	db 2 ; items
 	db "FLAMETHROWER@"
-	db "ICE BEAM@"
 	db "CANCEL@"
 
 .Refused:

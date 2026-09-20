@@ -136,9 +136,9 @@
 	const EVENT_TIN_TOWER_5F_HIDDEN_FULL_RESTORE
 	const EVENT_TIN_TOWER_5F_HIDDEN_CARBOS
 	const EVENT_BURNED_TOWER_1F_HIDDEN_ETHER
-	const_skip ; unused in Crystal
-	const_skip ; unused in Crystal
-	const_skip ; unused in Crystal
+	const EVENT_GOT_TM13_ICE_BEAM ; Kanto hack: renamed in place (M6 9r), was an unused const_skip; CELADON DEPT. STORE roof girl, FRESH WATER -> TM87 ICE BEAM (Yellow's TM13)
+	const EVENT_GOT_TM48_ROCK_SLIDE ; Kanto hack: renamed in place (M6 9r), was an unused const_skip; CELADON DEPT. STORE roof girl, SODA POP -> TM83 ROCK SLIDE (Yellow's TM48)
+	const EVENT_GOT_TM49_TRI_ATTACK ; Kanto hack: renamed in place (M6 9r), was an unused const_skip; CELADON DEPT. STORE roof girl, LEMONADE -> TM84 TRI ATTACK (Yellow's TM49)
 	const EVENT_NATIONAL_PARK_HIDDEN_FULL_HEAL
 	const EVENT_OLIVINE_LIGHTHOUSE_5F_HIDDEN_HYPER_POTION
 	const EVENT_TEAM_ROCKET_BASE_B1F_HIDDEN_REVIVE
@@ -348,7 +348,7 @@
 	const_skip ; unused in Crystal
 	const EVENT_ERIN_ASKED_FOR_PHONE_NUMBER
 	const EVENT_BUENA_OFFERED_HER_PHONE_NUMBER_NO_BLUE_CARD
-	const_skip ; unused
+	const EVENT_GOT_TM18_COUNTER ; Kanto hack: renamed in place (M6 9r), was an unused const_skip; CELADON DEPT. STORE 3F clerk's TM64 COUNTER (Yellow's TM18)
 ; Ruins of Alph puzzles
 	const EVENT_SOLVED_HO_OH_PUZZLE
 	const EVENT_SOLVED_KABUTO_PUZZLE

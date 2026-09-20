@@ -171,7 +171,8 @@ ItemDescriptions:
 	dw LiftKeyDesc
 	dw GorgeousBoxDesc
 	dw SunStoneDesc
-	dw PolkadotBowDesc
+	dw PolkadotBowDesc ; unread: $aa is TM87 ICE BEAM (M6 9r) and TM/HM items
+	                   ; print the MOVE description; see PrintItemDescription
 	dw TeruSama22Desc
 	dw UpGradeDesc
 	dw BerryDesc

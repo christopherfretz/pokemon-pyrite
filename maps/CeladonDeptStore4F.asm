@@ -1,3 +1,6 @@
+; Kanto hack (M6 9r, docs/M6-CELADON.md §3.5): Yellow's CELADON MART 4F,
+; WISEMAN GIFTS -- the # DOLL and the four evolution stones.
+
 	object_const_def
 	const CELADONDEPTSTORE4F_CLERK
 	const CELADONDEPTSTORE4F_SUPER_NERD
@@ -21,31 +24,41 @@ CeladonDeptStore4FSuperNerdScript:
 CeladonDeptStore4FYoungsterScript:
 	jumptextfaceplayer CeladonDeptStore4FYoungsterText
 
-CeladonDeptStore4FDirectory:
-	jumptext CeladonDeptStore4FDirectoryText
+CeladonDeptStore4FFloorSign:
+	jumptext CeladonDeptStore4FFloorSignText
 
 CeladonDeptStore4FElevatorButton:
 	jumpstd ElevatorButtonScript
 
 CeladonDeptStore4FSuperNerdText:
-	text "I'm here to buy"
-	line "SURF MAIL to send"
-	cont "to my girlfriend."
+	text "I'm getting a"
+	line "gift for COPYCAT"
+	cont "in CERULEAN CITY."
+
+	para "It's got to be a"
+	line "# DOLL. They"
+	cont "are trendy!"
 	done
 
 CeladonDeptStore4FYoungsterText:
-	text "This is the only"
-	line "place where you"
+	text "I heard something"
+	line "useful."
 
-	para "can buy LOVELY"
-	line "MAIL."
+	para "You can run from"
+	line "wild #MON by"
+	cont "distracting them"
+	cont "with a # DOLL!"
 	done
 
-CeladonDeptStore4FDirectoryText:
-	text "Express Yourself"
-	line "With Gifts!"
+CeladonDeptStore4FFloorSignText:
+	text "Express yourself"
+	line "with gifts!"
 
 	para "4F: WISEMAN GIFTS"
+
+	para "Evolution Special!"
+	line "Element STONEs on"
+	cont "sale now!"
 	done
 
 CeladonDeptStore4F_MapEvents:
@@ -59,10 +72,10 @@ CeladonDeptStore4F_MapEvents:
 	def_coord_events
 
 	def_bg_events
-	bg_event 14,  0, BGEVENT_READ, CeladonDeptStore4FDirectory
+	bg_event 14,  0, BGEVENT_READ, CeladonDeptStore4FFloorSign
 	bg_event  3,  0, BGEVENT_READ, CeladonDeptStore4FElevatorButton
 
 	def_object_events
 	object_event 13,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore4FClerkScript, -1
 	object_event  7,  6, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore4FSuperNerdScript, -1
-	object_event  8,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore4FYoungsterScript, -1
+	object_event  5,  2, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonDeptStore4FYoungsterScript, -1

@@ -359,8 +359,13 @@ BetaCinnabarPokemonLabRoom3_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaCinnabarPokemonLabRoom3.blk"
 
 GoldenrodDeptStore1F_Blocks:
-CeladonDeptStore1F_Blocks:
 	INCBIN "maps/DeptStore1F.blk"
+
+; Kanto hack (M6 9r): Celadon 1F is no longer a copy of Goldenrod 1F -- Yellow's
+; CELADON MART 1F has TWO doors onto the city (west and east), so its .blk is cut
+; separately.  2F-6F and the elevator still share Goldenrod's blocks.
+CeladonDeptStore1F_Blocks:
+	INCBIN "maps/CeladonDeptStore1F.blk"
 
 GoldenrodDeptStore2F_Blocks:
 CeladonDeptStore2F_Blocks:

@@ -183,7 +183,7 @@ ItemEffects:
 	dw NoEffect            ; LIFT_KEY
 	dw GorgeousBoxEffect   ; GORGEOUS_BOX
 	dw EvoStoneEffect      ; SUN_STONE
-	dw NoEffect            ; POLKADOT_BOW
+	dw NoEffect            ; TM_ICE_BEAM (TM87)
 	dw NoEffect            ; TM_SEISMIC_TOSS (TM65)
 	dw NoEffect            ; UP_GRADE
 	dw RestoreHPEffect     ; BERRY
