@@ -1665,7 +1665,12 @@ GruntMGroup:
 
 	; GRUNTM (30) - Kanto hack: CELADON GAME CORNER's poster guard, Yellow's
 	; OPP_ROCKET party 7 (docs/M6-CELADON.md 5.2).  Was an unused Crystal row.
-	db "ROCKET@", TRAINERTYPE_NORMAL
+	; The name is "GRUNT", not "ROCKET": GSC always prints "<class> <name> wants
+	; to battle!", so a "ROCKET" name on the ROCKET class stutters ("ROCKET
+	; ROCKET wants to battle!").  Yellow just says "ROCKET wants to fight!" and
+	; GSC cannot; "ROCKET GRUNT" is what the four shipped Kanto Rockets already
+	; print (GRUNTM 12/22/23/26, docs/M3-CERULEAN.md 6c step 3).
+	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 20, RATICATE
 	db 20, ZUBAT
 	db -1 ; end
