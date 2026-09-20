@@ -1,4 +1,5 @@
-; Kanto hack M6 9d -- POKéMON TOWER ghost battles (docs/M6-TOWER.md 3.4, D10).
+; Kanto hack M6 9d/9i -- POKéMON TOWER ghost battles (docs/M6-TOWER.md 3.4/3.6,
+; D10, D25).
 ;
 ; Yellow spreads this over five files; here everything except six small hooks
 ; lives in one section so the tight battle banks ($0d/$0f) pay almost nothing.
@@ -30,8 +31,19 @@ CheckGhostBattle::
 	ret nc
 
 	call HasSilphScope
-	ret c
+	jr nc, .unidentified
 
+; 9i: the SCOPE identifies every other Tower ghost before the battle even
+; starts, but NOT the 6F MAROWAK.  Yellow's InitWildBattle tests
+; `cp RESTLESS_SOUL` BEFORE it consults IsGhostBattle
+; (vendor/pokeyellow/engine/battle/init_battle.asm:64-66), so the restless soul
+; always walks in wearing the ghost pic and is unveiled on screen instead
+; (GhostBattleStartMessage, docs/M6-TOWER.md 3.6).
+	ld a, [wTempWildMonSpecies]
+	cp MAROWAK
+	ret nz
+
+.unidentified
 	ld a, BATTLETYPE_GHOST
 	ld [wBattleType], a
 	ret
@@ -108,11 +120,54 @@ GhostMonNameEnd:
 GhostBattleStartMessage::
 ; Hook: BattleStartMessage, .wild.
 ; Yellow: PrintBeginningBattleText's .pokemonTower branch prints
-; EnemyAppearedText + GhostCantBeIDdText with no cry and no shininess check.
+; EnemyAppearedText + GhostCantBeIDdText with no cry and no shininess check --
+; and, in its .isMarowak arm, unveils the restless soul instead (9i).
 	farcall BattleStart_TrainerHuds
 	ld hl, GhostAppearedText
 	call StdBattleTextbox
+
+	call HasSilphScope
+	jr nc, .cant_be_idd
+	ld a, [wTempEnemyMonSpecies]
+	cp MAROWAK
+	jr z, .unveil
+
+.cant_be_idd
 	ld hl, GhostCantBeIDdText
+	call StdBattleTextbox
+	ret
+
+.unveil
+; Yellow: EnemyAppearedText / UnveiledGhostText / LoadEnemyMonData / MarowakAnim
+; / WildMonAppearedText (engine/battle/common_text.asm .isMarowak).  Our enemy
+; data was never faked in the first place (GhostSubstitution only overwrites the
+; nickname and the pic), so there is no LoadEnemyMonData to redo.
+	ld hl, GhostUnveiledText
+	call StdBattleTextbox
+
+; The ghost ends here: every other piece of the mechanic keys on wBattleType,
+; so clearing it stands down the turn skip (GhostTurn), the always-escape
+; override and the pic-redraw hooks in one go, leaving an ordinary wild L30
+; MAROWAK.  Catching stays blocked -- GhostCantBeCaught's second test is on
+; map + species and never looked at the SCOPE, exactly as Yellow's does.
+	xor a ; BATTLETYPE_NORMAL
+	ld [wBattleType], a
+
+; Re-run the battle palettes now that GetEnemyFrontpicPalettePointer will stop
+; returning the grey ghost colours.  The silhouette takes on MAROWAK's palette
+; for the handful of frames before the pic swap -- the closest cheap analogue of
+; MarowakAnim's OBP1 flashes (D25).
+; ⚠ GetSGBLayout only fills wBGPals1/wBGPals2; SetDefaultBGPAndOBP is what
+; requests the hardware update (hCGBPalUpdate).  Both of Battle Core's
+; SCGB_BATTLE_COLORS call sites pair them, and without the second call the
+; MAROWAK is drawn in the ghost's grey (verified in the harness, 9i).
+	ld b, SCGB_BATTLE_COLORS
+	call GetSGBLayout
+	call SetDefaultBGPAndOBP
+
+	call RevealGhost
+
+	ld hl, WildPokemonAppearedText
 	call StdBattleTextbox
 	ret
 
@@ -171,7 +226,7 @@ GhostCantBeCaught::
 	ret
 
 RevealGhost::
-; D25 / docs/M6-TOWER.md 3.6 -- designed here, wired by 9i.
+; D25 / docs/M6-TOWER.md 3.6 -- designed by 9d, wired by 9i above.
 ; Call with the battle screen up and wTempEnemyMonSpecies holding the real
 ; species: restores the real nickname in wEnemyMonNickname, swaps the GHOST pic
 ; for the species pic and runs the normal front-pic animation (which plays the

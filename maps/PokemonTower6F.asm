@@ -103,14 +103,15 @@ TrainerMediumVera:
 ;                  caught (GhostCantBeCaught), so the only exits are RUN (DRAW)
 ;                  and fainting (LOSE).  DRAW falls through to the push-right;
 ;                  LOSE white-outs inside reloadmapafterbattle.
-;   * WITH SCOPE -> a plain L30 MAROWAK, winnable, and `.defeated` below is the
-;                  9i path.  `loadwildmon MAROWAK, 30` already puts the real
-;                  species in wTempWildMonSpecies/wEnemyMonSpecies, which is
-;                  what RevealGhost:: needs, so 9i has NOTHING to change in this
-;                  file: it only has to wire RevealGhost into the battle-start
-;                  message (Scope held + MAROWAK on 6F).  `.defeated` is written
-;                  out now so a Scope-holding player cannot soft-lock before 9i
-;                  lands -- today it is simply unreachable.
+;   * WITH SCOPE -> the battle still OPENS as the ghost and is unveiled on
+;                  screen (9i: CheckGhostBattle keeps BATTLETYPE_GHOST for the
+;                  MAROWAK, GhostBattleStartMessage prints Yellow's unveil text
+;                  and calls RevealGhost), after which it is a plain wild L30
+;                  MAROWAK: winnable -> `.defeated`, runnable -> the push-right,
+;                  still uncatchable.  `loadwildmon MAROWAK, 30` already puts
+;                  the real species in wTempWildMonSpecies/wEnemyMonSpecies,
+;                  which is what RevealGhost:: needs, so 9i changed NOTHING in
+;                  this file but these comments.
 ; GhostCantBeCaught already blocks the catch on 6F+MAROWAK regardless of the
 ; Scope, so the ball route to EVENT_BEAT_GHOST_MAROWAK stays closed after 9i too.
 PokemonTower6FMarowakScript:
@@ -122,7 +123,7 @@ PokemonTower6FMarowakScript:
 	closetext
 	loadwildmon MAROWAK, 30
 	startbattle
-	ifequal WIN, .defeated ; TODO 9i: only reachable once the SILPH SCOPE exists
+	ifequal WIN, .defeated ; reachable once the SILPH SCOPE is in the bag (9i)
 	reloadmapafterbattle ; LOSE jumps to the whiteout here; nothing below runs
 	applymovement PLAYER, PokemonTower6FPushedBackMovement
 	end
