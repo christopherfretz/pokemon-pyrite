@@ -76,5 +76,41 @@
   "title": "Route 8",
   "description": "Route 8's east end, one step west of Lavender Town. Nothing faked.",
   "sav": "route8.sav"
+ },
+ {
+  "id": "tower2f",
+  "title": "POK\u00e9MON TOWER 2F \u2014 the rival is waiting",
+  "description": "At the foot of the 1F stairs on 2F. NOTHING is faked: the rival scene on row 5 is still armed, and row 5 is the floor's only corridor, so this is the fixture to start from if you want that fight.",
+  "sav": "tower2f.sav"
+ },
+ {
+  "id": "tower3f",
+  "title": "POK\u00e9MON TOWER 3F",
+  "description": "3F, at the foot of 2F's west stairs. The 2F RIVAL BATTLE IS FAKED \u2014 its flag is written so the 2F corridor is walkable \u2014 so don't use this one to test that fight. All three 3F channelers are untouched.",
+  "sav": "tower3f.sav"
+ },
+ {
+  "id": "tower4f",
+  "title": "POK\u00e9MON TOWER 4F",
+  "description": "4F, at the foot of 3F's east stairs. Carries the faked 2F rival flag; 3F's and 4F's channelers are all untouched.",
+  "sav": "tower4f.sav"
+ },
+ {
+  "id": "tower5f",
+  "title": "POK\u00e9MON TOWER 5F",
+  "description": "5F, at the foot of 4F's west stairs. Carries the faked 2F rival flag, plus two 4F channelers (AGNES and EDITH) flagged as beaten \u2014 EDITH's line of sight covers the only tiles joining 4F's two halves. 5F is untouched.",
+  "sav": "tower5f.sav"
+ },
+ {
+  "id": "tower6f",
+  "title": "POK\u00e9MON TOWER 6F \u2014 the ghost MAROWAK is waiting",
+  "description": "6F, at the foot of 5F's east stairs, with the PURIFIED ZONE heal really taken on the way. Carries the faked 2F rival and 4F channeler flags; all four 5F channelers and everything on 6F are untouched, so the restless soul is still on its tile \u2014 and there is no SILPH SCOPE in the bag.",
+  "sav": "tower6f.sav"
+ },
+ {
+  "id": "tower7f",
+  "title": "POK\u00e9MON TOWER 7F \u2014 JESSIE & JAMES and MR FUJI",
+  "description": "The top of the Tower, at the foot of 6F's south stairs, with 6F's RARE CANDY really taken. Three 6F obstacles are FAKED past: channelers NORA and VERA, and THE GHOST MAROWAK \u2014 its flag is written, so this preset cannot test the SILPH SCOPE reveal (use 'POK\u00e9MON TOWER 6F' for that). JESSIE & JAMES and the MR FUJI rescue are untouched.",
+  "sav": "tower7f.sav"
  }
 ]
