@@ -1647,7 +1647,7 @@ GruntMGroup:
 	db -1 ; end
 
 	; GRUNTM (27) - Kanto hack: Nugget Bridge recruiter, Yellow's ROCKET 6
-	db "ROCKET@", TRAINERTYPE_NORMAL
+	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 15, EKANS
 	db 15, ZUBAT
 	db -1 ; end
