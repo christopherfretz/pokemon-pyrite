@@ -76,7 +76,7 @@ ItemDescriptions:
 	dw MoomooMilkDesc
 	dw QuickClawDesc
 	dw PsnCureBerryDesc
-	dw GoldLeafDesc
+	dw SilphScopeDesc
 	dw SoftSandDesc
 	dw SharpBeakDesc
 	dw PrzCureBerryDesc
@@ -556,9 +556,9 @@ PsnCureBerryDesc:
 	db   "A self-cure for"
 	next "poison. (HOLD)@"
 
-GoldLeafDesc:
-	db   "A strange, gold-"
-	next "colored leaf.@"
+SilphScopeDesc:
+	db   "Reveals unseeable"
+	next "#MON.@"
 
 SoftSandDesc:
 	db   "Powers up ground-"

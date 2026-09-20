@@ -88,7 +88,7 @@ ItemEffects:
 	dw RestoreHPEffect     ; MOOMOO_MILK
 	dw NoEffect            ; QUICK_CLAW
 	dw StatusHealingEffect ; PSNCUREBERRY
-	dw NoEffect            ; GOLD_LEAF
+	dw NoEffect            ; SILPH_SCOPE
 	dw NoEffect            ; SOFT_SAND
 	dw NoEffect            ; SHARP_BEAK
 	dw StatusHealingEffect ; PRZCUREBERRY

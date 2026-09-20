@@ -74,7 +74,7 @@ ItemNames::
 	li "MOOMOO MILK"
 	li "QUICK CLAW"
 	li "PSNCUREBERRY"
-	li "GOLD LEAF"
+	li "SILPH SCOPE"
 	li "SOFT SAND"
 	li "SHARP BEAK"
 	li "PRZCUREBERRY"

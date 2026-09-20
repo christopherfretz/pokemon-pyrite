@@ -20,6 +20,8 @@
 ; M4 7a (docs/M4-VERMILION.md 3.10) reclaimed the first of those, SILVER_LEAF
 ; ($3c), for TM_THUNDERBOLT = TM86 (Lt. Surge's TM24), and dropped the
 ; THUNDERBOLT move tutor in exchange so NUM_TM_HM_TUTOR stayed 95.
+; M6 9c (docs/M6-TOWER.md D11) reclaimed GOLD_LEAF ($4b) for SILPH_SCOPE.
+; Remaining reclaim candidates: NORMAL_BOX ($a7), GORGEOUS_BOX ($a8).
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -97,7 +99,7 @@
 	const MOOMOO_MILK  ; 48
 	const QUICK_CLAW   ; 49
 	const PSNCUREBERRY ; 4a
-	const GOLD_LEAF    ; 4b
+	const SILPH_SCOPE  ; 4b (was GOLD_LEAF; Kanto hack M6 9c)
 	const SOFT_SAND    ; 4c
 	const SHARP_BEAK   ; 4d
 	const PRZCUREBERRY ; 4e
