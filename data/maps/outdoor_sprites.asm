@@ -85,21 +85,30 @@ rept MAX_OUTDOOR_SPRITES - 4
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
+; Kanto hack (G1, docs/M3-CERULEAN.md): ORDER MATTERS HERE.  ArrangeUsedSprites
+; fills table 1 (vtiles $00-$7f, VRAM bank 1) first and stops at FOLLOWER_VTILE
+; $6c, which is the player plus exactly EIGHT 12-tile sheets; the rest go to
+; table 2 (vtiles $80+, VRAM bank 0), and GetUsedSprite copies NO walking half
+; for those -- bank 0 $8800-$8fff is BG tile data.  A sheet that animates from
+; table 2 therefore indexes BG font tiles for every walking frame.  So every
+; sheet this group ever WALKS must come first; standing/still sheets last.
 CeruleanGroupSprites:
+; walks: keep inside table 1 (the first eight entries)
+	db SPRITE_KANTO_RIVAL   ; CERULEAN CITY 6d cutscene applymovement
+	db SPRITE_SUPER_NERD    ; CERULEAN CITY, WALK_UP_DOWN + WALK_LEFT_RIGHT
+	db SPRITE_COOLTRAINER_F ; CERULEAN CITY WALK_LEFT_RIGHT, ROUTE 4 WANDER
+	db SPRITE_TWIN          ; Kanto hack (M5 8n): ROUTE 10 -> LAVENDER TOWN,
+	                        ; whose TWIN WANDERs, and whose sprites would
+	                        ; otherwise cost a RefreshConnectionSprites reload
+; stands still everywhere in this group: safe in either table
 	db SPRITE_COOLTRAINER_M
-	db SPRITE_COOLTRAINER_F
 	db SPRITE_BUG_CATCHER
 	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_SUPER_NERD
 	db SPRITE_POKEFAN_M
 	db SPRITE_ROCKET
 	db SPRITE_OFFICER
 	db SPRITE_POKE_BALL
-	db SPRITE_KANTO_RIVAL
-	db SPRITE_TWIN ; Kanto hack (M5 8n): ROUTE 10 -> LAVENDER TOWN, whose TWIN
-	               ; would otherwise cost a RefreshConnectionSprites reload
-rept MAX_OUTDOOR_SPRITES - 12
+rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

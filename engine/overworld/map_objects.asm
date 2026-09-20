@@ -2988,10 +2988,23 @@ InitSprites:
 	inc hl
 	ldh a, [hCurSpriteTile]
 	bit ABSOLUTE_TILE_ID_F, e
-	jr z, .nope1
+	jr z, .relative_tile
 	xor a
-.nope1
 	add [hl]
+	jr .got_tile
+
+.relative_tile
+	add [hl]
+; Kanto hack (G1, docs/M3-CERULEAN.md): Facings selects a sheet's walking half
+; with tile byte $80+, but GetUsedSprite copies no walking half for a sprite in
+; table 2 (vtile $80+, VRAM bank 0) -- bank 0 $8800-$8fff is BG tile data.  Such
+; a sprite used to animate straight into the BG font.  Fall back to the standing
+; frame instead: the NPC slides without moving its legs rather than glitching.
+; OAM_BANK1 is set in d exactly when the sprite is in table 1.
+	bit B_OAM_BANK1, d
+	jr nz, .got_tile
+	res 7, a
+.got_tile
 	inc hl
 	ld [bc], a ; tile id
 	inc c
