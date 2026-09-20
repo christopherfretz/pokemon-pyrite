@@ -185,6 +185,13 @@ INCLUDE "engine/battle/core.asm"
 INCLUDE "data/battle/effect_command_pointers.asm"
 
 
+; Kanto hack M6 9d (docs/M6-TOWER.md 3.4): the POKéMON TOWER ghost engine lives
+; out of the way of the full battle banks, reached only by farcall.
+SECTION "Ghost Battle", ROMX ; pinned beside "Pics 19" in layout.link
+
+INCLUDE "engine/battle/ghost.asm"
+
+
 SECTION "bank10", ROMX
 
 INCLUDE "engine/pokedex/pokedex.asm"

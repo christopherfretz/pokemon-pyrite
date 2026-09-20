@@ -101,6 +101,7 @@ DEF SPDSPCDV_SHINY EQU $AA
 	const BATTLETYPE_FORCEITEM
 	const BATTLETYPE_CELEBI
 	const BATTLETYPE_SUICUNE
+	const BATTLETYPE_GHOST ; Kanto hack M6 9d: POKéMON TOWER ghost (docs/M6-TOWER.md 3.4)
 
 ; wCatchTutorialCatcher values (Kanto hack, engine/events/catch_tutorial.asm)
 	const_def

@@ -1223,6 +1223,14 @@ _BallMissedText::
 	line "#MON!"
 	prompt
 
+_GhostDodgedBallText:: ; Kanto hack M6 9d -- Yellow's _ItemUseBallText00
+	text "It dodged the"
+	line "thrown BALL!"
+
+	para "This #MON"
+	line "can't be caught!"
+	prompt
+
 _BallBrokeFreeText::
 	text "Oh no! The #MON"
 	line "broke free!"

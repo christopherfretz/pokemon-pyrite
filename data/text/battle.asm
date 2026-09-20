@@ -1106,3 +1106,33 @@ BattleText_NoTimeLeftToday: ; unreferenced
 	text "There is no time"
 	line "left today!"
 	done
+
+; Kanto hack M6 9d (docs/M6-TOWER.md 3.4.4): the five POKéMON TOWER ghost
+; texts, ported verbatim from Yellow's data/text/text_2.asm and text_3.asm.
+
+GhostScaredText:: ; Yellow _ScaredText
+	text "<USER> is too"
+	line "scared to move!"
+	prompt
+
+GhostGetOutText:: ; Yellow _GetOutText
+	text "GHOST: Get out…"
+	line "Get out…"
+	prompt
+
+GhostAppearedText:: ; Yellow _EnemyAppearedText
+	text_ram wEnemyMonNickname
+	text_start
+	line "appeared!"
+	prompt
+
+GhostUnveiledText:: ; Yellow _UnveiledGhostText
+	text "SILPH SCOPE"
+	line "unveiled the"
+	cont "GHOST's identity!"
+	prompt
+
+GhostCantBeIDdText:: ; Yellow _GhostCantBeIDdText
+	text "Darn! The GHOST"
+	line "can't be ID'd!"
+	prompt

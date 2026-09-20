@@ -229,6 +229,15 @@ PokeBallEffect:
 	ld hl, ItemUsedText
 	call PrintText
 
+	; Kanto hack M6 9d (docs/M6-TOWER.md 3.4): Yellow forces the $10
+	; "can't be caught" value for ghosts and for the 6F MAROWAK.
+	farcall GhostCantBeCaught
+	jr nc, .catchable
+	xor a
+	ld [wFinalCatchRate], a
+	jp .fail_to_catch
+
+.catchable
 	ld a, [wEnemyMonCatchRate]
 	ld b, a
 	ld a, [wBattleType]
@@ -406,6 +415,15 @@ PokeBallEffect:
 	ld a, [wWildMon]
 	and a
 	jr nz, .caught
+
+	; Kanto hack M6 9d: Yellow prints ItemUseBallText00 ("It dodged the thrown
+	; BALL! This #MON can't be caught!") instead of a wobble message.
+	farcall GhostCantBeCaught
+	jr nc, .count_wobbles
+	ld hl, GhostDodgedBallText
+	jp .shake_and_break_free
+
+.count_wobbles
 	ld a, [wThrownBallWobbleCount]
 	cp 1
 	ld hl, BallBrokeFreeText
@@ -1076,6 +1094,10 @@ BallDodgedText: ; unreferenced
 
 BallMissedText: ; unreferenced
 	text_far _BallMissedText
+	text_end
+
+GhostDodgedBallText: ; Kanto hack M6 9d -- Yellow's _ItemUseBallText00
+	text_far _GhostDodgedBallText
 	text_end
 
 BallBrokeFreeText:

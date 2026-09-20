@@ -3698,6 +3698,8 @@ TryToRunAwayFromBattle:
 	jp z, .cant_escape
 	cp BATTLETYPE_SUICUNE
 	jp z, .cant_escape
+	cp BATTLETYPE_GHOST ; Kanto hack M6 9d: Yellow always lets you flee a ghost
+	jp z, .can_escape
 
 	ld a, [wLinkMode]
 	and a
@@ -8015,6 +8017,7 @@ DropEnemySub:
 	predef GetUnownLetter
 	ld de, vTiles2
 	predef GetAnimatedFrontpic
+	farcall GhostSubstitution ; Kanto hack M6 9d: keep the GHOST pic on redraws
 	pop af
 	ld [wCurPartySpecies], a
 	ret
@@ -8041,6 +8044,8 @@ StartBattle:
 	and a
 	ret z
 .allowed
+
+	farcall CheckGhostBattle ; Kanto hack M6 9d (docs/M6-TOWER.md 3.4)
 
 	ld a, [wTimeOfDayPal]
 	push af
@@ -8220,6 +8225,7 @@ InitEnemyWildmon:
 .skip_unown
 	ld de, vTiles2
 	predef GetAnimatedFrontpic
+	farcall GhostSubstitution ; Kanto hack M6 9d (docs/M6-TOWER.md 3.4)
 	xor a
 	ld [wTrainerClass], a
 	ldh [hGraphicStartTile], a
@@ -9117,6 +9123,15 @@ BattleStartMessage:
 	jr .PrintBattleStartText
 
 .wild
+; Kanto hack M6 9d: an unidentified ghost gets Yellow's two-line intro instead
+; of the shininess check, the frontpic animation and the cry.
+	ld a, [wBattleType]
+	cp BATTLETYPE_GHOST
+	jr nz, .not_a_ghost
+	farcall GhostBattleStartMessage
+	ret
+
+.not_a_ghost
 	call BattleCheckEnemyShininess
 	jr nc, .not_shiny
 

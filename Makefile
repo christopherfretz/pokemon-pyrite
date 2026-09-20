@@ -391,6 +391,12 @@ gfx/mobile/pichu_animated.2bpp: tools/gfx += --trim-whitespace
 gfx/mobile/stadium2_n64.2bpp: tools/gfx += --trim-whitespace
 
 
+# Kanto hack M6 9d: the POKéMON TOWER ghost frontpic.  Yellow's 6x6 sprite,
+# pre-padded to the 7x7 box PadFrontpic would produce, so the loader is a plain
+# Get2bpp -- which means it has to be assembled in the column-major order the
+# frontpic pipeline uses (docs/M6-TOWER.md 9d findings).
+gfx/battle/ghost.2bpp: RGBGFXFLAGS += --columns
+
 ### Catch-all graphics rules
 
 %.2bpp: %.png

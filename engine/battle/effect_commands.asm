@@ -28,6 +28,12 @@ DoTurn:
 	xor a
 	ld [wTurnEnded], a
 
+	; Kanto hack M6 9d (docs/M6-TOWER.md 3.4): a POKéMON TOWER ghost eats the
+	; turn for both sides.  hBattleTurn is already set by SetPlayerTurn /
+	; SetEnemyTurn, so one hook covers Yellow's two PrintGhostText call sites.
+	farcall GhostTurn
+	ret c
+
 	; Effect command checkturn is called for every move.
 	call CheckTurn
 

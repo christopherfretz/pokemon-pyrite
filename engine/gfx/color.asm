@@ -671,6 +671,18 @@ GetBattlemonBackpicPalettePointer:
 	ret
 
 GetEnemyFrontpicPalettePointer:
+; Kanto hack M6 9d: an unidentified ghost is grey, not the species' colours.
+	ld a, [wBattleType]
+	cp BATTLETYPE_GHOST
+	jr nz, .not_a_ghost
+	ld hl, .GhostPalette
+	ret
+
+.GhostPalette
+	RGB 21, 21, 24
+	RGB 10, 10, 14
+
+.not_a_ghost
 	push de
 	farcall GetEnemyMonDVs
 	ld c, l
