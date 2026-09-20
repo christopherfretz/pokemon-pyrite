@@ -737,6 +737,19 @@ SECTION "Vermilion Gym Trash Cans", ROMX
 INCLUDE "engine/events/vermilion_gym_trash.asm"
 
 
+; Kanto hack: M6 step 9e (docs/M6-TOWER.md 5.4).  Yellow's rival-starter rule,
+; re-derived from the EVENT_ pair instead of wRivalStarter.  38 bytes, reached
+; only through the special table (a far call), so it can live anywhere.
+;
+; PINNED beside "Ghost Battle" in layout.link (ROMX $5a), NOT floating: left to
+; float, rgblink bin-packs 38 bytes into the last scrap of bank $01 -- the
+; catch-all bank HANDOFF lists as effectively full -- which is exactly where a
+; new section should not go.  $5a is M6's engine bank and has ~4.6 KB spare.
+SECTION "Kanto Rival", ROMX
+
+INCLUDE "engine/events/kanto_rival.asm"
+
+
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"

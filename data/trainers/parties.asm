@@ -4123,6 +4123,49 @@ KantoRivalGroup:
 	db 20, EEVEE
 	db -1 ; end
 
+	; KANTO_RIVAL (5)-(7): POKEMON TOWER 2F -- Yellow's fifth rival fight
+	; (OPP_RIVAL2 / wTrainerNo = wRivalStarter + 1, Rival2Data rows 2-4 at
+	; vendor/pokeyellow/data/trainers/parties.asm:690-692).
+	;
+	; ⚠ These three rows are NOT one-per-player-starter.  The player's starter
+	; in Yellow is always PIKACHU; wRivalStarter is the RIVAL's EEVEE outcome
+	; (RIVAL_STARTER_JOLTEON/FLAREON/VAPOREON = 1/2/3,
+	; vendor/pokeyellow/constants/pokemon_constants.asm:207-209), and it selects
+	; the row.  Note what changes and what does not: slots 1, 4 and 5 are the
+	; same in all three rows, and slot 5 is still an unevolved L25 EEVEE --
+	; Yellow's rival does not show JOLTEON/FLAREON/VAPOREON until SILPH CO. 7F.
+	; What the rule buys him here is type coverage against the evolution he
+	; DIDN'T pick: the JOLTEON rival carries water + fire, the FLAREON rival
+	; electric + water, the VAPOREON rival fire + electric.
+	; Selected by `special GetKantoRivalStarter` -- see maps/PokemonTower2F.asm.
+
+	; KANTO_RIVAL (5): POKEMON TOWER 2F, RIVAL_STARTER_JOLTEON
+	db "?@", TRAINERTYPE_NORMAL
+	db 25, FEAROW
+	db 23, SHELLDER
+	db 22, VULPIX
+	db 20, SANDSHREW
+	db 25, EEVEE
+	db -1 ; end
+
+	; KANTO_RIVAL (6): POKEMON TOWER 2F, RIVAL_STARTER_FLAREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 25, FEAROW
+	db 23, MAGNEMITE
+	db 22, SHELLDER
+	db 20, SANDSHREW
+	db 25, EEVEE
+	db -1 ; end
+
+	; KANTO_RIVAL (7): POKEMON TOWER 2F, RIVAL_STARTER_VAPOREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 25, FEAROW
+	db 23, VULPIX
+	db 22, MAGNEMITE
+	db 20, SANDSHREW
+	db 25, EEVEE
+	db -1 ; end
+
 JessieJamesGroup:
 	; JESSIE_JAMES (1): Mt. Moon B2F (Yellow's OPP_ROCKET $2a)
 	; Name is empty: PlaceEnemysName prints the class name "JESSIE&JAMES" alone.

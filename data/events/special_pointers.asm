@@ -201,3 +201,4 @@ SpecialsPointers::
 	add_special SSAnneDeparture
 	add_special InitVermilionGymTrashCans
 	add_special VermilionGymTrashCan
+	add_special GetKantoRivalStarter

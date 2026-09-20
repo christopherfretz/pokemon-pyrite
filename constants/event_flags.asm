@@ -1730,7 +1730,22 @@
 ; 476 free -> 475.
 	const EVENT_RESCUED_MR_FUJI ; MR FUJI is back home from the #MON TOWER (Yellow's EVENT_RESCUED_MR_FUJI); set by M6's tower rescue
 
-; Unused: next 475 events
+; Kanto hack: M6 step 9e (POKEMON TOWER 2F, the rival's fourth battle).  TWO
+; appends, not the three docs/M6-TOWER.md 3.12 budgeted.
+;
+; Yellow's EVENT_POKEMON_TOWER_RIVAL_ON_LEFT is deliberately NOT ported.  It
+; exists only because Gen 1 splits the scene across three script-pointer states
+; (PokemonTower2FDefaultScript sets the flag, PokemonTower2FDefeatedRivalScript
+; reads it back after the battle to pick the exit path); it is reset at the top
+; of every trigger and can never survive a battle boundary, so it carries no
+; cross-session meaning.  GSC runs the whole beat as one linear script per
+; coord_event, so each entry tile already knows its own exit walk -- exactly how
+; the shipped S.S. ANNE (7i) and CERULEAN (6d) rival scenes are built.  475 free
+; -> 473.
+	const EVENT_BEAT_POKEMON_TOWER_RIVAL ; 9e: Yellow's fourth rival battle, POKEMON TOWER 2F, is over
+	const EVENT_POKEMON_TOWER_2F_RIVAL_HIDDEN ; the 2F rival is off the map (derived from the flag above by PokemonTower2FObjectsCallback)
+
+; Unused: next 473 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

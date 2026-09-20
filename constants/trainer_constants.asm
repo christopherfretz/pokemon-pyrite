@@ -834,6 +834,22 @@ DEF KRIS EQU __trainer_class__
 	const KANTO_RIVAL_2 ; Route 22
 	const KANTO_RIVAL_3 ; Cerulean City, the south end of Nugget Bridge (6d)
 	const KANTO_RIVAL_4 ; S.S. ANNE 2F, the corridor outside the CAPTAIN's room (7i)
+	const KANTO_RIVAL_5 ; POKEMON TOWER 2F, the JOLTEON branch of the Eevee rule (9e)
+	const KANTO_RIVAL_6 ; POKEMON TOWER 2F, the FLAREON branch (9e)
+	const KANTO_RIVAL_7 ; POKEMON TOWER 2F, the VAPOREON branch (9e)
+
+; Kanto hack: Yellow's rival-starter selector, ported value for value from
+; vendor/pokeyellow/constants/pokemon_constants.asm:207-209.  Yellow keeps it in
+; the saved byte wRivalStarter; we derive it instead from the EVENT_ pair
+; EVENT_BEAT_OAKS_LAB_RIVAL + EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE (the rule
+; block at constants/event_flags.asm, "Cerulean rival battle"), which is what
+; `special GetKantoRivalStarter` (engine/events/kanto_rival.asm) returns in
+; wScriptVar.  It picks the rival's PARTY ROW from POKEMON TOWER 2F onward --
+; in Yellow the EEVEE itself is still an EEVEE at the Tower and only appears
+; evolved from SILPH CO. 7F on (docs/M6-TOWER.md "## 9e findings").
+DEF RIVAL_STARTER_JOLTEON  EQU 1
+DEF RIVAL_STARTER_FLAREON  EQU 2
+DEF RIVAL_STARTER_VAPOREON EQU 3
 
 ; Kanto hack: Jessie & James, the recurring Rocket duo (docs/M2-MTMOON.md 5h).
 ; One class, one party id per Yellow encounter: Mt. Moon B2F now, then Rocket
