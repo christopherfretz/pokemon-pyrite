@@ -799,7 +799,7 @@
 ; PokefanM
 	const EVENT_BEAT_POKEFANM_WILLIAM
 	const EVENT_BEAT_POKEFANM_DEREK
-	const EVENT_BEAT_POKEFANM_ROBERT ; Kanto hack: DEAD since M5 8d (Crystal's ROUTE 10 POKEFAN deleted -- Yellow has none there).  Free for reuse
+	const EVENT_GOT_TM41_SOFTBOILED ; Kanto hack: renamed in place (M6 9p), was the dead EVENT_BEAT_POKEFANM_ROBERT (Crystal's ROUTE 10 POKEFAN, deleted in M5 8d).  CELADON CITY's gramps, Yellow's EVENT_GOT_TM41
 	const EVENT_BEAT_POKEFANM_JOSHUA
 	const EVENT_BEAT_POKEFANM_CARTER
 	const EVENT_BEAT_POKEFANM_TREVOR

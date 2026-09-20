@@ -199,3 +199,12 @@
 ; FLOOR here, not HOP_DOWN: without it tile (10,10) is unstandable and
 ; the gate's lower west door cannot be reached on foot.
 	tilecoll FLOOR, LADDER, WALL, WALL ; a4
+; M6 9p (docs/M6-CELADON.md 2.1): CELADON CITY, the CELADON MANSION back door -- Yellow's warp_events
+; (24,3) and (25,3), i.e. both bottom quadrants of block (12,1).  Twin of
+; kanto $0a, the plain paved notch Yellow draws in the north tree line;
+; same art.  Gen 1 fires that warp off the warp_event coordinate alone,
+; GSC only ever on a $7x nybble.  LADDER (not WARP_CARPET_DOWN) so that
+; stepping back out of the mansion onto the same tile does not re-warp.
+; The .blk cell that points here is scripts/celadon_blk.py's WARP_BLOCKS;
+; this file owns every *append* to Crystal's kanto blockset (see 8j/8k).
+	tilecoll FLOOR, FLOOR, LADDER, LADDER ; a5

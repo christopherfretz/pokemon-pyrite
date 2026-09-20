@@ -324,8 +324,8 @@ CeladonGameCorner_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 14, 13, CELADON_CITY, 6
-	warp_event 15, 13, CELADON_CITY, 6
+	warp_event 14, 13, CELADON_CITY, 8 ; Kanto hack (M6 9p): Yellow's city warp 8
+	warp_event 15, 13, CELADON_CITY, 8
 
 	def_coord_events
 
