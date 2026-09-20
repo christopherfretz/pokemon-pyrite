@@ -43,6 +43,22 @@ SetFacingStandAction:
 	jr nz, SetFacingStepAction
 	jp SetFacingCurrent
 
+ConveyorSpinCheck:
+; Kanto hack (M6 9w, docs/M6-CELADON.md D32): the ROCKET HIDEOUT spin maze.
+; Only the player object, and only while a COLL_WALK_* arrow run is carrying
+; them (wConveyorDir, set by DoPlayerMovement.CheckTile).
+	ld a, [wConveyorDir]
+	and a
+	ret z
+	ld a, b
+	cp HIGH(wPlayerStruct)
+	ret nz
+	ld a, c
+	cp LOW(wPlayerStruct)
+	ret nz
+	farcall ConveyorSpinStep
+	ret
+
 SetFacingStepAction:
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
@@ -55,6 +71,17 @@ SetFacingStepAction:
 	inc a
 	and %00001111
 	ld [hl], a
+
+; Kanto hack (M6 9w, D32): spin the player while an arrow run carries them.
+; Yellow's LoadSpinnerArrowTiles fires once per overworld-loop iteration for
+; the whole slide -- about 8 quarter turns per tile, i.e. two full rotations.
+; A Crystal walk step is 16 frames, so every OTHER frame matches that cadence.
+	bit 0, a
+	jr nz, .no_spin
+	push af
+	call ConveyorSpinCheck
+	pop af
+.no_spin
 
 	rrca
 	rrca

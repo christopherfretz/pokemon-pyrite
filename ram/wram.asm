@@ -1945,6 +1945,18 @@ wSecondLockTrashCanIndex:: ds 2 ; the two cans that can hide the 2nd switch
 wGymTrashCanIndex:: db        ; the can being read right now
 
 
+; Kanto hack (M6 9w, docs/M6-CELADON.md D31/D32): the ROCKET HIDEOUT spin maze.
+; 0 when the player is not being carried by a COLL_WALK_* tile, else the
+; direction of the step they are taking + 1.  DoPlayerMovement.CheckTile sets
+; it, .no_walk clears it (and restores the landing facing), and NormalStep's
+; player branch uses it to spin the sprite one quarter turn per tile.
+; Transient: it is recomputed from the tile under the player every step, so it
+; is deliberately outside wPlayerData -- no save or savestate change.
+SECTION "Conveyor Spin", WRAM0
+
+wConveyorDir:: db
+
+
 SECTION "WRAM 1", WRAMX
 
 wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION

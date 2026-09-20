@@ -72,7 +72,7 @@ CollisionPermissionTable::
 	db LAND_TILE         ; COLL_WALK_DOWN
 	db LAND_TILE         ; COLL_BRAKE_45
 	db LAND_TILE         ; COLL_BRAKE_46
-	db LAND_TILE         ; COLL_BRAKE_47
+	db LAND_TILE         ; COLL_WALK_CONTINUE
 	db LAND_TILE         ; COLL_GRASS_48
 	db LAND_TILE         ; COLL_GRASS_49
 	db LAND_TILE         ; COLL_GRASS_4A

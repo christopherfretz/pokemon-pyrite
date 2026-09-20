@@ -43,7 +43,11 @@ DEF COLL_WALK_UP           EQU $43 ; unused
 DEF COLL_WALK_DOWN         EQU $44 ; unused
 DEF COLL_BRAKE_45          EQU $45 ; garbage
 DEF COLL_BRAKE_46          EQU $46 ; unused
-DEF COLL_BRAKE_47          EQU $47 ; unused
+; Kanto hack (M6 9w, docs/M6-CELADON.md D31): ROCKET HIDEOUT B2F/B3F spin maze.
+; "Keep travelling the way you arrived" -- the one value Yellow's arrow runs
+; need that the Gen 1 conveyor table does not have, for the ten tiles where two
+; runs cross.  Plain floor if you walk onto it yourself.
+DEF COLL_WALK_CONTINUE     EQU $47
 DEF COLL_GRASS_48          EQU $48 ; unused
 DEF COLL_GRASS_49          EQU $49 ; unused
 DEF COLL_GRASS_4A          EQU $4a ; garbage

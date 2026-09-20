@@ -132,7 +132,7 @@ DoPlayerMovement::
 	jr z, .land2
 	cp HI_NYBBLE_WARPS
 	jr z, .warps
-	jr .no_walk
+	jp .no_walk
 
 .water
 	ld a, c
@@ -143,7 +143,7 @@ DoPlayerMovement::
 	add hl, bc
 	ld a, [hl]
 	ld [wWalkingDirection], a
-	jr .continue_walk
+	jp .continue_walk
 
 .water_table
 	db RIGHT ; COLL_WATERFALL_RIGHT
@@ -152,7 +152,10 @@ DoPlayerMovement::
 	db DOWN  ; COLL_WATERFALL
 
 .land1
+; Kanto hack (M6 9w): $47 is COLL_WALK_CONTINUE -- carry on the way you came.
 	ld a, c
+	cp COLL_WALK_CONTINUE
+	jr z, .conveyor_continue
 	and 7
 	ld c, a
 	ld b, 0
@@ -161,8 +164,7 @@ DoPlayerMovement::
 	ld a, [hl]
 	cp STANDING
 	jr z, .no_walk
-	ld [wWalkingDirection], a
-	jr .continue_walk
+	jr .conveyor_step
 
 .land1_table
 	db STANDING ; COLL_BRAKE
@@ -172,7 +174,36 @@ DoPlayerMovement::
 	db DOWN     ; COLL_WALK_DOWN
 	db STANDING ; COLL_BRAKE_45
 	db STANDING ; COLL_BRAKE_46
-	db STANDING ; COLL_BRAKE_47
+	db STANDING ; COLL_WALK_CONTINUE (handled above)
+
+.conveyor_continue
+; Only a run already in progress can continue; walked onto cold, it is floor.
+	ld a, [wConveyorDir]
+	and a
+	jr z, .no_walk
+	dec a
+
+.conveyor_step
+	ld [wWalkingDirection], a
+	ld hl, wConveyorDir
+	ld c, [hl]
+	inc a
+	ld [hl], a
+	ld a, c
+	and a
+	call z, .ConveyorStart
+	jr .continue_walk
+
+.ConveyorStart:
+; Yellow plays SFX_ARROW_TILES once, as the slide begins.  GSC has no
+; SFX_ARROW_TILES, but Sfx_Squeak_Ch5 is byte-for-byte the same channel data
+; as Yellow's SFX_Arrow_Tiles_1_Ch5 (duty 0 / pitch_sweep 1, 7 /
+; square_note 15, 13, 2, 1792), so SFX_SQUEAK *is* the arrow-tile sound.
+	push bc
+	ld de, SFX_SQUEAK
+	call PlaySFX
+	pop bc
+	ret
 
 .land2
 	ld a, c
@@ -184,8 +215,7 @@ DoPlayerMovement::
 	ld a, [hl]
 	cp STANDING
 	jr z, .no_walk
-	ld [wWalkingDirection], a
-	jr .continue_walk
+	jr .conveyor_step
 
 .land2_table
 	db RIGHT    ; COLL_WALK_RIGHT_ALT
@@ -214,6 +244,23 @@ DoPlayerMovement::
 	jr .continue_walk
 
 .no_walk
+; Kanto hack (M6 9w): the tile under the player does not carry them, so any
+; spin-maze run that was in progress has just ended here.  Yellow's spin is
+; cosmetic -- wSpritePlayerStateData1FacingDirection is never touched by
+; LoadSpinnerArrowTiles -- and the vanilla-Yellow probe (docs/M6-CELADON.md
+; "9w findings") confirms you always land facing the direction of the LAST
+; step, on all 43 B2F and 16 B3F runs.  So undo the spin here.
+	ld a, [wConveyorDir]
+	and a
+	jr z, .no_conveyor
+	dec a
+	add a
+	add a ; dir -> OW_* (dir << 2)
+	ld [wPlayerDirection], a
+	xor a
+	ld [wConveyorDir], a
+
+.no_conveyor
 	xor a
 	ret
 
@@ -803,6 +850,37 @@ CheckStandingOnIce::
 .not_ice
 	and a
 	ret
+
+ConveyorSpinStep::
+; Kanto hack (M6 9w, docs/M6-CELADON.md D32): the ROCKET HIDEOUT spin maze.
+; Called once per forced step from NormalStep (bank $01) while wConveyorDir is
+; set.  Yellow's LoadSpinnerArrowTiles advances the player's facing by one
+; quarter turn through SpinnerPlayerFacingDirections (down->left->up->right);
+; we do the same by rotating OBJECT_DIRECTION, which is what SetFacingCurrent /
+; SetFacingStepAction rebuild OBJECT_FACING from every frame.  GetStepVector
+; reads OBJECT_WALKING, not OBJECT_DIRECTION, so the step still goes the way
+; the arrow points.  bc = the object struct.
+	ld hl, OBJECT_DIRECTION
+	add hl, bc
+	ld a, [hl]
+	and %00001100
+	rrca
+	rrca
+	ld e, a
+	ld d, 0
+	push hl
+	ld hl, .SpinTable
+	add hl, de
+	ld a, [hl]
+	pop hl
+	ld [hl], a
+	ret
+
+.SpinTable:
+	db OW_LEFT  ; down  -> left
+	db OW_RIGHT ; up    -> right
+	db OW_UP    ; left  -> up
+	db OW_DOWN  ; right -> down
 
 StopPlayerForEvent::
 	ld hl, wPlayerNextMovement
