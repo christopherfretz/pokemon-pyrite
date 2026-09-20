@@ -1,197 +1,101 @@
-DEF CELADONGAMECORNERPRIZEROOM_TM32_COINS     EQU 1500
-DEF CELADONGAMECORNERPRIZEROOM_TM29_COINS     EQU 3500
-DEF CELADONGAMECORNERPRIZEROOM_TM15_COINS     EQU 7500
-DEF CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS  EQU 2222
-DEF CELADONGAMECORNERPRIZEROOM_PORYGON_COINS  EQU 5555
-DEF CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS EQU 8888
+; Kanto hack (M6 9v, docs/M6-CELADON.md D45): Yellow's GAME CORNER PRIZE ROOM.
+; Three counters, Yellow's prize lists at Yellow's prices and levels, on
+; Crystal's own prize-vendor engine.  Prices/levels are
+; vendor/pokeyellow/data/events/prizes.asm and prize_mon_levels.asm verbatim;
+; Crystal's Gen 2 list (TM32/TM29/TM15, PIKACHU/PORYGON/LARVITAR) is gone.
+DEF CELADONGAMECORNERPRIZEROOM_ABRA_COINS        EQU 230
+DEF CELADONGAMECORNERPRIZEROOM_VULPIX_COINS      EQU 1000
+DEF CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_COINS  EQU 2680
+DEF CELADONGAMECORNERPRIZEROOM_SCYTHER_COINS     EQU 6500
+DEF CELADONGAMECORNERPRIZEROOM_PINSIR_COINS      EQU 6500
+DEF CELADONGAMECORNERPRIZEROOM_PORYGON_COINS     EQU 9999
+DEF CELADONGAMECORNERPRIZEROOM_DRAGON_RAGE_COINS EQU 3300
+DEF CELADONGAMECORNERPRIZEROOM_HYPER_BEAM_COINS  EQU 5500
+DEF CELADONGAMECORNERPRIZEROOM_SUBSTITUTE_COINS  EQU 7700
+
+DEF CELADONGAMECORNERPRIZEROOM_ABRA_LEVEL        EQU 15
+DEF CELADONGAMECORNERPRIZEROOM_VULPIX_LEVEL      EQU 18
+DEF CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_LEVEL  EQU 22
+DEF CELADONGAMECORNERPRIZEROOM_SCYTHER_LEVEL     EQU 30
+DEF CELADONGAMECORNERPRIZEROOM_PINSIR_LEVEL      EQU 30
+DEF CELADONGAMECORNERPRIZEROOM_PORYGON_LEVEL     EQU 26
 
 	object_const_def
+	const CELADONGAMECORNERPRIZEROOM_GRAMPS
 	const CELADONGAMECORNERPRIZEROOM_GENTLEMAN
-	const CELADONGAMECORNERPRIZEROOM_PHARMACIST
 
 CeladonGameCornerPrizeRoom_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
+CeladonGameCornerPrizeRoomGrampsScript:
+	jumptextfaceplayer CeladonGameCornerPrizeRoomGrampsText
+
 CeladonGameCornerPrizeRoomGentlemanScript:
 	jumptextfaceplayer CeladonGameCornerPrizeRoomGentlemanText
 
-CeladonGameCornerPrizeRoomPharmacistScript:
-	jumptextfaceplayer CeladonGameCornerPrizeRoomPharmacistText
-
-CeladonGameCornerPrizeRoomTMVendor:
-	faceplayer
+; Yellow's PrizeDifferentMenuPtrs order: the left counter is mon menu 1, the
+; middle one mon menu 2, the right one the TMs.  Yellow checks for the COIN CASE
+; before it says anything, asks for confirmation before it checks the coins, and
+; closes after a single purchase -- no menu loop.  Crystal's prize vendor also
+; runs `special GameCornerPrizeMonCheckDex`, which shows the #dex entry; Yellow's
+; SetPokedexOwnedFlag only sets the flag (and `givepoke` sets it for us), so the
+; entry screen is dropped.
+CeladonGameCornerPrizeRoomMonVendor1:
 	opentext
-	writetext CeladonPrizeRoom_PrizeVendorIntroText
-	waitbutton
 	checkitem COIN_CASE
 	iffalse CeladonPrizeRoom_NoCoinCase
-	writetext CeladonPrizeRoom_AskWhichPrizeText
-CeladonPrizeRoom_tmcounterloop:
-	special DisplayCoinCaseBalance
-	loadmenu CeladonPrizeRoom_TMMenuHeader
-	verticalmenu
-	closewindow
-	ifequal 1, .DoubleTeam
-	ifequal 2, .Psychic
-	ifequal 3, .HyperBeam
-	sjump CeladonPrizeRoom_CancelPurchaseScript
-
-.DoubleTeam:
-	checkcoins CELADONGAMECORNERPRIZEROOM_TM32_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	getitemname STRING_BUFFER_3, TM_DOUBLE_TEAM
-	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	giveitem TM_DOUBLE_TEAM
-	iffalse CeladonPrizeRoom_notenoughroom
-	takecoins CELADONGAMECORNERPRIZEROOM_TM32_COINS
-	sjump CeladonPrizeRoom_purchased
-
-.Psychic:
-	checkcoins CELADONGAMECORNERPRIZEROOM_TM29_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	getitemname STRING_BUFFER_3, TM_PSYCHIC_M
-	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	giveitem TM_PSYCHIC_M
-	iffalse CeladonPrizeRoom_notenoughroom
-	takecoins CELADONGAMECORNERPRIZEROOM_TM29_COINS
-	sjump CeladonPrizeRoom_purchased
-
-.HyperBeam:
-	checkcoins CELADONGAMECORNERPRIZEROOM_TM15_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	getitemname STRING_BUFFER_3, TM_HYPER_BEAM
-	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	giveitem TM_HYPER_BEAM
-	iffalse CeladonPrizeRoom_notenoughroom
-	takecoins CELADONGAMECORNERPRIZEROOM_TM15_COINS
-	sjump CeladonPrizeRoom_purchased
-
-CeladonPrizeRoom_askbuy:
-	writetext CeladonPrizeRoom_ConfirmPurchaseText
-	yesorno
-	end
-
-CeladonPrizeRoom_purchased:
-	waitsfx
-	playsound SFX_TRANSACTION
-	writetext CeladonPrizeRoom_HereYouGoText
+	writetext CeladonPrizeRoom_ExchangeCoinsText
 	waitbutton
-	sjump CeladonPrizeRoom_tmcounterloop
-
-CeladonPrizeRoom_notenoughcoins:
-	writetext CeladonPrizeRoom_NotEnoughCoinsText
-	waitbutton
-	closetext
-	end
-
-CeladonPrizeRoom_notenoughroom:
-	writetext CeladonPrizeRoom_NotEnoughRoomText
-	waitbutton
-	closetext
-	end
-
-CeladonPrizeRoom_CancelPurchaseScript:
-	writetext CeladonPrizeRoom_ComeAgainText
-	waitbutton
-	closetext
-	end
-
-CeladonPrizeRoom_NoCoinCase:
-	writetext CeladonPrizeRoom_NoCoinCaseText
-	waitbutton
-	closetext
-	end
-
-CeladonPrizeRoom_TMMenuHeader:
-	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 2, 15, TEXTBOX_Y - 1
-	dw .MenuData
-	db 1 ; default option
-
-.MenuData:
-	db STATICMENU_CURSOR ; flags
-	db 4 ; items
-	db "TM32    {d:CELADONGAMECORNERPRIZEROOM_TM32_COINS}@"
-	db "TM29    {d:CELADONGAMECORNERPRIZEROOM_TM29_COINS}@"
-	db "TM15    {d:CELADONGAMECORNERPRIZEROOM_TM15_COINS}@"
-	db "CANCEL@"
-
-CeladonGameCornerPrizeRoomPokemonVendor:
-	faceplayer
-	opentext
-	writetext CeladonPrizeRoom_PrizeVendorIntroText
-	waitbutton
-	checkitem COIN_CASE
-	iffalse CeladonPrizeRoom_NoCoinCase
-.loop
-	writetext CeladonPrizeRoom_AskWhichPrizeText
+	writetext CeladonPrizeRoom_WhichPrizeText
 	special DisplayCoinCaseBalance
 	loadmenu .MenuHeader
 	verticalmenu
 	closewindow
-	ifequal 1, .Pikachu
-	ifequal 2, .Porygon
-	ifequal 3, .Larvitar
-	sjump CeladonPrizeRoom_CancelPurchaseScript
+	ifequal 1, .Abra
+	ifequal 2, .Vulpix
+	ifequal 3, .Wigglytuff
+	sjump CeladonPrizeRoom_nothanks
 
-.Pikachu:
-	checkcoins CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	readvar VAR_PARTYCOUNT
-	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
-	getmonname STRING_BUFFER_3, PIKACHU
+.Abra:
+	getmonname STRING_BUFFER_3, ABRA
 	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	waitsfx
-	playsound SFX_TRANSACTION
-	writetext CeladonPrizeRoom_HereYouGoText
-	waitbutton
-	setval PIKACHU
-	special GameCornerPrizeMonCheckDex
-	givepoke PIKACHU, 25
-	takecoins CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS
-	sjump .loop
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_ABRA_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke ABRA, CELADONGAMECORNERPRIZEROOM_ABRA_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_ABRA_COINS
+	closetext
+	end
 
-.Porygon:
-	checkcoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	readvar VAR_PARTYCOUNT
-	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
-	getmonname STRING_BUFFER_3, PORYGON
+.Vulpix:
+	getmonname STRING_BUFFER_3, VULPIX
 	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	waitsfx
-	playsound SFX_TRANSACTION
-	writetext CeladonPrizeRoom_HereYouGoText
-	waitbutton
-	setval PORYGON
-	special GameCornerPrizeMonCheckDex
-	givepoke PORYGON, 15
-	takecoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
-	sjump .loop
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_VULPIX_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke VULPIX, CELADONGAMECORNERPRIZEROOM_VULPIX_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_VULPIX_COINS
+	closetext
+	end
 
-.Larvitar:
-	checkcoins CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS
-	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
-	readvar VAR_PARTYCOUNT
-	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
-	getmonname STRING_BUFFER_3, LARVITAR
+.Wigglytuff:
+	getmonname STRING_BUFFER_3, WIGGLYTUFF
 	scall CeladonPrizeRoom_askbuy
-	iffalse CeladonPrizeRoom_CancelPurchaseScript
-	waitsfx
-	playsound SFX_TRANSACTION
-	writetext CeladonPrizeRoom_HereYouGoText
-	waitbutton
-	setval LARVITAR
-	special GameCornerPrizeMonCheckDex
-	givepoke LARVITAR, 40
-	takecoins CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS
-	sjump .loop
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke WIGGLYTUFF, CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_COINS
+	closetext
+	end
 
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
@@ -202,91 +106,261 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 .MenuData:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
-	db "PIKACHU    {d:CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS}@"
+	db "ABRA        {d:CELADONGAMECORNERPRIZEROOM_ABRA_COINS}@"
+	db "VULPIX     {d:CELADONGAMECORNERPRIZEROOM_VULPIX_COINS}@"
+	db "WIGGLYTUFF {d:CELADONGAMECORNERPRIZEROOM_WIGGLYTUFF_COINS}@"
+	db "NO THANKS@"
+
+CeladonGameCornerPrizeRoomMonVendor2:
+	opentext
+	checkitem COIN_CASE
+	iffalse CeladonPrizeRoom_NoCoinCase
+	writetext CeladonPrizeRoom_ExchangeCoinsText
+	waitbutton
+	writetext CeladonPrizeRoom_WhichPrizeText
+	special DisplayCoinCaseBalance
+	loadmenu .MenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .Scyther
+	ifequal 2, .Pinsir
+	ifequal 3, .Porygon
+	sjump CeladonPrizeRoom_nothanks
+
+.Scyther:
+	getmonname STRING_BUFFER_3, SCYTHER
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_SCYTHER_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke SCYTHER, CELADONGAMECORNERPRIZEROOM_SCYTHER_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_SCYTHER_COINS
+	closetext
+	end
+
+.Pinsir:
+	getmonname STRING_BUFFER_3, PINSIR
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_PINSIR_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke PINSIR, CELADONGAMECORNERPRIZEROOM_PINSIR_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_PINSIR_COINS
+	closetext
+	end
+
+.Porygon:
+	getmonname STRING_BUFFER_3, PORYGON
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	scall CeladonPrizeRoom_gotprize
+	givepoke PORYGON, CELADONGAMECORNERPRIZEROOM_PORYGON_LEVEL
+	ifequal 2, CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
+	closetext
+	end
+
+.MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 2, 17, TEXTBOX_Y - 1
+	dw .MenuData
+	db 1 ; default option
+
+.MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 4 ; items
+	db "SCYTHER    {d:CELADONGAMECORNERPRIZEROOM_SCYTHER_COINS}@"
+	db "PINSIR     {d:CELADONGAMECORNERPRIZEROOM_PINSIR_COINS}@"
 	db "PORYGON    {d:CELADONGAMECORNERPRIZEROOM_PORYGON_COINS}@"
-	db "LARVITAR   {d:CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS}@"
-	db "CANCEL@"
+	db "NO THANKS@"
+
+CeladonGameCornerPrizeRoomTMVendor:
+	opentext
+	checkitem COIN_CASE
+	iffalse CeladonPrizeRoom_NoCoinCase
+	writetext CeladonPrizeRoom_ExchangeCoinsText
+	waitbutton
+	writetext CeladonPrizeRoom_WhichPrizeText
+	special DisplayCoinCaseBalance
+	loadmenu .MenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .DragonRage
+	ifequal 2, .HyperBeam
+	ifequal 3, .Substitute
+	sjump CeladonPrizeRoom_nothanks
+
+.DragonRage:
+	getitemname STRING_BUFFER_3, TM_DRAGON_RAGE
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_DRAGON_RAGE_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	giveitem TM_DRAGON_RAGE
+	iffalse CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_DRAGON_RAGE_COINS
+	sjump CeladonPrizeRoom_paid
+
+.HyperBeam:
+	getitemname STRING_BUFFER_3, TM_HYPER_BEAM
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_HYPER_BEAM_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	giveitem TM_HYPER_BEAM
+	iffalse CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_HYPER_BEAM_COINS
+	sjump CeladonPrizeRoom_paid
+
+.Substitute:
+	getitemname STRING_BUFFER_3, TM_SUBSTITUTE
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_declined
+	checkcoins CELADONGAMECORNERPRIZEROOM_SUBSTITUTE_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	giveitem TM_SUBSTITUTE
+	iffalse CeladonPrizeRoom_notenoughroom
+	takecoins CELADONGAMECORNERPRIZEROOM_SUBSTITUTE_COINS
+	sjump CeladonPrizeRoom_paid
+
+.MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 2, 15, TEXTBOX_Y - 1
+	dw .MenuData
+	db 1 ; default option
+
+.MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 4 ; items
+	db "TM{d:DRAGON_RAGE_TMNUM}    {d:CELADONGAMECORNERPRIZEROOM_DRAGON_RAGE_COINS}@"
+	db "TM{d:HYPER_BEAM_TMNUM}    {d:CELADONGAMECORNERPRIZEROOM_HYPER_BEAM_COINS}@"
+	db "TM{d:SUBSTITUTE_TMNUM}    {d:CELADONGAMECORNERPRIZEROOM_SUBSTITUTE_COINS}@"
+	db "NO THANKS@"
+
+CeladonPrizeRoom_askbuy:
+	writetext CeladonPrizeRoom_SoYouWantText
+	yesorno
+	end
+
+CeladonPrizeRoom_gotprize:
+	waitsfx
+	playsound SFX_TRANSACTION
+	writetext CeladonPrizeRoom_GotPrizeText
+	waitbutton
+	end
+
+CeladonPrizeRoom_paid:
+	waitsfx
+	playsound SFX_TRANSACTION
+	closetext
+	end
+
+; Yellow asks for confirmation first and only then counts the coins.
+CeladonPrizeRoom_notenoughcoins:
+	writetext CeladonPrizeRoom_NeedMoreCoinsText
+	waitbutton
+	closetext
+	end
+
+CeladonPrizeRoom_notenoughroom:
+	writetext CeladonPrizeRoom_NoRoomText
+	waitbutton
+	closetext
+	end
+
+CeladonPrizeRoom_declined:
+	writetext CeladonPrizeRoom_OhFineThenText
+	waitbutton
+	closetext
+	end
+
+; "NO THANKS" and B close the counter without a word, as Yellow's do.
+CeladonPrizeRoom_nothanks:
+	closetext
+	end
+
+CeladonPrizeRoom_NoCoinCase:
+	writetext CeladonPrizeRoom_RequireCoinCaseText
+	waitbutton
+	closetext
+	end
+
+CeladonGameCornerPrizeRoomGrampsText:
+	text "I sure do fancy"
+	line "that PORYGON!"
+
+	para "But, it's hard to"
+	line "win at slots!"
+	done
 
 CeladonGameCornerPrizeRoomGentlemanText:
-	text "I wanted PORYGON,"
-	line "but I was short by"
-	cont "100 coins…"
+	text "I had a major"
+	line "haul today!"
 	done
 
-CeladonGameCornerPrizeRoomPharmacistText:
-if DEF(_CRYSTAL_AU)
-	text "I don't want to"
-	line "lose my coins."
-	done
-else
-	text "Whew…"
-
-	para "I've got to stay"
-	line "calm and cool…"
-
-	para "I can't lose my"
-	line "cool, or I'll lose"
-	cont "all my money…"
-	done
-endc
-
-CeladonPrizeRoom_PrizeVendorIntroText:
-	text "Welcome!"
-
-	para "We exchange your"
-	line "coins for fabulous"
-	cont "prizes!"
+CeladonPrizeRoom_ExchangeCoinsText:
+	text "We exchange your"
+	line "coins for prizes."
 	done
 
-CeladonPrizeRoom_AskWhichPrizeText:
-	text "Which prize would"
-	line "you like?"
+CeladonPrizeRoom_WhichPrizeText:
+	text "Which prize do"
+	line "you want?"
 	done
 
-CeladonPrizeRoom_ConfirmPurchaseText:
-	text "OK, so you wanted"
-	line "a @"
+CeladonPrizeRoom_SoYouWantText:
+	text "So, you want"
+	line "@"
 	text_ram wStringBuffer3
 	text "?"
 	done
 
-CeladonPrizeRoom_HereYouGoText:
-	text "Here you go!"
+CeladonPrizeRoom_GotPrizeText:
+	text "<PLAYER> got"
+	line "@"
+	text_ram wStringBuffer3
+	text "!"
 	done
 
-CeladonPrizeRoom_NotEnoughCoinsText:
-	text "You don't have"
-	line "enough coins."
+CeladonPrizeRoom_NeedMoreCoinsText:
+	text "Sorry, you need"
+	line "more coins."
 	done
 
-CeladonPrizeRoom_NotEnoughRoomText:
-	text "You have no room"
-	line "for it."
+CeladonPrizeRoom_NoRoomText:
+	text "Oops! You don't"
+	line "have enough room."
 	done
 
-CeladonPrizeRoom_ComeAgainText:
-	text "Oh. Please come"
-	line "back with coins!"
+CeladonPrizeRoom_OhFineThenText:
+	text "Oh, fine then."
 	done
 
-CeladonPrizeRoom_NoCoinCaseText:
-	text "Oh? You don't have"
-	line "a COIN CASE."
+CeladonPrizeRoom_RequireCoinCaseText:
+	text "A COIN CASE is"
+	line "required!"
 	done
 
 CeladonGameCornerPrizeRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  5, CELADON_CITY, 10 ; Kanto hack (M6 9p): Yellow's city warp 10
-	warp_event  3,  5, CELADON_CITY, 10
+	warp_event  4,  7, CELADON_CITY, 10 ; Kanto hack (M6 9p): Yellow's city warp 10
+	warp_event  5,  7, CELADON_CITY, 10
 
 	def_coord_events
 
 	def_bg_events
-	bg_event  2,  1, BGEVENT_READ, CeladonGameCornerPrizeRoomTMVendor
-	bg_event  4,  1, BGEVENT_READ, CeladonGameCornerPrizeRoomPokemonVendor
+	bg_event  2,  2, BGEVENT_READ, CeladonGameCornerPrizeRoomMonVendor1
+	bg_event  4,  2, BGEVENT_READ, CeladonGameCornerPrizeRoomMonVendor2
+	bg_event  6,  2, BGEVENT_READ, CeladonGameCornerPrizeRoomTMVendor
 
 	def_object_events
-	object_event  0,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomGentlemanScript, -1
-	object_event  4,  4, SPRITE_PHARMACIST, SPRITEMOVEDATA_WALK_UP_DOWN, 0, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomPharmacistScript, -1
+	object_event  1,  4, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomGrampsScript, -1
+	object_event  7,  3, SPRITE_GENTLEMAN, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerPrizeRoomGentlemanScript, -1
