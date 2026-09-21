@@ -267,6 +267,12 @@ CeladonDeptStore6FVendingMachine:
 	ifequal 1, .FreshWater
 	ifequal 2, .SodaPop
 	ifequal 3, .Lemonade
+; Yellow: both CANCEL and a B press fall through to `.notThirsty`, which prints
+; _VendingMachineText7 before the routine returns
+; (vendor/pokeyellow/engine/events/vending_machine.asm).  `verticalmenu` leaves
+; 0 here on B and 4 on CANCEL, so anything that is not a drink lands here.
+	writetext CeladonVendingNotThirstyText
+	waitbutton
 	closetext
 	end
 
@@ -352,6 +358,10 @@ CeladonVendingNoMoneyText:
 CeladonVendingNoSpaceText:
 	text "There's no more"
 	line "room for stuff!"
+	done
+
+CeladonVendingNotThirstyText:
+	text "Not thirsty!"
 	done
 
 CeladonDeptStore6FSuperNerdText:

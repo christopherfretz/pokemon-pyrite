@@ -613,7 +613,7 @@ CeladonGameCornerGymGuideChampInMakingText:
 
 	para "You have better"
 	line "things to do,"
-	cont "CHAMP in making!"
+	cont "champ in making!"
 
 	para "CELADON GYM's"
 	line "LEADER is ERIKA!"
