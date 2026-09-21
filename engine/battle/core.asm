@@ -52,6 +52,8 @@ DoBattle:
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jr z, .skip_fit_check
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i: no player mon takes part either
+	jr z, .skip_fit_check
 	call CheckPlayerPartyForFitMon
 	ld a, d
 	and a
@@ -63,6 +65,12 @@ DoBattle:
 	jp z, .tutorial_debug
 	cp BATTLETYPE_TUTORIAL
 	jp z, .tutorial_debug
+; Kanto hack M7 10i (docs/M7-FUCHSIA.md 0.6 row 10i): a SAFARI battle sends out
+; no player mon at all -- Yellow leaves the trainer back sprite on screen and
+; draws only the enemy HUD -- but unlike the tutorial its TURN LOOP still runs,
+; so skip the send-out block only.
+	cp BATTLETYPE_SAFARI
+	jp z, .not_linked_2
 	xor a
 	ld [wCurPartyMon], a
 .loop2
@@ -121,7 +129,7 @@ DoBattle:
 .tutorial_debug
 	jp BattleMenu
 
-WildFled_EnemyFled_LinkBattleCanceled:
+WildFled_EnemyFled_LinkBattleCanceled:: ; Kanto hack M7 10i: farcalled from "Safari Battle"
 	call SafeLoadTempTilemapToTilemap
 	ld a, [wBattleResult]
 	and BATTLERESULT_BITMASK
@@ -177,6 +185,17 @@ BattleTurn:
 	ld [wEnemyJustGotFrozen], a
 	ld [wCurDamage], a
 	ld [wCurDamage + 1], a
+
+; Kanto hack M7 10i: a SAFARI battle's whole turn is the four-item menu plus
+; Yellow's flee roll.  No player mon exists, so UpdateBattleMonInParty would
+; write garbage into the party and everything below it is meaningless.
+	ld a, [wBattleType]
+	cp BATTLETYPE_SAFARI
+	jr nz, .not_safari
+	farcall SafariBattleTurn
+	jp c, .quit
+	jp .loop
+.not_safari
 
 	call HandleBerserkGene
 	call UpdateBattleMonInParty
@@ -3761,6 +3780,8 @@ TryToRunAwayFromBattle:
 	jp z, .cant_escape
 	cp BATTLETYPE_GHOST ; Kanto hack M6 9d: Yellow always lets you flee a ghost
 	jp z, .can_escape
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i: Yellow's SAFARI RUN never fails
+	jp z, .can_escape
 
 	ld a, [wLinkMode]
 	and a
@@ -4634,10 +4655,14 @@ UpdateBattleHUDs:
 	push hl
 	push de
 	push bc
+	ld a, [wBattleType] ; Kanto hack M7 10i: a SAFARI battle has no player mon
+	cp BATTLETYPE_SAFARI
+	jr z, .enemy_only
 	call DrawPlayerHUD
 	ld hl, wPlayerHPPal
 	call SetHPPal
 	call CheckDanger
+.enemy_only
 	call DrawEnemyHUD
 	ld hl, wEnemyHPPal
 	call SetHPPal
@@ -4947,7 +4972,7 @@ Battle_DummyFunction:
 ; In Gen 2, pokemon nicknames are always left-aligned on the HUD.
 	ret
 
-BattleMenu:
+BattleMenu:: ; Kanto hack M7 10i: farcalled from "Safari Battle"
 	xor a
 	ldh [hBGMapMode], a
 	call LoadTempTilemapToTilemap
@@ -4957,6 +4982,8 @@ BattleMenu:
 	jr z, .ok
 	cp BATTLETYPE_TUTORIAL
 	jr z, .ok
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i (Yellow: DisplayBattleMenu skips
+	jr z, .ok            ; DrawHUDsAndHPBars for every nonstandard battle type)
 	call EmptyBattleTextbox
 	call UpdateBattleHuds
 	call EmptyBattleTextbox
@@ -4970,6 +4997,11 @@ BattleMenu:
 	farcall ContestBattleMenu
 	jr .next
 .not_contest
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i: BALL / BAIT / THROW ROCK / RUN
+	jr nz, .not_safari
+	farcall SafariBattleMenu
+	jr .next
+.not_safari
 
 	; Auto input: choose "ITEM"
 	ld a, [wInputType]
@@ -4983,6 +5015,12 @@ BattleMenu:
 .next
 	ld a, $1
 	ldh [hBGMapMode], a
+	ld a, [wBattleType] ; Kanto hack M7 10i: the SAFARI menu has its own actions
+	cp BATTLETYPE_SAFARI
+	jr nz, .not_safari_action
+	farcall SafariBattleAction
+	ret
+.not_safari_action
 	ld a, [wBattleMenuCursorPosition]
 	cp $1
 	jp z, BattleMenu_Fight
@@ -5026,7 +5064,7 @@ LoadBattleMenu2:
 	scf
 	ret
 
-BattleMenu_Pack:
+BattleMenu_Pack:: ; Kanto hack M7 10i: farcalled from "Safari Battle"
 	ld a, [wLinkMode]
 	and a
 	jp nz, .ItemsCantBeUsed
@@ -5041,6 +5079,8 @@ BattleMenu_Pack:
 	cp BATTLETYPE_TUTORIAL
 	jr z, .tutorial
 	cp BATTLETYPE_CONTEST
+	jr z, .contest
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i: the SAFARI BALL is PARK_BALL (D50)
 	jr z, .contest
 
 	farcall BattlePack
@@ -5100,6 +5140,13 @@ BattleMenu_Pack:
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
 	jr z, .tutorial2
+; Kanto hack M7 10i: a SAFARI battle shows the player's own back sprite (an OAM
+; sprite that ClearSprites above has just wiped), never a battle mon's backpic.
+	cp BATTLETYPE_SAFARI
+	jr nz, .mon_backpic
+	call InitBattleDisplay.InitBackPic
+	jr .tutorial2
+.mon_backpic
 	call GetBattleMonBackpic
 
 .tutorial2
@@ -5372,7 +5419,7 @@ PassedBattleMonEntrance:
 	call SetPlayerTurn
 	jp SpikesDamage
 
-BattleMenu_Run:
+BattleMenu_Run:: ; Kanto hack M7 10i: farcalled from "Safari Battle"
 	call SafeLoadTempTilemapToTilemap
 	ld a, $3
 	ld [wMenuCursorY], a
@@ -7852,37 +7899,9 @@ ComeBackText:
 	text_far _ComeBackText
 	text_end
 
-HandleSafariAngerEatingStatus: ; unreferenced
-	ld hl, wSafariMonEating
-	ld a, [hl]
-	and a
-	jr z, .angry
-	dec [hl]
-	ld hl, BattleText_WildMonIsEating
-	jr .finish
-
-.angry
-	dec hl
-	assert wSafariMonEating - 1 == wSafariMonAngerCount
-	ld a, [hl]
-	and a
-	ret z
-	dec [hl]
-	ld hl, BattleText_WildMonIsAngry
-	jr nz, .finish
-	push hl
-	ld a, [wEnemyMonSpecies]
-	ld [wCurSpecies], a
-	call GetBaseData
-	ld a, [wBaseCatchRate]
-	ld [wEnemyMonCatchRate], a
-	pop hl
-
-.finish
-	push hl
-	call SafeLoadTempTilemapToTilemap
-	pop hl
-	jp StdBattleTextbox
+; Kanto hack M7 10i: Crystal's dead HandleSafariAngerEatingStatus (a faithful
+; port of Yellow's PrintSafariZoneBattleText) moved to engine/battle/safari.asm
+; as PrintSafariBattleText, where the rest of the SAFARI engine lives.
 
 FillInExpBar:
 	push hl

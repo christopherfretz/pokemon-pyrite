@@ -3,6 +3,7 @@ _DoItemEffect::
 	ld [wNamedObjectIndex], a
 	call GetItemName
 	call CopyName1
+	call SafariBallItemName ; Kanto hack M7 10i
 	ld a, 1
 	ld [wItemEffectSucceeded], a
 	ld a, [wCurItem]
@@ -729,6 +730,8 @@ PokeBallEffect:
 	ret z
 	cp BATTLETYPE_CONTEST
 	jr z, .used_park_ball
+	cp BATTLETYPE_SAFARI ; Kanto hack M7 10i: the same counter byte (D50)
+	jr z, .used_park_ball
 
 	ld a, [wWildMon]
 	and a
@@ -770,9 +773,17 @@ UltraBallMultiplier:
 	ld b, $ff
 	ret
 
+ParkBallMultiplier:
+; Kanto hack M7 10i: PARK_BALL doubles as Yellow's SAFARI BALL (D50), and in
+; Gen 1 the SAFARI BALL is numerically the ULTRA BALL (BallFactor2 = 150, the
+; same Rand1 <= 150 cap) -- so in a SAFARI battle it doubles the catch rate.
+; The bug contest keeps Crystal's x1.5.
+	ld a, [wBattleType]
+	cp BATTLETYPE_SAFARI
+	jr z, UltraBallMultiplier
+
 SafariBallMultiplier:
 GreatBallMultiplier:
-ParkBallMultiplier:
 ; multiply catch rate by 1.5
 	ld a, b
 	srl a
@@ -781,6 +792,25 @@ ParkBallMultiplier:
 	ret nc
 	ld b, $ff
 	ret
+
+SafariBallItemName:
+; Kanto hack M7 10i: PARK_BALL shares its id with the SAFARI BALL (D50) but not
+; its name, so ItemUsedText would say "PARK BALL" in the SAFARI ZONE.  Override
+; the copy _DoItemEffect just made, leaving the bug contest's name alone.
+	ld a, [wBattleType]
+	cp BATTLETYPE_SAFARI
+	ret nz
+	ld a, [wCurItem]
+	cp PARK_BALL
+	ret nz
+	ld hl, .Name
+	ld de, wStringBuffer2
+	ld bc, .NameEnd - .Name
+	jp CopyBytes
+
+.Name:
+	db "SAFARI BALL@"
+.NameEnd:
 
 HeavyBall_GetDexEntryBank:
 ; BUG: Heavy Ball uses wrong weight value for three Pokémon (see docs/bugs_and_glitches.md)

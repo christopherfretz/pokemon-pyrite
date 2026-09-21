@@ -365,6 +365,28 @@ BattleText_WildMonIsAngry:
 	line "is angry!"
 	prompt
 
+; Kanto hack M7 10i: Yellow's _ThrewBaitText / _ThrewRockText /
+; _OutOfSafariBallsText (vendor/pokeyellow/data/text/text_2.asm, text_9.asm).
+; Yellow ends the first two with `done` and covers the gap with the bait/rock
+; throwing animation; Crystal has no such animation, so they use `prompt` like
+; every other battle string here.
+BattleText_ThrewBait:
+	text "<PLAYER> threw"
+	line "some BAIT."
+	prompt
+
+BattleText_ThrewRock:
+	text "<PLAYER> threw a"
+	line "ROCK."
+	prompt
+
+BattleText_OutOfSafariBalls:
+	text "PA: Ding-dong!"
+
+	para "You are out of"
+	line "SAFARI BALLs!"
+	prompt
+
 FastAsleepText:
 	text "<USER>"
 	line "is fast asleep!"

@@ -9,7 +9,7 @@ LoadBattleMenu:
 	call ExitMenu
 	ret
 
-SafariBattleMenu: ; unreferenced
+SafariBattleMenu:: ; Kanto hack M7 10i: farcalled from BattleMenu
 	ld hl, SafariBattleMenuHeader
 	call LoadMenuHeader
 	jr CommonBattleMenu
@@ -56,20 +56,22 @@ SafariBattleMenuHeader:
 .MenuData:
 	db STATICMENU_CURSOR | STATICMENU_DISABLE_B ; flags
 	dn 2, 2 ; rows, columns
-	db 11 ; spacing
+	db 12 ; spacing
 	dba .Text
 	dba .PrintSafariBallsRemaining
 
+; Kanto hack M7 10i: Yellow's English captions, row-major for _2DMenu, so the
+; selection ids are 1 BALL, 2 BAIT, 3 THROW ROCK, 4 RUN.
 .Text:
-	db "サファりボール×　　@" ; "SAFARI BALL×  @"
-	db "エサをなげる@" ; "THROW BAIT"
-	db "いしをなげる@" ; "THROW ROCK"
-	db "にげる@" ; "RUN"
+	db "BALL×@"
+	db "BAIT@"
+	db "THROW ROCK@"
+	db "RUN@"
 
 .PrintSafariBallsRemaining:
-	hlcoord 17, 13
+	hlcoord 7, 14
 	ld de, wSafariBallsRemaining
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 2
+	lb bc, 1, 2
 	call PrintNum
 	ret
 

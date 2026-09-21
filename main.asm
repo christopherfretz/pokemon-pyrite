@@ -750,6 +750,17 @@ SECTION "Kanto Rival", ROMX
 INCLUDE "engine/events/kanto_rival.asm"
 
 
+; Kanto hack: M7 step 10i (docs/M7-FUCHSIA.md 0.6 row 10i).  The SAFARI ZONE
+; battle engine, farcalled from ten small hooks in "Battle Core".
+;
+; PINNED beside "Ghost Battle" in layout.link (ROMX $5a) for the same reason the
+; ghost engine is: left to float, rgblink bin-packs it into the last scrap of
+; bank $01, the catch-all bank HANDOFF lists as effectively full.
+SECTION "Safari Battle", ROMX
+
+INCLUDE "engine/battle/safari.asm"
+
+
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"
