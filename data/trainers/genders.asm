@@ -73,4 +73,5 @@ BTTrainerClassGenders:
 	db FEMALE ; JESSIE_JAMES (Jessie leads; the class covers both)
 	db MALE ; GIOVANNI
 	db MALE ; CUE_BALL
+	db MALE ; TAMER
 	assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN

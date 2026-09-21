@@ -337,6 +337,11 @@ ROMX $75
 	; about a kilobyte to rewrite all of Celadon in.  $75 is one of four
 	; wholly EMPTY banks ($75 $76 $79 $7a) the survey's cost table missed.
 	"Map Scripts 29"
+ROMX $76
+	; Kanto hack: the SAFARI ZONE's four areas, its gate, the four rest houses,
+	; the secret house and FUCHSIA's new interiors (M7 10a, docs/M7-FUCHSIA.md
+	; D47).  $76 is the second of the four wholly EMPTY banks named above.
+	"Map Scripts 30"
 ROMX $77
 	"Unown Font"
 	"Print Party"

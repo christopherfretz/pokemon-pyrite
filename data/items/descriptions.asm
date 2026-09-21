@@ -169,7 +169,7 @@ ItemDescriptions:
 	dw MoonBallDesc
 	dw LoveBallDesc
 	dw LiftKeyDesc
-	dw GorgeousBoxDesc
+	dw GoldTeethDesc
 	dw SunStoneDesc
 	dw PolkadotBowDesc ; unread: $aa is TM87 ICE BEAM (M6 9r) and TM/HM items
 	                   ; print the MOVE description; see PrintItemDescription
@@ -914,9 +914,9 @@ LiftKeyDesc:
 	db   "Opens the ROCKET"
 	next "HIDEOUT lift.@"
 
-GorgeousBoxDesc:
-	db   "Open it and see"
-	next "what's inside.@"
+GoldTeethDesc:
+	db   "The SAFARI ZONE"
+	next "WARDEN's teeth.@"
 
 SunStoneDesc:
 	db   "Evolves certain"

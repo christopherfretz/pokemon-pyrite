@@ -79,6 +79,7 @@ INCBIN "gfx/trainers/kanto_rival.gbcpal", middle_colors ; KANTO_RIVAL
 INCBIN "gfx/trainers/jessie_james.gbcpal", middle_colors ; JESSIE_JAMES
 INCBIN "gfx/trainers/giovanni.gbcpal", middle_colors ; GIOVANNI
 INCBIN "gfx/trainers/cueball.gbcpal", middle_colors ; CUE_BALL
+INCBIN "gfx/trainers/biker.gbcpal", middle_colors ; TAMER (placeholder, matches BikerPic)
 INCBIN "gfx/trainers/mysticalman.gbcpal", middle_colors
 
 	assert_table_length NUM_TRAINER_CLASSES + 1

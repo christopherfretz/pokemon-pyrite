@@ -928,9 +928,24 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const CUE_BALL_6 ; ROUTE 17 (M6 9z)
 	const CUE_BALL_7 ; ROUTE 17 (M6 9z)
 	const CUE_BALL_8 ; ROUTE 17 (M6 9z)
-	const CUE_BALL_9 ; ROUTE 21 (reserved for M7)
+	const CUE_BALL_9 ; ROUTE 21 (reserved for M9 -- D62 moved ROUTES 19-21 out of M7)
 
-	trainerclass MYSTICALMAN ; 47
+; Kanto hack: TAMER (docs/M7-FUCHSIA.md D55).  Crystal has no such class --
+; Yellow's `trainer_const TAMER ; $2D`, used in FUCHSIA GYM (1-2), VIRIDIAN GYM
+; (3-4) and VICTORY ROAD 2F (5).  Inserted BEFORE MYSTICALMAN, like GIOVANNI and
+; CUE BALL above, because several class-keyed tables end in
+; `assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN`.
+; Every party row leaves the name empty, so PlaceEnemysName prints "TAMER"
+; alone, which is what Yellow shows.  The pic is Crystal's BIKER for now --
+; 10h ports pokeyellow gfx/trainers/tamer.png.
+	trainerclass TAMER ; 47
+	const TAMER_1 ; FUCHSIA GYM
+	const TAMER_2 ; FUCHSIA GYM
+	const TAMER_3 ; VIRIDIAN GYM (reserved for M8)
+	const TAMER_4 ; VIRIDIAN GYM (reserved for M8)
+	const TAMER_5 ; VICTORY ROAD 2F (reserved for M8)
+
+	trainerclass MYSTICALMAN ; 48
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

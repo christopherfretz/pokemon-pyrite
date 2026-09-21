@@ -127,4 +127,8 @@ OverworldSprites:
 	overworld_sprite ChannelerSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	overworld_sprite MrFujiSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BROWN
 	overworld_sprite GiovanniSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BROWN
+	overworld_sprite WardenSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BROWN
+	overworld_sprite SafariZoneWorkerSpriteGFX, 12, STANDING_SPRITE, PAL_OW_GREEN
+	overworld_sprite SilphWorkerMSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BLUE
+	overworld_sprite SilphWorkerFSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	assert_table_length NUM_OVERWORLD_SPRITES

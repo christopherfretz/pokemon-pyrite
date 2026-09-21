@@ -108,6 +108,10 @@
 ; Kanto hack
 	const MUSIC_MEET_JESSIE_JAMES            ; 67 (Yellow's Jessie & James theme)
 	const MUSIC_JIGGLYPUFF_SONG              ; 68 (Yellow's JIGGLYPUFF SONG)
+	; Kanto hack (M7 10a, docs/M7-FUCHSIA.md D59): the SAFARI ZONE's own id.  It
+	; points at the BUG CATCHING CONTEST track for now -- Yellow's Music_SafariZone
+	; is a separate port (10n decides whether to bring it over).
+	const MUSIC_SAFARI_ZONE                  ; 69
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for this value (see home/map.asm)

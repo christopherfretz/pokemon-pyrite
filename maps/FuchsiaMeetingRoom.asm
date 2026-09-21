@@ -1,9 +1,9 @@
-SafariZoneMainOffice_MapScripts:
+FuchsiaMeetingRoom_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-SafariZoneMainOffice_MapEvents:
+FuchsiaMeetingRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events

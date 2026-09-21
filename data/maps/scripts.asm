@@ -357,12 +357,10 @@ INCLUDE "maps/BlackthornMart.asm"
 INCLUDE "maps/BlackthornPokecenter1F.asm"
 INCLUDE "maps/MoveDeletersHouse.asm"
 INCLUDE "maps/FuchsiaMart.asm"
-INCLUDE "maps/SafariZoneMainOffice.asm"
 INCLUDE "maps/FuchsiaGym.asm"
 INCLUDE "maps/BillsOlderSistersHouse.asm"
 INCLUDE "maps/FuchsiaPokecenter1F.asm"
 INCLUDE "maps/FuchsiaPokecenter2FBeta.asm"
-INCLUDE "maps/SafariZoneWardensHome.asm"
 INCLUDE "maps/Route15FuchsiaGate.asm"
 INCLUDE "maps/CherrygroveMart.asm"
 INCLUDE "maps/CherrygrovePokecenter1F.asm"
@@ -596,5 +594,33 @@ INCLUDE "maps/CeladonChiefHouse.asm"
 INCLUDE "maps/CeladonHotel.asm"
 INCLUDE "maps/Route16Gate2F.asm"
 INCLUDE "maps/Route18Gate2F.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 30", ROMX
+
+; Kanto hack (M7 10a, docs/M7-FUCHSIA.md D47): the SAFARI ZONE -- its gate, its
+; four areas, the four rest houses and the secret house -- plus the FUCHSIA
+; interiors that grow in M7: the renamed FUCHSIA MEETING ROOM (Crystal called it
+; SAFARI_ZONE_MAIN_OFFICE), the WARDEN's home and the GOOD ROD house.  All twelve
+; new maps carry placeholder skeletons here; 10f-10h fill them in.  Pinned in
+; layout.link to bank $76, one of the four wholly EMPTY banks ($75 $76 $79 $7a)
+; the survey's cost table missed; an unpinned section bin-packs into bank $01,
+; which has ~102 bytes free (G11).
+INCLUDE "maps/FuchsiaMeetingRoom.asm"
+INCLUDE "maps/SafariZoneWardensHome.asm"
+INCLUDE "maps/FuchsiaGoodRodHouse.asm"
+INCLUDE "maps/Route15Gate2F.asm"
+INCLUDE "maps/SafariZoneGate.asm"
+INCLUDE "maps/SafariZoneEast.asm"
+INCLUDE "maps/SafariZoneNorth.asm"
+INCLUDE "maps/SafariZoneWest.asm"
+INCLUDE "maps/SafariZoneCenter.asm"
+INCLUDE "maps/SafariZoneCenterRestHouse.asm"
+INCLUDE "maps/SafariZoneSecretHouse.asm"
+INCLUDE "maps/SafariZoneWestRestHouse.asm"
+INCLUDE "maps/SafariZoneEastRestHouse.asm"
+INCLUDE "maps/SafariZoneNorthRestHouse.asm"
 
 ENDSECTION

@@ -180,3 +180,17 @@ SECTION "Sprites 5", ROMX
 ; sheet needs a section of its own.  It is pinned in layout.link rather than
 ; left floating, because the only floating homes big enough include bank1.
 GiovanniSpriteGFX::            INCBIN "gfx/sprites/giovanni.2bpp"
+
+; Kanto hack (M7 10a, docs/M7-FUCHSIA.md D57): the SAFARI ZONE and FUCHSIA
+; faces, from pokeyellow gfx/sprites/{warden,safari_zone_worker,silph_worker_m,
+; silph_worker_f}.png byte for byte.  The three 16x48 sheets are Gen 1 statics
+; (standing down/up/left only) and are declared STANDING_SPRITE, like Crystal
+; own CHANSEY; silph_worker_f is a full 16x96 walker.  Colours come from the
+; PAL_OW_* column of data/sprites/sprites.asm, Crystal-style: WARDEN brown (he
+; reads as MR.FUJI's elder), the Safari staff green (khaki), SILPH's men blue
+; (SPRITE_SCIENTIST's lab-coat palette) and SILPH's women red (SPRITE_LASS).
+; D58's SPRITE_KOGA is not here: Crystal already ships one at $21.
+WardenSpriteGFX::              INCBIN "gfx/sprites/warden.2bpp"
+SafariZoneWorkerSpriteGFX::    INCBIN "gfx/sprites/safari_zone_worker.2bpp"
+SilphWorkerMSpriteGFX::        INCBIN "gfx/sprites/silph_worker_m.2bpp"
+SilphWorkerFSpriteGFX::        INCBIN "gfx/sprites/silph_worker_f.2bpp"

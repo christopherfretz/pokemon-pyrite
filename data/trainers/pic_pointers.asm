@@ -73,5 +73,6 @@ TrainerPicPointers::
 	dba_pic JessieJamesPic ; JESSIE_JAMES (Yellow's duo pic)
 	dba_pic GiovanniPic ; GIOVANNI (Yellow's boss pic)
 	dba_pic CueBallPic ; CUE_BALL (Yellow's cueball pic)
+	dba_pic BikerPic ; TAMER -- placeholder; 10h ports Yellow's tamer pic
 	dba_pic MysticalmanPic
 	assert_table_length NUM_TRAINER_CLASSES

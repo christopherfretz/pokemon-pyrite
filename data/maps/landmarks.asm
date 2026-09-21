@@ -105,6 +105,7 @@ Landmarks:
 	landmark  20,  68, Route28Name
 	landmark 140, 116, FastShipName
 	landmark  92,  92, SSAnneName ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	landmark  92, 108, SafariZoneName ; Kanto hack (docs/M7-FUCHSIA.md, 10a)
 	assert_table_length NUM_LANDMARKS
 
 NewBarkTownName:     db "NEW BARK<BSP>TOWN@"
@@ -149,7 +150,7 @@ MtMoonName:          db "MT.MOON@"
 RockTunnelName:      db "ROCK TUNNEL@"
 LavRadioTowerName:   db "LAV<BSP>RADIO TOWER@"
 SilphCoName:         db "SILPH CO.@" ; unreferenced
-SafariZoneName:      db "SAFARI ZONE@" ; unreferenced
+SafariZoneName:      db "SAFARI ZONE@"
 SeafoamIslandsName:  db "SEAFOAM<BSP>ISLANDS@"
 PokemonMansionName:  db "#MON<BSP>MANSION@" ; unreferenced
 CeruleanCaveName:    db "CERULEAN<BSP>CAVE@" ; unreferenced

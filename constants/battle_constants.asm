@@ -102,6 +102,7 @@ DEF SPDSPCDV_SHINY EQU $AA
 	const BATTLETYPE_CELEBI
 	const BATTLETYPE_SUICUNE
 	const BATTLETYPE_GHOST ; Kanto hack M6 9d: POKéMON TOWER ghost (docs/M6-TOWER.md 3.4)
+	const BATTLETYPE_SAFARI ; Kanto hack M7 10a: SAFARI ZONE (engine in 10i, docs/M7-FUCHSIA.md)
 
 ; wCatchTutorialCatcher values (Kanto hack, engine/events/catch_tutorial.asm)
 	const_def

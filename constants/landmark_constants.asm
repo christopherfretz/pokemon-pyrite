@@ -105,6 +105,7 @@ DEF KANTO_LANDMARK_LAST EQU const_value - 1
 DEF OTHER_LANDMARK EQU const_value
 	const LANDMARK_FAST_SHIP         ; 5f
 	const LANDMARK_SS_ANNE           ; 60 ; Kanto hack (docs/M4-VERMILION.md, 7c)
+	const LANDMARK_SAFARI_ZONE       ; 61 ; Kanto hack (docs/M7-FUCHSIA.md, 10a)
 
 DEF NUM_LANDMARKS EQU const_value
 

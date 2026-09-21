@@ -150,8 +150,12 @@ ENDM
 	map_const UNDERGROUND_PATH,                             4, 23 ; 85
 	map_const ROCK_TUNNEL_1F,                              20, 18 ; 86
 	map_const ROCK_TUNNEL_B1F,                             20, 18 ; 87
-	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88
-	map_const SAFARI_ZONE_BETA,                            10, 18 ; 89
+	; Kanto hack (M7 10a): Crystal's two unused SAFARI ZONE betas.  M7 builds the
+	; real Safari Zone in group FUCHSIA; these stay registered only because
+	; deleting them would renumber ids 90-94 and invalidate the Mt. Moon /
+	; Rock Tunnel savestate fixtures.  10o decides whether to retire them.
+	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88 ; unused
+	map_const SAFARI_ZONE_BETA,                            10, 18 ; 89 ; unused
 	map_const VICTORY_ROAD,                                10, 36 ; 90
 	map_const MT_MOON_1F,                                  20, 18 ; 91
 	map_const MT_MOON_B1F,                                 14, 14 ; 92
@@ -360,18 +364,33 @@ ENDM
 
 	newgroup FUCHSIA                                              ; 17
 	map_const ROUTE_13,                                    30,  9 ;  1
-	map_const ROUTE_14,                                    10, 18 ;  2
-	map_const ROUTE_15,                                    20,  9 ;  3
+	map_const ROUTE_14,                                    10, 27 ;  2 ; Kanto hack (M7 10a): Yellow's own dimensions, was 10x18
+	map_const ROUTE_15,                                    30,  9 ;  3 ; Kanto hack (M7 10a): Yellow's own dimensions, was 20x9
 	map_const ROUTE_18,                                    25,  9 ;  4 ; Kanto hack (M6 9aa): Yellow's own dimensions
 	map_const FUCHSIA_CITY,                                20, 18 ;  5
-	map_const FUCHSIA_MART,                                 6,  4 ;  6
-	map_const SAFARI_ZONE_MAIN_OFFICE,                      4,  4 ;  7
+	map_const FUCHSIA_MART,                                 4,  4 ;  6 ; Kanto hack (M7 10a): Yellow's own dimensions, was 6x4
+	map_const FUCHSIA_MEETING_ROOM,                         4,  4 ;  7 ; Kanto hack (M7 10a): was SAFARI_ZONE_MAIN_OFFICE (Yellow 7x4; re-cut in 10g)
 	map_const FUCHSIA_GYM,                                  5,  9 ;  8
 	map_const BILLS_OLDER_SISTERS_HOUSE,                    4,  4 ;  9
-	map_const FUCHSIA_POKECENTER_1F,                        5,  4 ; 10
+	map_const FUCHSIA_POKECENTER_1F,                        7,  4 ; 10 ; Kanto hack (M7 10a): Yellow's own dimensions, was 5x4
 	map_const FUCHSIA_POKECENTER_2F_BETA,                   8,  4 ; 11
 	map_const SAFARI_ZONE_WARDENS_HOME,                     5,  4 ; 12
 	map_const ROUTE_15_FUCHSIA_GATE,                        4,  5 ; 13
+	; Kanto hack (M7 10a, docs/M7-FUCHSIA.md): the SAFARI ZONE and FUCHSIA's
+	; remaining Yellow interiors.  All in group FUCHSIA so the four outdoor
+	; Safari areas share this group's outdoor_sprites list (G6).
+	map_const ROUTE_15_GATE_2F,                             4,  4 ; 14
+	map_const FUCHSIA_GOOD_ROD_HOUSE,                       4,  4 ; 15
+	map_const SAFARI_ZONE_GATE,                             4,  3 ; 16
+	map_const SAFARI_ZONE_EAST,                            15, 13 ; 17
+	map_const SAFARI_ZONE_NORTH,                           20, 18 ; 18
+	map_const SAFARI_ZONE_WEST,                            15, 13 ; 19
+	map_const SAFARI_ZONE_CENTER,                          15, 13 ; 20
+	map_const SAFARI_ZONE_CENTER_REST_HOUSE,                4,  4 ; 21
+	map_const SAFARI_ZONE_SECRET_HOUSE,                     4,  4 ; 22
+	map_const SAFARI_ZONE_WEST_REST_HOUSE,                  4,  4 ; 23
+	map_const SAFARI_ZONE_EAST_REST_HOUSE,                  4,  4 ; 24
+	map_const SAFARI_ZONE_NORTH_REST_HOUSE,                 4,  4 ; 25
 	endgroup
 
 	newgroup LAVENDER                                             ; 18

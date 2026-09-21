@@ -82,6 +82,15 @@ DEF NUM_MAP_PALETTES EQU const_value
 ; collision.
 	const FISHGROUP_KANTO_ROUTE_17       ; ROUTE_17
 	const FISHGROUP_KANTO_ROUTE_18       ; ROUTE_18
+; Kanto hack (M7 10a): ROUTE 13's channel and the SAFARI ZONE's ponds.  Yellow
+; gives ROUTE_13 one SuperRodFishingSlots row, SAFARI_ZONE_CENTER another, and
+; the other three Safari areas share a third
+; (vendor/pokeyellow/data/wild/super_rod.asm).  ROUTES 14 and 15 have no Yellow
+; row at all, so they take FISHGROUP_NONE -- Crystal had them on FISHGROUP_SHORE,
+; which leaked CORSOLA (docs/M7-FUCHSIA.md 0.5).  Appended, never inserted (G7).
+	const FISHGROUP_KANTO_ROUTE_13       ; ROUTE_13
+	const FISHGROUP_KANTO_SAFARI_CENTER  ; SAFARI_ZONE_CENTER
+	const FISHGROUP_KANTO_SAFARI         ; SAFARI_ZONE_EAST/NORTH/WEST
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections

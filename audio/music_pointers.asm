@@ -111,4 +111,5 @@ Music:
 ; Kanto hack
 	dba Music_MeetJessieJames
 	dba Music_JigglypuffSong
+	dba Music_BugCatchingContest ; MUSIC_SAFARI_ZONE (M7 10a, D59: placeholder track)
 	assert_table_length NUM_MUSIC_SONGS

@@ -671,13 +671,31 @@ ENDM
 	map_attributes LancesRoom, LANCES_ROOM, $00
 	map_attributes HallOfFame, HALL_OF_FAME, $00
 	map_attributes FuchsiaMart, FUCHSIA_MART, $00
-	map_attributes SafariZoneMainOffice, SAFARI_ZONE_MAIN_OFFICE, $00
+	map_attributes FuchsiaMeetingRoom, FUCHSIA_MEETING_ROOM, $00
 	map_attributes FuchsiaGym, FUCHSIA_GYM, $00
 	map_attributes BillsOlderSistersHouse, BILLS_OLDER_SISTERS_HOUSE, $00
 	map_attributes FuchsiaPokecenter1F, FUCHSIA_POKECENTER_1F, $00
 	map_attributes FuchsiaPokecenter2FBeta, FUCHSIA_POKECENTER_2F_BETA, $00
 	map_attributes SafariZoneWardensHome, SAFARI_ZONE_WARDENS_HOME, $00
 	map_attributes Route15FuchsiaGate, ROUTE_15_FUCHSIA_GATE, $0a
+; Kanto hack (M7 10a, docs/M7-FUCHSIA.md): the SAFARI ZONE and FUCHSIA's last
+; Yellow interiors.  Border blocks are real blocks of each map's own tileset, not
+; $00: the gate rooms and rest houses take $0a (what Route15FuchsiaGate above
+; uses, and Yellow's own border for all of them), the four outdoor areas take
+; $0f (ViridianForest's, the other TILESET_KANTO map whose edge is solid trees).
+; No connections: the areas are joined by warps in Yellow, not by map seams.
+	map_attributes Route15Gate2F, ROUTE_15_GATE_2F, $0a
+	map_attributes FuchsiaGoodRodHouse, FUCHSIA_GOOD_ROD_HOUSE, $00
+	map_attributes SafariZoneGate, SAFARI_ZONE_GATE, $0a
+	map_attributes SafariZoneEast, SAFARI_ZONE_EAST, $0f
+	map_attributes SafariZoneNorth, SAFARI_ZONE_NORTH, $0f
+	map_attributes SafariZoneWest, SAFARI_ZONE_WEST, $0f
+	map_attributes SafariZoneCenter, SAFARI_ZONE_CENTER, $0f
+	map_attributes SafariZoneCenterRestHouse, SAFARI_ZONE_CENTER_REST_HOUSE, $0a
+	map_attributes SafariZoneSecretHouse, SAFARI_ZONE_SECRET_HOUSE, $00
+	map_attributes SafariZoneWestRestHouse, SAFARI_ZONE_WEST_REST_HOUSE, $0a
+	map_attributes SafariZoneEastRestHouse, SAFARI_ZONE_EAST_REST_HOUSE, $0a
+	map_attributes SafariZoneNorthRestHouse, SAFARI_ZONE_NORTH_REST_HOUSE, $0a
 	map_attributes LavenderPokecenter1F, LAVENDER_POKECENTER_1F, $00
 	map_attributes LavenderPokecenter2FBeta, LAVENDER_POKECENTER_2F_BETA, $00
 	map_attributes MrFujisHouse, MR_FUJIS_HOUSE, $0a

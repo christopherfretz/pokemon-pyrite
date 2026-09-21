@@ -424,6 +424,14 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_TYPES | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
+; Tamer -- Yellow pays TAMER 3000 (30 per level, see
+; vendor/pokeyellow/data/trainers/pic_pointers_money.asm).  Crystal rebalanced
+; every class downwards, so scale off Crystal's BIKER (8) by the same 30/20.
+	db NO_ITEM, NO_ITEM ; items
+	db 12 ; base reward
+	dw AI_BASIC | AI_TYPES | AI_STATUS | AI_RISKY
+	dw CONTEXT_USE | SWITCH_SOMETIMES
+
 ; Mysticalman
 	db NO_ITEM, NO_ITEM ; items
 	db 25 ; base reward

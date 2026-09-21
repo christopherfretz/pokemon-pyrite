@@ -4473,6 +4473,41 @@ CueBallGroup:
 	db 31, TENTACRUEL
 	db -1 ; end
 
+; Kanto hack (M7 10a): TAMER, Yellow's TamerData rows 1-5 verbatim
+; (vendor/pokeyellow/data/trainers/parties.asm).  Nameless, so PlaceEnemysName
+; prints the class name "TAMER" alone -- exactly what Yellow shows.  Rows 3-5
+; are wired up by M8 (VIRIDIAN GYM, VICTORY ROAD 2F).
+TamerGroup:
+	; TAMER (1): FUCHSIA GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 34, SANDSLASH
+	db 34, ARBOK
+	db -1 ; end
+
+	; TAMER (2): FUCHSIA GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 33, ARBOK
+	db 33, SANDSLASH
+	db 33, ARBOK
+	db -1 ; end
+
+	; TAMER (3): VIRIDIAN GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 43, RHYHORN
+	db -1 ; end
+
+	; TAMER (4): VIRIDIAN GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 39, ARBOK
+	db 39, TAUROS
+	db -1 ; end
+
+	; TAMER (5): VICTORY ROAD 2F
+	db "@", TRAINERTYPE_NORMAL
+	db 44, PERSIAN
+	db 44, GOLDUCK
+	db -1 ; end
+
 MysticalmanGroup:
 	; MYSTICALMAN (1)
 	db "EUSINE@", TRAINERTYPE_MOVES

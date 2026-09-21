@@ -29,8 +29,13 @@
 ; HELD_NORMAL_BOOST -- and is unobtainable in vanilla Crystal (no mart, no
 ; giveitem/itemball, no held item, no script); PINK_BOW keeps the
 ; HELD_NORMAL_BOOST / TypeBoostItems row alive.
-; Remaining reclaim candidate: GORGEOUS_BOX ($a8) -- the LAST one.  It is
-; RESERVED for Silph Co.'s CARD KEY; do not spend it on anything else.
+; M7 10a (docs/M7-FUCHSIA.md D51) reclaimed the LAST one, GORGEOUS_BOX ($a8),
+; for the SAFARI ZONE's GOLD_TEETH.  It had been pencilled in for Silph Co.'s
+; CARD KEY, but Crystal already ships a CARD_KEY at $7f (M6 9o), so the
+; reservation was moot.  **There is now genuinely nothing left to reclaim**:
+; every id $01-$fe is named and referenced.  The next feature that needs an
+; item must either share an existing id (as the SAFARI BALL shares PARK_BALL,
+; D50) or retire a live item outright.
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -201,7 +206,7 @@
 	const MOON_BALL    ; a5
 	const LOVE_BALL    ; a6
 	const LIFT_KEY     ; a7 (was NORMAL_BOX; Kanto hack M6 9o)
-	const GORGEOUS_BOX ; a8
+	const GOLD_TEETH   ; a8 ; Kanto hack (M7 10a, D51): was GORGEOUS_BOX
 	const SUN_STONE    ; a9
 	const TM_ICE_BEAM  ; aa (was POLKADOT_BOW; Kanto hack M6 9r)
 	const TM_SEISMIC_TOSS ; ab (was ITEM_AB; Kanto hack TM union)
@@ -210,7 +215,8 @@
 	const GOLD_BERRY   ; ae
 	const SQUIRTBOTTLE ; af
 	const TM_RAGE         ; b0 (was ITEM_B0; Kanto hack TM union)
-	const PARK_BALL    ; b1
+	const PARK_BALL    ; b1 ; Kanto hack (M7 10a, D50): doubles as the SAFARI BALL;
+	                        ; no separate id is spent.  10i names it in the SAFARI battle UI.
 	const RAINBOW_WING ; b2
 	const TM_MEGA_DRAIN   ; b3 (was ITEM_B3; Kanto hack TM union)
 	const TM_DRAGON_RAGE  ; b4 (was BRICK_PIECE; Kanto hack TM union)

@@ -138,6 +138,15 @@
 	const SPRITE_CHANNELER          ; 76 (Yellow's CHANNELER)
 	const SPRITE_MR_FUJI            ; 77 (Yellow's MR FUJI)
 	const SPRITE_GIOVANNI           ; 78 (Yellow's GIOVANNI)
+; Kanto hack (M7 10a, docs/M7-FUCHSIA.md D57/D58): the SAFARI ZONE's and
+; FUCHSIA's Yellow faces.  Every id must stay below SPRITE_POKEMON ($80).
+	const SPRITE_WARDEN             ; 79 (Yellow's WARDEN)
+	const SPRITE_SAFARI_ZONE_WORKER ; 7a (Yellow's SAFARI ZONE WORKER)
+	const SPRITE_SILPH_WORKER_M     ; 7b (Yellow's SILPH WORKER M)
+	const SPRITE_SILPH_WORKER_F     ; 7c (Yellow's SILPH WORKER F)
+; D58 asked for a fifth id, SPRITE_KOGA -- but Crystal already has one at $21
+; (ELITE FOUR KOGA, maps/KogasRoom.asm), and FUCHSIA's gym leader is the same
+; man.  FUCHSIA GYM reuses it in 10h; no new id is spent.
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; Pikachu follower: fixed VRAM tile (bank 1) reserved outside the shared

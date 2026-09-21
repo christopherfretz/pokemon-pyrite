@@ -37,6 +37,11 @@ FishGroups:
 ; Kanto hack (M6 9ab): CYCLING ROAD and ROUTE 18 (D43 corrected).
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute17_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute18_Super
+
+; Kanto hack (M7 10a)
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute13_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSafariCenter_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSafari_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -348,6 +353,27 @@ FishGroups:
 	db  70 percent,     SHELLDER,   20
 	db  90 percent + 1, SHELLDER,   30
 	db 100 percent,     SHELLDER,   40
+
+; db ROUTE_13, HORSEA, 15, HORSEA, 20, TENTACOOL, 10, SEADRA, 20
+.KantoRoute13_Super:
+	db  40 percent,     HORSEA,     15
+	db  70 percent,     HORSEA,     20
+	db  90 percent + 1, TENTACOOL,  10
+	db 100 percent,     SEADRA,     20
+
+; db SAFARI_ZONE_CENTER, MAGIKARP, 5, MAGIKARP, 10, DRATINI, 10, DRAGONAIR, 15
+.KantoSafariCenter_Super:
+	db  40 percent,     MAGIKARP,    5
+	db  70 percent,     MAGIKARP,   10
+	db  90 percent + 1, DRATINI,    10
+	db 100 percent,     DRAGONAIR,  15
+
+; db SAFARI_ZONE_EAST/NORTH/WEST, MAGIKARP, 5, MAGIKARP, 10, MAGIKARP, 15, DRATINI, 15
+.KantoSafari_Super:
+	db  40 percent,     MAGIKARP,    5
+	db  70 percent,     MAGIKARP,   10
+	db  90 percent + 1, MAGIKARP,   15
+	db 100 percent,     DRATINI,    15
 
 TimeFishGroups:
 	;  day              nite

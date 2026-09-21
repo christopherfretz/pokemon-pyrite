@@ -73,5 +73,6 @@ TrainerClassDVs:
 	dn  9,  8,  8,  8 ; JESSIE_JAMES
 	dn 13, 13, 13, 13 ; GIOVANNI
 	dn  9,  8,  8,  8 ; CUE_BALL
+	dn  9,  8,  8,  8 ; TAMER
 	dn  9,  8,  8,  8 ; MYSTICALMAN
 	assert_table_length NUM_TRAINER_CLASSES

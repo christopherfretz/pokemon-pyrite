@@ -167,7 +167,7 @@ ItemNames::
 	li "MOON BALL"
 	li "LOVE BALL"
 	li "LIFT KEY"
-	li "GORGEOUS BOX"
+	li "GOLD TEETH"
 	li "SUN STONE"
 	li "TM87"
 	li "TM65"

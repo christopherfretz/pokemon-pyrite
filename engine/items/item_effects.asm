@@ -181,7 +181,7 @@ ItemEffects:
 	dw PokeBallEffect      ; MOON_BALL
 	dw PokeBallEffect      ; LOVE_BALL
 	dw NoEffect            ; LIFT_KEY
-	dw GorgeousBoxEffect   ; GORGEOUS_BOX
+	dw NoEffect            ; GOLD_TEETH
 	dw EvoStoneEffect      ; SUN_STONE
 	dw NoEffect            ; TM_ICE_BEAM (TM87)
 	dw NoEffect            ; TM_SEISMIC_TOSS (TM65)
@@ -2596,20 +2596,6 @@ SacredAshEffect:
 	ret nz
 	call UseDisposableItem
 	ret
-
-GorgeousBoxEffect:
-	ld c, DECOFLAG_GOLD_TROPHY_DOLL
-OpenBox:
-	farcall SetSpecificDecorationFlag
-
-	ld hl, .SentTrophyHomeText
-	call PrintText
-
-	jp UseDisposableItem
-
-.SentTrophyHomeText:
-	text_far _SentTrophyHomeText
-	text_end
 
 NoEffect:
 	jp IsntTheTimeMessage
