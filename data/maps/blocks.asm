@@ -1300,8 +1300,11 @@ FuchsiaPokecenter1F_Blocks:
 ; ($01).  Yellow's own .blk files are Gen 1 block ids and cannot be INCBINed as
 ; they stand; 10g re-cuts every one of these from them.  D67: the four rest
 ; houses are identical 4x4 rooms in Yellow and share one file.
+; M7 10k: Yellow's maps/SafariZoneGate.blk is byte for byte the SAFFRON
+; north/south gates' blockset (16 6b 6a 17 / 02 09 08 01 / 18 6c 69 19), so the
+; gate shares theirs instead of shipping a second identical copy.
 SafariZoneGate_Blocks:
-	INCBIN "maps/SafariZoneGate.blk"
+	INCBIN "maps/KantoGateSaffronNorthSouth.blk"
 
 SafariZoneEast_Blocks:
 	INCBIN "maps/SafariZoneEast.blk"
