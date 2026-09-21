@@ -1247,8 +1247,13 @@ Route18_Blocks:
 ; Kanto hack (M7 10d): maps/Route14.blk is now Yellow's OWN layout, cut by
 ; scripts/vermilion_blk.py.  The Yellow OVERWORLD -> TILESET_KANTO mapping is
 ; pure identity for ROUTE 14's 18 block ids, so the file is byte-identical to
-; vendor/pokeyellow/maps/Route14.blk.  maps/Route15.blk is still 10a's
-; placeholder fill -- 10e re-cuts it.
+; vendor/pokeyellow/maps/Route14.blk.
+;
+; Kanto hack (M7 10e): maps/Route15.blk is Yellow's OWN layout too, cut by the
+; same script.  ROUTE 15 uses two block ids Yellow's OVERWORLD numbers
+; differently from TILESET_KANTO, so the file is NOT byte-identical to
+; vendor/pokeyellow/maps/Route15.blk -- scripts/vermilion_blk.py --check
+; re-renders both and compares collision, which matches.
 Route14_Blocks:
 	INCBIN "maps/Route14.blk"
 

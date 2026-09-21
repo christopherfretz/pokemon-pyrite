@@ -116,7 +116,7 @@ ItemDescriptions:
 	dw EverStoneDesc
 	dw SpellTagDesc
 	dw RageCandyBarDesc
-	dw GSBallDesc
+	dw ExpAllDesc
 	dw BlueCardDesc
 	dw MiracleSeedDesc
 	dw ThickClubDesc
@@ -717,9 +717,10 @@ RageCandyBarDesc:
 	db   "Restores #MON"
 	next "HP by 20.@"
 
-GSBallDesc:
-	db   "The mysterious"
-	next "BALL.@"
+; Kanto hack (M7 10e): Yellow's EXP.ALL, on the retired GS_BALL id.
+ExpAllDesc:
+	db   "Shares EXP with"
+	next "the whole party.@"
 
 BlueCardDesc:
 	db   "Card to save"

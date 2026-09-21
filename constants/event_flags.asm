@@ -690,14 +690,14 @@
 	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_2 ; Kanto hack (M6 9x): ROCKET HIDEOUT B1F (12,6) (was EVENT_BEAT_TWINS_MEG_AND_PEG2, a dead Johto rematch flag)
 ; Schoolboy
 	const EVENT_BEAT_SCHOOLBOY_JACK
-	const EVENT_BEAT_SCHOOLBOY_KIP
+	const EVENT_BEAT_ROUTE_15_PICNICKER_7 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_KIP (Crystal's dead ROUTE 15 KIPP)
 	const EVENT_BEAT_SCHOOLBOY_ALAN
-	const EVENT_BEAT_SCHOOLBOY_JOHNNY
+	const EVENT_BEAT_ROUTE_15_BIRD_KEEPER_13 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_JOHNNY (Crystal's dead ROUTE 15 JOHNNY)
 	const EVENT_BEAT_SCHOOLBOY_DANNY
-	const EVENT_BEAT_SCHOOLBOY_TOMMY
+	const EVENT_BEAT_ROUTE_15_PICNICKER_8 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_TOMMY (Crystal's dead ROUTE 15 TOMMY)
 	const EVENT_BEAT_YOUNGSTER_GRANT ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SCHOOLBOY_DUDLEY; Route 25, Yellow's YOUNGSTER 5
 	const EVENT_BEAT_YOUNGSTER_COLE ; Kanto hack: renamed in place (6i/N1e), was EVENT_BEAT_SCHOOLBOY_JOE; Route 25, Yellow's YOUNGSTER 6
-	const EVENT_BEAT_SCHOOLBOY_BILLY
+	const EVENT_BEAT_ROUTE_15_BIRD_KEEPER_14 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_BILLY (Crystal's dead ROUTE 15 BILLY)
 	const EVENT_BEAT_SCHOOLBOY_CHAD
 	const EVENT_BEAT_SCHOOLBOY_NATE
 	const EVENT_BEAT_SCHOOLBOY_RICKY
@@ -1067,8 +1067,8 @@
 	const EVENT_BEAT_YOUNGSTER_FLOYD ; Kanto hack: renamed in place (7l), was EVENT_BEAT_YOUNGSTER_OWEN; ROUTE 11, Yellow's YOUNGSTER 9
 	const EVENT_BEAT_YOUNGSTER_RUDY ; Kanto hack: renamed in place (7l), was EVENT_BEAT_YOUNGSTER_JASON; ROUTE 11, Yellow's YOUNGSTER 10
 ; Teacher
-	const EVENT_BEAT_TEACHER_COLETTE
-	const EVENT_BEAT_TEACHER_HILLARY
+	const EVENT_BEAT_ROUTE_15_PICNICKER_5 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_TEACHER_COLETTE, one of Crystal's own dead ROUTE 15 rows
+	const EVENT_BEAT_ROUTE_15_PICNICKER_6 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_TEACHER_HILLARY, one of Crystal's own dead ROUTE 15 rows
 	const EVENT_BEAT_TEACHER_SHIRLEY
 ; Elite Four and Champion
 	const EVENT_BEAT_ELITE_4_WILL
@@ -1438,7 +1438,7 @@
 	const EVENT_ROUTE_4_TM_WHIRLWIND ; Kanto hack: Route 4, Yellow's TM04 WHIRLWIND itemball (was EVENT_ROUTE_4_HP_UP); M3b made it the real TM_WHIRLWIND
 	const EVENT_ROUTE_12_TM_PAY_DAY ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_CALCIUM; ROUTE 12, Yellow's TM16 PAY DAY ball at (14,35) (M3b made it the real TM_PAY_DAY = our TM62)
 	const EVENT_ROUTE_12_IRON ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_NUGGET; ROUTE 12, Yellow's IRON ball at (5,89)
-	const EVENT_ROUTE_15_PP_UP
+	const EVENT_ROUTE_15_TM_RAGE ; Kanto hack: renamed in place (M7 10e), was EVENT_ROUTE_15_PP_UP; ROUTE 15, Yellow's TM20 RAGE ball at (18,5) (M3b made it the real TM_RAGE = our TM66)
 	const EVENT_ROUTE_25_TM_SEISMIC_TOSS ; Kanto hack: renamed in place (6i), was EVENT_ROUTE_25_PROTEIN; Route 25, Yellow's TM19 SEISMIC TOSS ball (M3b made it the real TM_SEISMIC_TOSS)
 ; New to Crystal
 	const EVENT_KURTS_HOUSE_GRANDDAUGHTER_1
@@ -1864,7 +1864,20 @@
 	const EVENT_BEAT_ROUTE_14_BIKER_12
 	const EVENT_BEAT_ROUTE_14_BIKER_13
 
-; Unused: next 438 events
+; Kanto hack (M7 10e, docs/M7-FUCHSIA.md): ROUTE 15 and its gate.  Six of the ten
+; trainer flags are renames of Crystal's own dead ROUTE 15 rows further up this
+; file (TEACHER COLETTE/HILLARY, SCHOOLBOY KIPP/TOMMY/JOHNNY/BILLY); the four
+; BEAUTY/BIKER ones are appended, because the rows those two classes took over
+; (BRENDA/CAROLINE, and the BIKER class generally) have no dead flags left.
+; EVENT_GOT_EXP_ALL gates ROUTE 15 GATE 2F's Oak's aide, Yellow's
+; EVENT_GOT_EXP_ALL.  438 free -> 433.
+	const EVENT_BEAT_ROUTE_15_BEAUTY_3
+	const EVENT_BEAT_ROUTE_15_BEAUTY_4
+	const EVENT_BEAT_ROUTE_15_BIKER_14
+	const EVENT_BEAT_ROUTE_15_BIKER_15
+	const EVENT_GOT_EXP_ALL
+
+; Unused: next 433 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

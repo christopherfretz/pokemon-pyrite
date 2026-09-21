@@ -114,7 +114,7 @@ ItemNames::
 	li "EVERSTONE"
 	li "SPELL TAG"
 	li "RAGECANDYBAR"
-	li "GS BALL"
+	li "EXP.ALL"
 	li "BLUE CARD"
 	li "MIRACLE SEED"
 	li "THICK CLUB"

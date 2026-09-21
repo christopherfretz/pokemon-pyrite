@@ -293,7 +293,9 @@ ENDM
 	; Kanto hack (M6 9aa): Yellow's own offset (FuchsiaCity.asm
 	; `connection west, Route18, ROUTE_18, 4`), now that ROUTE 18 is 25x9.
 	connection west, Route18, ROUTE_18, 4
-	connection east, Route15, ROUTE_15, 9
+	; Kanto hack (M7 10e): Yellow's own offset (FuchsiaCity.asm
+	; `connection east, Route15, ROUTE_15, 4`), now that ROUTE 15 is 30x9.
+	connection east, Route15, ROUTE_15, 4
 
 	map_attributes Route18, ROUTE_18, $43
 	; Kanto hack (M6 9z/9aa): Yellow puts ROUTE 18 *below* ROUTE 17, not beside
@@ -320,8 +322,11 @@ ENDM
 	connection west, CeladonCity, CELADON_CITY, -4
 	connection east, SaffronCity, SAFFRON_CITY, -4
 
-	map_attributes Route15, ROUTE_15, $0f
-	connection west, FuchsiaCity, FUCHSIA_CITY, -9
+; Kanto hack (M7 10e, docs/M7-FUCHSIA.md): ROUTE 15 re-cut to Yellow's 30x9.
+; Border block $43 is Yellow's own (vendor/pokeyellow/data/maps/objects/Route15.asm
+; `db $43`), the same one ROUTE 13 and ROUTE 14 already use; $0f was Crystal's.
+	map_attributes Route15, ROUTE_15, $43
+	connection west, FuchsiaCity, FUCHSIA_CITY, -4 ; Kanto hack (M7 10e): was -9; Yellow's vendor/pokeyellow/data/maps/headers/Route15.asm says -4
 	connection east, Route14, ROUTE_14, -18 ; Kanto hack (M7 10d): reciprocal of ROUTE 14's west 18 (Yellow's own value); ROUTE 15's own re-cut is 10e
 
 ; Kanto hack (M7 10c, docs/M7-FUCHSIA.md): Yellow's ROUTE 13 runs EAST-WEST and

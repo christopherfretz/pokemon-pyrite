@@ -254,7 +254,8 @@ ItemAttributes:
 	item_attribute 100, HELD_GHOST_BOOST, 10, CANT_SELECT, ITEM, ITEMMENU_NOUSE, ITEMMENU_NOUSE
 ; RAGECANDYBAR
 	item_attribute 300, HELD_NONE, 20, CANT_SELECT, ITEM, ITEMMENU_PARTY, ITEMMENU_PARTY
-; GS_BALL
+; EXP_ALL (Kanto hack M7 10e: was GS_BALL -- the row is unchanged, KEY_ITEM,
+; price 0, no menu use; the battle engine reads it out of the bag)
 	item_attribute 0, HELD_NONE, 0, CANT_SELECT | CANT_TOSS, KEY_ITEM, ITEMMENU_NOUSE, ITEMMENU_NOUSE
 ; BLUE_CARD
 	item_attribute 0, HELD_NONE, 0, CANT_SELECT | CANT_TOSS, KEY_ITEM, ITEMMENU_CURRENT, ITEMMENU_NOUSE

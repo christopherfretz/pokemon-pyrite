@@ -36,6 +36,12 @@
 ; every id $01-$fe is named and referenced.  The next feature that needs an
 ; item must either share an existing id (as the SAFARI BALL shares PARK_BALL,
 ; D50) or retire a live item outright.
+; M7 10e (docs/M7-FUCHSIA.md D52) did exactly that: it retired GS_BALL ($73) for
+; Yellow's EXP.ALL.  The GS BALL is unobtainable in this build (the Celebi event
+; needs GS_BALL_AVAILABLE, set only by the mobile/VC BATTLETOWERACTION_GSBALL),
+; and its item_attribute row was already KEY_ITEM / price 0 / CANT_SELECT |
+; CANT_TOSS, exactly what EXP.ALL wants.  `DEF GS_BALL EQU EXP_ALL` keeps the
+; three dead Celebi scripts compiling.
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -153,7 +159,14 @@
 	const EVERSTONE    ; 70
 	const SPELL_TAG    ; 71
 	const RAGECANDYBAR ; 72
-	const GS_BALL      ; 73
+	const EXP_ALL      ; 73 (was GS_BALL; Kanto hack M7 10e -- Yellow's EXP.ALL)
+; Kanto hack (M7 10e, docs/M7-FUCHSIA.md D52): the GS BALL is unreachable in
+; Crystal outside the Japanese mobile/VC event (GS_BALL_AVAILABLE is only ever
+; set by BATTLETOWERACTION_GSBALL, which nothing in this build calls), so its id
+; carries Yellow's EXP.ALL.  The three dead Celebi scripts that still mention
+; GS_BALL (AzaleaTown, KurtsHouse, GoldenrodPokecenter1F) keep assembling
+; through this alias; they can never run.
+DEF GS_BALL EQU EXP_ALL
 	const BLUE_CARD    ; 74
 	const MIRACLE_SEED ; 75
 	const THICK_CLUB   ; 76

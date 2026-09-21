@@ -2161,7 +2161,7 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	ld a, [wBattleResult]
 	and BATTLERESULT_BITMASK
 	ld [wBattleResult], a ; WIN
-	call IsAnyMonHoldingExpShare
+	call CheckExpShareOrExpAll
 	jr z, .skip_exp
 	ld hl, wEnemyMonBaseStats
 	ld b, wEnemyMonEnd - wEnemyMonBaseStats
@@ -2179,7 +2179,7 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	xor a
 	ld [wGivingExperienceToExpShareHolders], a
 	call GiveExperiencePoints
-	call IsAnyMonHoldingExpShare
+	call CheckExpShareOrExpAll
 	ret z
 
 	ld a, [wBattleParticipantsNotFainted]
@@ -2195,6 +2195,67 @@ UpdateBattleStateAndExperienceAfterEnemyFaint:
 	call GiveExperiencePoints
 	pop af
 	ld [wBattleParticipantsNotFainted], a
+	ret
+
+; Kanto hack (M7 10e, docs/M7-FUCHSIA.md D52): Yellow's EXP.ALL.  Yellow's
+; core.asm:827-865 wraps GainExperience in exactly the shape GSC already uses for
+; EXP_SHARE -- halve wEnemyMonBaseStats..wEnemyMonBaseExp, give experience to the
+; mons that fought, then give it again with the gain-exp flags set for the WHOLE
+; party -- so EXP.ALL needs no new engine path at all: it only has to widen the
+; second pass's bitmask from "the EXP_SHARE holders" to "everyone".  The
+; per-mon share therefore comes out of the same base_exp * level / 7 (and the
+; same 1.5x traded / trainer BoostExp) both games use, and
+; .EvenlyDivideExpAmongParticipants is the byte-for-byte analogue of Yellow's
+; DivideExpDataByNumMonsGainingExp (both divide only when 2+ mons are gaining).
+;
+; Returns d = the bitmask of party mons to award in the second pass, a/e = the
+; number of bits set, z if none.  EXP.ALL wins outright when it is in the bag:
+; the whole party is a superset of any EXP_SHARE holders.
+CheckExpShareOrExpAll:
+	call IsAnyMonHoldingExpShare
+	call .ExpAllInBag
+	jr c, .whole_party
+	ld a, e
+	and a
+	ret
+
+.whole_party
+; Yellow's own flag-building loop (engine/battle/core.asm:853-860).
+	ld a, [wPartyCount]
+	and a
+	ret z
+	ld b, 0
+.flag_loop
+	scf
+	rl b
+	dec a
+	jr nz, .flag_loop
+	ld d, b
+	ld a, [wPartyCount]
+	ld e, a
+	and a
+	ret
+
+.ExpAllInBag:
+; Carry if EXP.ALL is in the KEY ITEMS pocket.  Inlined rather than farcalled to
+; CheckKeyItems so the battle bank does not have to bankswitch mid-award; it
+; touches no saved WRAM (the bag IS the state, per the D52 ruling).
+	ld a, [wNumKeyItems]
+	and a
+	ret z ; no carry
+	ld b, a
+	ld hl, wKeyItems
+.scan_loop
+	ld a, [hli]
+	cp EXP_ALL
+	jr z, .found
+	dec b
+	jr nz, .scan_loop
+	and a ; clear carry
+	ret
+
+.found
+	scf
 	ret
 
 IsAnyMonHoldingExpShare:

@@ -142,14 +142,14 @@ DEF KRIS EQU __trainer_class__
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
-	const KIPP
+	const KIPP ; unused (Kanto hack, M7 10e: was ROUTE 15, deleted by the Yellow re-cut)
 	const ALAN1
-	const JOHNNY
+	const JOHNNY ; unused (Kanto hack, M7 10e: was ROUTE 15, deleted by the Yellow re-cut)
 	const DANNY
-	const TOMMY
+	const TOMMY ; unused (Kanto hack, M7 10e: was ROUTE 15, deleted by the Yellow re-cut)
 	const DUDLEY
 	const JOE
-	const BILLY
+	const BILLY ; unused (Kanto hack, M7 10e: was ROUTE 15, deleted by the Yellow re-cut)
 	const CHAD1
 	const NATE
 	const RICKY
@@ -205,6 +205,10 @@ DEF KRIS EQU __trainer_class__
 	const BIRD_KEEPER_10 ; ROUTE 14 (Kanto hack, M7 10d), appended
 	const BIRD_KEEPER_11 ; ROUTE 14 (Kanto hack, M7 10d), appended
 	const BIRD_KEEPER_12 ; ROUTE 14 (Kanto hack, M7 10d), appended
+; Kanto hack (M7 10e): Yellow's two ROUTE 15 COOLTRAINER_Ms (OPP_BIRD_KEEPER
+; 6/7).  The class still has no dead rows, so both are appended.
+	const BIRD_KEEPER_13 ; ROUTE 15 (Kanto hack, M7 10e), appended
+	const BIRD_KEEPER_14 ; ROUTE 15 (Kanto hack, M7 10e), appended
 
 	trainerclass LASS ; 19
 	const CARRIE
@@ -302,9 +306,13 @@ DEF KRIS EQU __trainer_class__
 ; no new const cost.
 	const BEAUTY_1 ; ROUTE 13 (was the unused JULIE)
 	const BEAUTY_2 ; ROUTE 13 (was the unused JACLYN)
-	const BRENDA ; unused
+; Kanto hack (M7 10e): Yellow's two ROUTE 15 BEAUTYs (OPP_BEAUTY 9/10) take over
+; two more of Crystal's "; unused" placeholder rows in place -- no renumbering,
+; no new const cost.  (Their old event flags were already reclaimed by M6 9f, so
+; ROUTE 15's two BEAUTY flags are appended in event_flags.asm.)
+	const BEAUTY_3 ; ROUTE 15 (Kanto hack, M7 10e; was the unused BRENDA)
 	const CASSIE
-	const CAROLINE ; unused
+	const BEAUTY_4 ; ROUTE 15 (Kanto hack, M7 10e; was the unused CAROLINE)
 	const CARLENE ; unused
 	const JESSICA ; unused
 	const RACHAEL ; unused
@@ -408,8 +416,12 @@ DEF KRIS EQU __trainer_class__
 	const CLARISSA
 
 	trainerclass TEACHER ; 22
-	const COLETTE
-	const HILLARY
+; Kanto hack (M7 10e): COLETTE and HILLARY were Crystal's own ROUTE 15 TEACHERs,
+; deleted by the Yellow re-cut.  Their rows stay in place -- deleting them would
+; renumber SHIRLEY, and "Enemy Trainers" has ~1.9 KB free, so D49's byte-saving
+; deletion is not needed.  A later Kanto map can reclaim them in place.
+	const COLETTE ; unused (Kanto hack, M7 10e)
+	const HILLARY ; unused (Kanto hack, M7 10e)
 	const SHIRLEY
 
 	trainerclass SABRINA ; 23
@@ -650,6 +662,10 @@ DEF KRIS EQU __trainer_class__
 	const BIKER_11 ; ROUTE 14 (Kanto hack, M7 10d), appended
 	const BIKER_12 ; ROUTE 14 (Kanto hack, M7 10d), appended
 	const BIKER_13 ; ROUTE 14 (Kanto hack, M7 10d), appended
+; Kanto hack (M7 10e): Yellow's two ROUTE 15 BIKERs (OPP_BIKER 3/4).  The class
+; has had no dead rows since 10d, so both are appended.
+	const BIKER_14 ; ROUTE 15 (Kanto hack, M7 10e), appended
+	const BIKER_15 ; ROUTE 15 (Kanto hack, M7 10e), appended
 
 	trainerclass BLAINE ; 2e
 	const BLAINE1
@@ -755,6 +771,12 @@ DEF KRIS EQU __trainer_class__
 	const PICNICKER_2
 	const PICNICKER_3
 	const PICNICKER_4
+; Kanto hack (M7 10e): ROUTE 15's four JR.TRAINERs^F (Yellow OPP_JR_TRAINER_F
+; 20/21/22/23).  Still no dead rows in this class, so all four are appended.
+	const PICNICKER_5
+	const PICNICKER_6
+	const PICNICKER_7
+	const PICNICKER_8
 
 	trainerclass CAMPER ; 36
 	const ROLAND

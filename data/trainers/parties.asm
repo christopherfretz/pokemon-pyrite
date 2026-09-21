@@ -504,7 +504,9 @@ SchoolboyGroup:
 	db 15, VOLTORB
 	db -1 ; end
 
-	; SCHOOLBOY (2)
+	; SCHOOLBOY (2) -- unused (Kanto hack, M7 10e): KIPP was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "KIPP@", TRAINERTYPE_NORMAL
 	db 27, VOLTORB
 	db 27, MAGNEMITE
@@ -517,7 +519,9 @@ SchoolboyGroup:
 	db 16, TANGELA
 	db -1 ; end
 
-	; SCHOOLBOY (4)
+	; SCHOOLBOY (4) -- unused (Kanto hack, M7 10e): JOHNNY was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "JOHNNY@", TRAINERTYPE_NORMAL
 	db 29, BELLSPROUT
 	db 31, WEEPINBELL
@@ -531,7 +535,9 @@ SchoolboyGroup:
 	db 31, MAGMAR
 	db -1 ; end
 
-	; SCHOOLBOY (6)
+	; SCHOOLBOY (6) -- unused (Kanto hack, M7 10e): TOMMY was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "TOMMY@", TRAINERTYPE_NORMAL
 	db 32, XATU
 	db 34, ALAKAZAM
@@ -548,7 +554,9 @@ SchoolboyGroup:
 	db 33, VAPOREON
 	db -1 ; end
 
-	; SCHOOLBOY (9)
+	; SCHOOLBOY (9) -- unused (Kanto hack, M7 10e): BILLY was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "BILLY@", TRAINERTYPE_NORMAL
 	db 27, PARAS
 	db 27, PARAS
@@ -834,6 +842,25 @@ BirdKeeperGroup:
 	db "@", TRAINERTYPE_NORMAL
 	db 29, SPEAROW
 	db 29, FEAROW
+	db -1 ; end
+
+	; BIRD_KEEPER (26) = BIRD_KEEPER_13 -- Kanto hack (M7 10e): Yellow's ROUTE 15
+	; COOLTRAINER_M1, OPP_BIRD_KEEPER 6
+	; (db 26, PIDGEOTTO, FARFETCHD, DODUO, PIDGEY, 0).  Appended: the class has
+	; had no dead rows since 10d.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, PIDGEOTTO
+	db 26, FARFETCH_D
+	db 26, DODUO
+	db 26, PIDGEY
+	db -1 ; end
+
+	; BIRD_KEEPER (27) = BIRD_KEEPER_14 -- Kanto hack (M7 10e): Yellow's ROUTE 15
+	; COOLTRAINER_M2, OPP_BIRD_KEEPER 7 (db 28, DODRIO, DODUO, DODUO, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 28, DODRIO
+	db 28, DODUO
+	db 28, DODUO
 	db -1 ; end
 
 LassGroup:
@@ -1351,9 +1378,11 @@ BeautyGroup:
 	db 29, MEOWTH
 	db -1 ; end
 
-	; BEAUTY (5)
-	db "BRENDA@", TRAINERTYPE_NORMAL
-	db 16, FURRET
+	; BEAUTY (5) = BEAUTY_3 -- Kanto hack (M7 10e): Yellow's ROUTE 15 BEAUTY 1,
+	; OPP_BEAUTY 9 (db 29, PIDGEOTTO, WIGGLYTUFF, 0).  Was the unused BRENDA.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, PIDGEOTTO
+	db 29, WIGGLYTUFF
 	db -1 ; end
 
 	; BEAUTY (6)
@@ -1362,11 +1391,11 @@ BeautyGroup:
 	db 34, BUTTERFREE
 	db -1 ; end
 
-	; BEAUTY (7)
-	db "CAROLINE@", TRAINERTYPE_NORMAL
-	db 30, MARILL
-	db 32, SEEL
-	db 30, MARILL
+	; BEAUTY (7) = BEAUTY_4 -- Kanto hack (M7 10e): Yellow's ROUTE 15 BEAUTY 2,
+	; OPP_BEAUTY 10 (db 29, BULBASAUR, IVYSAUR, 0).  Was the unused CAROLINE.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, BULBASAUR
+	db 29, IVYSAUR
 	db -1 ; end
 
 	; BEAUTY (8)
@@ -1912,12 +1941,16 @@ SkierGroup:
 	db -1 ; end
 
 TeacherGroup:
-	; TEACHER (1)
+	; TEACHER (1) -- unused (Kanto hack, M7 10e): COLETTE was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "COLETTE@", TRAINERTYPE_NORMAL
 	db 36, CLEFAIRY
 	db -1 ; end
 
-	; TEACHER (2)
+	; TEACHER (2) -- unused (Kanto hack, M7 10e): HILLARY was one of Crystal's own
+	; ROUTE 15 trainers, deleted by the Yellow re-cut.  The row is kept so the
+	; class is not renumbered; it can be reclaimed in place by a later map.
 	db "HILLARY@", TRAINERTYPE_NORMAL
 	db 32, AIPOM
 	db 36, CUBONE
@@ -3196,6 +3229,24 @@ BikerGroup:
 	db 29, GRIMER
 	db -1 ; end
 
+	; BIKER (BIKER_14) -- Kanto hack (M7 10e): Yellow's ROUTE 15 BIKER 1, OPP_BIKER 3
+	; (db 25, KOFFING, KOFFING, WEEZING, KOFFING, GRIMER, 0).  Appended.
+	db "@", TRAINERTYPE_NORMAL
+	db 25, KOFFING
+	db 25, KOFFING
+	db 25, WEEZING
+	db 25, KOFFING
+	db 25, GRIMER
+	db -1 ; end
+
+	; BIKER (BIKER_15) -- Kanto hack (M7 10e): Yellow's ROUTE 15 BIKER 2, OPP_BIKER 4
+	; (db 28, KOFFING, GRIMER, WEEZING, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 28, KOFFING
+	db 28, GRIMER
+	db 28, WEEZING
+	db -1 ; end
+
 BlaineGroup:
 	; BLAINE (1)
 	db "BLAINE@", TRAINERTYPE_MOVES
@@ -3744,6 +3795,36 @@ PicnickerGroup:
 	db 28, GOLDEEN
 	db 28, POLIWAG
 	db 28, HORSEA
+	db -1 ; end
+
+	; Kanto hack (M7 10e): ROUTE 15's four JR.TRAINERs^F, appended.  Nameless, so
+	; PlaceEnemysName prints "PICNICKER".
+	; PICNICKER (41) = PICNICKER_5 -- Yellow's JR_TRAINER_F 20
+	; (db 28, GLOOM, ODDISH, ODDISH, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 28, GLOOM
+	db 28, ODDISH
+	db 28, ODDISH
+	db -1 ; end
+
+	; PICNICKER (42) = PICNICKER_6 -- Yellow's JR_TRAINER_F 21
+	; (db 29, PIDGEY, PIDGEOTTO, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 29, PIDGEY
+	db 29, PIDGEOTTO
+	db -1 ; end
+
+	; PICNICKER (43) = PICNICKER_7 -- Yellow's JR_TRAINER_F 22 (db 33, CLEFAIRY, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 33, CLEFAIRY
+	db -1 ; end
+
+	; PICNICKER (44) = PICNICKER_8 -- Yellow's JR_TRAINER_F 23
+	; (db 29, BELLSPROUT, ODDISH, TANGELA, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 29, BELLSPROUT
+	db 29, ODDISH
+	db 29, TANGELA
 	db -1 ; end
 
 CamperGroup:
