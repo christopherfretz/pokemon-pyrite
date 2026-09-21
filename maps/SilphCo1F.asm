@@ -1,65 +1,60 @@
+; Kanto hack (M8 11e, docs/M8-SAFFRON.md 0.6 row 11e): SILPH CO.'s lobby,
+; ported from Yellow.
+;
+; Yellow's 1F is almost empty: five warps, no bg_events and exactly ONE object,
+; the LINK RECEPTIONIST behind the front desk at (4,2)
+; (vendor/pokeyellow/data/maps/objects/SilphCo1F.asm).  There are no Rockets on
+; 1F -- TEAM ROCKET's grunts stand outside in the city (11c) and upstairs from
+; 2F -- so nothing here blocks the stairs or the lift.  Crystal's own lobby
+; (a receptionist plus an OFFICER handing out the UP-GRADE) is gone; see the
+; 11e findings for the UP-GRADE note.
+;
+; The receptionist is NOT at her desk while the building is occupied.  Yellow
+; runs SilphCo1F_Script on every map load, checks EVENT_BEAT_SILPH_CO_GIOVANNI
+; and ShowObject's her once it is set (vendor/pokeyellow/scripts/SilphCo1F.asm
+; lines 3-9).  A GSC object_event carries one flag and it is a HIDE flag, so
+; the polarity is inverted: SilphCo1FReceptionistCallback derives
+; EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN from EVENT_BEAT_SILPH_CO_GIOVANNI on
+; every map load, the RocketHideoutB4F pattern (maps/RocketHideoutB4F.asm).
+; Because it is derived, 11k's takeover script needs no line for her.
+
 	object_const_def
 	const SILPHCO1F_RECEPTIONIST
-	const SILPHCO1F_OFFICER
 
 SilphCo1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, SilphCo1FReceptionistCallback
 
-SilphCoReceptionistScript:
-	jumptextfaceplayer SilphCoReceptionistText
+SilphCo1FReceptionistCallback:
+	checkevent EVENT_BEAT_SILPH_CO_GIOVANNI
+	iftrue .AtDesk
+	setevent EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN
+	endcallback
 
-SilphCoOfficerScript:
-	faceplayer
-	opentext
-	checkevent EVENT_GOT_UP_GRADE
-	iftrue .GotUpGrade
-	writetext SilphCoOfficerText
-	promptbutton
-	verbosegiveitem UP_GRADE
-	iffalse .NoRoom
-	setevent EVENT_GOT_UP_GRADE
-.GotUpGrade:
-	writetext SilphCoOfficerText_GotUpGrade
-	waitbutton
-.NoRoom:
-	closetext
-	end
+.AtDesk:
+	clearevent EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN
+	endcallback
 
-SilphCoReceptionistText:
-	text "Welcome. This is"
-	line "SILPH CO.'s HEAD"
-	cont "OFFICE BUILDING."
-	done
+SilphCo1FReceptionistScript:
+	jumptextfaceplayer SilphCo1FReceptionistText
 
-SilphCoOfficerText:
-	text "Only employees are"
-	line "permitted to go"
-	cont "upstairs."
+SilphCo1FReceptionistText:
+	text "Welcome!"
 
-	para "But since you came"
-	line "such a long way,"
-
-	para "have this neat"
-	line "little souvenir."
-	done
-
-SilphCoOfficerText_GotUpGrade:
-	text "It's SILPH CO.'s"
-	line "latest product."
-
-	para "It's not for sale"
-	line "anywhere yet."
+	para "The PRESIDENT is"
+	line "in the boardroom"
+	cont "on 11F!"
 	done
 
 SilphCo1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-; Kanto hack (M8 11a): Yellow's lobby, 15x9 on TILESET_KANTO_FACILITY.  Warp 5
-; is behind the west wall and unreachable in Yellow too; it is kept so the
-; indices match Yellow's and 11e can drop in the real lobby unchanged.
+; Yellow's five warps verbatim (LAST_MAP -> SAFFRON_CITY warp 6, the front
+; door 11c numbered).  Warp 5 is behind the west wall and unreachable in
+; Yellow too (D84); it is kept so 3F's warp 7 has something to come back to.
 	warp_event 10, 17, SAFFRON_CITY, 6
 	warp_event 11, 17, SAFFRON_CITY, 6
 	warp_event 26,  0, SILPH_CO_2F, 1
@@ -71,5 +66,4 @@ SilphCo1F_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  4,  2, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCoReceptionistScript, -1
-	object_event 13,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCoOfficerScript, -1
+	object_event  4,  2, SPRITE_LINK_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SilphCo1FReceptionistScript, EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN

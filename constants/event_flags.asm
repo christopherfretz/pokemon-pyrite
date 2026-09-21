@@ -1949,8 +1949,11 @@
 	const EVENT_BEAT_SILPH_CO_11F_JESSIE_JAMES
 	const EVENT_SILPH_CO_11F_JESSIE_JAMES_HIDDEN
 ; 1F's receptionist is not at her desk while SILPH is occupied; she comes back
-; when GIOVANNI falls (Yellow's EVENT_SILPH_CO_RECEPTIONIST_AT_DESK).
-	const EVENT_SILPH_CO_RECEPTIONIST_AT_DESK
+; when GIOVANNI falls (Yellow's EVENT_SILPH_CO_RECEPTIONIST_AT_DESK).  A GSC
+; object_event flag is a HIDE flag, so the polarity is inverted from Yellow's
+; and the name says so; maps/SilphCo1F.asm's MAPCALLBACK_OBJECTS derives it
+; from EVENT_BEAT_SILPH_CO_GIOVANNI on every map load (11e).
+	const EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN
 	const EVENT_GOT_MASTER_BALL ; 11F, the president's thank-you
 ; SILPH CO. item balls, in Yellow's own object order.
 	const EVENT_SILPH_CO_3F_HYPER_POTION ; 3F (8,5)
