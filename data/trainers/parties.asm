@@ -747,15 +747,24 @@ BirdKeeperGroup:
 	db 34, FARFETCH_D
 	db -1 ; end
 
-	; BIRD_KEEPER (15)
-	db "PERRY@", TRAINERTYPE_NORMAL
-	db 34, FARFETCH_D
+	; BIRD_KEEPER (15) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BIRD KEEPER 1,
+	; OPP_BIRD_KEEPER 1 (db 29, PIDGEY, PIDGEOTTO, 0).  Was Crystal's PERRY, one
+	; of its own ROUTE 13 pair, deleted by 10c.  Nameless, so PlaceEnemysName
+	; prints "BIRD KEEPER".
+	db "@", TRAINERTYPE_NORMAL
+	db 29, PIDGEY
+	db 29, PIDGEOTTO
 	db -1 ; end
 
-	; BIRD_KEEPER (16)
-	db "BRET@", TRAINERTYPE_NORMAL
-	db 32, PIDGEOTTO
-	db 32, FEAROW
+	; BIRD_KEEPER (16) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BIRD KEEPER 2,
+	; OPP_BIRD_KEEPER 2 (db 25, SPEAROW, PIDGEY, PIDGEY, SPEAROW, SPEAROW, 0).
+	; Was Crystal's BRET.
+	db "@", TRAINERTYPE_NORMAL
+	db 25, SPEAROW
+	db 25, PIDGEY
+	db 25, PIDGEY
+	db 25, SPEAROW
+	db 25, SPEAROW
 	db -1 ; end
 
 	; BIRD_KEEPER (17)
@@ -773,6 +782,16 @@ BirdKeeperGroup:
 	db "VANCE@", TRAINERTYPE_MOVES
 	db 38, PIDGEOT,    TOXIC, QUICK_ATTACK, WHIRLWIND, FLY
 	db 38, PIDGEOT,    SWIFT, DETECT, STEEL_WING, FLY
+	db -1 ; end
+
+	; BIRD_KEEPER (20) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BIRD KEEPER 3,
+	; OPP_BIRD_KEEPER 3 (db 26, PIDGEY, PIDGEOTTO, SPEAROW, FEAROW, 0).  The
+	; class had only two dead rows left, so this one is appended.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, PIDGEY
+	db 26, PIDGEOTTO
+	db 26, SPEAROW
+	db 26, FEAROW
 	db -1 ; end
 
 LassGroup:
@@ -1274,14 +1293,20 @@ BeautyGroup:
 	db 16, MEOWTH,     SCRATCH, GROWL, BITE, SLASH
 	db -1 ; end
 
-	; BEAUTY (3)
-	db "JULIE@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; BEAUTY (3) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BEAUTY 4
+	; (db 27, RATTATA, VULPIX, RATTATA, 0).  Was JULIE, one of Crystal's own
+	; "; unused" placeholder rows.  Nameless, so PlaceEnemysName prints "BEAUTY".
+	db "@", TRAINERTYPE_NORMAL
+	db 27, RATTATA
+	db 27, VULPIX
+	db 27, RATTATA
 	db -1 ; end
 
-	; BEAUTY (4)
-	db "JACLYN@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; BEAUTY (4) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BEAUTY 5
+	; (db 29, CLEFAIRY, MEOWTH, 0).  Was the unused JACLYN.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, CLEFAIRY
+	db 29, MEOWTH
 	db -1 ; end
 
 	; BEAUTY (5)
@@ -2909,12 +2934,13 @@ HikerGroup:
 	db 20, GEODUDE
 	db -1 ; end
 
-	; HIKER (16)
+	; HIKER (16) -- unused (Kanto hack, M7 10c): KENNY was Crystal's ROUTE 13
+	; HIKER, deleted by 10c (Yellow has no HIKER on ROUTE 13).  The row has to
+	; stay so HIKER (17) JIM and everything after it keep their ids, but its
+	; party is cut to a one-#MON placeholder, the shape Crystal's own dead rows
+	; have (D49).
 	db "KENNY@", TRAINERTYPE_NORMAL
 	db 27, SANDSLASH
-	db 29, GRAVELER
-	db 31, GOLEM
-	db 29, GRAVELER
 	db -1 ; end
 
 	; HIKER (17) - Kanto hack: ROUTE 10, Yellow's HIKER 7 (docs/M5-LAVENDER.md 5.1, 5.3)
@@ -3080,10 +3106,12 @@ BikerGroup:
 	db 25, WEEZING
 	db -1 ; end
 
-	; BIKER (JOEL) -- unused since M6 9z; kept so BIKER_3 below keeps its id.
-	db "JOEL@", TRAINERTYPE_NORMAL
-	db 32, MAGMAR
-	db 32, MAGMAR
+	; BIKER (BIKER_9) -- Kanto hack (M7 10c): Yellow's ROUTE 13 BIKER 1, OPP_BIKER 1
+	; (db 28, KOFFING, KOFFING, KOFFING, 0).  Was JOEL, dead since M6 9z.
+	db "@", TRAINERTYPE_NORMAL
+	db 28, KOFFING
+	db 28, KOFFING
+	db 28, KOFFING
 	db -1 ; end
 
 	; BIKER (GLENN) -- unused since M6 9z; kept so BIKER_3 below keeps its id.
@@ -3615,6 +3643,42 @@ PicnickerGroup:
 	db 22, BULBASAUR
 	db -1 ; end
 
+	; Kanto hack (M7 10c): ROUTE 13's four JR.TRAINER^F (OPP_JR_TRAINER_F
+	; 12-15).  PICNICKER has no dead rows left, so these four are appended.
+	; Nameless (the M6 9y convention), so PlaceEnemysName prints "PICNICKER".
+	; PICNICKER (37) -- Yellow's JR_TRAINER_F 12
+	; (db 24, PIDGEY, MEOWTH, RATTATA, PIDGEY, MEOWTH, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 24, PIDGEY
+	db 24, MEOWTH
+	db 24, RATTATA
+	db 24, PIDGEY
+	db 24, MEOWTH
+	db -1 ; end
+
+	; PICNICKER (38) -- Yellow's JR_TRAINER_F 13 (db 30, POLIWAG, POLIWAG, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 30, POLIWAG
+	db 30, POLIWAG
+	db -1 ; end
+
+	; PICNICKER (39) -- Yellow's JR_TRAINER_F 14
+	; (db 27, PIDGEY, MEOWTH, PIDGEY, PIDGEOTTO, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 27, PIDGEY
+	db 27, MEOWTH
+	db 27, PIDGEY
+	db 27, PIDGEOTTO
+	db -1 ; end
+
+	; PICNICKER (40) -- Yellow's JR_TRAINER_F 15
+	; (db 28, GOLDEEN, POLIWAG, HORSEA, 0)
+	db "@", TRAINERTYPE_NORMAL
+	db 28, GOLDEEN
+	db 28, POLIWAG
+	db 28, HORSEA
+	db -1 ; end
+
 CamperGroup:
 	; CAMPER (1)
 	db "ROLAND@", TRAINERTYPE_NORMAL
@@ -4023,13 +4087,11 @@ PokefanMGroup:
 	db 17, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (3)
+	; POKEFANM (3) -- unused (Kanto hack, M7 10c): JOSHUA was Crystal's ROUTE 13
+	; PIKACHU-gang POKEFAN, deleted by 10c.  The row has to stay so POKEFANM (4)
+	; CARTER and everything after it keep their ids, but its six-PIKACHU party
+	; is cut to a one-#MON placeholder (D49).
 	db "JOSHUA@", TRAINERTYPE_ITEM
-	db 23, PIKACHU,    BERRY
-	db 23, PIKACHU,    BERRY
-	db 23, PIKACHU,    BERRY
-	db 23, PIKACHU,    BERRY
-	db 23, PIKACHU,    BERRY
 	db 23, PIKACHU,    BERRY
 	db -1 ; end
 
@@ -4072,12 +4134,9 @@ PokefanMGroup:
 	db 36, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (11)
-	db "ALEX@", TRAINERTYPE_ITEM
-	db 29, NIDOKING,   BERRY
-	db 29, SLOWKING,   BERRY
-	db 29, SEAKING,    BERRY
-	db -1 ; end
+; Kanto hack (M7 10c): POKEFANM (11) ALEX -- Crystal's other ROUTE 13 POKEFAN --
+; is gone with the rest of Crystal's ROUTE 13.  He was the LAST entry of the
+; class, so no other POKEFANM id moves and the row is deleted outright (D49).
 
 KimonoGirlGroup:
 	; KIMONO_GIRL (1)

@@ -255,7 +255,7 @@
 	const EVENT_ROUTE_4_HIDDEN_GREAT_BALL ; Kanto hack: Route 4, Yellow's hidden GREAT_BALL (was EVENT_ROUTE_4_HIDDEN_ULTRA_BALL)
 	const EVENT_ROUTE_9_HIDDEN_ETHER
 	const EVENT_GOT_TM_SWIFT_FROM_GIRL ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_HIDDEN_ELIXER -- Crystal's hidden ELIXER is not Yellow's (Yellow's one ROUTE 12 hidden item is a HYPER POTION at (2,63); see EVENT_ROUTE_12_HIDDEN_HYPER_POTION), so 8l deleted it and this row pays for the ROUTE 12 GATE 2F girl's one-time TM39 SWIFT
-	const EVENT_ROUTE_13_HIDDEN_CALCIUM
+	const EVENT_ROUTE_13_HIDDEN_CALCIUM ; Kanto hack (M7 10c): kept; moved to Yellow's tile, ROUTE 13 (16,13), read facing LEFT from (17,13) -- Crystal had it at (30,13)
 	const EVENT_ROUTE_11_HIDDEN_ESCAPE_ROPE ; Kanto hack (M4 audit): was EVENT_ROUTE_11_HIDDEN_REVIVE; Yellow's ROUTE 11 hidden item is an ESCAPE_ROPE
 	const EVENT_ROUTE_17_HIDDEN_RARE_CANDY ; Kanto hack: renamed in place (M6 9z) -- Yellow's ROUTE 17 hidden items are not Crystal's; ROUTE 17 (15,14)
 	const EVENT_ROUTE_17_HIDDEN_MAX_ELIXER
@@ -571,8 +571,8 @@
 	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_5 ; Kanto hack: renamed in place (M6 9w), was EVENT_BEAT_BIRD_KEEPER_JOSE -- an unreferenced Gen 2 trainer flag; Yellow's EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4, the B1F Rocket who opens the door to the lift
 	const EVENT_BEAT_BIRD_KEEPER_PETER
 	const EVENT_BEAT_BIRD_KEEPER_JOSE2
-	const EVENT_BEAT_BIRD_KEEPER_PERRY
-	const EVENT_BEAT_BIRD_KEEPER_BRET
+	const EVENT_BEAT_ROUTE_13_BIRD_KEEPER_4 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_BIRD_KEEPER_PERRY -- Crystal's own ROUTE 13 bird keeper, deleted by 10c
+	const EVENT_BEAT_ROUTE_13_BIRD_KEEPER_5 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_BIRD_KEEPER_BRET
 	const EVENT_CELADON_GAME_CORNER_COIN_1 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_JOSE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (0,8), 10
 	const EVENT_CELADON_GAME_CORNER_COIN_2 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_VANCE2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (1,16), 10
 	const EVENT_CELADON_GAME_CORNER_COIN_3 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_BIRD_KEEPER_VANCE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (3,11), 20
@@ -805,7 +805,7 @@
 	const EVENT_BEAT_POKEFANM_WILLIAM
 	const EVENT_BEAT_POKEFANM_DEREK
 	const EVENT_GOT_TM41_SOFTBOILED ; Kanto hack: renamed in place (M6 9p), was the dead EVENT_BEAT_POKEFANM_ROBERT (Crystal's ROUTE 10 POKEFAN, deleted in M5 8d).  CELADON CITY's gramps, Yellow's EVENT_GOT_TM41
-	const EVENT_BEAT_POKEFANM_JOSHUA
+	const EVENT_BEAT_ROUTE_13_PICNICKER_1 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_POKEFANM_JOSHUA -- Crystal's ROUTE 13 PIKACHU-gang POKEFAN, deleted by 10c
 	const EVENT_BEAT_POKEFANM_CARTER
 	const EVENT_BEAT_POKEFANM_TREVOR
 	const EVENT_BEAT_POKEFANM_BRANDON
@@ -813,7 +813,7 @@
 	const EVENT_BEAT_POKEFANM_COLIN
 	const EVENT_BEAT_ROCKET_HIDEOUT_B3F_ROCKET_1 ; Kanto hack (M6 9x): ROCKET HIDEOUT B3F (10,22) (was EVENT_BEAT_POKEFANM_DEREK2, a dead Johto rematch flag)
 	const EVENT_BEAT_ROCKET_HIDEOUT_B3F_ROCKET_2 ; Kanto hack (M6 9x): ROCKET HIDEOUT B3F (26,12) (was EVENT_BEAT_POKEFANM_DEREK3, a dead Johto rematch flag)
-	const EVENT_BEAT_POKEFANM_ALEX
+	const EVENT_BEAT_ROUTE_13_PICNICKER_2 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_POKEFANM_ALEX -- Crystal's other ROUTE 13 POKEFAN, deleted by 10c
 ; PokefanF
 	const EVENT_BEAT_POKEFANF_BEVERLY
 	const EVENT_BEAT_POKEFANF_RUTH
@@ -911,7 +911,7 @@
 	const EVENT_BEAT_HIKER_TIM
 	const EVENT_BEAT_HIKER_NOLAND
 	const EVENT_BEAT_HIKER_SIDNEY
-	const EVENT_BEAT_HIKER_KENNY
+	const EVENT_BEAT_ROUTE_13_PICNICKER_3 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_HIKER_KENNY -- Crystal's ROUTE 13 HIKER, deleted by 10c
 	const EVENT_BEAT_HIKER_JIM ; Kanto hack: kept (M5 8d); ROUTE 10, Yellow's HIKER 7 -- party rewritten in place
 	const EVENT_BEAT_HIKER_DANIEL
 	const EVENT_BEAT_HIKER_ODELL ; Kanto hack: renamed in place (M5 8d), was the dead EVENT_BEAT_HIKER_PARRY2; ROUTE 10, Yellow's HIKER 8
@@ -1839,7 +1839,19 @@
 	const EVENT_GOT_SILPH_SCOPE ; B4F (25,2), the ball GIOVANNI leaves behind
 	const EVENT_ROCKET_HIDEOUT_B4F_JESSIE_JAMES_HIDDEN ; JESSIE and JAMES are off the map (set unconditionally by RocketHideoutB4FObjectsCallback)
 
-; Unused: next 451 events
+; Kanto hack (M7 10c, docs/M7-FUCHSIA.md): ROUTE 13.  Five of its eleven flags
+; are renames of Crystal's own dead ROUTE 13 rows further up this file; these six
+; had no dead row of the right shape left, so they are appended.  Flag names
+; match the trainer const they gate (BIRD_KEEPER_6, PICNICKER_4, BEAUTY_1/2,
+; BIKER_9), not Yellow's opponent number.
+	const EVENT_BEAT_ROUTE_13_PICNICKER_4
+	const EVENT_BEAT_ROUTE_13_BIRD_KEEPER_6
+	const EVENT_BEAT_ROUTE_13_BEAUTY_1
+	const EVENT_BEAT_ROUTE_13_BEAUTY_2
+	const EVENT_BEAT_ROUTE_13_BIKER_9
+	const EVENT_ROUTE_13_HIDDEN_PP_UP ; ROUTE 13 (1,14), read facing DOWN from (1,13)
+
+; Unused: next 445 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

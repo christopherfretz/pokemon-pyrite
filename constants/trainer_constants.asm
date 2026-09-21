@@ -186,11 +186,17 @@ DEF KRIS EQU __trainer_class__
 	const JOSE1
 	const PETER
 	const JOSE2
-	const PERRY
-	const BRET
+; Kanto hack (M7 10c): Yellow's three ROUTE 13 BIRD KEEPERs (OPP_BIRD_KEEPER
+; 1-3).  PERRY and BRET were Crystal's own ROUTE 13 pair, deleted by 10c, so two
+; of the three take their rows over in place; the third is appended below.  The
+; _4/_5/_6 numbering continues the per-class hack sequence BIRD_KEEPER_1-3
+; (ROUTE 18, M6 9aa) started -- it is NOT Yellow's opponent number.
+	const BIRD_KEEPER_4 ; ROUTE 13 (was PERRY)
+	const BIRD_KEEPER_5 ; ROUTE 13 (was BRET)
 	const JOSE3
 	const VANCE2
 	const VANCE3
+	const BIRD_KEEPER_6 ; ROUTE 13 (Kanto hack, M7 10c), appended
 
 	trainerclass LASS ; 19
 	const CARRIE
@@ -283,8 +289,11 @@ DEF KRIS EQU __trainer_class__
 	trainerclass BEAUTY ; 1d
 	const VICTORIA
 	const SAMANTHA
-	const JULIE ; unused
-	const JACLYN ; unused
+; Kanto hack (M7 10c): ROUTE 13's two BEAUTYs (Yellow's OPP_BEAUTY 4 and 5) take
+; over two of Crystal's "; unused" placeholder rows in place -- no renumbering,
+; no new const cost.
+	const BEAUTY_1 ; ROUTE 13 (was the unused JULIE)
+	const BEAUTY_2 ; ROUTE 13 (was the unused JACLYN)
 	const BRENDA ; unused
 	const CASSIE
 	const CAROLINE ; unused
@@ -625,7 +634,7 @@ DEF KRIS EQU __trainer_class__
 	const BIKER_6 ; ROUTE 17 (was ZEKE)
 	const BIKER_7 ; ROUTE 17 (was CHARLES)
 	const BIKER_8 ; ROUTE 17 (was RILEY)
-	const JOEL ; unused (Kanto hack: dead since M6 9z deleted Crystal's ROUTE 17)
+	const BIKER_9 ; ROUTE 13 (Kanto hack, M7 10c, Yellow's OPP_BIKER 1); was the dead JOEL
 	const GLENN ; unused (Kanto hack: dead since M6 9z deleted Crystal's ROUTE 17)
 	const BIKER_3 ; ROUTE 16 (Kanto hack, M6 9y)
 
@@ -727,6 +736,12 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: ROCK TUNNEL B1F's two Jr.Trainers^F (M5 8f, Yellow JR_TRAINER_F 9/10)
 	const RHODA
 	const OPAL
+; Kanto hack (M7 10c): ROUTE 13's four JR.TRAINERs^F (Yellow OPP_JR_TRAINER_F
+; 12/13/14/15).  The class has no dead rows left, so these four are appended.
+	const PICNICKER_1
+	const PICNICKER_2
+	const PICNICKER_3
+	const PICNICKER_4
 
 	trainerclass CAMPER ; 36
 	const ROLAND
@@ -823,7 +838,9 @@ DEF KRIS EQU __trainer_class__
 	const COLIN
 	const DEREK2 ; unused
 	const DEREK3 ; unused
-	const ALEX
+; Kanto hack (M7 10c): ALEX deleted -- he was Crystal's ROUTE 13 POKEFAN, and
+; Yellow has no POKEFAN on ROUTE 13.  He was the class's last row, so nothing
+; renumbers.
 
 	trainerclass KIMONO_GIRL ; 3c
 	const NAOKO_UNUSED ; unused

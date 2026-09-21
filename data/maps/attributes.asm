@@ -324,13 +324,21 @@ ENDM
 	connection west, FuchsiaCity, FUCHSIA_CITY, -9
 	connection east, Route14, ROUTE_14, -9
 
+; Kanto hack (M7 10c, docs/M7-FUCHSIA.md): Yellow's ROUTE 13 runs EAST-WEST and
+; hands off to ROUTE 14 through its WEST edge, not its south one --
+; vendor/pokeyellow/data/maps/headers/Route13.asm is "north Route12 20 / west
+; Route14 0".  Crystal had ROUTE 13 stacked above ROUTE 14, so both sides of
+; that seam are re-pointed here.  The ROUTE 14 side is the minimal reciprocal
+; edit only (10d owns ROUTE 14's own re-cut); note Yellow says "west Route15 18"
+; where we still carry 9, left over from before 10a resized ROUTE_14 to 10x27
+; and ROUTE_15 to 30x9 -- 10d must fix that offset with the re-cut.
 	map_attributes Route14, ROUTE_14, $43
-	connection north, Route13, ROUTE_13, 0
-	connection west, Route15, ROUTE_15, 9
+	connection west, Route15, ROUTE_15, 9 ; 10d: Yellow says 18
+	connection east, Route13, ROUTE_13, 0 ; Kanto hack (M7 10c): was "north Route13 0"
 
 	map_attributes Route13, ROUTE_13, $43
 	connection north, Route12, ROUTE_12, 20
-	connection south, Route14, ROUTE_14, 0
+	connection west, Route14, ROUTE_14, 0 ; Kanto hack (M7 10c): was "south Route14 0"
 
 ; Kanto hack (M5 8l): ROUTE 12 is Yellow's full 10x54 now, not Crystal's 10x27
 ; northern half, so the Route 11 seam moves to Yellow's own y-offset --

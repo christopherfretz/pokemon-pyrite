@@ -145,12 +145,17 @@ LavenderGroupSprites:
 	db SPRITE_YOUNGSTER
 	db SPRITE_SUPER_NERD
 	db SPRITE_POKEFAN_M
+	; Kanto hack (M7 10c): cross-connection -- ROUTE 12's south edge opens onto
+	; ROUTE 13, whose 10 trainers add BEAUTY and BIKER to the COOLTRAINER_M/F
+	; this group already lists.
+	db SPRITE_BEAUTY
+	db SPRITE_BIKER
 	db SPRITE_BIG_SNORLAX ; Kanto hack (M5 8l): the ROUTE 12 SNORLAX
 	db SPRITE_FISHER
 	db SPRITE_GENTLEMAN
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 11
+rept MAX_OUTDOOR_SPRITES - 13
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
@@ -181,9 +186,19 @@ FuchsiaGroupSprites:
 	db SPRITE_TEACHER
 	db SPRITE_POKEFAN_M
 	db SPRITE_COOLTRAINER_M
+	; Kanto hack (M7 10c): ROUTE 13's own trainers -- 4 PICNICKERs (COOLTRAINER_F),
+	; 2 BEAUTYs and a BIKER.  Walking sheets, so they go ahead of the still ones.
+	db SPRITE_COOLTRAINER_F
+	db SPRITE_BEAUTY
+	db SPRITE_BIKER
+	; Kanto hack (M7 10c): cross-connection the other way -- ROUTE 13's north edge
+	; opens onto ROUTE 12, so walking BACK up pays a RefreshConnectionSprites
+	; reload unless this group carries ROUTE 12's FISHERs and its SNORLAX too.
+	db SPRITE_FISHER
+	db SPRITE_BIG_SNORLAX
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 6
+rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
