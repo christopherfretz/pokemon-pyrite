@@ -60,8 +60,8 @@ SilphCo1F_MapEvents:
 ; Kanto hack (M8 11a): Yellow's lobby, 15x9 on TILESET_KANTO_FACILITY.  Warp 5
 ; is behind the west wall and unreachable in Yellow too; it is kept so the
 ; indices match Yellow's and 11e can drop in the real lobby unchanged.
-	warp_event 10, 17, SAFFRON_CITY, 7
-	warp_event 11, 17, SAFFRON_CITY, 7
+	warp_event 10, 17, SAFFRON_CITY, 6
+	warp_event 11, 17, SAFFRON_CITY, 6
 	warp_event 26,  0, SILPH_CO_2F, 1
 	warp_event 20,  0, SILPH_CO_ELEVATOR, 1
 	warp_event 16, 10, SILPH_CO_3F, 7 ; inaccessible, as in Yellow

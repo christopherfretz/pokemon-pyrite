@@ -290,3 +290,10 @@
 	tilecoll FLOOR, WARP_77, FLOOR, WARP_77 ; c8
 ; kanto $74, warp on the BOTTOM edge (a south-border crossing)
 	tilecoll FLOOR, FLOOR, WARP_77, WARP_77 ; c9
+
+; ---- M8 11c: the kanto blockset's BLOCK_ZERO_TWIN.  GSC reserves block id
+; $00 ("no block", collision $ff), and SAFFRON CITY is the one Kanto overworld
+; map whose Yellow .blk uses $00 -- 19 cells of plain office block.  This is
+; Yellow's overworld record $00 with its tile $4f drawn as kanto $3c, and
+; scripts/saffron_blk.py rewrites every $00 in SaffronCity.blk to point here.
+	tilecoll WALL, WALL, WALL, WALL ; ca

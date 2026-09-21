@@ -112,14 +112,25 @@ rept MAX_OUTDOOR_SPRITES - 11
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
+; Kanto hack (M8 11c): rebuilt by scripts/trim_outdoor_sprites.py --write
+; Saffron for SAFFRON CITY's 14 objects -- seven ROCKET grunts plus the six
+; civilians who appear once the takeover lifts.  Walkers first (G1): ROCKET,
+; SCIENTIST and SILPH_WORKER_F all step, and COOLTRAINER_F walks on the
+; connected routes.  The two COOLTRAINERs are cross-connection entries kept
+; from the old Crystal list so ROUTE 5/6/7/8 need no sprite reload at the seam.
 SaffronGroupSprites:
-	db SPRITE_COOLTRAINER_M
+; walks: keep inside table 1 (the first eight entries)
 	db SPRITE_COOLTRAINER_F
-	db SPRITE_YOUNGSTER
-	db SPRITE_LASS
-	db SPRITE_POKEFAN_M
-	db SPRITE_FISHER
-rept MAX_OUTDOOR_SPRITES - 6
+	db SPRITE_ROCKET
+	db SPRITE_SCIENTIST
+	db SPRITE_SILPH_WORKER_F
+; stands still everywhere in this group: safe in either table
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_ROCKER
+	db SPRITE_GENTLEMAN
+	db SPRITE_BIRD
+	db SPRITE_SILPH_WORKER_M
+rept MAX_OUTDOOR_SPRITES - 9
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

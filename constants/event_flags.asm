@@ -2007,8 +2007,14 @@
 	const EVENT_DEFEATED_FIGHTING_DOJO ; the KARATE MASTER is beaten
 	const EVENT_GOT_HITMONLEE
 	const EVENT_GOT_HITMONCHAN
+; SAFFRON CITY's six civilians (11c).  Yellow keeps them off the map with its
+; global data/maps/toggleable_objects.asm table, which GSC has no analogue for,
+; so they get one shared HIDE flag: InitializeEventsScript sets it at new game
+; and 11k's takeover script clears it.  Same shape as RADIO TOWER's
+; EVENT_RADIO_TOWER_CIVILIANS_AFTER.
+	const EVENT_SAFFRON_CITY_CIVILIANS_AFTER
 
-; Unused: next 335 events
+; Unused: next 334 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

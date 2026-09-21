@@ -171,10 +171,16 @@ PokemonTower7FJamesScript:
 ; UP and warps to MR_FUJIS_HOUSE warp id 1.
 ;
 ; M7: Yellow also sets EVENT_RESCUED_MR_FUJI_2 and swaps two SAFFRON CITY
-; objects (HideObject SAFFRON_CITY_E / ShowObject SAFFRON_CITY_F).  SAFFRON is
-; unported, and our MR FUJI'S HOUSE derives his visibility from
-; EVENT_RESCUED_MR_FUJI in its own MAPCALLBACK_OBJECTS, so the _2 twin has no
-; analogue at all.
+; objects (HideObject SAFFRON_CITY_E / ShowObject SAFFRON_CITY_F).  Our MR
+; FUJI'S HOUSE derives his visibility from EVENT_RESCUED_MR_FUJI in its own
+; MAPCALLBACK_OBJECTS, so the _2 twin has no analogue at all.
+;
+; M8 11c: SAFFRON CITY is ported now, and the HideObject half needs no script
+; here either -- SAFFRONCITY_ROCKET8 (the grunt in front of SILPH CO.'s door,
+; Yellow's SAFFRON_CITY_E) carries EVENT_RESCUED_MR_FUJI as its own HIDE flag,
+; so the setevent above makes him vanish by itself.  ShowObject SAFFRON_CITY_F
+; has no analogue: that is Yellow's ROCKET9, dropped per D88 because Yellow
+; itself deleted the object and left only a dangling const behind.
 PokemonTower7FMrFujiScript:
 	faceplayer
 	opentext
