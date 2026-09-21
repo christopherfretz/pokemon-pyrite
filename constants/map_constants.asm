@@ -424,7 +424,7 @@ ENDM
 
 	newgroup CELADON                                              ; 21
 	map_const ROUTE_7,                                     10,  9 ;  1
-	map_const ROUTE_16,                                    10,  9 ;  2
+	map_const ROUTE_16,                                    20,  9 ;  2 ; Kanto hack (M6 9y): Yellow's 20x9, was Crystal's 10x9
 	map_const ROUTE_17,                                    10, 45 ;  3
 	map_const CELADON_CITY,                                25, 18 ;  4 ; Kanto hack (M6 9p): Yellow's 25x18, was Crystal's 20x18
 	map_const CELADON_DEPT_STORE_1F,                        8,  4 ;  5

@@ -604,8 +604,8 @@
 	const EVENT_BEAT_CAMPER_TED
 	const EVENT_CELADON_GAME_CORNER_COIN_4 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_CAMPER_TODD2 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (3,14), 10
 	const EVENT_CELADON_GAME_CORNER_COIN_5 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_CAMPER_TODD3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (4,12), 10
-	const EVENT_BEAT_CAMPER_THOMAS
-	const EVENT_BEAT_CAMPER_LEROY
+	const EVENT_BEAT_ROUTE_16_CUE_BALL_3 ; Kanto hack: renamed in place (M6 9y), was EVENT_BEAT_CAMPER_THOMAS -- dead in vanilla Crystal too (no map ever references it); ROUTE 16 (6,10), Yellow's OPP_CUE_BALL 3
+	const EVENT_BEAT_ROUTE_16_SNORLAX ; Kanto hack: renamed in place (M6 9y), was EVENT_BEAT_CAMPER_LEROY -- dead in vanilla Crystal too; ROUTE 16 (26,10), doubles as the SNORLAX object's hide flag
 	const EVENT_BEAT_CAMPER_DAVID
 	const EVENT_BEAT_CAMPER_JOHN
 	const EVENT_BEAT_CAMPER_JERRY
@@ -616,15 +616,16 @@
 	const EVENT_BEAT_BURGLAR_COREY
 	const_skip ; unused
 ; Biker
-	const EVENT_BEAT_BIKER_BENNY
-	const EVENT_BEAT_BIKER_KAZU
-; Kanto hack: these three were Crystal's ROUTE 8 bikers, deleted by M5 8j
-; (Yellow has no bikers there).  DEAD but RESERVED, not free: their parties in
-; data/trainers/parties.asm are kept for Yellow's ROUTE 16/17/18 CUE_BALLs --
-; see docs/M5-LAVENDER.md 5.3.  Rename them there, not somewhere else.
-	const EVENT_BEAT_BIKER_DWAYNE
-	const EVENT_BEAT_BIKER_HARRIS
-	const EVENT_BEAT_BIKER_ZEKE
+; Kanto hack (M6 9y): Yellow's three ROUTE 16 BIKERs (OPP_BIKER 5/6/7).  Rows 1
+; and 2 were BIKER_BENNY / KAZU, dead in vanilla Crystal; row 3 was BIKER_DWAYNE,
+; Crystal's ROUTE 8 biker, deleted by M5 8j.  D34 gave CUE BALL its own trainer
+; class, so the old "reserved for Yellow's CUE_BALLs" note here is superseded.
+	const EVENT_BEAT_ROUTE_16_BIKER_1 ; was EVENT_BEAT_BIKER_BENNY; ROUTE 16 (17,12)
+	const EVENT_BEAT_ROUTE_16_BIKER_2 ; was EVENT_BEAT_BIKER_KAZU; ROUTE 16 (9,11)
+	const EVENT_BEAT_ROUTE_16_BIKER_3 ; was EVENT_BEAT_BIKER_DWAYNE; ROUTE 16 (3,12)
+	const EVENT_BEAT_ROUTE_16_CUE_BALL_1 ; was EVENT_BEAT_BIKER_HARRIS (dead, Crystal's ROUTE 8); ROUTE 16 (14,13)
+	const EVENT_BEAT_ROUTE_16_CUE_BALL_2 ; was EVENT_BEAT_BIKER_ZEKE (dead, Crystal's ROUTE 8); ROUTE 16 (11,12)
+; Still Crystal's, still placed on Crystal's ROUTE 17 until M6 9z re-cuts it.
 	const EVENT_BEAT_BIKER_CHARLES
 	const EVENT_BEAT_BIKER_RILEY
 	const EVENT_BEAT_BIKER_JOEL

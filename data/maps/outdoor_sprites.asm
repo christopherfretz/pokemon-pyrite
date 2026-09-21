@@ -132,7 +132,8 @@ CeladonGroupSprites:
 	db SPRITE_FISHER
 	db SPRITE_BIKER
 	db SPRITE_POLIWAG
-rept MAX_OUTDOOR_SPRITES - 8
+	db SPRITE_BIG_SNORLAX ; Kanto hack (M6 9y): the ROUTE 16 SNORLAX
+rept MAX_OUTDOOR_SPRITES - 9
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

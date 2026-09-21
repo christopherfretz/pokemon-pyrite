@@ -208,3 +208,13 @@
 ; The .blk cell that points here is scripts/celadon_blk.py's WARP_BLOCKS;
 ; this file owns every *append* to Crystal's kanto blockset (see 8j/8k).
 	tilecoll FLOOR, FLOOR, LADDER, LADDER ; a5
+; M6 9y (docs/M6-CELADON.md 3.8): ROUTE 16, gate hut NORTH-EAST doors -- Yellow warp_events (24,4) and
+; (24,5), i.e. both LEFT quadrants of block (12,2).  Twin of kanto $01
+; (plain grass); $9a is the same block with the LADDERs on its RIGHT
+; column and serves (17,4)/(17,5), so the two cannot be merged.
+	tilecoll LADDER, FLOOR, LADDER, FLOOR ; a6
+; M6 9y (docs/M6-CELADON.md 3.8): ROUTE 16, gate hut SOUTH-WEST doors -- Yellow warp_events (17,10) and
+; (17,11), i.e. both RIGHT quadrants of block (8,5).  Twin of kanto $31
+; (the paved road surface south of the hut), whose four quadrants are
+; plain FLOOR in both games.
+	tilecoll FLOOR, LADDER, FLOOR, LADDER ; a7
