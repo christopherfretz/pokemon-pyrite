@@ -257,9 +257,9 @@
 	const EVENT_GOT_TM_SWIFT_FROM_GIRL ; Kanto hack: renamed in place (M5 8l), was EVENT_ROUTE_12_HIDDEN_ELIXER -- Crystal's hidden ELIXER is not Yellow's (Yellow's one ROUTE 12 hidden item is a HYPER POTION at (2,63); see EVENT_ROUTE_12_HIDDEN_HYPER_POTION), so 8l deleted it and this row pays for the ROUTE 12 GATE 2F girl's one-time TM39 SWIFT
 	const EVENT_ROUTE_13_HIDDEN_CALCIUM
 	const EVENT_ROUTE_11_HIDDEN_ESCAPE_ROPE ; Kanto hack (M4 audit): was EVENT_ROUTE_11_HIDDEN_REVIVE; Yellow's ROUTE 11 hidden item is an ESCAPE_ROPE
-	const EVENT_ROUTE_17_HIDDEN_MAX_ETHER
+	const EVENT_ROUTE_17_HIDDEN_RARE_CANDY ; Kanto hack: renamed in place (M6 9z) -- Yellow's ROUTE 17 hidden items are not Crystal's; ROUTE 17 (15,14)
 	const EVENT_ROUTE_17_HIDDEN_MAX_ELIXER
-	const EVENT_ROUTE_25_HIDDEN_POTION
+	const EVENT_ROUTE_17_HIDDEN_FULL_RESTORE ; Kanto hack: renamed in place (M6 9z), was the dead EVENT_ROUTE_25_HIDDEN_POTION; ROUTE 17 (8,45)
 	const EVENT_GOT_COIN_CASE ; Kanto hack: renamed in place (M6 9t), was EVENT_FOUND_LEFTOVERS_IN_CELADON_CAFE; CELADON DINER gym guide gives the COIN CASE
 	const EVENT_SS_ANNE_2F_ROOMS_MAX_ETHER ; Kanto hack: renamed in place (7h), was EVENT_FOUND_BERSERK_GENE_IN_CERULEAN_CITY; S.S. ANNE 2F Rooms item ball (12,1)
 	const EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
@@ -491,7 +491,7 @@
 	const EVENT_WALL_OPENED_IN_KABUTO_CHAMBER
 	const EVENT_WALL_OPENED_IN_OMANYTE_CHAMBER
 	const EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER
-	const EVENT_WELCOMED_TO_POKECOM_CENTER
+	const EVENT_ROUTE_17_HIDDEN_PP_UP ; Kanto hack: renamed in place (M6 9z), was a dead Gen 2 POKECOM CENTER flag; ROUTE 17 (17,72)
 	const EVENT_WADE_HAS_BERRY
 	const EVENT_WADE_HAS_PSNCUREBERRY
 	const EVENT_WADE_HAS_PRZCUREBERRY
@@ -606,8 +606,8 @@
 	const EVENT_CELADON_GAME_CORNER_COIN_5 ; Kanto hack: renamed in place (M6 9u), was EVENT_BEAT_CAMPER_TODD3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut); CELADON GAME CORNER hidden coins (4,12), 10
 	const EVENT_BEAT_ROUTE_16_CUE_BALL_3 ; Kanto hack: renamed in place (M6 9y), was EVENT_BEAT_CAMPER_THOMAS -- dead in vanilla Crystal too (no map ever references it); ROUTE 16 (6,10), Yellow's OPP_CUE_BALL 3
 	const EVENT_BEAT_ROUTE_16_SNORLAX ; Kanto hack: renamed in place (M6 9y), was EVENT_BEAT_CAMPER_LEROY -- dead in vanilla Crystal too; ROUTE 16 (26,10), doubles as the SNORLAX object's hide flag
-	const EVENT_BEAT_CAMPER_DAVID
-	const EVENT_BEAT_CAMPER_JOHN
+	const EVENT_BEAT_ROUTE_17_BIKER_5 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (10,118), Yellow's OPP_BIKER 12
+	const EVENT_BEAT_ROUTE_17_CUE_BALL_1 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (12,19), Yellow's OPP_CUE_BALL 4
 	const EVENT_BEAT_CAMPER_JERRY
 	const EVENT_BEAT_CAMPER_SPENCER
 ; Burglar
@@ -625,11 +625,15 @@
 	const EVENT_BEAT_ROUTE_16_BIKER_3 ; was EVENT_BEAT_BIKER_DWAYNE; ROUTE 16 (3,12)
 	const EVENT_BEAT_ROUTE_16_CUE_BALL_1 ; was EVENT_BEAT_BIKER_HARRIS (dead, Crystal's ROUTE 8); ROUTE 16 (14,13)
 	const EVENT_BEAT_ROUTE_16_CUE_BALL_2 ; was EVENT_BEAT_BIKER_ZEKE (dead, Crystal's ROUTE 8); ROUTE 16 (11,12)
-; Still Crystal's, still placed on Crystal's ROUTE 17 until M6 9z re-cuts it.
-	const EVENT_BEAT_BIKER_CHARLES
-	const EVENT_BEAT_BIKER_RILEY
-	const EVENT_BEAT_BIKER_JOEL
-	const EVENT_BEAT_BIKER_GLENN
+; Kanto hack (M6 9z): Yellow's ROUTE 17 (CYCLING ROAD) -- five OPP_BIKERs and
+; five OPP_CUE_BALLs.  The four rows here were Crystal's CHARLES/RILEY/JOEL/
+; GLENN, deleted with Crystal's ROUTE 17; the rest are dead rows renamed in
+; place elsewhere in this file (CAMPER_DAVID/JOHN, BEAUTY_CARLENE/JESSICA/
+; RACHAEL/ANGELICA).
+	const EVENT_BEAT_ROUTE_17_BIKER_1 ; was EVENT_BEAT_BIKER_CHARLES (Crystal's ROUTE 17, deleted by 9z); ROUTE 17 (4,18), Yellow's OPP_BIKER 8
+	const EVENT_BEAT_ROUTE_17_BIKER_2 ; was EVENT_BEAT_BIKER_RILEY; ROUTE 17 (7,32), Yellow's OPP_BIKER 9
+	const EVENT_BEAT_ROUTE_17_BIKER_3 ; was EVENT_BEAT_BIKER_JOEL; ROUTE 17 (14,34), Yellow's OPP_BIKER 10
+	const EVENT_BEAT_ROUTE_17_BIKER_4 ; was EVENT_BEAT_BIKER_GLENN; ROUTE 17 (5,98), Yellow's OPP_BIKER 11
 ; Psychic
 	const EVENT_BEAT_PSYCHIC_NATHAN
 	const EVENT_BEAT_PSYCHIC_FRANKLIN
@@ -770,10 +774,10 @@
 	const EVENT_POKEMON_TOWER_4F_AWAKENING
 	const EVENT_BEAT_BEAUTY_CASSIE
 	const EVENT_POKEMON_TOWER_4F_HP_UP
-	const EVENT_BEAT_BEAUTY_CARLENE
-	const EVENT_BEAT_BEAUTY_JESSICA
-	const EVENT_BEAT_BEAUTY_RACHAEL
-	const EVENT_BEAT_BEAUTY_ANGELICA
+	const EVENT_BEAT_ROUTE_17_CUE_BALL_2 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (11,16), Yellow's OPP_CUE_BALL 5
+	const EVENT_BEAT_ROUTE_17_CUE_BALL_3 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (17,58), Yellow's OPP_CUE_BALL 6
+	const EVENT_BEAT_ROUTE_17_CUE_BALL_4 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (2,68), Yellow's OPP_CUE_BALL 7
+	const EVENT_BEAT_ROUTE_17_CUE_BALL_5 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (14,98), Yellow's OPP_CUE_BALL 8
 	const EVENT_BEAT_BEAUTY_KENDRA
 	const EVENT_BEAT_BEAUTY_LILY ; Kanto hack: renamed in place (M6 9q), was the dead EVENT_BEAT_BEAUTY_VERONICA; CELADON GYM trainer 1 (Yellow BEAUTY 1)
 	const EVENT_BEAT_BEAUTY_JULIA
@@ -1405,7 +1409,7 @@
 ; Kanto people
 	const EVENT_BEAT_ROUTE_24_ROCKET ; Kanto hack (6h): renamed in place.  Crystal's Route 24 Rocket-executive object flag is dead -- 6h deletes that NPC -- so this slot now records the win over Yellow's Nugget Bridge recruiter.  Its two setters (PowerPlant.asm, InitializeEventsScript) were deleted with it.
 	const EVENT_CERULEAN_GYM_ROCKET
-	const EVENT_ROUTE_25_MISTY_BOYFRIEND ; Kanto hack: DEAD since 6i (Crystal's Misty's-date NPC is gone with Misty's date); free to rename in place
+	const EVENT_ROUTE_17_HIDDEN_MAX_REVIVE ; Kanto hack: renamed in place (M6 9z), was DEAD since 6i (Crystal's Misty's-date NPC); ROUTE 17 (4,91)
 	const EVENT_TRAINERS_IN_CERULEAN_GYM ; Kanto hack: DEAD since 6i (Crystal's gym-trainer gate is gone with Misty's date); free to rename in place
 	const EVENT_SS_ANNE_LEFT ; Kanto hack: renamed in place (7e), was EVENT_VERMILION_CITY_SNORLAX (Snorlax deleted); Yellow's EVENT_SS_ANNE_LEFT, set in 7g
 	const EVENT_GAVE_SAFFRON_GUARDS_DRINK ; Kanto hack: renamed in place (7d), was EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH; Yellow's BIT_GAVE_SAFFRON_GUARDS_DRINK, shared by every SAFFRON gate guard

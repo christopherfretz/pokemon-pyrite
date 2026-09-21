@@ -5,7 +5,7 @@
 ; lives in NurseAskHealText below, which is the box that follows.
 ; DELETED here: PokeComNurseMorn/Day/NiteText and PokeComNursePokerusText,
 ; the #MON COMMUNICATION CENTER variants.  They hung off
-; EVENT_WELCOMED_TO_POKECOM_CENTER, which is set by nothing in the whole ROM,
+; EVENT_WELCOMED_TO_POKECOM_CENTER (renamed in place by M6 9z to EVENT_ROUTE_17_HIDDEN_PP_UP), which is set by nothing in the whole ROM,
 ; so a single stray setevent would have dropped a Gen-2 facility into a Kanto
 ; Pokecenter.  Restore from vendor/pokecrystal if the Johto act wants them.
 NurseMornText:

@@ -44,7 +44,8 @@
 ;     game - 6e had already rebuilt the gym with always-visible (-1) objects
 ;     because of it.  Its two stale `setevent`s in InitializeEventsScript
 ;     (EVENT_ROUTE_25_MISTY_BOYFRIEND, EVENT_TRAINERS_IN_CERULEAN_GYM) are
-;     deleted with it; both flags are now dead and free to rename.
+;     deleted with it; both flags went dead.  M6 9z renamed the first in place
+;     to EVENT_ROUTE_17_HIDDEN_MAX_REVIVE.
 ;     `SCENE_ROUTE25_NOOP`/`SCENE_ROUTE25_MISTYS_DATE` are gone too - unlike
 ;     CERULEAN_GYM's scene (6e.2) nothing outside this file named them.  The
 ;     `scene_var ROUTE_25` row in data/maps/scenes.asm and `wRoute25SceneID`
@@ -199,8 +200,9 @@ BillsHouseSign:
 ; Kanto hack (N1e): Crystal's extra hidden POTION at (4,5) is gone.  Yellow's
 ; hidden_item_coords.asm:50-51 lists exactly two hidden items on ROUTE_25 (the
 ; ETHER and the ELIXER below) and the operator's N1 ruling drops Crystal's
-; added Kanto items.  EVENT_ROUTE_25_HIDDEN_POTION is left defined but dead --
-; the const list is positional, so deleting it would shift every later flag.
+; added Kanto items.  EVENT_ROUTE_25_HIDDEN_POTION went dead here (the const
+; list is positional, so deleting it would shift every later flag); M6 9z
+; renamed it in place to EVENT_ROUTE_17_HIDDEN_FULL_RESTORE.
 ; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 3): Yellow's two hidden items
 ; on this road (vendor/pokeyellow/data/events/hidden_events.asm:261-263).
 ; Route 25 is a Yellow re-cut (6a), so Yellow's tiles transfer unchanged.

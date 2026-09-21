@@ -1019,32 +1019,43 @@ KantoGrassWildMons:
 	db 26, RATICATE
 	end_grass_wildmons
 
+; Kanto hack (M6 9z): Yellow's ROUTE 17 table
+; (vendor/pokeyellow/data/wild/maps/Route17.asm).  Yellow rate 25/256 ==
+; `10 percent` exactly, and Gen 1 has no time of day, so morn = day = nite.
+; Crystal's GRIMER/MUK/SLUGMA road is gone: the grass is only the small patch
+; at the top of CYCLING ROAD (blocks 6-8, 4-9 -> tiles x 12-17, y 8-19).
+; Yellow's ten slots fold to Crystal's seven by dropping the three slots whose
+; species+level pair already appears -- slot 4 (L28 DODUO), slot 6 (L30
+; PONYTA) and slot 8 (L28 DODUO) -- which keeps Yellow's order, all four
+; species and both level extremes (L26 min, L32 max).  Species weights land at
+; DODUO 50% / FEAROW 35% / PONYTA 14% / DODRIO 1%, against Yellow's
+; 50% / 25% / 24% / 2%.  Yellow gives ROUTE 17 no water table.
 	def_grass_wildmons ROUTE_17
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 30, FEAROW
-	db 29, GRIMER
-	db 31, GRIMER
-	db 32, FEAROW
-	db 33, GRIMER
-	db 33, MUK
-	db 33, MUK
+	db 26, DODUO
+	db 27, FEAROW
+	db 27, DODUO
+	db 28, PONYTA
+	db 29, FEAROW
+	db 32, PONYTA
+	db 29, DODRIO
 	; day
-	db 30, FEAROW
-	db 29, SLUGMA
-	db 29, GRIMER
-	db 32, FEAROW
-	db 32, SLUGMA
-	db 33, MUK
-	db 33, MUK
+	db 26, DODUO
+	db 27, FEAROW
+	db 27, DODUO
+	db 28, PONYTA
+	db 29, FEAROW
+	db 32, PONYTA
+	db 29, DODRIO
 	; nite
-	db 30, GRIMER
-	db 29, GRIMER
-	db 31, GRIMER
-	db 32, GRIMER
-	db 33, GRIMER
-	db 33, MUK
-	db 33, MUK
+	db 26, DODUO
+	db 27, FEAROW
+	db 27, DODUO
+	db 28, PONYTA
+	db 29, FEAROW
+	db 32, PONYTA
+	db 29, DODRIO
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_18

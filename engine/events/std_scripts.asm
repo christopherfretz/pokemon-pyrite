@@ -61,7 +61,7 @@ PokecenterNurseScript:
 ; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2 #151): the clock fan-out STAYS
 ; -- day/night is an engine feature the operator kept -- but the #MON
 ; COMMUNICATION CENTER variant of every branch is GONE.  It hung off
-; EVENT_WELCOMED_TO_POKECOM_CENTER, which nothing in the ROM ever sets, so one
+; EVENT_WELCOMED_TO_POKECOM_CENTER (renamed in place by M6 9z to EVENT_ROUTE_17_HIDDEN_PP_UP), which nothing in the ROM ever sets, so one
 ; stray setevent would have dropped a Gen-2 facility into a Kanto Pokecenter.
 ; Deleting the branches (rather than leaving them dormant) is the robust fix;
 ; the texts went with them (hack/data/text/std_text.asm).  The greetings
@@ -594,7 +594,8 @@ InitializeEventsScript:
 	variablesprite SPRITE_JANINE_IMPERSONATOR, SPRITE_LASS
 	setevent EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM
 	setevent EVENT_CERULEAN_GYM_ROCKET
-; Kanto hack (6i): EVENT_ROUTE_25_MISTY_BOYFRIEND / EVENT_TRAINERS_IN_CERULEAN_GYM
+; Kanto hack (6i): EVENT_ROUTE_25_MISTY_BOYFRIEND (renamed in place by M6 9z to
+; EVENT_ROUTE_17_HIDDEN_MAX_REVIVE) / EVENT_TRAINERS_IN_CERULEAN_GYM
 ; deleted -- 6i removed Misty's date from Route 25, the only thing that ever
 ; cleared them, and 6e rebuilt Cerulean Gym with always-visible objects.
 ; N1a (AUDIT-NPC-TEXT N1.2 #153): a THIRD setevent went at the same time,

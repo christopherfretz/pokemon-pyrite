@@ -612,13 +612,16 @@ DEF KRIS EQU __trainer_class__
 	; bikers take them over in place -- no renumbering, no new const cost.
 	const BIKER_1 ; ROUTE 16 (was BIKER_BENNY)
 	const BIKER_2 ; ROUTE 16 (was KAZU)
-	const DWAYNE
-	const HARRIS
-	const ZEKE
-	const CHARLES
-	const RILEY
-	const JOEL
-	const GLENN
+	; Kanto hack (M6 9z): Yellow's five ROUTE 17 BIKERs (OPP_BIKER 8-12) take
+	; over five more dead rows -- DWAYNE/HARRIS/ZEKE were Crystal ROUTE 8's,
+	; deleted by M5 8j; CHARLES/RILEY were Crystal ROUTE 17's, deleted by 9z.
+	const BIKER_4 ; ROUTE 17 (was DWAYNE)
+	const BIKER_5 ; ROUTE 17 (was HARRIS)
+	const BIKER_6 ; ROUTE 17 (was ZEKE)
+	const BIKER_7 ; ROUTE 17 (was CHARLES)
+	const BIKER_8 ; ROUTE 17 (was RILEY)
+	const JOEL ; unused (Kanto hack: dead since M6 9z deleted Crystal's ROUTE 17)
+	const GLENN ; unused (Kanto hack: dead since M6 9z deleted Crystal's ROUTE 17)
 	const BIKER_3 ; ROUTE 16 (Kanto hack, M6 9y)
 
 	trainerclass BLAINE ; 2e
@@ -915,11 +918,11 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const CUE_BALL_1 ; ROUTE 16
 	const CUE_BALL_2 ; ROUTE 16
 	const CUE_BALL_3 ; ROUTE 16
-	const CUE_BALL_4 ; ROUTE 17 (reserved for M6 9z)
-	const CUE_BALL_5 ; ROUTE 17 (reserved for M6 9z)
-	const CUE_BALL_6 ; ROUTE 17 (reserved for M6 9z)
-	const CUE_BALL_7 ; ROUTE 17 (reserved for M6 9z)
-	const CUE_BALL_8 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_4 ; ROUTE 17 (M6 9z)
+	const CUE_BALL_5 ; ROUTE 17 (M6 9z)
+	const CUE_BALL_6 ; ROUTE 17 (M6 9z)
+	const CUE_BALL_7 ; ROUTE 17 (M6 9z)
+	const CUE_BALL_8 ; ROUTE 17 (M6 9z)
 	const CUE_BALL_9 ; ROUTE 21 (reserved for M7)
 
 	trainerclass MYSTICALMAN ; 47

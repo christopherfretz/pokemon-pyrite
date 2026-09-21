@@ -3040,44 +3040,47 @@ BikerGroup:
 	db 33, WEEZING
 	db -1 ; end
 
-	; BIKER (3)
-	db "DWAYNE@", TRAINERTYPE_NORMAL
-	db 27, KOFFING
+	; BIKER (4) -- Kanto hack (M6 9z): Yellow's ROUTE 17 BIKER 3, OPP_BIKER 8
+	; (db 28, WEEZING, KOFFING, WEEZING, 0).  Was Crystal's DWAYNE.
+	db "@", TRAINERTYPE_NORMAL
+	db 28, WEEZING
 	db 28, KOFFING
-	db 29, KOFFING
-	db 30, KOFFING
+	db 28, WEEZING
 	db -1 ; end
 
-	; BIKER (4)
-	db "HARRIS@", TRAINERTYPE_NORMAL
-	db 34, FLAREON
+	; BIKER (5) -- Kanto hack (M6 9z): Yellow's ROUTE 17 BIKER 4, OPP_BIKER 9
+	db "@", TRAINERTYPE_NORMAL
+	db 33, MUK
 	db -1 ; end
 
-	; BIKER (5)
-	db "ZEKE@", TRAINERTYPE_NORMAL
-	db 32, KOFFING
-	db 32, KOFFING
+	; BIKER (6) -- Kanto hack (M6 9z): Yellow's ROUTE 17 BIKER 5, OPP_BIKER 10
+	db "@", TRAINERTYPE_NORMAL
+	db 29, VOLTORB
+	db 29, VOLTORB
 	db -1 ; end
 
-	; BIKER (6)
-	db "CHARLES@", TRAINERTYPE_NORMAL
-	db 30, KOFFING
-	db 30, CHARMELEON
-	db 30, WEEZING
+	; BIKER (7) -- Kanto hack (M6 9z): Yellow's ROUTE 17 BIKER 9, OPP_BIKER 11
+	db "@", TRAINERTYPE_NORMAL
+	db 29, WEEZING
+	db 29, MUK
 	db -1 ; end
 
-	; BIKER (7)
-	db "RILEY@", TRAINERTYPE_NORMAL
-	db 34, WEEZING
+	; BIKER (8) -- Kanto hack (M6 9z): Yellow's ROUTE 17 BIKER 10, OPP_BIKER 12
+	db "@", TRAINERTYPE_NORMAL
+	db 25, KOFFING
+	db 25, WEEZING
+	db 25, KOFFING
+	db 25, KOFFING
+	db 25, WEEZING
 	db -1 ; end
 
-	; BIKER (8)
+	; BIKER (JOEL) -- unused since M6 9z; kept so BIKER_3 below keeps its id.
 	db "JOEL@", TRAINERTYPE_NORMAL
 	db 32, MAGMAR
 	db 32, MAGMAR
 	db -1 ; end
 
-	; BIKER (9)
+	; BIKER (GLENN) -- unused since M6 9z; kept so BIKER_3 below keeps its id.
 	db "GLENN@", TRAINERTYPE_NORMAL
 	db 28, KOFFING
 	db 30, MAGMAR
@@ -4426,24 +4429,24 @@ CueBallGroup:
 	db 33, MACHOP
 	db -1 ; end
 
-	; CUE BALL (4): ROUTE 17 (reserved for M6 9z)
+	; CUE BALL (4): ROUTE 17 (M6 9z)
 	db "@", TRAINERTYPE_NORMAL
 	db 29, MANKEY
 	db 29, PRIMEAPE
 	db -1 ; end
 
-	; CUE BALL (5): ROUTE 17 (reserved for M6 9z)
+	; CUE BALL (5): ROUTE 17 (M6 9z)
 	db "@", TRAINERTYPE_NORMAL
 	db 29, MACHOP
 	db 29, MACHOKE
 	db -1 ; end
 
-	; CUE BALL (6): ROUTE 17 (reserved for M6 9z)
+	; CUE BALL (6): ROUTE 17 (M6 9z)
 	db "@", TRAINERTYPE_NORMAL
 	db 33, MACHOKE
 	db -1 ; end
 
-	; CUE BALL (7): ROUTE 17 (reserved for M6 9z)
+	; CUE BALL (7): ROUTE 17 (M6 9z)
 	db "@", TRAINERTYPE_NORMAL
 	db 26, MANKEY
 	db 26, MANKEY
@@ -4451,7 +4454,7 @@ CueBallGroup:
 	db 26, MACHOP
 	db -1 ; end
 
-	; CUE BALL (8): ROUTE 17 (reserved for M6 9z)
+	; CUE BALL (8): ROUTE 17 (M6 9z)
 	db "@", TRAINERTYPE_NORMAL
 	db 29, PRIMEAPE
 	db 29, MACHOKE
