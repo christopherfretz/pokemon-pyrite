@@ -416,6 +416,14 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_TYPES | AI_OPPORTUNIST | AI_SMART | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
+; CueBall -- Yellow pays CUE BALL 2500 vs BIKER's 2000 (25 vs 20 per level, see
+; vendor/pokeyellow/data/trainers/pic_pointers_money.asm).  Crystal rebalanced
+; every class downwards, so scale off Crystal's BIKER (8) by the same 5/4.
+	db NO_ITEM, NO_ITEM ; items
+	db 10 ; base reward
+	dw AI_BASIC | AI_TYPES | AI_STATUS | AI_RISKY
+	dw CONTEXT_USE | SWITCH_SOMETIMES
+
 ; Mysticalman
 	db NO_ITEM, NO_ITEM ; items
 	db 25 ; base reward

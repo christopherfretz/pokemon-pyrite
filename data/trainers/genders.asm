@@ -72,4 +72,5 @@ BTTrainerClassGenders:
 	db MALE   ; KANTO_RIVAL
 	db FEMALE ; JESSIE_JAMES (Jessie leads; the class covers both)
 	db MALE ; GIOVANNI
+	db MALE ; CUE_BALL
 	assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN

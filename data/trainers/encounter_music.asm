@@ -73,6 +73,7 @@ TrainerEncounterMusic::
 	db MUSIC_RIVAL_ENCOUNTER       ; kanto_rival
 	db MUSIC_ROCKET_ENCOUNTER      ; jessie_james
 	db MUSIC_ROCKET_ENCOUNTER      ; giovanni
+	db MUSIC_HIKER_ENCOUNTER       ; cue_ball
 	db MUSIC_HIKER_ENCOUNTER       ; mysticalman
 	assert_table_length NUM_TRAINER_CLASSES + 1
 	db MUSIC_HIKER_ENCOUNTER       ; unused

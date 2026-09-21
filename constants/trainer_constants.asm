@@ -607,8 +607,11 @@ DEF KRIS EQU __trainer_class__
 	const CONRAD
 
 	trainerclass BIKER ; 2d
-	const BIKER_BENNY ; unused
-	const KAZU ; unused
+	; Kanto hack (M6 9y): Crystal never uses rows 1 and 2 (BIKER_BENNY and KAZU
+	; are dead slots with placeholder parties), so Yellow's first two ROUTE 16
+	; bikers take them over in place -- no renumbering, no new const cost.
+	const BIKER_1 ; ROUTE 16 (was BIKER_BENNY)
+	const BIKER_2 ; ROUTE 16 (was KAZU)
 	const DWAYNE
 	const HARRIS
 	const ZEKE
@@ -616,6 +619,7 @@ DEF KRIS EQU __trainer_class__
 	const RILEY
 	const JOEL
 	const GLENN
+	const BIKER_3 ; ROUTE 16 (Kanto hack, M6 9y)
 
 	trainerclass BLAINE ; 2e
 	const BLAINE1
@@ -900,7 +904,25 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const GIOVANNI_2 ; Silph Co. 11F
 	const GIOVANNI_3 ; Viridian Gym
 
-	trainerclass MYSTICALMAN ; 46
+; Kanto hack: CUE BALL (docs/M6-CELADON.md D34).  Crystal has no such class --
+; Yellow's `trainer_const CUE_BALL ; $2E`, used on ROUTE 16 (1-3), ROUTE 17
+; (4-8) and ROUTE 21 (9).  Folding them into BIKER was the alternative, but
+; that is 2 reserved slots for 9 trainers and the class word on screen would
+; read "BIKER".  Inserted BEFORE MYSTICALMAN, like GIOVANNI above.
+; Every party row leaves the name empty, so PlaceEnemysName prints
+; "CUE BALL" alone, which is exactly what Yellow shows.
+	trainerclass CUE_BALL ; 46
+	const CUE_BALL_1 ; ROUTE 16
+	const CUE_BALL_2 ; ROUTE 16
+	const CUE_BALL_3 ; ROUTE 16
+	const CUE_BALL_4 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_5 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_6 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_7 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_8 ; ROUTE 17 (reserved for M6 9z)
+	const CUE_BALL_9 ; ROUTE 21 (reserved for M7)
+
+	trainerclass MYSTICALMAN ; 47
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

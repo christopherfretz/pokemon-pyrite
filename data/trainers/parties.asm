@@ -3028,18 +3028,16 @@ HikerGroup:
 	db -1 ; end
 
 BikerGroup:
-	; BIKER (1)
-	db "BENNY@", TRAINERTYPE_NORMAL
-	db 20, KOFFING
-	db 20, KOFFING
-	db 20, KOFFING
+	; BIKER (1) -- Kanto hack (M6 9y): Yellow's ROUTE 16 BIKER 5
+	; (db 29, GRIMER, KOFFING, 0).  Nameless, so PlaceEnemysName prints "BIKER".
+	db "@", TRAINERTYPE_NORMAL
+	db 29, GRIMER
+	db 29, KOFFING
 	db -1 ; end
 
-	; BIKER (2)
-	db "KAZU@", TRAINERTYPE_NORMAL
-	db 20, KOFFING
-	db 20, KOFFING
-	db 20, KOFFING
+	; BIKER (2) -- Kanto hack (M6 9y): Yellow's ROUTE 16 BIKER 6
+	db "@", TRAINERTYPE_NORMAL
+	db 33, WEEZING
 	db -1 ; end
 
 	; BIKER (3)
@@ -3084,6 +3082,14 @@ BikerGroup:
 	db 28, KOFFING
 	db 30, MAGMAR
 	db 32, WEEZING
+	db -1 ; end
+
+	; BIKER (10) -- Kanto hack (M6 9y): Yellow's ROUTE 16 BIKER 7
+	db "@", TRAINERTYPE_NORMAL
+	db 26, GRIMER
+	db 26, GRIMER
+	db 26, GRIMER
+	db 26, GRIMER
 	db -1 ; end
 
 BlaineGroup:
@@ -4396,6 +4402,66 @@ GiovanniGroup:
 	db 53, NIDOQUEEN
 	db 55, NIDOKING
 	db 55, RHYDON
+	db -1 ; end
+
+; Kanto hack (M6 9y): CUE BALL, Yellow's CueBallData rows 1-9 verbatim
+; (vendor/pokeyellow/data/trainers/parties.asm).  Nameless, so PlaceEnemysName
+; prints the class name "CUE BALL" alone -- exactly what Yellow shows.
+CueBallGroup:
+	; CUE BALL (1): ROUTE 16
+	db "@", TRAINERTYPE_NORMAL
+	db 28, MACHOP
+	db 28, MANKEY
+	db 28, MACHOP
+	db -1 ; end
+
+	; CUE BALL (2): ROUTE 16
+	db "@", TRAINERTYPE_NORMAL
+	db 29, MANKEY
+	db 29, MACHOP
+	db -1 ; end
+
+	; CUE BALL (3): ROUTE 16
+	db "@", TRAINERTYPE_NORMAL
+	db 33, MACHOP
+	db -1 ; end
+
+	; CUE BALL (4): ROUTE 17 (reserved for M6 9z)
+	db "@", TRAINERTYPE_NORMAL
+	db 29, MANKEY
+	db 29, PRIMEAPE
+	db -1 ; end
+
+	; CUE BALL (5): ROUTE 17 (reserved for M6 9z)
+	db "@", TRAINERTYPE_NORMAL
+	db 29, MACHOP
+	db 29, MACHOKE
+	db -1 ; end
+
+	; CUE BALL (6): ROUTE 17 (reserved for M6 9z)
+	db "@", TRAINERTYPE_NORMAL
+	db 33, MACHOKE
+	db -1 ; end
+
+	; CUE BALL (7): ROUTE 17 (reserved for M6 9z)
+	db "@", TRAINERTYPE_NORMAL
+	db 26, MANKEY
+	db 26, MANKEY
+	db 26, MACHOKE
+	db 26, MACHOP
+	db -1 ; end
+
+	; CUE BALL (8): ROUTE 17 (reserved for M6 9z)
+	db "@", TRAINERTYPE_NORMAL
+	db 29, PRIMEAPE
+	db 29, MACHOKE
+	db -1 ; end
+
+	; CUE BALL (9): ROUTE 21 (reserved for M7)
+	db "@", TRAINERTYPE_NORMAL
+	db 31, TENTACOOL
+	db 31, TENTACOOL
+	db 31, TENTACRUEL
 	db -1 ; end
 
 MysticalmanGroup:

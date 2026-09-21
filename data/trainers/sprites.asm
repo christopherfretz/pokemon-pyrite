@@ -70,4 +70,5 @@ BTTrainerClassSprites:
 	db SPRITE_BLUE ; KANTO_RIVAL
 	db SPRITE_JESSIE ; JESSIE_JAMES
 	db SPRITE_GIOVANNI ; GIOVANNI
+	db SPRITE_BIKER ; CUE_BALL -- Yellow draws every CUE BALL with SPRITE_BIKER
 	assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN

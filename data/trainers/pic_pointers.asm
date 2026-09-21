@@ -72,5 +72,6 @@ TrainerPicPointers::
 	dba_pic KantoRivalPic ; KANTO_RIVAL (Yellow's young Blue)
 	dba_pic JessieJamesPic ; JESSIE_JAMES (Yellow's duo pic)
 	dba_pic GiovanniPic ; GIOVANNI (Yellow's boss pic)
+	dba_pic CueBallPic ; CUE_BALL (Yellow's cueball pic)
 	dba_pic MysticalmanPic
 	assert_table_length NUM_TRAINER_CLASSES
