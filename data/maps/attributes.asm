@@ -290,16 +290,19 @@ ENDM
 
 	map_attributes FuchsiaCity, FUCHSIA_CITY, $0f
 	connection south, Route19, ROUTE_19, 0
-	connection west, Route18, ROUTE_18, 7
+	; Kanto hack (M6 9aa): Yellow's own offset (FuchsiaCity.asm
+	; `connection west, Route18, ROUTE_18, 4`), now that ROUTE 18 is 25x9.
+	connection west, Route18, ROUTE_18, 4
 	connection east, Route15, ROUTE_15, 9
 
 	map_attributes Route18, ROUTE_18, $43
-	; Kanto hack (M6 9z): Yellow puts ROUTE 18 *below* ROUTE 17, not beside it
-	; (Yellow's Route18 `connection north, Route17, ROUTE_17, 0`).  Crystal's
-	; `connection west, Route17, -38` is gone.  The FUCHSIA seam is still
-	; Crystal's until M6 9aa re-cuts Route 18 to Yellow's 25x9.
+	; Kanto hack (M6 9z/9aa): Yellow puts ROUTE 18 *below* ROUTE 17, not beside
+	; it (Yellow's Route18 `connection north, Route17, ROUTE_17, 0`); Crystal's
+	; `connection west, Route17, -38` is gone.  9aa re-cut the map to Yellow's
+	; 25x9, so the FUCHSIA seam is Yellow's number too (Route18.asm
+	; `connection east, FuchsiaCity, FUCHSIA_CITY, -4`).
 	connection north, Route17, ROUTE_17, 0
-	connection east, FuchsiaCity, FUCHSIA_CITY, -7
+	connection east, FuchsiaCity, FUCHSIA_CITY, -4
 
 	map_attributes Route17, ROUTE_17, $43
 	connection north, Route16, ROUTE_16, 0
