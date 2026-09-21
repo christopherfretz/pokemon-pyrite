@@ -990,7 +990,10 @@ KantoGrassWildMons:
 ; (L23 SPEAROW, 5%) -- which keeps Yellow's order, all five species and both
 ; level extremes (L22 min, L26 max).  Species weights land at SPEAROW 30% /
 ; DODUO 40% / RATTATA 20% / FEAROW 5% / RATICATE 5%, against Yellow's
-; 25% / 35% / 25% / 5% / 10%.  Yellow gives ROUTE 16 no water table.
+; 25% / 39.5% / 25% / 5.1% / 5.5% (M6 9ab corrects the "35% / ... / 10%" this
+; comment used to claim: Yellow's slot weights are 19.9 / 19.9 / 15.2 / 9.8 /
+; 9.8 / 9.8 / 5.1 / 5.1 / 4.3 / 1.2, so DODUO is slots 2+4+6 and RATICATE only
+; slots 9+10).  Yellow gives ROUTE 16 no water table.
 	def_grass_wildmons ROUTE_16
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn

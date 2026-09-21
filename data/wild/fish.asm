@@ -34,6 +34,9 @@ FishGroups:
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute12_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute22_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute25_Super
+; Kanto hack (M6 9ab): CYCLING ROAD and ROUTE 18 (D43 corrected).
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute17_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute18_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -331,6 +334,20 @@ FishGroups:
 	db  70 percent,     KRABBY,     15
 	db  90 percent + 1, KINGLER,    15
 	db 100 percent,     KINGLER,    25
+
+; db ROUTE_17, TENTACOOL, 5, TENTACOOL, 15, SHELLDER, 25, SHELLDER, 35
+.KantoRoute17_Super:
+	db  40 percent,     TENTACOOL,   5
+	db  70 percent,     TENTACOOL,  15
+	db  90 percent + 1, SHELLDER,   25
+	db 100 percent,     SHELLDER,   35
+
+; db ROUTE_18, TENTACOOL, 15, SHELLDER, 20, SHELLDER, 30, SHELLDER, 40
+.KantoRoute18_Super:
+	db  40 percent,     TENTACOOL,  15
+	db  70 percent,     SHELLDER,   20
+	db  90 percent + 1, SHELLDER,   30
+	db 100 percent,     SHELLDER,   40
 
 TimeFishGroups:
 	;  day              nite

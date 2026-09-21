@@ -74,6 +74,14 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_KANTO_ROUTE_12       ; ROUTE_12
 	const FISHGROUP_KANTO_ROUTE_22       ; ROUTE_22
 	const FISHGROUP_KANTO_ROUTE_25       ; ROUTE_25
+; Kanto hack (M6 9ab): CYCLING ROAD's channel and ROUTE 18's sea are both
+; fishable from land, and Yellow gives each its own SuperRodFishingSlots row
+; (vendor/pokeyellow/data/wild/super_rod.asm).  Appended, not inserted, so no
+; existing group is renumbered.  ROUTE 16 keeps FISHGROUP_NONE: Yellow has no
+; ROUTE_16 row, and the map's only water is a pocket sealed off by Yellow's own
+; collision.
+	const FISHGROUP_KANTO_ROUTE_17       ; ROUTE_17
+	const FISHGROUP_KANTO_ROUTE_18       ; ROUTE_18
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections
