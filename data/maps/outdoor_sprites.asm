@@ -182,23 +182,44 @@ rept MAX_OUTDOOR_SPRITES - 14
 endr
 
 FuchsiaGroupSprites:
+; Kanto hack (M7 10f): the FUCHSIA group's list, re-derived with
+; scripts/trim_outdoor_sprites.py --report.  Every entry is loaded on EVERY
+; outdoor map of the group -- ROUTEs 13/14/15/18, FUCHSIA CITY and the four
+; SAFARI ZONE maps -- so the list is the union of what they use, plus the
+; cross-connection entries that spare RefreshConnectionSprites' ~27-frame
+; reload on a seam.  ArrangeUsedSprites fills table 1 with the player first and
+; stops at FOLLOWER_VTILE $6c (player + 8 twelve-tile sheets), then table 2
+; $80-$ff; SortUsedSprites sorts by TYPE, so the four sheets that ever ANIMATE
+; here -- YOUNGSTER, FISHER (ROUTE 19's, one connection away), and the two
+; WALK_LEFT_RIGHT pen mons on MONSTER and OLD_MAN -- are all WALKING_SPRITEs
+; and land in table 1 ahead of the still ones.  14 entries, 164 tiles, nothing
+; dropped.  CHANSEY and SEEL_OW are STANDING_SPRITEs: 12 tiles with no walking
+; half in ROM at all, so table 2 is correct for them and they slide exactly as
+; Yellow's own SEEL does.
 	db SPRITE_YOUNGSTER
-	db SPRITE_TEACHER
-	db SPRITE_POKEFAN_M
+	db SPRITE_FISHER
+	; M7 10f: FUCHSIA's zoo -- KANGASKHAN and SLOWPOKE share SPRITE_MONSTER and
+	; Yellow's GAMBLER is SPRITE_OLD_MAN.  Both walk, so both go in table 1.
+	db SPRITE_MONSTER
+	db SPRITE_OLD_MAN
 	db SPRITE_COOLTRAINER_M
 	; Kanto hack (M7 10c): ROUTE 13's own trainers -- 4 PICNICKERs (COOLTRAINER_F),
 	; 2 BEAUTYs and a BIKER.  Walking sheets, so they go ahead of the still ones.
 	db SPRITE_COOLTRAINER_F
 	db SPRITE_BEAUTY
 	db SPRITE_BIKER
-	; Kanto hack (M7 10c): cross-connection the other way -- ROUTE 13's north edge
-	; opens onto ROUTE 12, so walking BACK up pays a RefreshConnectionSprites
-	; reload unless this group carries ROUTE 12's FISHERs and its SNORLAX too.
-	db SPRITE_FISHER
+	; Kanto hack (M7 10c/10f): cross-connection entries -- ROUTE 12's SNORLAX and
+	; the SUPER_NERD one connection off the group, carried so walking back out of
+	; the group pays no sprite reload.  Neither is used inside the group.
+	db SPRITE_SUPER_NERD
 	db SPRITE_BIG_SNORLAX
+	; M7 10f: the rest of the zoo -- LAPRAS on SPRITE_SEEL_OW, CHANSEY, the
+	; OMANYTE/KABUTO fossil on SPRITE_FOSSIL and VOLTORB as Yellow's item ball.
+	db SPRITE_SEEL_OW
+	db SPRITE_CHANSEY
+	db SPRITE_FOSSIL
 	db SPRITE_POKE_BALL
-	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 11
+rept MAX_OUTDOOR_SPRITES - 14
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

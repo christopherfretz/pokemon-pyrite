@@ -165,7 +165,6 @@ SoulHouse_Blocks: ; Kanto hack (M5 8h): re-cut 5x4 -> 4x4 onto House1
 Route12SuperRodHouse_Blocks:
 Route28SteelWingHouse_Blocks:
 Route16FuchsiaSpeechHouse_Blocks:
-FuchsiaGoodRodHouse_Blocks: ; Kanto hack (M7 10a): Yellow puts it on the SHIP tileset; re-cut in 10g
 ManiasHouse_Blocks:
 CianwoodPharmacy_Blocks:
 CianwoodPhotoStudio_Blocks:
@@ -1059,6 +1058,12 @@ Route24_Blocks:
 
 CeruleanTrashedHouse_Blocks:
 CeruleanBadgeHouse_Blocks:
+; Kanto hack (docs/M7-FUCHSIA.md, 10f): FUCHSIA's GOOD ROD HOUSE is a
+; pass-through house in Yellow too -- its back door at (2,0) is the only way
+; into the city's north-east yard.  Moved off the shared House1 alias group
+; (which walls that tile in) onto House1Hole, exactly like the two Cerulean
+; pass-through houses above.  Yellow has it on the SHIP tileset; 10g re-cuts.
+FuchsiaGoodRodHouse_Blocks:
 	INCBIN "maps/House1Hole.blk"
 
 ; Kanto hack: the Cerulean Cave mouth stub (docs/M3-CERULEAN.md, 6k).  One

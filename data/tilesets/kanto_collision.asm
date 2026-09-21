@@ -277,3 +277,4 @@
 ; forest $7f, boundary posts down the left half
 	tilecoll WALL, FLOOR, WALL, FLOOR ; c3
 	tilecoll LADDER, FLOOR, LADDER, FLOOR ; c4
+	tilecoll FLOOR, LADDER, WALL, WALL ; c5

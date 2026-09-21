@@ -450,3 +450,16 @@ TrainerHouse:
 	ld a, [sMysteryGiftTrainerHouseFlag]
 	ld [wScriptVar], a
 	jp CloseSRAM
+
+ShowPokedexEntry:
+; Kanto hack (docs/M7-FUCHSIA.md, 10f): open the #dex entry for the species in
+; wScriptVar, the way Yellow's FUCHSIA CITY zoo signs do
+; (`ld a, CHANSEY / call DisplayPokedex`).  Unlike GameCornerPrizeMonCheckDex
+; above, this does NOT register the mon as seen/caught -- Yellow's sign only
+; shows the page, it never touches the dex flags.
+	call FadeToMenu
+	ld a, [wScriptVar]
+	ld [wNamedObjectIndex], a
+	farcall NewPokedexEntry
+	call ExitAllMenus
+	ret

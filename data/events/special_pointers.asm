@@ -203,3 +203,4 @@ SpecialsPointers::
 	add_special VermilionGymTrashCan
 	add_special GetKantoRivalStarter
 	add_special KantoDexCaught
+	add_special ShowPokedexEntry
