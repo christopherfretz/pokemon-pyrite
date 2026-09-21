@@ -354,6 +354,14 @@ ROMX $77
 ROMX $78
 	"Debug Room"
 	"Tileset Data 8"
+ROMX $79
+	; Kanto hack: the Kanto metatile + collision tables (M7 10l,
+	; docs/M7-FUCHSIA.md D48).  They used to float as "Tileset Data 9" and had
+	; run bank $0a down to 6 free bytes; $79 is the third of the four wholly
+	; EMPTY banks M7 10a named, and the tables are reached only through the
+	; `dba` in data/tilesets.asm, so pinning them here costs nothing and gives
+	; every remaining Kanto milestone room to append metatiles.
+	"Tileset Data 14"
 ROMX $7b
 	"Battle Tower Text"
 	; Kanto hack: Viridian Forest + its gates (docs/M2-FOREST.md). Pinned so

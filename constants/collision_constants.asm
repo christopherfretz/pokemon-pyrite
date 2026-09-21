@@ -74,7 +74,7 @@ DEF COLL_STAIRCASE_73      EQU $73 ; unused
 DEF COLL_CAVE_74           EQU $74 ; unused
 DEF COLL_DOOR_75           EQU $75 ; unused
 DEF COLL_WARP_CARPET_LEFT  EQU $76
-DEF COLL_WARP_77           EQU $77 ; unused
+DEF COLL_WARP_77           EQU $77 ; Safari Zone area-to-area warps (M7 10l)
 DEF COLL_WARP_CARPET_UP    EQU $78
 DEF COLL_DOOR_79           EQU $79 ; unused
 DEF COLL_STAIRCASE         EQU $7a

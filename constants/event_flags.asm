@@ -1877,7 +1877,25 @@
 	const EVENT_BEAT_ROUTE_15_BIKER_15
 	const EVENT_GOT_EXP_ALL
 
-; Unused: next 433 events
+; Kanto hack (M7 10l, docs/M7-FUCHSIA.md): the SAFARI ZONE's four areas.  All
+; twelve are appended, not renamed: Crystal's own Safari Zone maps are empty
+; stubs with no events of any kind, so there is no dead row of the right shape
+; anywhere in this file, and the only strictly-unreferenced rows left are Johto
+; trainer-beat flags whose names would have to lie.  433 free -> 421.
+	const EVENT_SAFARI_ZONE_CENTER_NUGGET
+	const EVENT_SAFARI_ZONE_EAST_FULL_RESTORE
+	const EVENT_SAFARI_ZONE_EAST_MAX_POTION
+	const EVENT_SAFARI_ZONE_EAST_CARBOS
+	const EVENT_SAFARI_ZONE_EAST_TM_EGG_BOMB
+	const EVENT_SAFARI_ZONE_NORTH_PROTEIN
+	const EVENT_SAFARI_ZONE_NORTH_TM_SKULL_BASH
+	const EVENT_SAFARI_ZONE_WEST_MAX_POTION
+	const EVENT_SAFARI_ZONE_WEST_TM_DOUBLE_TEAM
+	const EVENT_SAFARI_ZONE_WEST_MAX_REVIVE
+	const EVENT_SAFARI_ZONE_WEST_GOLD_TEETH
+	const EVENT_SAFARI_ZONE_WEST_HIDDEN_REVIVE ; SAFARI ZONE WEST (6,5), read facing RIGHT from (5,5)
+
+; Unused: next 421 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

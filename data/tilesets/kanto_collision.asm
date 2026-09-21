@@ -278,3 +278,15 @@
 	tilecoll WALL, FLOOR, WALL, FLOOR ; c3
 	tilecoll LADDER, FLOOR, LADDER, FLOOR ; c4
 	tilecoll FLOOR, LADDER, WALL, WALL ; c5
+
+; ---- M7 10l: Safari Zone area-to-area warp tiles.  Clones of $74
+; (dirt + pebbles) carrying COLL_WARP_77 where Yellow puts a
+; warp_event on plain ground -- a warp on FLOOR never fires in GSC.
+; kanto $74, warp on the TOP edge (a north-border crossing)
+	tilecoll WARP_77, WARP_77, FLOOR, FLOOR ; c6
+; kanto $74, warp on the LEFT edge (a west-border crossing)
+	tilecoll WARP_77, FLOOR, WARP_77, FLOOR ; c7
+; kanto $74, warp on the RIGHT edge (an east-border crossing)
+	tilecoll FLOOR, WARP_77, FLOOR, WARP_77 ; c8
+; kanto $74, warp on the BOTTOM edge (a south-border crossing)
+	tilecoll FLOOR, FLOOR, WARP_77, WARP_77 ; c9

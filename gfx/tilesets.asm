@@ -349,21 +349,6 @@ TilesetKantoFacilityColl::
 INCLUDE "data/tilesets/kanto_facility_collision.asm"
 
 
-SECTION "Tileset Data 9", ROMX
-
-; Kanto's metatile and collision tables, moved out of "Tileset Data 1" by
-; M4 step 7b (docs/M4-VERMILION.md): the five new gate-warp metatiles
-; $97-$9b overflowed that section by 46 bytes.  `tileset` (data/tilesets.asm)
-; emits a separate `dba` for GFX, Meta and Coll, so the three are free to sit
-; in different banks.  Kanto grows with every remaining Kanto milestone, so it
-; gets a section of its own instead of squeezing.
-TilesetKantoMeta::
-INCBIN "data/tilesets/kanto_metatiles.bin"
-
-TilesetKantoColl::
-INCLUDE "data/tilesets/kanto_collision.asm"
-
-
 SECTION "Tileset Data 10", ROMX
 
 ; S.S. Anne's tileset, ported wholesale from Yellow by M4 step 7c
@@ -437,3 +422,22 @@ INCBIN "data/tilesets/kanto_tower_metatiles.bin"
 
 TilesetKantoTowerColl::
 INCLUDE "data/tilesets/kanto_tower_collision.asm"
+
+
+SECTION "Tileset Data 14", ROMX
+
+; Kanto's metatile and collision tables.  Moved out of "Tileset Data 1" by M4
+; step 7b (docs/M4-VERMILION.md) as the floating "Tileset Data 9", and moved
+; again -- renamed, and PINNED to bank $79 -- by M7 10l (docs/M7-FUCHSIA.md
+; D48).  The Safari Zone's four area-to-area warp metatiles ($c6-$c9, 80 B)
+; left the floated section with 6 free bytes in bank $0a, and Kanto still has
+; milestones to go, so the tables now own a wholly empty bank of their own:
+; $79 was one of the four empty banks M7 10a found, and at 4040 B of table
+; there are ~12.3 KB of headroom for every Kanto metatile still to come.
+; `tileset` (data/tilesets.asm) emits a separate `dba` for GFX, Meta and Coll,
+; so the three are free to sit in different banks.
+TilesetKantoMeta::
+INCBIN "data/tilesets/kanto_metatiles.bin"
+
+TilesetKantoColl::
+INCLUDE "data/tilesets/kanto_collision.asm"
