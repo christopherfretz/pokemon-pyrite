@@ -160,5 +160,11 @@
   "title": "FUCHSIA CITY \u2014 SOULBADGE won (faked)",
   "description": "One tile below the FUCHSIA GYM door with all five badges written and TM06 in the bag. FAKED: KOGA and his six trainers are flagged beaten, not fought. Use 'FUCHSIA CITY' for the real gym.",
   "sav": "koga.sav"
+ },
+ {
+  "id": "safari",
+  "title": "SAFARI ZONE \u2014 game just started",
+  "description": "Inside the SAFARI ZONE's central area, one step in from the gate, with a paid game running: 30 SAFARI BALLs, 502 steps, \u00a5500 taken. Chains from 'SOULBADGE won' (badges faked, KOGA not fought). All four areas, the rest houses, the SECRET HOUSE (HM03) and the GOLD TEETH are real and unplayed.",
+  "sav": "safari.sav"
  }
 ]
