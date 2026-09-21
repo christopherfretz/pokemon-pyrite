@@ -1066,12 +1066,20 @@ Route24_Blocks:
 
 CeruleanTrashedHouse_Blocks:
 CeruleanBadgeHouse_Blocks:
+	INCBIN "maps/House1Hole.blk"
+
 ; Kanto hack (docs/M7-FUCHSIA.md, 10f/10g): FUCHSIA's GOOD ROD HOUSE is a
 ; pass-through house in Yellow too -- its back door at (2,0) is the only way
 ; into the city's north-east yard.  10g re-cut it onto Yellow's own SHIP-
 ; tileset layout (Crystal ports that blockset byte for byte), so the blk is
 ; Yellow's bytes verbatim: block $09 puts a LADDER at (2,0) and $1b the front
 ; door at (2,7)/(3,7).  10f's House1Hole placeholder is retired.
+;
+; ⚠ The two CERULEAN labels above KEEP House1Hole and now INCBIN it themselves:
+; they used to fall through to this INCBIN, so repointing this one at the SHIP
+; room silently took Cerulean's trashed house and badge house with it and walled
+; up the hole at their (2,0) -- which is the only way to Cerulean's south road.
+; Never let an alias group end on a label that is about to get its own blk.
 FuchsiaGoodRodHouse_Blocks:
 	INCBIN "maps/FuchsiaGoodRodHouse.blk"
 
