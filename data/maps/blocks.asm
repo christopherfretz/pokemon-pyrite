@@ -1238,12 +1238,17 @@ Route18Gate2F_Blocks:
 Route18_Blocks:
 	INCBIN "maps/Route18.blk"
 
-; Kanto hack (M7 10a, docs/M7-FUCHSIA.md): ROUTES 14 and 15 re-cut to Yellow's
+; Kanto hack (M7 10a, docs/M7-FUCHSIA.md): ROUTES 14 and 15 RESIZED to Yellow's
 ; own 10x27 and 30x9 (they were Crystal's 10x18 and 20x9, in "Map Blocks 1" and
-; "2", neither of which had room for the extra 90 bytes).  The new rows/columns
-; are the missing SOUTH of Route 14 and the missing EAST of Route 15 -- the
-; halves that carry Yellow's Route14/Route15 seam -- flood-filled from the old
-; edge for now; 10g re-cuts both maps properly and moves the seam offsets.
+; "2", neither of which had room for the extra 90 bytes).  10a only grew them --
+; the new rows/columns, the missing SOUTH of Route 14 and the missing EAST of
+; Route 15, were flood-filled from the old edge.
+;
+; Kanto hack (M7 10d): maps/Route14.blk is now Yellow's OWN layout, cut by
+; scripts/vermilion_blk.py.  The Yellow OVERWORLD -> TILESET_KANTO mapping is
+; pure identity for ROUTE 14's 18 block ids, so the file is byte-identical to
+; vendor/pokeyellow/maps/Route14.blk.  maps/Route15.blk is still 10a's
+; placeholder fill -- 10e re-cuts it.
 Route14_Blocks:
 	INCBIN "maps/Route14.blk"
 

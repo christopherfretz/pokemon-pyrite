@@ -180,7 +180,7 @@ DEF KRIS EQU __trainer_class__
 ; No renumbering, no new const cost; the rows are nameless so the battle intro
 ; reads "BIRD KEEPER" alone, as Gen 1 does.
 	const BIRD_KEEPER_1 ; ROUTE 18 (was HANK)
-	const ROY
+	const BIRD_KEEPER_7 ; ROUTE 14 (Kanto hack, M7 10d, Yellow's OPP_BIRD_KEEPER 14); was ROY, Crystal's own ROUTE 14 bird keeper, deleted by 10d
 	const BIRD_KEEPER_2 ; ROUTE 18 (was BORIS)
 	const BIRD_KEEPER_3 ; ROUTE 18 (was BOB)
 	const JOSE1
@@ -197,6 +197,14 @@ DEF KRIS EQU __trainer_class__
 	const VANCE2
 	const VANCE3
 	const BIRD_KEEPER_6 ; ROUTE 13 (Kanto hack, M7 10c), appended
+; Kanto hack (M7 10d): Yellow's six ROUTE 14 BIRD KEEPERs (OPP_BIRD_KEEPER
+; 14/15/16/17/4/5, in Yellow's object order).  Only ROY's row above was dead,
+; so the other five are appended -- the class has no dead rows left.
+	const BIRD_KEEPER_8 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIRD_KEEPER_9 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIRD_KEEPER_10 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIRD_KEEPER_11 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIRD_KEEPER_12 ; ROUTE 14 (Kanto hack, M7 10d), appended
 
 	trainerclass LASS ; 19
 	const CARRIE
@@ -635,8 +643,13 @@ DEF KRIS EQU __trainer_class__
 	const BIKER_7 ; ROUTE 17 (was CHARLES)
 	const BIKER_8 ; ROUTE 17 (was RILEY)
 	const BIKER_9 ; ROUTE 13 (Kanto hack, M7 10c, Yellow's OPP_BIKER 1); was the dead JOEL
-	const GLENN ; unused (Kanto hack: dead since M6 9z deleted Crystal's ROUTE 17)
+	const BIKER_10 ; ROUTE 14 (Kanto hack, M7 10d, Yellow's OPP_BIKER 13); was the dead GLENN
 	const BIKER_3 ; ROUTE 16 (Kanto hack, M6 9y)
+; Kanto hack (M7 10d): Yellow's four ROUTE 14 BIKERs (OPP_BIKER 13/14/15/2).
+; GLENN's row above was the class's last dead one, so three are appended.
+	const BIKER_11 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIKER_12 ; ROUTE 14 (Kanto hack, M7 10d), appended
+	const BIKER_13 ; ROUTE 14 (Kanto hack, M7 10d), appended
 
 	trainerclass BLAINE ; 2e
 	const BLAINE1
@@ -831,8 +844,12 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack (M5 8d): ROBERT deleted -- he was Crystal's ROUTE 10 POKEFAN, and
 ; Yellow has no POKEFAN anywhere on Route 10 (docs/M5-LAVENDER.md 5.3).
 	const JOSHUA
-	const CARTER
-	const TREVOR
+; Kanto hack (M7 10d): CARTER and TREVOR were Crystal's own ROUTE 14 POKEFANs,
+; deleted by 10d -- Yellow has no POKEFAN on ROUTE 14.  Both rows are mid-class,
+; so they stay (BRANDON and everything after them keep their ids) and are marked
+; unused; their event flags are renamed in place for ROUTE 14's own trainers.
+	const CARTER ; unused (Kanto hack, M7 10d)
+	const TREVOR ; unused (Kanto hack, M7 10d)
 	const BRANDON
 	const JEREMY
 	const COLIN

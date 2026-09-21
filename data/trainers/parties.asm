@@ -708,10 +708,14 @@ BirdKeeperGroup:
 	db 29, FEAROW
 	db -1 ; end
 
-	; BIRD_KEEPER (9)
-	db "ROY@", TRAINERTYPE_NORMAL
-	db 29, FEAROW
-	db 35, FEAROW
+	; BIRD_KEEPER (9) = BIRD_KEEPER_7 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M1,
+	; OPP_BIRD_KEEPER 14 (db 28, PIDGEY, DODUO, PIDGEOTTO, 0).  Was Crystal's ROY,
+	; its own ROUTE 14 bird keeper, deleted by 10d.  Nameless, so PlaceEnemysName
+	; prints "BIRD KEEPER".
+	db "@", TRAINERTYPE_NORMAL
+	db 28, PIDGEY
+	db 28, DODUO
+	db 28, PIDGEOTTO
 	db -1 ; end
 
 	; BIRD_KEEPER (10) -- Kanto hack (M6 9aa): Yellow's ROUTE 18 BIRD KEEPER 2,
@@ -792,6 +796,44 @@ BirdKeeperGroup:
 	db 26, PIDGEOTTO
 	db 26, SPEAROW
 	db 26, FEAROW
+	db -1 ; end
+
+	; BIRD_KEEPER (21) = BIRD_KEEPER_8 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M2,
+	; OPP_BIRD_KEEPER 15 (db 26, PIDGEY, SPEAROW, PIDGEY, FEAROW, 0).  The class had
+	; only ROY's dead row left, so this one and the four below are appended.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, PIDGEY
+	db 26, SPEAROW
+	db 26, PIDGEY
+	db 26, FEAROW
+	db -1 ; end
+
+	; BIRD_KEEPER (22) = BIRD_KEEPER_9 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M3,
+	; OPP_BIRD_KEEPER 16 (db 29, PIDGEOTTO, FEAROW, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, PIDGEOTTO
+	db 29, FEAROW
+	db -1 ; end
+
+	; BIRD_KEEPER (23) = BIRD_KEEPER_10 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M4,
+	; OPP_BIRD_KEEPER 17 (db 28, SPEAROW, DODUO, FEAROW, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 28, SPEAROW
+	db 28, DODUO
+	db 28, FEAROW
+	db -1 ; end
+
+	; BIRD_KEEPER (24) = BIRD_KEEPER_11 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M5,
+	; OPP_BIRD_KEEPER 4 (db 33, FARFETCHD, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 33, FARFETCH_D
+	db -1 ; end
+
+	; BIRD_KEEPER (25) = BIRD_KEEPER_12 -- Kanto hack (M7 10d): Yellow's ROUTE 14 COOLTRAINER_M6,
+	; OPP_BIRD_KEEPER 5 (db 29, SPEAROW, FEAROW, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, SPEAROW
+	db 29, FEAROW
 	db -1 ; end
 
 LassGroup:
@@ -3114,11 +3156,13 @@ BikerGroup:
 	db 28, KOFFING
 	db -1 ; end
 
-	; BIKER (GLENN) -- unused since M6 9z; kept so BIKER_3 below keeps its id.
-	db "GLENN@", TRAINERTYPE_NORMAL
-	db 28, KOFFING
-	db 30, MAGMAR
-	db 32, WEEZING
+	; BIKER (BIKER_10) -- Kanto hack (M7 10d): Yellow's ROUTE 14 BIKER 1, OPP_BIKER 13
+	; (db 26, KOFFING, KOFFING, GRIMER, KOFFING, 0).  Was GLENN, dead since M6 9z.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, KOFFING
+	db 26, KOFFING
+	db 26, GRIMER
+	db 26, KOFFING
 	db -1 ; end
 
 	; BIKER (10) -- Kanto hack (M6 9y): Yellow's ROUTE 16 BIKER 7
@@ -3127,6 +3171,29 @@ BikerGroup:
 	db 26, GRIMER
 	db 26, GRIMER
 	db 26, GRIMER
+	db -1 ; end
+
+	; BIKER (BIKER_11) -- Kanto hack (M7 10d): Yellow's ROUTE 14 BIKER 2, OPP_BIKER 14
+	; (db 28, GRIMER, GRIMER, KOFFING, 0).  GLENN's row was the class's last dead
+	; one, so this row and the two below are appended.
+	db "@", TRAINERTYPE_NORMAL
+	db 28, GRIMER
+	db 28, GRIMER
+	db 28, KOFFING
+	db -1 ; end
+
+	; BIKER (BIKER_12) -- Kanto hack (M7 10d): Yellow's ROUTE 14 BIKER 3, OPP_BIKER 15
+	; (db 29, KOFFING, MUK, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, KOFFING
+	db 29, MUK
+	db -1 ; end
+
+	; BIKER (BIKER_13) -- Kanto hack (M7 10d): Yellow's ROUTE 14 BIKER 4, OPP_BIKER 2
+	; (db 29, KOFFING, GRIMER, 0).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, KOFFING
+	db 29, GRIMER
 	db -1 ; end
 
 BlaineGroup:
@@ -4095,14 +4162,16 @@ PokefanMGroup:
 	db 23, PIKACHU,    BERRY
 	db -1 ; end
 
-	; POKEFANM (4)
+	; POKEFANM (4) -- unused (Kanto hack, M7 10d): CARTER was Crystal's ROUTE 14
+	; POKEFAN, deleted by 10d.  The row has to stay so POKEFANM (5) and everything
+	; after it keep their ids, but its three-#MON party is cut to a one-#MON
+	; placeholder (D49).
 	db "CARTER@", TRAINERTYPE_ITEM
 	db 29, BULBASAUR,  BERRY
-	db 29, CHARMANDER, BERRY
-	db 29, SQUIRTLE,   BERRY
 	db -1 ; end
 
-	; POKEFANM (5)
+	; POKEFANM (5) -- unused (Kanto hack, M7 10d): TREVOR was Crystal's other
+	; ROUTE 14 POKEFAN, deleted by 10d.  Already a one-#MON row, so nothing to cut.
 	db "TREVOR@", TRAINERTYPE_ITEM
 	db 33, PSYDUCK,    BERRY
 	db -1 ; end

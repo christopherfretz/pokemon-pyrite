@@ -322,7 +322,7 @@ ENDM
 
 	map_attributes Route15, ROUTE_15, $0f
 	connection west, FuchsiaCity, FUCHSIA_CITY, -9
-	connection east, Route14, ROUTE_14, -9
+	connection east, Route14, ROUTE_14, -18 ; Kanto hack (M7 10d): reciprocal of ROUTE 14's west 18 (Yellow's own value); ROUTE 15's own re-cut is 10e
 
 ; Kanto hack (M7 10c, docs/M7-FUCHSIA.md): Yellow's ROUTE 13 runs EAST-WEST and
 ; hands off to ROUTE 14 through its WEST edge, not its south one --
@@ -333,7 +333,7 @@ ENDM
 ; where we still carry 9, left over from before 10a resized ROUTE_14 to 10x27
 ; and ROUTE_15 to 30x9 -- 10d must fix that offset with the re-cut.
 	map_attributes Route14, ROUTE_14, $43
-	connection west, Route15, ROUTE_15, 9 ; 10d: Yellow says 18
+	connection west, Route15, ROUTE_15, 18 ; Kanto hack (M7 10d): was 9, the middle-of-map row 10a left behind; Yellow's vendor/pokeyellow/data/maps/headers/Route14.asm says 18
 	connection east, Route13, ROUTE_13, 0 ; Kanto hack (M7 10c): was "north Route13 0"
 
 	map_attributes Route13, ROUTE_13, $43

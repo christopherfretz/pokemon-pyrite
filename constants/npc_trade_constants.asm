@@ -19,7 +19,7 @@ DEF NPCTRADE_STRUCT_LENGTH EQU _RS
 	const NPC_TRADE_TIM    ; 2
 	const NPC_TRADE_EMY    ; 3
 	const NPC_TRADE_CHRIS  ; 4
-	const NPC_TRADE_KIM    ; 5
+	const NPC_TRADE_KIM    ; 5 ; unused (Kanto hack, M7 10d): Crystal's ROUTE 14 trade, deleted with TEACHER Kim.  The row stays so NPC_TRADE_FOREST and the ported trades after it keep their indexes.
 	const NPC_TRADE_FOREST ; 6
 	const NPC_TRADE_MILES  ; 7 ; Kanto hack (docs/M2-PEWTER.md, 4f)
 	const NPC_TRADE_RICKY  ; 8 ; Kanto hack (docs/M4-VERMILION.md, 7d)

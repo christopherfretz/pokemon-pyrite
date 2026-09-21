@@ -565,7 +565,7 @@
 	const EVENT_BEAT_BIRD_KEEPER_DENIS
 	const EVENT_BEAT_BIRD_KEEPER_VANCE
 	const EVENT_BEAT_LASS_TAMARA ; Kanto hack: Route 4, Yellow's LASS 4 (was EVENT_BEAT_BIRD_KEEPER_HANK)
-	const EVENT_BEAT_BIRD_KEEPER_ROY
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_7 ; Kanto hack (M7 10d): renamed in place, was EVENT_BEAT_BIRD_KEEPER_ROY -- Crystal's own ROUTE 14 bird keeper, deleted by 10d
 	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_1 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BIRD_KEEPER_BORIS -- Crystal's ROUTE 18 pair is gone
 	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_2 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BIRD_KEEPER_BOB
 	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_5 ; Kanto hack: renamed in place (M6 9w), was EVENT_BEAT_BIRD_KEEPER_JOSE -- an unreferenced Gen 2 trainer flag; Yellow's EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4, the B1F Rocket who opens the door to the lift
@@ -806,8 +806,8 @@
 	const EVENT_BEAT_POKEFANM_DEREK
 	const EVENT_GOT_TM41_SOFTBOILED ; Kanto hack: renamed in place (M6 9p), was the dead EVENT_BEAT_POKEFANM_ROBERT (Crystal's ROUTE 10 POKEFAN, deleted in M5 8d).  CELADON CITY's gramps, Yellow's EVENT_GOT_TM41
 	const EVENT_BEAT_ROUTE_13_PICNICKER_1 ; Kanto hack (M7 10c): renamed in place, was EVENT_BEAT_POKEFANM_JOSHUA -- Crystal's ROUTE 13 PIKACHU-gang POKEFAN, deleted by 10c
-	const EVENT_BEAT_POKEFANM_CARTER
-	const EVENT_BEAT_POKEFANM_TREVOR
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_8 ; Kanto hack (M7 10d): renamed in place, was EVENT_BEAT_POKEFANM_CARTER -- Crystal's ROUTE 14 POKEFAN, deleted by 10d (out-of-class swap: the BIRD_KEEPER block has no dead flag left)
+	const EVENT_BEAT_ROUTE_14_BIKER_10 ; Kanto hack (M7 10d): renamed in place, was EVENT_BEAT_POKEFANM_TREVOR -- Crystal's other ROUTE 14 POKEFAN, deleted by 10d
 	const EVENT_BEAT_POKEFANM_BRANDON
 	const EVENT_BEAT_POKEFANM_JEREMY
 	const EVENT_BEAT_POKEFANM_COLIN
@@ -1851,7 +1851,20 @@
 	const EVENT_BEAT_ROUTE_13_BIKER_9
 	const EVENT_ROUTE_13_HIDDEN_PP_UP ; ROUTE 13 (1,14), read facing DOWN from (1,13)
 
-; Unused: next 445 events
+; Kanto hack (M7 10d, docs/M7-FUCHSIA.md): ROUTE 14.  Three of its ten flags are
+; renames of Crystal's own dead ROUTE 14 rows further up this file
+; (BIRD_KEEPER_ROY, POKEFANM_CARTER, POKEFANM_TREVOR); the other seven are
+; appended.  Flag names match the trainer const they gate, not Yellow's
+; opponent number.
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_9
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_10
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_11
+	const EVENT_BEAT_ROUTE_14_BIRD_KEEPER_12
+	const EVENT_BEAT_ROUTE_14_BIKER_11
+	const EVENT_BEAT_ROUTE_14_BIKER_12
+	const EVENT_BEAT_ROUTE_14_BIKER_13
+
+; Unused: next 438 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
