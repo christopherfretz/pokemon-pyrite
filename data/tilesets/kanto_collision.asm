@@ -218,3 +218,61 @@
 ; (the paved road surface south of the hut), whose four quadrants are
 ; plain FLOOR in both games.
 	tilecoll FLOOR, LADDER, FLOOR, LADDER ; a7
+
+; ---- M7 10b: Safari Zone, ported from Yellow's FOREST blockset (scripts/safari_blk.py)
+; forest $04, tall grass over a row of trees
+	tilecoll TALL_GRASS, TALL_GRASS, WALL, WALL ; a8
+; forest $05, a row of trees over tall grass
+	tilecoll WALL, WALL, TALL_GRASS, TALL_GRASS ; a9
+; forest $15, trees with the trainer-tips sign at bottom-left
+	tilecoll FLOOR, WALL, WALL, WALL ; aa
+; forest $17, fence: top rail + pickets across the bottom half
+	tilecoll FLOOR, FLOOR, WALL, WALL ; ab
+; forest $21, sign at top-left on plain ground
+	tilecoll WALL, FLOOR, FLOOR, FLOOR ; ac
+; forest $22, tall grass, plain ground at top-right
+	tilecoll TALL_GRASS, FLOOR, TALL_GRASS, TALL_GRASS ; ad
+; forest $23, tall grass, plain ground at top-left
+	tilecoll FLOOR, TALL_GRASS, TALL_GRASS, TALL_GRASS ; ae
+; forest $24, tall grass, plain ground at bottom-right
+	tilecoll TALL_GRASS, TALL_GRASS, TALL_GRASS, FLOOR ; af
+; forest $25, tall grass, plain ground at bottom-left
+	tilecoll TALL_GRASS, TALL_GRASS, FLOOR, TALL_GRASS ; b0
+; forest $26, fence running in from the left into a post
+	tilecoll FLOOR, WALL, WALL, WALL ; b1
+; forest $27, fence running out to the right from a post
+	tilecoll WALL, FLOOR, WALL, WALL ; b2
+; forest $2a, post with the fence heading down, left half
+	tilecoll WALL, FLOOR, WALL, FLOOR ; b3
+; forest $2b, post with the fence heading down, right half
+	tilecoll FLOOR, WALL, FLOOR, WALL ; b4
+; forest $33, sign at bottom-right on plain ground
+	tilecoll FLOOR, FLOOR, FLOOR, WALL ; b5
+; forest $47, plateau with the stairs down at bottom-left
+	tilecoll FLOOR, FLOOR, FLOOR, WALL ; b6
+; forest $48, trees with plain ground at bottom-right
+	tilecoll WALL, WALL, WALL, FLOOR ; b7
+; forest $4a, plateau, north fringe over the left half
+	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; b8
+; forest $4b, plateau, north fringe over the right half
+	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; b9
+; forest $4c, trees with plain ground at top-right
+	tilecoll WALL, FLOOR, WALL, WALL ; ba
+; forest $50, shore: ground on the left, water + top bank on the right
+	tilecoll FLOOR, WATER, FLOOR, WATER ; bb
+; forest $52, water with the top and right banks
+	tilecoll WATER, WATER, WATER, WATER ; bc
+; forest $53, plateau with the stairs down at bottom-right
+	tilecoll FLOOR, FLOOR, WALL, FLOOR ; bd
+; forest $54, shore: ground on the left, water on the right
+	tilecoll FLOOR, WATER, FLOOR, WATER ; be
+; forest $5c, water with the top and left banks
+	tilecoll WATER, WATER, WATER, WATER ; bf
+; forest $7c, boundary posts across the bottom half
+	tilecoll FLOOR, FLOOR, WALL, WALL ; c0
+; forest $7d, boundary posts across the top half
+	tilecoll WALL, WALL, FLOOR, FLOOR ; c1
+; forest $7e, boundary posts down the right half
+	tilecoll FLOOR, WALL, FLOOR, WALL ; c2
+; forest $7f, boundary posts down the left half
+	tilecoll WALL, FLOOR, WALL, FLOOR ; c3
