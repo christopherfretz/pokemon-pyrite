@@ -3448,6 +3448,37 @@ BlackbeltGroup:
 	db 34, MACHOKE
 	db -1 ; end
 
+	; BLACKBELT_T (10) = KARATE_MASTER: FIGHTING DOJO (Yellow BlackbeltData 1)
+	db "@", TRAINERTYPE_NORMAL
+	db 37, HITMONLEE
+	db 37, HITMONCHAN
+	db -1 ; end
+
+	; BLACKBELT_T (11) = BLACKBELT_DOJO_1 (Yellow BlackbeltData 2)
+	db "@", TRAINERTYPE_NORMAL
+	db 31, MANKEY
+	db 31, MANKEY
+	db 31, PRIMEAPE
+	db -1 ; end
+
+	; BLACKBELT_T (12) = BLACKBELT_DOJO_2 (Yellow BlackbeltData 3)
+	db "@", TRAINERTYPE_NORMAL
+	db 32, MACHOP
+	db 32, MACHOKE
+	db -1 ; end
+
+	; BLACKBELT_T (13) = BLACKBELT_DOJO_3 (Yellow BlackbeltData 4)
+	db "@", TRAINERTYPE_NORMAL
+	db 36, PRIMEAPE
+	db -1 ; end
+
+	; BLACKBELT_T (14) = BLACKBELT_DOJO_4 (Yellow BlackbeltData 5)
+	db "@", TRAINERTYPE_NORMAL
+	db 31, MACHOP
+	db 31, MANKEY
+	db 31, PRIMEAPE
+	db -1 ; end
+
 ExecutiveMGroup:
 	; EXECUTIVEM (1)
 	db "EXECUTIVE@", TRAINERTYPE_MOVES

@@ -364,15 +364,14 @@ MartFuchsia:
 	db -1 ; end
 
 MartSaffron:
-	db 8 ; # items
+; Kanto hack (M8 11d): Yellow's SAFFRON MART stock, exactly.
+	db 6 ; # items
 	db GREAT_BALL
-	db ULTRA_BALL
 	db HYPER_POTION
-	db MAX_POTION
+	db MAX_REPEL
+	db ESCAPE_ROPE
 	db FULL_HEAL
-	db X_ATTACK
-	db X_DEFEND
-	db FLOWER_MAIL
+	db REVIVE
 	db -1 ; end
 
 MartMtMoon:

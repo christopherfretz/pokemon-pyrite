@@ -1284,10 +1284,16 @@ Route15_Blocks:
 ; each needs a file of its own.  Placeholders: the MART is the western 4 columns
 ; of Mart.blk and the CENTER is Pokecenter1F.blk padded east with floor ($04).
 ; 10g cuts both from Yellow.
+; M8 11d: every Yellow mart shares one .blk (Cerulean/Cinnabar/Fuchsia/Lavender/
+; Pewter/Saffron/Vermilion/Viridian are byte-identical), and Yellow's SAFFRON
+; Pokecentre .blk is byte-identical to its FUCHSIA one, so SAFFRON stacks its
+; labels here instead of carrying its own copies.
 FuchsiaMart_Blocks:
+SaffronMart_Blocks:
 	INCBIN "maps/FuchsiaMart.blk"
 
 FuchsiaPokecenter1F_Blocks:
+SaffronPokecenter1F_Blocks:
 	INCBIN "maps/FuchsiaPokecenter1F.blk"
 
 ; Kanto hack (M7 10a): the SAFARI ZONE.  Flat placeholder fills at Yellow's own
@@ -1358,15 +1364,5 @@ SilphCo10F_Blocks:
 
 SilphCo11F_Blocks:
 	INCBIN "maps/SilphCo11F.blk"
-
-; Kanto hack (M8 11a, docs/M8-SAFFRON.md G5): SAFFRON's mart and Pokecentre are
-; Yellow-sized now (4x4 and 7x4), so they can no longer ride the shared 6x4
-; Mart.blk / 5x4 Pokecenter1F.blk label stacks.  Placeholder re-cuts of the
-; Crystal art; 11c-11e lay out the real rooms.
-SaffronMart_Blocks:
-	INCBIN "maps/SaffronMart.blk"
-
-SaffronPokecenter1F_Blocks:
-	INCBIN "maps/SaffronPokecenter1F.blk"
 
 ENDSECTION

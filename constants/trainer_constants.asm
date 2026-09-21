@@ -716,6 +716,15 @@ DEF KRIS EQU __trainer_class__
 	const LUNG
 	const KENJI3
 	const WAI
+; Kanto hack (M8 11d): Yellow's FIGHTING DOJO.  Yellow has no KARATE MASTER
+; class -- every dojo fighter, the master included, is OPP_BLACKBELT -- so the
+; five rows are appended here and left nameless in parties.asm, which makes
+; PlaceEnemysName print "BLACKBELT" alone, as Yellow does.
+	const KARATE_MASTER ; FIGHTING DOJO, appended
+	const BLACKBELT_DOJO_1
+	const BLACKBELT_DOJO_2
+	const BLACKBELT_DOJO_3
+	const BLACKBELT_DOJO_4
 
 	trainerclass EXECUTIVEM ; 33
 	const EXECUTIVEM_1

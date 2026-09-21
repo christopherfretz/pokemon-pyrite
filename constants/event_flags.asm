@@ -217,7 +217,13 @@
 	const EVENT_MET_REDS_MOM
 	const EVENT_RESTORED_POWER_TO_KANTO
 	const EVENT_GOT_COINS_FROM_GAME_CORNER_GURU_2 ; Kanto hack: renamed in place (M6 9u), was EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON (Crystal's own CELADON GAME CORNER one-off, this map's only user); CELADON GAME CORNER, Yellow's FISHING GURU 2 (17,13) and his 20 coins
-	const EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM
+	const EVENT_GOT_TM31_MIMIC ; Kanto hack: renamed in place (M8 11d), was
+; EVENT_MET_COPYCAT_FOUND_OUT_ABOUT_LOST_ITEM.  Yellow has no LOST_ITEM quest --
+; the COPYCAT trades a POKe DOLL for TM31 MIMIC -- so Crystal's three-step chain
+; is dead here.  EVENT_RETURNED_LOST_ITEM_TO_COPYCAT and
+; EVENT_GOT_PASS_FROM_COPYCAT are left alone: the second is still read by
+; engine/phone/scripts/irwin_gossip.asm, and the PASS itself is wanted for the
+; Johto act's MAGNET TRAIN, so only the SAFFRON half of the quest is retired.
 	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT
 	const EVENT_GOT_PASS_FROM_COPYCAT
 	const EVENT_GOT_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB (Crystal's LOST_ITEM quest deleted); Yellow's EVENT_GOT_BIKE_VOUCHER
@@ -1997,9 +2003,9 @@
 	const EVENT_BEAT_PSYCHIC_HOLLIS
 	const EVENT_BEAT_PSYCHIC_EZRA
 	const EVENT_BEAT_PSYCHIC_DARIUS
-; The FIGHTING DOJO (11k).  Its four BLACKBELTs get numbered flags rather than
-; name-keyed ones because 11k has not chosen their names yet; KARATE MASTER's
-; loss opens the two choice balls, and taking one clears the other.
+; The FIGHTING DOJO (11d).  Its four BLACKBELTs get numbered flags rather than
+; name-keyed ones because Yellow leaves them nameless; KARATE MASTER's loss
+; opens the two choice balls, and taking one clears the other.
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_1
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_2
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_3
@@ -2007,6 +2013,9 @@
 	const EVENT_DEFEATED_FIGHTING_DOJO ; the KARATE MASTER is beaten
 	const EVENT_GOT_HITMONLEE
 	const EVENT_GOT_HITMONCHAN
+; 11d: both balls vanish once either is taken, so they share one HIDE flag --
+; a per-ball flag would make the other reappear on the next map load.
+	const EVENT_GOT_FIGHTING_DOJO_GIFT
 ; SAFFRON CITY's six civilians (11c).  Yellow keeps them off the map with its
 ; global data/maps/toggleable_objects.asm table, which GSC has no analogue for,
 ; so they get one shared HIDE flag: InitializeEventsScript sets it at new game

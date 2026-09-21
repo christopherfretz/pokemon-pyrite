@@ -1,8 +1,17 @@
+; Kanto hack (M8 11d): Yellow's SAFFRON #MON CENTER
+; (vendor/pokeyellow/{data/maps/objects,scripts,text}/SaffronPokecenter.asm)
+; minus the cable-club receptionist: Crystal keeps the cable club upstairs on
+; POKECENTER_2F, which warp 3 already leads to (docs/PORTING.md §15), the same
+; call Pewter, Viridian and Fuchsia made.  Crystal's mobile-adapter TEACHER, its
+; JOHTO gossip, its POWER PLANT HIKER and its MAGNET TRAIN STATION YOUNGSTER are
+; all gone -- the Kanto-act predicate is ENGINE_POKEGEAR clear, and the MAGNET
+; TRAIN does not exist yet (D74).  CHANSEY keeps the Kanto-Pokecentre (4,1)
+; convention (N1c/N1d).  11a widened the room to Yellow's 7x4.
 	object_const_def
 	const SAFFRONPOKECENTER1F_NURSE
-	const SAFFRONPOKECENTER1F_TEACHER
-	const SAFFRONPOKECENTER1F_FISHER
-	const SAFFRONPOKECENTER1F_YOUNGSTER
+	const SAFFRONPOKECENTER1F_BEAUTY
+	const SAFFRONPOKECENTER1F_GENTLEMAN
+	const SAFFRONPOKECENTER1F_CHANSEY
 
 SaffronPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -12,101 +21,37 @@ SaffronPokecenter1F_MapScripts:
 SaffronPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
-SaffronPokecenter1FTeacherScript:
-	special CheckMobileAdapterStatusSpecial
-	iftrue .mobile
-	jumptextfaceplayer SaffronPokecenter1FTeacherText
+SaffronPokecenter1FBeautyScript:
+	jumptextfaceplayer SaffronPokecenter1FBeautyText
 
-.mobile
-	jumptextfaceplayer SaffronPokecenter1FTeacherMobileText
+SaffronPokecenter1FGentlemanScript:
+	jumptextfaceplayer SaffronPokecenter1FGentlemanText
 
-SaffronPokecenter1FFisherScript:
-	faceplayer
+; Yellow's PokecenterChanseyText -- one line plus the cry (N1c/N1d).
+SaffronPokecenter1FChanseyScript:
 	opentext
-	checkevent EVENT_RETURNED_MACHINE_PART
-	iftrue .SolvedKantoPowerCrisis
-	writetext SaffronPokecenter1FFisherText
+	writetext SaffronPokecenter1FChanseyText
+	cry CHANSEY
 	waitbutton
 	closetext
 	end
 
-.SolvedKantoPowerCrisis:
-	writetext SaffronPokecenter1FFisherReturnedMachinePartText
-	waitbutton
-	closetext
-	end
-
-SaffronPokecenter1FYoungsterScript:
-	jumptextfaceplayer SaffronPokecenter1FYoungsterText
-
-SaffronPokecenter1FTeacherText:
-	text "What are JOHTO's"
-	line "#MON CENTERS"
-	cont "like?"
-
-	para "…Oh, I see. So"
-	line "they're not much"
-
-	para "different from the"
-	line "ones in KANTO."
-
-	para "I can go to JOHTO"
-	line "without worrying,"
-	cont "then!"
+SaffronPokecenter1FBeautyText:
+	text "#MON growth"
+	line "rates differ from"
+	cont "specie to specie."
 	done
 
-SaffronPokecenter1FTeacherMobileText:
-	text "What are JOHTO's"
-	line "#MON CENTERS"
-	cont "like?"
-
-	para "…Oh, I see."
-	line "So they let you"
-
-	para "link with people"
-	line "far away?"
-
-	para "Then I'll get my"
-	line "friend in JOHTO to"
-
-	para "catch a MARILL and"
-	line "trade it to me!"
+SaffronPokecenter1FGentlemanText:
+	text "SILPH CO. is very"
+	line "famous. That's"
+	cont "why it attracted"
+	cont "TEAM ROCKET!"
 	done
 
-SaffronPokecenter1FFisherText:
-	text "I just happened to"
-	line "come through ROCK"
-
-	para "TUNNEL. There was"
-	line "some commotion at"
-	cont "the POWER PLANT."
-	done
-
-SaffronPokecenter1FFisherReturnedMachinePartText:
-	text "Caves collapse"
-	line "easily."
-
-	para "Several caves have"
-	line "disappeared in the"
-
-	para "past few years,"
-	line "like the one out-"
-	cont "side CERULEAN."
-
-	para "As a pro HIKER,"
-	line "that's common"
-	cont "knowledge."
-	done
-
-SaffronPokecenter1FYoungsterText:
-	text "SILPH CO.'s HEAD"
-	line "OFFICE and the"
-
-	para "MAGNET TRAIN STA-"
-	line "TION--they're the"
-
-	para "places to see in"
-	line "SAFFRON."
+SaffronPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
 	done
 
 SaffronPokecenter1F_MapEvents:
@@ -123,6 +68,6 @@ SaffronPokecenter1F_MapEvents:
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FNurseScript, -1
-	object_event  7,  2, SPRITE_TEACHER, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FTeacherScript, -1
-	object_event  8,  6, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FFisherScript, -1
-	object_event  1,  4, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FYoungsterScript, -1
+	object_event  5,  5, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FBeautyScript, -1
+	object_event  8,  3, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FGentlemanScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FChanseyScript, -1

@@ -1,5 +1,12 @@
+; Kanto hack (M8 11d): MR.PSYCHIC hands over TM29 PSYCHIC, in Yellow's words
+; (vendor/pokeyellow/{scripts,text}/MrPsychicsHouse.asm).  Yellow's three lines
+; replace Crystal's: the "…" build-up becomes Yellow's "Wait! Don't say a word!",
+; the explanation is Yellow's (it keeps Gen 1's "SPECIAL abilities" wording --
+; faithful to the line, even though GSC splits the stat), and the bag-full
+; branch gains Yellow's "Where do you plan to put this?", which Crystal had no
+; text for.  Cast and coordinates already matched Yellow.
 	object_const_def
-	const MRPSYCHICSHOUSE_FISHING_GURU
+	const MRPSYCHICSHOUSE_MR_PSYCHIC
 
 MrPsychicsHouse_MapScripts:
 	def_scene_scripts
@@ -11,38 +18,44 @@ MrPsychic:
 	opentext
 	checkevent EVENT_GOT_TM29_PSYCHIC
 	iftrue .AlreadyGotItem
-	writetext MrPsychicText1
+	writetext MrPsychicYouWantedThisText
 	promptbutton
 	verbosegiveitem TM_PSYCHIC_M
-	iffalse .Done
+	iffalse .NoRoom
 	setevent EVENT_GOT_TM29_PSYCHIC
 .AlreadyGotItem:
-	writetext MrPsychicText2
+	writetext MrPsychicTM29ExplanationText
 	waitbutton
-.Done:
+	closetext
+	end
+
+.NoRoom:
+	writetext MrPsychicTM29NoRoomText
+	waitbutton
 	closetext
 	end
 
 MrPsychicsHouseBookshelf:
 	jumpstd DifficultBookshelfScript
 
-MrPsychicText1:
-	text "…"
-
-	para "…"
-
-	para "…"
-
-	para "…I got it!"
+MrPsychicYouWantedThisText:
+	text "…Wait! Don't"
+	line "say a word!"
 
 	para "You wanted this!"
 	done
 
-MrPsychicText2:
-	text "TM29 is PSYCHIC."
+MrPsychicTM29ExplanationText:
+	text "TM29 is PSYCHIC!"
 
-	para "It may lower the"
-	line "target's SPCL.DEF."
+	para "It can lower the"
+	line "target's SPECIAL"
+	cont "abilities."
+	done
+
+MrPsychicTM29NoRoomText:
+	text "Where do you plan"
+	line "to put this?"
 	done
 
 MrPsychicsHouse_MapEvents:
