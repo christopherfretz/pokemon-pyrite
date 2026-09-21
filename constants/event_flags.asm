@@ -566,8 +566,8 @@
 	const EVENT_BEAT_BIRD_KEEPER_VANCE
 	const EVENT_BEAT_LASS_TAMARA ; Kanto hack: Route 4, Yellow's LASS 4 (was EVENT_BEAT_BIRD_KEEPER_HANK)
 	const EVENT_BEAT_BIRD_KEEPER_ROY
-	const EVENT_BEAT_BIRD_KEEPER_BORIS
-	const EVENT_BEAT_BIRD_KEEPER_BOB
+	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_1 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BIRD_KEEPER_BORIS -- Crystal's ROUTE 18 pair is gone
+	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_2 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BIRD_KEEPER_BOB
 	const EVENT_BEAT_ROCKET_HIDEOUT_B1F_ROCKET_5 ; Kanto hack: renamed in place (M6 9w), was EVENT_BEAT_BIRD_KEEPER_JOSE -- an unreferenced Gen 2 trainer flag; Yellow's EVENT_BEAT_ROCKET_HIDEOUT_1_TRAINER_4, the B1F Rocket who opens the door to the lift
 	const EVENT_BEAT_BIRD_KEEPER_PETER
 	const EVENT_BEAT_BIRD_KEEPER_JOSE2
@@ -927,7 +927,7 @@
 	const EVENT_BEAT_BUG_CATCHER_ARNIE
 	const EVENT_BEAT_BUG_CATCHER_KEN
 	const EVENT_BEAT_ROCKET_HIDEOUT_JESSIE_JAMES ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F JESSIE & JAMES (was EVENT_BEAT_BUG_CATCHER_WADE2, a dead Johto rematch flag)
-	const EVENT_BEAT_BUG_CATCHER_WADE3
+	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_3 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BUG_CATCHER_WADE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut)
 	const EVENT_BEAT_BUG_CATCHER_DOUG
 	const EVENT_BEAT_BUG_CATCHER_ARNIE2
 	const EVENT_BEAT_BUG_CATCHER_ARNIE3

@@ -1058,32 +1058,40 @@ KantoGrassWildMons:
 	db 29, DODRIO
 	end_grass_wildmons
 
+; Kanto hack (M6 9aa): Yellow's ROUTE 18 table
+; (vendor/pokeyellow/data/wild/maps/Route18.asm), which is BYTE-IDENTICAL to
+; its ROUTE 16 one -- same rate (25/256 == `10 percent`), same ten slots.  So
+; this is the ROUTE 16 fold above repeated verbatim: drop slot 4 (L24 DODUO),
+; slot 5 (L24 RATTATA) and slot 7 (L23 SPEAROW), keeping Yellow's order, all
+; five species and both level extremes (L22 min, L26 max).  Gen 1 has no time
+; of day, so morn = day = nite.  Crystal's GRIMER/MUK/SLUGMA road is gone.
+; Yellow gives ROUTE 18 no water table (`def_water_wildmons 0`).
 	def_grass_wildmons ROUTE_18
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, FEAROW
-	db 30, MUK
-	db 30, MUK
+	db 22, SPEAROW
+	db 22, DODUO
+	db 23, RATTATA
+	db 26, DODUO
+	db 24, FEAROW
+	db 25, RATICATE
+	db 26, RATICATE
 	; day
-	db 26, GRIMER
-	db 27, FEAROW
-	db 28, GRIMER
-	db 29, FEAROW
-	db 29, SLUGMA
-	db 30, MUK
-	db 30, MUK
+	db 22, SPEAROW
+	db 22, DODUO
+	db 23, RATTATA
+	db 26, DODUO
+	db 24, FEAROW
+	db 25, RATICATE
+	db 26, RATICATE
 	; nite
-	db 26, GRIMER
-	db 27, GRIMER
-	db 28, GRIMER
-	db 29, GRIMER
-	db 29, GRIMER
-	db 30, MUK
-	db 30, MUK
+	db 22, SPEAROW
+	db 22, DODUO
+	db 23, RATTATA
+	db 26, DODUO
+	db 24, FEAROW
+	db 25, RATICATE
+	db 26, RATICATE
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_21

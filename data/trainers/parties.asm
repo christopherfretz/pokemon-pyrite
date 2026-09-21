@@ -700,10 +700,12 @@ BirdKeeperGroup:
 	db 25, PIDGEOTTO
 	db -1 ; end
 
-	; BIRD_KEEPER (8)
-	db "HANK@", TRAINERTYPE_NORMAL
-	db 12, PIDGEY
-	db 34, PIDGEOT
+	; BIRD_KEEPER (8) -- Kanto hack (M6 9aa): Yellow's ROUTE 18 BIRD KEEPER 1,
+	; OPP_BIRD_KEEPER 8 (db 29, SPEAROW, FEAROW, 0).  Was Crystal's HANK, a row
+	; no map referenced.  Nameless, so PlaceEnemysName prints "BIRD KEEPER".
+	db "@", TRAINERTYPE_NORMAL
+	db 29, SPEAROW
+	db 29, FEAROW
 	db -1 ; end
 
 	; BIRD_KEEPER (9)
@@ -712,16 +714,20 @@ BirdKeeperGroup:
 	db 35, FEAROW
 	db -1 ; end
 
-	; BIRD_KEEPER (10)
-	db "BORIS@", TRAINERTYPE_NORMAL
-	db 30, DODUO
-	db 28, DODUO
-	db 32, DODRIO
+	; BIRD_KEEPER (10) -- Kanto hack (M6 9aa): Yellow's ROUTE 18 BIRD KEEPER 2,
+	; OPP_BIRD_KEEPER 9 (db 34, DODRIO, 0).  Was Crystal's BORIS.
+	db "@", TRAINERTYPE_NORMAL
+	db 34, DODRIO
 	db -1 ; end
 
-	; BIRD_KEEPER (11)
-	db "BOB@", TRAINERTYPE_NORMAL
-	db 34, NOCTOWL
+	; BIRD_KEEPER (11) -- Kanto hack (M6 9aa): Yellow's ROUTE 18 BIRD KEEPER 3,
+	; OPP_BIRD_KEEPER 10 (db 26, SPEAROW, SPEAROW, FEAROW, SPEAROW, 0).  Was
+	; Crystal's BOB.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, SPEAROW
+	db 26, SPEAROW
+	db 26, FEAROW
+	db 26, SPEAROW
 	db -1 ; end
 
 	; BIRD_KEEPER (12)

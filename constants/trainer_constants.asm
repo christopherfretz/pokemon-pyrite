@@ -174,10 +174,15 @@ DEF KRIS EQU __trainer_class__
 	const TOBY
 	const DENIS
 	const VANCE1
-	const HANK
+; Kanto hack (M6 9aa): Yellow's three ROUTE 18 BIRD KEEPERs (OPP_BIRD_KEEPER
+; 8-10) take over three dead rows in place -- HANK was never referenced by any
+; Crystal map, and BORIS/BOB were Crystal's own ROUTE 18 pair, deleted by 9aa.
+; No renumbering, no new const cost; the rows are nameless so the battle intro
+; reads "BIRD KEEPER" alone, as Gen 1 does.
+	const BIRD_KEEPER_1 ; ROUTE 18 (was HANK)
 	const ROY
-	const BORIS
-	const BOB
+	const BIRD_KEEPER_2 ; ROUTE 18 (was BORIS)
+	const BIRD_KEEPER_3 ; ROUTE 18 (was BOB)
 	const JOSE1
 	const PETER
 	const JOSE2

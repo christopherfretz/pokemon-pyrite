@@ -131,9 +131,10 @@ CeladonGroupSprites:
 	db SPRITE_ROCKET
 	db SPRITE_FISHER
 	db SPRITE_BIKER
+	db SPRITE_COOLTRAINER_M ; Kanto hack (M6 9aa): cross-connection -- ROUTE 17's south edge opens onto ROUTE 18's three BIRD KEEPERs
 	db SPRITE_POLIWAG
 	db SPRITE_BIG_SNORLAX ; Kanto hack (M6 9y): the ROUTE 16 SNORLAX
-rept MAX_OUTDOOR_SPRITES - 9
+rept MAX_OUTDOOR_SPRITES - 10
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
@@ -179,9 +180,10 @@ FuchsiaGroupSprites:
 	db SPRITE_YOUNGSTER
 	db SPRITE_TEACHER
 	db SPRITE_POKEFAN_M
+	db SPRITE_COOLTRAINER_M
 	db SPRITE_POKE_BALL
 	db SPRITE_FRUIT_TREE
-rept MAX_OUTDOOR_SPRITES - 5
+rept MAX_OUTDOOR_SPRITES - 6
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
