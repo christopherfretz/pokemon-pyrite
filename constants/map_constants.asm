@@ -546,17 +546,28 @@ ENDM
 	map_const SAFFRON_CITY,                                20, 18 ;  2
 	map_const FIGHTING_DOJO,                                5,  6 ;  3
 	map_const SAFFRON_GYM,                                 10,  9 ;  4
-	map_const SAFFRON_MART,                                 6,  4 ;  5
-	map_const SAFFRON_POKECENTER_1F,                        5,  4 ;  6
+	map_const SAFFRON_MART,                                 4,  4 ;  5
+	map_const SAFFRON_POKECENTER_1F,                        7,  4 ;  6
 	map_const SAFFRON_POKECENTER_2F_BETA,                   8,  4 ;  7
 	map_const MR_PSYCHICS_HOUSE,                            4,  4 ;  8
-	map_const SAFFRON_MAGNET_TRAIN_STATION,                10,  9 ;  9
-	map_const SILPH_CO_1F,                                  8,  4 ; 10
+	map_const SAFFRON_PIDGEY_HOUSE,                         4,  4 ;  9
+	map_const SILPH_CO_1F,                                 15,  9 ; 10
 	map_const COPYCATS_HOUSE_1F,                            4,  4 ; 11
-	map_const COPYCATS_HOUSE_2F,                            5,  3 ; 12
+	map_const COPYCATS_HOUSE_2F,                            4,  4 ; 12
 	map_const ROUTE_5_UNDERGROUND_PATH_ENTRANCE,            4,  4 ; 13
 	map_const ROUTE_5_SAFFRON_GATE,                         4,  3 ; 14
 	map_const ROUTE_5_DAY_CARE,                             4,  4 ; 15
+	map_const SILPH_CO_2F,                                 15,  9 ; 16
+	map_const SILPH_CO_3F,                                 15,  9 ; 17
+	map_const SILPH_CO_4F,                                 15,  9 ; 18
+	map_const SILPH_CO_5F,                                 15,  9 ; 19
+	map_const SILPH_CO_6F,                                 13,  9 ; 20
+	map_const SILPH_CO_7F,                                 13,  9 ; 21
+	map_const SILPH_CO_8F,                                 13,  9 ; 22
+	map_const SILPH_CO_9F,                                 13,  9 ; 23
+	map_const SILPH_CO_10F,                                 8,  9 ; 24
+	map_const SILPH_CO_11F,                                 9,  9 ; 25
+	map_const SILPH_CO_ELEVATOR,                            2,  2 ; 26
 	endgroup
 
 	newgroup CHERRYGROVE                                          ; 26

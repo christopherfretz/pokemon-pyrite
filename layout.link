@@ -362,6 +362,13 @@ ROMX $79
 	; `dba` in data/tilesets.asm, so pinning them here costs nothing and gives
 	; every remaining Kanto milestone room to append metatiles.
 	"Tileset Data 14"
+ROMX $7a
+	; Kanto hack: Silph Co. 2F-11F + the elevator and the repurposed Saffron
+	; houses (M8 11a, docs/M8-SAFFRON.md D69).  $7a was the last wholly EMPTY
+	; bank M7 10a named; "Map Scripts 30" ($76) could not hold another twelve
+	; maps' worth of script, so M8 spends it here.  Unpinned it would land in
+	; bank $01, which has 102 free bytes.
+	"Map Scripts 31"
 ROMX $7b
 	"Battle Tower Text"
 	; Kanto hack: Viridian Forest + its gates (docs/M2-FOREST.md). Pinned so

@@ -114,6 +114,13 @@
 	const MUSIC_SAFARI_ZONE                  ; 69
 DEF NUM_MUSIC_SONGS EQU const_value
 
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md D82): SILPH CO. gets a name of its own
+; so the twelve Silph maps can be repointed in one line, but no id of its own --
+; only 23 of the 128 song ids are left.  Yellow plays Music_SilphCo there; the
+; ROCKET HIDEOUT theme is the closest Crystal track and is already the "team
+; rocket has taken the place over" cue.  A real port would spend an id here.
+DEF MUSIC_SILPH_CO EQU MUSIC_ROCKET_HIDEOUT
+
 ; GetMapMusic picks music for this value (see home/map.asm)
 ; this overlaps with a Crystal song ID, but not one that is used for map music
 DEF MUSIC_MAHOGANY_MART EQU MUSIC_SUICUNE_BATTLE

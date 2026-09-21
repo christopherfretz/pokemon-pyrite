@@ -183,6 +183,7 @@ GuideGentsHouse_Blocks:
 CherrygroveEvolutionSpeechHouse_Blocks:
 Route30BerryHouse_Blocks:
 CeladonChiefHouse_Blocks: ; Kanto hack (M6 9t): Yellow's CHIEF HOUSE 4x4 is byte-identical to House1
+SaffronPidgeyHouse_Blocks: ; Kanto hack (M8 11a, D74): Yellow's PIDGEY house is House1 with two different wall blocks
 	INCBIN "maps/House1.blk"
 
 SafariZoneFuchsiaGateBeta_Blocks:
@@ -299,7 +300,6 @@ VermilionMart_Blocks:
 PewterMart_Blocks:
 LavenderMart_Blocks:
 ViridianMart_Blocks:
-SaffronMart_Blocks:
 CherrygroveMart_Blocks:
 	INCBIN "maps/Mart.blk"
 
@@ -324,7 +324,6 @@ SilverCavePokecenter1F_Blocks:
 CeladonPokecenter1F_Blocks:
 CianwoodPokecenter1F_Blocks:
 ViridianPokecenter1F_Blocks:
-SaffronPokecenter1F_Blocks:
 CherrygrovePokecenter1F_Blocks:
 MtMoonPokecenter_Blocks:
 	INCBIN "maps/Pokecenter1F.blk"
@@ -381,6 +380,7 @@ CeladonDeptStore6F_Blocks:
 
 GoldenrodDeptStoreElevator_Blocks:
 CeladonDeptStoreElevator_Blocks:
+SilphCoElevator_Blocks: ; Kanto hack (M8 11a, D83): Crystal's 2x2 elevator car
 	INCBIN "maps/DeptStoreElevator.blk"
 
 CeladonMansion1F_Blocks:
@@ -838,9 +838,6 @@ FuchsiaMeetingRoom_Blocks:
 
 PlayersHouse2F_Blocks:
 	INCBIN "maps/PlayersHouse2F.blk"
-
-SaffronMagnetTrainStation_Blocks:
-	INCBIN "maps/SaffronMagnetTrainStation.blk"
 
 CeruleanGym_Blocks:
 	INCBIN "maps/CeruleanGym.blk"
@@ -1326,5 +1323,50 @@ SafariZoneNorthRestHouse_Blocks:
 
 SafariZoneSecretHouse_Blocks:
 	INCBIN "maps/SafariZoneSecretHouse.blk"
+
+; Kanto hack (M8 11a): Silph Co. 2F-11F, copied byte-for-byte from Yellow --
+; TILESET_KANTO_FACILITY is Yellow's facility.bst over all 128 of its blocks
+; (docs/M8-SAFFRON.md 0.4 #3), so no re-cut is needed.  SilphCo11F.blk is
+; INTERIOR-indexed in Yellow and renders as facility art until D70 lands in
+; 11b; 11F is unreachable until 11h.
+SilphCo2F_Blocks:
+	INCBIN "maps/SilphCo2F.blk"
+
+SilphCo3F_Blocks:
+	INCBIN "maps/SilphCo3F.blk"
+
+SilphCo4F_Blocks:
+	INCBIN "maps/SilphCo4F.blk"
+
+SilphCo5F_Blocks:
+	INCBIN "maps/SilphCo5F.blk"
+
+SilphCo6F_Blocks:
+	INCBIN "maps/SilphCo6F.blk"
+
+SilphCo7F_Blocks:
+	INCBIN "maps/SilphCo7F.blk"
+
+SilphCo8F_Blocks:
+	INCBIN "maps/SilphCo8F.blk"
+
+SilphCo9F_Blocks:
+	INCBIN "maps/SilphCo9F.blk"
+
+SilphCo10F_Blocks:
+	INCBIN "maps/SilphCo10F.blk"
+
+SilphCo11F_Blocks:
+	INCBIN "maps/SilphCo11F.blk"
+
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md G5): SAFFRON's mart and Pokecentre are
+; Yellow-sized now (4x4 and 7x4), so they can no longer ride the shared 6x4
+; Mart.blk / 5x4 Pokecenter1F.blk label stacks.  Placeholder re-cuts of the
+; Crystal art; 11c-11e lay out the real rooms.
+SaffronMart_Blocks:
+	INCBIN "maps/SaffronMart.blk"
+
+SaffronPokecenter1F_Blocks:
+	INCBIN "maps/SaffronPokecenter1F.blk"
 
 ENDSECTION

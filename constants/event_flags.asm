@@ -1895,7 +1895,120 @@
 	const EVENT_SAFARI_ZONE_WEST_GOLD_TEETH
 	const EVENT_SAFARI_ZONE_WEST_HIDDEN_REVIVE ; SAFARI ZONE WEST (6,5), read facing RIGHT from (5,5)
 
-; Unused: next 421 events
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md): SAFFRON CITY, SILPH CO., SABRINA's
+; gym and the FIGHTING DOJO.  All 86 are appended, not renamed: every dead row
+; this file still had of the right shape went to M6 and M7, and the only
+; strictly-unreferenced rows left are Johto trainer-beat flags whose names
+; would have to lie.  The survey budgeted ~60; Yellow's SILPH CO. alone wants
+; 30 trainer flags, 14 item balls and 20 card-key doors.  421 free -> 335.
+;
+; Names follow Yellow's own constants where Yellow has one
+; (vendor/pokeyellow/constants/event_constants.asm) and the floor + class
+; otherwise; the trainer flags are ordered exactly as the object_events are in
+; vendor/pokeyellow/data/maps/objects/SilphCo*.asm, so 11f can walk both lists
+; side by side.
+	const EVENT_BEAT_SILPH_CO_2F_SCIENTIST_1
+	const EVENT_BEAT_SILPH_CO_2F_SCIENTIST_2
+	const EVENT_BEAT_SILPH_CO_2F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_2F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_3F_ROCKET
+	const EVENT_BEAT_SILPH_CO_3F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_4F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_4F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_4F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_5F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_5F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_5F_JUGGLER ; Yellow's SPRITE_ROCKER / OPP_JUGGLER 1
+	const EVENT_BEAT_SILPH_CO_5F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_6F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_6F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_6F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_7F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_7F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_7F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_7F_ROCKET_3
+	const EVENT_BEAT_SILPH_CO_8F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_8F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_8F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_9F_ROCKET_1
+	const EVENT_BEAT_SILPH_CO_9F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_9F_ROCKET_2
+	const EVENT_BEAT_SILPH_CO_10F_ROCKET
+	const EVENT_BEAT_SILPH_CO_10F_SCIENTIST
+	const EVENT_BEAT_SILPH_CO_11F_ROCKET
+	const EVENT_BEAT_SILPH_CO_GIOVANNI ; 11F (6,9), Yellow's OPP_GIOVANNI 2
+; The 7F rival and the 11F duo.  JESSIE_JAMES_HIDDEN follows ROCKET HIDEOUT
+; B4F's pattern: the callback takes the pair off the map once they are beaten.
+	const EVENT_BEAT_SILPH_CO_RIVAL ; 7F, the third KANTO_RIVAL battle (11g)
+	const EVENT_BEAT_SILPH_CO_11F_JESSIE_JAMES
+	const EVENT_SILPH_CO_11F_JESSIE_JAMES_HIDDEN
+; 1F's receptionist is not at her desk while SILPH is occupied; she comes back
+; when GIOVANNI falls (Yellow's EVENT_SILPH_CO_RECEPTIONIST_AT_DESK).
+	const EVENT_SILPH_CO_RECEPTIONIST_AT_DESK
+	const EVENT_GOT_MASTER_BALL ; 11F, the president's thank-you
+; SILPH CO. item balls, in Yellow's own object order.
+	const EVENT_SILPH_CO_3F_HYPER_POTION ; 3F (8,5)
+	const EVENT_SILPH_CO_4F_FULL_HEAL ; 4F (3,9)
+	const EVENT_SILPH_CO_4F_MAX_REVIVE ; 4F (4,7)
+	const EVENT_SILPH_CO_4F_ESCAPE_ROPE ; 4F (5,8)
+	const EVENT_SILPH_CO_5F_TM_TAKE_DOWN ; 5F (2,13), Yellow's TM09
+	const EVENT_SILPH_CO_5F_PROTEIN ; 5F (4,6)
+	const EVENT_SILPH_CO_5F_CARD_KEY ; 5F (21,16), the ball that opens the tower
+	const EVENT_SILPH_CO_6F_HP_UP ; 6F (3,12)
+	const EVENT_SILPH_CO_6F_X_ACCURACY ; 6F (2,15)
+	const EVENT_SILPH_CO_7F_CALCIUM ; 7F (1,9)
+	const EVENT_SILPH_CO_7F_TM_SWORDS_DANCE ; 7F (24,11), Yellow's TM03
+	const EVENT_SILPH_CO_10F_TM_EARTHQUAKE ; 10F (2,12), Yellow's TM26
+	const EVENT_SILPH_CO_10F_RARE_CANDY ; 10F (4,14)
+	const EVENT_SILPH_CO_10F_CARBOS ; 10F (5,11)
+; Itemfinder finds (vendor/pokeyellow/data/events/hidden_events.asm:117,121,302).
+	const EVENT_SILPH_CO_5F_HIDDEN_ELIXER ; 5F (12,3)
+	const EVENT_SILPH_CO_9F_HIDDEN_MAX_POTION ; 9F (2,15)
+	const EVENT_COPYCATS_HOUSE_2F_HIDDEN_NUGGET ; COPYCAT's room (1,1)
+; The card-key doors, one flag per door pair, exactly Yellow's twenty
+; EVENT_SILPH_CO_n_UNLOCKED_DOORm.  11j re-applies them with changeblock from
+; MAPCALLBACK_TILES, the RADIO TOWER 3F pattern.
+	const EVENT_SILPH_CO_2F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_2F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_3F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_3F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_4F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_4F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_5F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_5F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_5F_UNLOCKED_DOOR_3
+	const EVENT_SILPH_CO_6F_UNLOCKED_DOOR
+	const EVENT_SILPH_CO_7F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_7F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_7F_UNLOCKED_DOOR_3
+	const EVENT_SILPH_CO_8F_UNLOCKED_DOOR
+	const EVENT_SILPH_CO_9F_UNLOCKED_DOOR_1
+	const EVENT_SILPH_CO_9F_UNLOCKED_DOOR_2
+	const EVENT_SILPH_CO_9F_UNLOCKED_DOOR_3
+	const EVENT_SILPH_CO_9F_UNLOCKED_DOOR_4
+	const EVENT_SILPH_CO_10F_UNLOCKED_DOOR
+	const EVENT_SILPH_CO_11F_UNLOCKED_DOOR
+; SAFFRON GYM's seven, named after the trainer const they gate, the way every
+; other Crystal gym flag is (11h).
+	const EVENT_BEAT_MEDIUM_TASHA
+	const EVENT_BEAT_MEDIUM_MARLENA
+	const EVENT_BEAT_MEDIUM_BEULAH
+	const EVENT_BEAT_PSYCHIC_TYRON
+	const EVENT_BEAT_PSYCHIC_HOLLIS
+	const EVENT_BEAT_PSYCHIC_EZRA
+	const EVENT_BEAT_PSYCHIC_DARIUS
+; The FIGHTING DOJO (11k).  Its four BLACKBELTs get numbered flags rather than
+; name-keyed ones because 11k has not chosen their names yet; KARATE MASTER's
+; loss opens the two choice balls, and taking one clears the other.
+	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_1
+	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_2
+	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_3
+	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_4
+	const EVENT_DEFEATED_FIGHTING_DOJO ; the KARATE MASTER is beaten
+	const EVENT_GOT_HITMONLEE
+	const EVENT_GOT_HITMONCHAN
+
+; Unused: next 335 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

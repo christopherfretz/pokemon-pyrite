@@ -3550,6 +3550,36 @@ PsychicGroup:
 	db 33, HYPNO
 	db -1 ; end
 
+	; PSYCHIC_T (13)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 1.
+	db "TYRON@", TRAINERTYPE_NORMAL
+	db 31, KADABRA
+	db 31, SLOWPOKE
+	db 31, MR__MIME
+	db 31, KADABRA
+	db -1 ; end
+
+	; PSYCHIC_T (14)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 2.
+	db "HOLLIS@", TRAINERTYPE_NORMAL
+	db 34, MR__MIME
+	db 34, KADABRA
+	db -1 ; end
+
+	; PSYCHIC_T (15)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 3.
+	db "EZRA@", TRAINERTYPE_NORMAL
+	db 33, SLOWPOKE
+	db 33, SLOWPOKE
+	db 33, SLOWBRO
+	db -1 ; end
+
+	; PSYCHIC_T (16)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 4.
+	db "DARIUS@", TRAINERTYPE_NORMAL
+	db 38, SLOWBRO
+	db -1 ; end
+
 PicnickerGroup:
 	; PICNICKER (1)
 	db "LIZ@", TRAINERTYPE_NORMAL
@@ -4218,6 +4248,27 @@ MediumGroup:
 	db 24, GASTLY
 	db -1 ; end
 
+	; MEDIUM (18)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 22.
+	db "TASHA@", TRAINERTYPE_NORMAL
+	db 34, GASTLY
+	db 34, HAUNTER
+	db -1 ; end
+
+	; MEDIUM (19)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 23.
+	db "MARLENA@", TRAINERTYPE_NORMAL
+	db 38, HAUNTER
+	db -1 ; end
+
+	; MEDIUM (20)
+	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 24.
+	db "BEULAH@", TRAINERTYPE_NORMAL
+	db 33, GASTLY
+	db 33, GASTLY
+	db 33, HAUNTER
+	db -1 ; end
+
 BoarderGroup:
 	; BOARDER (1)
 	db "RONALD@", TRAINERTYPE_NORMAL
@@ -4606,6 +4657,14 @@ JessieJamesGroup:
 	db 25, KOFFING
 	db 25, MEOWTH
 	db 25, EKANS
+	db -1 ; end
+
+	; JESSIE_JAMES (4): SILPH CO. 11F (Yellow's OPP_ROCKET $2d, RocketData
+	; row 45: db 31, WEEZING, ARBOK, MEOWTH).
+	db "@", TRAINERTYPE_NORMAL
+	db 31, WEEZING
+	db 31, ARBOK
+	db 31, MEOWTH
 	db -1 ; end
 
 ; Kanto hack (M6 9x): GIOVANNI, Yellow's GiovanniData rows 1-3 verbatim

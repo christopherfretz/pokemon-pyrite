@@ -803,13 +803,26 @@ ENDM
 	map_attributes SaffronPokecenter1F, SAFFRON_POKECENTER_1F, $00
 	map_attributes SaffronPokecenter2FBeta, SAFFRON_POKECENTER_2F_BETA, $00
 	map_attributes MrPsychicsHouse, MR_PSYCHICS_HOUSE, $00
-	map_attributes SaffronMagnetTrainStation, SAFFRON_MAGNET_TRAIN_STATION, $00
-	map_attributes SilphCo1F, SILPH_CO_1F, $00
+	map_attributes SaffronPidgeyHouse, SAFFRON_PIDGEY_HOUSE, $0a
+	map_attributes SilphCo1F, SILPH_CO_1F, $2e
 	map_attributes CopycatsHouse1F, COPYCATS_HOUSE_1F, $00
 	map_attributes CopycatsHouse2F, COPYCATS_HOUSE_2F, $00
 	map_attributes Route5UndergroundPathEntrance, ROUTE_5_UNDERGROUND_PATH_ENTRANCE, $0a
 	map_attributes Route5SaffronGate, ROUTE_5_SAFFRON_GATE, $0a
 	map_attributes Route5DayCare, ROUTE_5_DAY_CARE, $00
+; Kanto hack (M8 11a): Silph Co. 2F-11F + the elevator.  $2e is Yellow's own
+; border block for every Silph floor; the elevator rides TILESET_MART (D83).
+	map_attributes SilphCo2F, SILPH_CO_2F, $2e
+	map_attributes SilphCo3F, SILPH_CO_3F, $2e
+	map_attributes SilphCo4F, SILPH_CO_4F, $2e
+	map_attributes SilphCo5F, SILPH_CO_5F, $2e
+	map_attributes SilphCo6F, SILPH_CO_6F, $2e
+	map_attributes SilphCo7F, SILPH_CO_7F, $2e
+	map_attributes SilphCo8F, SILPH_CO_8F, $2e
+	map_attributes SilphCo9F, SILPH_CO_9F, $2e
+	map_attributes SilphCo10F, SILPH_CO_10F, $2e
+	map_attributes SilphCo11F, SILPH_CO_11F, $2e
+	map_attributes SilphCoElevator, SILPH_CO_ELEVATOR, $00
 	map_attributes CherrygroveMart, CHERRYGROVE_MART, $00
 	map_attributes CherrygrovePokecenter1F, CHERRYGROVE_POKECENTER_1F, $00
 	map_attributes CherrygroveGymSpeechHouse, CHERRYGROVE_GYM_SPEECH_HOUSE, $00

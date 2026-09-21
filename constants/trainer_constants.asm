@@ -736,6 +736,13 @@ DEF KRIS EQU __trainer_class__
 	const GILBERT
 	const JARED
 	const RODNEY
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md 0.6): SAFFRON GYM's four psychics,
+; Yellow's PSYCHIC_TR 1-4.  Yellow gives them no names, so these are invented
+; the way M6 invented the #MON TOWER channelers' (D13).  Parties in 11h.
+	const TYRON ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's PSYCHIC_TR 1
+	const HOLLIS ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's PSYCHIC_TR 2
+	const EZRA ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's PSYCHIC_TR 3
+	const DARIUS ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's PSYCHIC_TR 4
 
 	trainerclass PICNICKER ; 35
 	const LIZ1
@@ -867,6 +874,9 @@ DEF KRIS EQU __trainer_class__
 	const ALMA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 19
 	const NORA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 20
 	const VERA ; Kanto hack (M6 9h): #MON TOWER 6F, Yellow's CHANNELER 21
+	const TASHA ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's CHANNELER 22
+	const MARLENA ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's CHANNELER 23
+	const BEULAH ; Kanto hack (M8 11h): SAFFRON GYM, Yellow's CHANNELER 24
 
 	trainerclass BOARDER ; 3a
 	const RONALD
@@ -969,6 +979,7 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const JESSIE_JAMES_1 ; Mt. Moon B2F
 	const JESSIE_JAMES_2 ; Pokemon Tower 7F
 	const JESSIE_JAMES_3 ; Rocket Hideout B4F
+	const JESSIE_JAMES_4 ; Silph Co. 11F (Kanto hack, M8 11h)
 
 ; Kanto hack: GIOVANNI, the Rocket boss (docs/M6-CELADON.md D33).  Crystal has
 ; no such class -- Yellow's `trainer_const GIOVANNI ; $1D`.  Inserted BEFORE

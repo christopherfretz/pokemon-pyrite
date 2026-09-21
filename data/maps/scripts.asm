@@ -286,7 +286,7 @@ INCLUDE "maps/SaffronMart.asm"
 INCLUDE "maps/SaffronPokecenter1F.asm"
 INCLUDE "maps/SaffronPokecenter2FBeta.asm"
 INCLUDE "maps/MrPsychicsHouse.asm"
-INCLUDE "maps/SaffronMagnetTrainStation.asm"
+INCLUDE "maps/SaffronPidgeyHouse.asm"
 INCLUDE "maps/SilphCo1F.asm"
 INCLUDE "maps/CopycatsHouse1F.asm"
 INCLUDE "maps/CopycatsHouse2F.asm"
@@ -622,5 +622,27 @@ INCLUDE "maps/SafariZoneSecretHouse.asm"
 INCLUDE "maps/SafariZoneWestRestHouse.asm"
 INCLUDE "maps/SafariZoneEastRestHouse.asm"
 INCLUDE "maps/SafariZoneNorthRestHouse.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 31", ROMX
+
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md D69): SILPH CO. 2F-11F and the lift.
+; "Map Scripts 30" ($76) has no room for another twelve maps' worth of script,
+; so M8 spends the last wholly EMPTY bank, $7a, pinned in layout.link.  All
+; eleven maps carry placeholder skeletons with Yellow's stair/elevator warps;
+; 11f-11h fill in the trainers, the item balls and the card-key doors.
+INCLUDE "maps/SilphCo2F.asm"
+INCLUDE "maps/SilphCo3F.asm"
+INCLUDE "maps/SilphCo4F.asm"
+INCLUDE "maps/SilphCo5F.asm"
+INCLUDE "maps/SilphCo6F.asm"
+INCLUDE "maps/SilphCo7F.asm"
+INCLUDE "maps/SilphCo8F.asm"
+INCLUDE "maps/SilphCo9F.asm"
+INCLUDE "maps/SilphCo10F.asm"
+INCLUDE "maps/SilphCo11F.asm"
+INCLUDE "maps/SilphCoElevator.asm"
 
 ENDSECTION

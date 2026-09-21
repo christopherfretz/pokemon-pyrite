@@ -144,6 +144,10 @@
 	const SPRITE_SAFARI_ZONE_WORKER ; 7a (Yellow's SAFARI ZONE WORKER)
 	const SPRITE_SILPH_WORKER_M     ; 7b (Yellow's SILPH WORKER M)
 	const SPRITE_SILPH_WORKER_F     ; 7c (Yellow's SILPH WORKER F)
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md D80): SILPH CO.'s president, the man
+; Giovanni is interrogating on 11F.  Yellow's own 16x48 static, and the last
+; face M8 buys -- $7e and $7f are all that is left below SPRITE_POKEMON ($80).
+	const SPRITE_SILPH_PRESIDENT    ; 7d (Yellow's SILPH CO. PRESIDENT)
 ; D58 asked for a fifth id, SPRITE_KOGA -- but Crystal already has one at $21
 ; (ELITE FOUR KOGA, maps/KogasRoom.asm), and FUCHSIA's gym leader is the same
 ; man.  FUCHSIA GYM reuses it in 10h; no new id is spent.

@@ -131,4 +131,5 @@ OverworldSprites:
 	overworld_sprite SafariZoneWorkerSpriteGFX, 12, STANDING_SPRITE, PAL_OW_GREEN
 	overworld_sprite SilphWorkerMSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BLUE
 	overworld_sprite SilphWorkerFSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
+	overworld_sprite SilphPresidentSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BROWN
 	assert_table_length NUM_OVERWORLD_SPRITES

@@ -194,3 +194,9 @@ WardenSpriteGFX::              INCBIN "gfx/sprites/warden.2bpp"
 SafariZoneWorkerSpriteGFX::    INCBIN "gfx/sprites/safari_zone_worker.2bpp"
 SilphWorkerMSpriteGFX::        INCBIN "gfx/sprites/silph_worker_m.2bpp"
 SilphWorkerFSpriteGFX::        INCBIN "gfx/sprites/silph_worker_f.2bpp"
+
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md D80): SILPH CO.'s president, from
+; pokeyellow gfx/sprites/silph_president.png byte for byte.  Another Gen 1
+; 16x48 static, so STANDING_SPRITE; PAL_OW_BROWN reads as the elder statesman
+; (the same choice as WARDEN and MR FUJI).
+SilphPresidentSpriteGFX::      INCBIN "gfx/sprites/silph_president.2bpp"
