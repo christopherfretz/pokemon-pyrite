@@ -388,18 +388,30 @@ endr
 
 .DrawBugContestStatusBox:
 	ld hl, wStatusFlags2
+	; Kanto hack M7 10j: the SAFARI ZONE steps/balls box, as Yellow's start menu
+	; shows it (PrintSafariZoneSteps, from RedisplayStartMenu).
+	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
+	jr nz, .safari_box
 	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, [hl]
 	ret z
 	farcall StartMenu_DrawBugContestStatusBox
 	ret
+.safari_box
+	farcall StartMenu_DrawSafariGameStatusBox
+	ret
 
 .DrawBugContestStatus:
 	ld hl, wStatusFlags2
+	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
+	jr nz, .safari
 	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, [hl]
 	jr nz, .contest
 	ret
 .contest
 	farcall StartMenu_PrintBugContestStatus
+	ret
+.safari
+	farcall StartMenu_PrintSafariGameStatus
 	ret
 
 StartMenu_Exit:

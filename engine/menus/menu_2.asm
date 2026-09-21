@@ -110,26 +110,46 @@ CoinString:
 ShowMoney_TerminatorString:
 	db "@"
 
-StartMenu_PrintSafariGameStatus: ; unreferenced
-	ld hl, wOptions
-	ld a, [hl]
-	push af
-	set NO_TEXT_SCROLL, [hl]
+StartMenu_DrawSafariGameStatusBox:
+; Kanto hack M7 10j.
 	hlcoord 0, 0
 	ld b, 3
 	ld c, 7
 	call Textbox
+	ret
+
+StartMenu_PrintSafariGameStatus:
+; Kanto hack M7 10j: re-Englished and re-laid out to match Yellow's
+; PrintSafariZoneSteps (vendor/pokeyellow/engine/overworld/player_state.asm),
+; down to blanking the first "×" when fewer than ten balls are left.  Yellow's
+; box really does read "/500" while the gate hands out 502 steps.
+	ld hl, wOptions
+	ld a, [hl]
+	push af
+	set NO_TEXT_SCROLL, [hl]
+	call StartMenu_DrawSafariGameStatusBox
 	hlcoord 1, 1
 	ld de, wSafariTimeRemaining
 	lb bc, 2, 3
 	call PrintNum
 	hlcoord 4, 1
-	ld de, .slash_500
+	ld de, .SafariStepsString
 	call PlaceString
 	hlcoord 1, 3
-	ld de, .booru_ko
+	ld de, .SafariBallString
 	call PlaceString
+	ld a, [wSafariBallsRemaining]
+	cp 10
+	jr nc, .ten_or_more
+; Yellow blanks one column here, because its PrintNumber space-pads the tens
+; digit; Crystal's PrintNum leaves that cell alone instead, so both multiply-sign
+; columns have to be cleared to land on Yellow's "BALL  9".
 	hlcoord 5, 3
+	ld [hl], CHARVAL(" ")
+	inc hl
+	ld [hl], CHARVAL(" ")
+.ten_or_more
+	hlcoord 6, 3
 	ld de, wSafariBallsRemaining
 	lb bc, 1, 2
 	call PrintNum
@@ -137,10 +157,10 @@ StartMenu_PrintSafariGameStatus: ; unreferenced
 	ld [wOptions], a
 	ret
 
-.slash_500
-	db "／５００@"
-.booru_ko
-	db "ボール　　　こ@"
+.SafariStepsString:
+	db "/500@"
+.SafariBallString:
+	db "BALL×× @"
 
 StartMenu_DrawBugContestStatusBox:
 	hlcoord 0, 0

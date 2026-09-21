@@ -297,6 +297,12 @@ DEF BUG_CONTEST_PLAYER EQU 1
 DEF NUM_BUG_CONTESTANTS EQU 10 ; not counting the player
 DEF BUG_CONTESTANT_SIZE EQU 4
 
+; SAFARI ZONE values (Kanto hack M7 10j).  Yellow's SafariZoneGate script hands
+; out 30 SAFARI BALLs and 502 steps (vendor/pokeyellow/scripts/SafariZoneGate_2.asm);
+; the start-menu box still reads "/500", as it does in Yellow.
+DEF SAFARI_BALLS EQU 30
+DEF SAFARI_STEPS EQU 502
+
 ; HealMachineAnim setval arguments
 ; HealMachineAnim.Pointers indexes (see engine/events/heal_machine_anim.asm)
 	const_def

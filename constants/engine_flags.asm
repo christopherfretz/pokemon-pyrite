@@ -187,4 +187,7 @@
 ; wSwarmFlags
 	const ENGINE_DUNSPARCE_SWARM
 	const ENGINE_YANMA_SWARM
+; Kanto hack M7 10j: the SAFARI ZONE game-over latch (docs/M7-FUCHSIA.md D54),
+; appended so that no existing engine-flag index moves.
+	const ENGINE_SAFARI_GAME_OVER
 DEF NUM_ENGINE_FLAGS EQU const_value

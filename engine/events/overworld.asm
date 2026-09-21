@@ -566,8 +566,14 @@ FlyFunction:
 	jr c, .nothunderbadge
 	call GetMapEnvironment
 	call CheckOutdoorMap
-	jr z, .outdoors
-	jr .indoors
+	jr nz, .indoors
+	; Kanto hack M7 10j: Yellow's SAFARI ZONE areas are on the FOREST tileset,
+	; which CheckIfInOutsideMap rejects, so FLY cannot be used inside the zone.
+	; Ours are declared ROUTE, so the refusal has to be explicit; the running
+	; game flag is only ever set inside the zone and the (indoor) gate.
+	ld hl, wStatusFlags2
+	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
+	jr nz, .indoors
 
 .outdoors
 	xor a
@@ -905,8 +911,14 @@ TeleportFunction:
 .TryTeleport:
 	call GetMapEnvironment
 	call CheckOutdoorMap
-	jr z, .CheckIfSpawnPoint
-	jr .nope
+	jr nz, .nope
+	; Kanto hack M7 10j: like FLY above, TELEPORT is refused inside the SAFARI
+	; ZONE, because Yellow's areas are on the FOREST tileset and Yellow's
+	; CheckIfInOutsideMap rejects it.
+	ld hl, wStatusFlags2
+	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
+	jr nz, .nope
+	jr .CheckIfSpawnPoint
 
 .CheckIfSpawnPoint:
 	ld a, [wLastSpawnMapGroup]

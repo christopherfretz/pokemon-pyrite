@@ -761,6 +761,11 @@ SECTION "Safari Battle", ROMX
 INCLUDE "engine/battle/safari.asm"
 
 
+SECTION "Safari Field", ROMX
+
+INCLUDE "engine/events/safari_zone.asm"
+
+
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"

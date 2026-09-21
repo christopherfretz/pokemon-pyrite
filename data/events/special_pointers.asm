@@ -204,3 +204,5 @@ SpecialsPointers::
 	add_special GetKantoRivalStarter
 	add_special KantoDexCaught
 	add_special ShowPokedexEntry
+	add_special SafariZoneStart
+	add_special SafariZoneEnd

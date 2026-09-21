@@ -199,4 +199,6 @@ EngineFlags:
 	engine_flag wSwarmFlags, SWARMFLAGS_DUNSPARCE_SWARM_F
 	engine_flag wSwarmFlags, SWARMFLAGS_YANMA_SWARM_F
 
+	engine_flag wStatusFlags2, STATUSFLAGS2_UNUSED_3_F ; ENGINE_SAFARI_GAME_OVER
+
 	assert_table_length NUM_ENGINE_FLAGS

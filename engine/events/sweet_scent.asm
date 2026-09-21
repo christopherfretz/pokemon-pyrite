@@ -15,6 +15,10 @@ SweetScentFromMenu:
 	iffalse SweetScentNothing
 	checkflag ENGINE_BUG_CONTEST_TIMER
 	iftrue .BugCatchingContest
+	; Kanto hack M7 10j: Gen 1 has no SWEET SCENT, but ours must not hand the
+	; player a normal catchable encounter inside the SAFARI ZONE.
+	checkflag ENGINE_SAFARI_ZONE
+	iftrue .SafariZone
 	randomwildmon
 	startbattle
 	reloadmapafterbattle
@@ -22,6 +26,9 @@ SweetScentFromMenu:
 
 .BugCatchingContest:
 	farsjump BugCatchingContestBattleScript
+
+.SafariZone:
+	farsjump SafariZoneBattleScript
 
 SweetScentNothing:
 	writetext SweetScentNothingText

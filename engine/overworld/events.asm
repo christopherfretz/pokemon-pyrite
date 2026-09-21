@@ -931,6 +931,14 @@ CountStep:
 	; Increase the EXP of (both) DayCare Pokemon by 1.
 	farcall DayCareStep
 
+	; Kanto hack M7 10j: spend a step of the SAFARI ZONE game.  Yellow runs
+	; SafariZoneCheckSteps from OverworldLoopLessDelay's .moveAhead2, i.e. the
+	; moment the step finishes and BEFORE both the poison tick and the wild
+	; encounter check - so a step that walks into a battle still costs a step,
+	; and the bike makes no difference.
+	farcall SafariZoneStepCountdown
+	jr c, .safari_game_over
+
 	; Every 4 steps, deal damage to all poisoned Pokemon.
 	ld hl, wPoisonStepCount
 	ld a, [hl]
@@ -952,6 +960,12 @@ CountStep:
 	ld a, -1
 	scf
 	ret
+
+.safari_game_over
+	ld a, BANK(SafariZoneTimesUpScript)
+	ld hl, SafariZoneTimesUpScript
+	call CallScript
+	jr .doscript
 
 .hatch
 	ld a, PLAYEREVENT_HATCH
@@ -1062,8 +1076,12 @@ INCLUDE "engine/overworld/scripting.asm"
 
 WarpToSpawnPoint::
 	ld hl, wStatusFlags2
-	res STATUSFLAGS2_SAFARI_GAME_F, [hl]
 	res STATUSFLAGS2_BUG_CONTEST_TIMER_F, [hl]
+	; Kanto hack M7 10j: Fly, Dig, Escape Rope and a whiteout all come through
+	; here, and Yellow ends the SAFARI ZONE game outright on every one of them
+	; (ItemUseEscapeRope, DisplayPlayerBlackedOutText) - balls, steps and both
+	; flags, so the gate cannot think the player is still inside.
+	farcall SafariZoneEnd
 	ret
 
 RunMemScript::
@@ -1169,6 +1187,12 @@ RandomEncounter::
 	jr nz, .bug_contest
 	farcall TryWildEncounter
 	jr nz, .nope
+	; Kanto hack M7 10j: inside the SAFARI ZONE every wild encounter is a
+	; SAFARI battle.  Yellow picks BATTLE_TYPE_SAFARI from the map id in
+	; InitBattleVariables; the running-game flag is the equivalent here.
+	ld hl, wStatusFlags2
+	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
+	jr nz, .ok_safari
 	jr .ok
 
 .bug_contest
@@ -1189,6 +1213,11 @@ RandomEncounter::
 .ok_bug_contest
 	ld a, BANK(BugCatchingContestBattleScript)
 	ld hl, BugCatchingContestBattleScript
+	jr .done
+
+.ok_safari
+	ld a, BANK(SafariZoneBattleScript)
+	ld hl, SafariZoneBattleScript
 	jr .done
 
 .done
