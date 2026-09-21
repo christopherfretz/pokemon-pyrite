@@ -277,7 +277,49 @@ TilesetOmanyteWordRoomAnim:
 TilesetAerodactylWordRoomAnim:
 TilesetKantoGateAnim:
 TilesetKantoTowerAnim:
+TilesetKantoInteriorAnim:
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe DoneTileAnimation
+
 TilesetKantoFacilityAnim:
+; Kanto hack (docs/M8-SAFFRON.md, M8 11b / D71).  Yellow's FACILITY header is
+; `tileset Facility, $12, -1, -1, -1, TILEANIM_WATER`, and TILEANIM_WATER in
+; Gen 1 is UpdateMovingBgTiles:: (home/vcopy.asm), which bit-rotates ONE tile
+; -- vTileset tile $14 -- by one pixel every 20 vblanks, flipping direction
+; every 4 steps (`wMovingBGTilesCounter2 and 4` over an 8-step cycle).  It has
+; nothing to do with the teleport pads: the spinner arrows at $20 $21 $30 $31
+; are swapped in by LoadSpinnerArrowTiles (engine/overworld/spinners.asm) only
+; while BIT_SPINNING is set, i.e. during a forced spin-tile run, and the M8
+; survey's claim that TILEANIM_WATER animates them is wrong.
+;
+; Tile $14 is the rippling water in the planter blocks $5b/$75/$76; of every
+; FACILITY map only SILPH CO. 1F uses one ($5b, the lobby plant clusters).
+;
+; Structured like TilesetKantoDockAnim above: rotate Yellow's own tile in
+; place (Read/Scroll/Write) rather than AnimateWaterTile, which would
+; overwrite it with a frame of Crystal's water.2bpp.  Crystal runs one
+; tileframe per frame, so the list length IS the period: 20 entries = Yellow's
+; 20-vblank cadence exactly, and ScrollTileRightLeft's own `and %100` over an
+; 8-tick wTileAnimationTimer reproduces Yellow's direction flip every 4 steps.
+; No AnimateWaterPalette frame: Yellow's FACILITY has no palette cycle.
+	tileframe ReadTileToAnimBuffer,    vTiles2 tile $14
+	tileframe ScrollTileRightLeft,     wTileAnimBuffer
+	tileframe WriteTileFromAnimBuffer, vTiles2 tile $14
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
+	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation

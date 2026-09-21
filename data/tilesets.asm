@@ -55,4 +55,5 @@ Tilesets::
 	tileset TilesetKantoGate
 	tileset TilesetKantoTower
 	tileset TilesetKantoFacility
+	tileset TilesetKantoInterior
 	assert_table_length NUM_TILESETS + 1

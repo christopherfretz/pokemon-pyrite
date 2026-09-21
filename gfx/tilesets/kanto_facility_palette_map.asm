@@ -23,10 +23,11 @@
 ;          MANSION use, and -- deliberately -- the four spinner-arrow tiles
 ;          $20 $21 $30 $31, which Yellow draws in plain mono.
 ;
-; Yellow's FACILITY header is TILEANIM_WATER and Gen 1 animates those four
-; arrow tiles (FacilitySpinnerArrows).  We ship a no-op anim alias for now, the
-; way TILESET_KANTO_TOWER does; reinstating the arrow animation is a cosmetic
-; item for M6 9w, and is noted in "## 9o findings" in docs/M6-CELADON.md.
+; (M8 11b correction: Yellow's FACILITY header is TILEANIM_WATER, but Gen 1's
+; TILEANIM_WATER rotates tile $14 -- the planter water -- and NOT the arrows.
+; The arrows are swapped in by LoadSpinnerArrowTiles only while the player is
+; spinning.  TilesetKantoFacilityAnim in data/tileset_anims.asm now does the
+; real thing, so the arrows staying mono here is right twice over.)
 ;
 ; facility.png is 128x48 = 96 tiles, so the twelve rows below cover $00-$5f
 ; exactly, with no padding.

@@ -39,7 +39,7 @@
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 21
 	tilecoll FLOOR, FLOOR, COUNTER, COUNTER ; 22
 	tilecoll WALL, FLOOR, COUNTER, FLOOR ; 23
-	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 24
+	tilecoll STAIRCASE, WALL, FLOOR, FLOOR ; 24
 	tilecoll WALL, FLOOR, WALL, FLOOR ; 25
 	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 26
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 27
@@ -50,7 +50,7 @@
 	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 2c
 	tilecoll FLOOR, FLOOR, WALL, WALL ; 2d
 	tilecoll WALL, WALL, WALL, WALL ; 2e
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 2f
+	tilecoll FLOOR, FLOOR, FLOOR, WARP_PANEL ; 2f
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 30
 	tilecoll FLOOR, WALL, FLOOR, WALL ; 31
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 32
@@ -127,8 +127,8 @@
 	tilecoll WALL, WALL, WALL, FLOOR ; 79
 	tilecoll WALL, WALL, WALL, FLOOR ; 7a
 	tilecoll WALL, WALL, WALL, WALL ; 7b
-	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 7c
-	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 7d
+	tilecoll DOOR, WALL, FLOOR, FLOOR ; 7c
+	tilecoll STAIRCASE, WALL, FLOOR, FLOOR ; 7d
 	tilecoll WALL, FLOOR, WALL, COUNTER ; 7e
 	tilecoll WALL, WALL, WALL, FLOOR ; 7f
 ; M6 9w: ROCKET HIDEOUT B2F/B3F spin maze -- each row is the
