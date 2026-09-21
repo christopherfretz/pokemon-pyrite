@@ -898,88 +898,118 @@ KantoGrassWildMons:
 	db 31, FARFETCH_D
 	end_grass_wildmons
 
+; Kanto hack (M7 10n): Yellow's ROUTE 13 table
+; (vendor/pokeyellow/data/wild/maps/Route13.asm).  Yellow rate 15/256 ==
+; `6 percent` exactly, and Gen 1 has no time of day, so morn = day = nite.
+; Yellow lists exactly seven species in its ten slots, so the 10 -> 7 fold
+; keeps every one by dropping the three duplicated rows -- slot 5 (L27 ODDISH),
+; slot 6 (L27 BELLSPROUT) and slot 9 (L26 FARFETCH_D) -- which gives
+; ODDISH 30 / BELLSPROUT 30 / PIDGEOTTO 20 / PIDGEY 10 / GLOOM 5 /
+; WEEPINBELL 4 / FARFETCH_D 1 against Yellow's aggregate 29.7 / 29.7 / 15.2 /
+; 9.8 / 5.1 / 5.1 / 5.5, and both level extremes survive (L25 min, L31
+; FARFETCH_D max -- which is why slot 9 goes and slot 10 stays).  This is the
+; same shape as ROUTE_12 above, which shares the table almost row for row.
+; Gone: Crystal's HOPPIP x3 / CHANSEY day table and its separate
+; NOCTOWL / QUAGSIRE / VENOMOTH nite table (QUAGSIRE and NOCTOWL are Gen 2).
 	def_grass_wildmons ROUTE_13
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEOTTO
+	db 28, PIDGEY
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
 	; day
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEOTTO
+	db 28, PIDGEY
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
 	; nite
-	db 23, VENONAT
-	db 23, QUAGSIRE
-	db 25, NOCTOWL
-	db 25, VENOMOTH
-	db 25, QUAGSIRE
-	db 25, QUAGSIRE
-	db 25, CHANSEY
+	db 25, ODDISH
+	db 25, BELLSPROUT
+	db 28, PIDGEOTTO
+	db 28, PIDGEY
+	db 29, GLOOM
+	db 29, WEEPINBELL
+	db 31, FARFETCH_D
 	end_grass_wildmons
 
+; Kanto hack (M7 10n): Yellow's ROUTE 14 table
+; (vendor/pokeyellow/data/wild/maps/Route14.asm).  Yellow rate 15/256 ==
+; `6 percent` exactly; morn = day = nite.  Seven species in ten slots again,
+; so nothing is lost: dropping slot 5 (L28 ODDISH), slot 6 (L28 BELLSPROUT)
+; and slot 9 (L27 VENONAT) leaves ODDISH 30 / BELLSPROUT 30 / VENONAT 20 /
+; PIDGEOTTO 10 / GLOOM 5 / WEEPINBELL 4 / VENOMOTH 1 against Yellow's
+; aggregate 29.7 / 29.7 / 19.5 / 9.8 / 5.1 / 5.1 / 1.2 -- the closest fit any
+; of the Kanto tables gets.  Slot 3's L24 VENONAT is the map's level floor and
+; slot 9's L27 is not, so slot 9 is the one that goes.  Gone: Crystal's
+; HOPPIP / SKIPLOOM day table and its NOCTOWL / QUAGSIRE nite table.
 	def_grass_wildmons ROUTE_14
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 26, NIDORINO
-	db 26, NIDORINA
-	db 28, PIDGEOTTO
-	db 28, HOPPIP
-	db 30, SKIPLOOM
-	db 30, SKIPLOOM
-	db 28, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 30, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	; day
-	db 26, NIDORINO
-	db 26, NIDORINA
-	db 28, PIDGEOTTO
-	db 28, HOPPIP
-	db 30, SKIPLOOM
-	db 30, SKIPLOOM
-	db 28, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 30, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	; nite
-	db 26, VENONAT
-	db 26, QUAGSIRE
-	db 28, NOCTOWL
-	db 28, VENOMOTH
-	db 28, QUAGSIRE
-	db 28, QUAGSIRE
-	db 28, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 30, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	end_grass_wildmons
 
+; Kanto hack (M7 10n): Yellow's ROUTE 15 table
+; (vendor/pokeyellow/data/wild/maps/Route15.asm).  Identical to ROUTE 14 row
+; for row except that slot 4's PIDGEOTTO is L32 rather than L30, so the same
+; fold applies: drop slots 5, 6 and 9 (the duplicated L28 ODDISH, L28
+; BELLSPROUT and L27 VENONAT) for ODDISH 30 / BELLSPROUT 30 / VENONAT 20 /
+; PIDGEOTTO 10 / GLOOM 5 / WEEPINBELL 4 / VENOMOTH 1.  L24 min and L32 max
+; both survive.  Gone: Crystal's HOPPIP / SKIPLOOM / NOCTOWL / QUAGSIRE rows.
 	def_grass_wildmons ROUTE_15
-	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 32, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	; day
-	db 23, NIDORINO
-	db 23, NIDORINA
-	db 25, PIDGEOTTO
-	db 25, HOPPIP
-	db 27, HOPPIP
-	db 27, HOPPIP
-	db 25, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 32, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	; nite
-	db 23, VENONAT
-	db 23, QUAGSIRE
-	db 25, NOCTOWL
-	db 25, VENOMOTH
-	db 25, QUAGSIRE
-	db 25, QUAGSIRE
-	db 25, CHANSEY
+	db 26, ODDISH
+	db 26, BELLSPROUT
+	db 24, VENONAT
+	db 32, PIDGEOTTO
+	db 30, GLOOM
+	db 30, WEEPINBELL
+	db 30, VENOMOTH
 	end_grass_wildmons
 
 ; Kanto hack (M6 9y): Yellow's ROUTE 16 table
@@ -1308,6 +1338,175 @@ KantoGrassWildMons:
 	db 42, GOLBAT
 	db 42, GOLBAT
 	db 42, GOLBAT
+	end_grass_wildmons
+
+; Kanto hack (M7 10n): the four SAFARI ZONE areas
+; (vendor/pokeyellow/data/wild/maps/SafariZone{Center,East,North,West}.asm).
+; These are not routes, so they sit after ROUTE_28 rather than in the numbered
+; run above.  Yellow's rate is 30/256 for all four == `12 percent` exactly
+; (12 * $ff / 100 = 30), by far the busiest grass in Kanto, and Gen 1 has no
+; time of day, so morn = day = nite.
+;
+; Each area lists NINE distinct species across its ten slots, and Crystal has
+; only seven, so each table loses two species as well as its one duplicated
+; row.  The drops are chosen ZONE-WIDE, not per area: after the fold every
+; species Yellow puts in the Safari Zone still has a wild nest in it except
+; NIDORINO, NIDORINA and PARASECT.  NIDORINO and NIDORINA both keep their
+; ROUTE_9 nest (already shipped, data/wild/kanto_grass.asm above) and both
+; evolve from the NIDORAN that stays in all four areas; PARASECT evolves from
+; the L27 PARAS kept in the CENTER area (PARAS evolves at L24) and is also a
+; CERULEAN_CAVE_1F encounter in Yellow.  KANGASKHAN -- the one species unique
+; to a single area -- is kept, and so are CHANSEY, SCYTHER, PINSIR, TANGELA,
+; MAROWAK, TAUROS, CUBONE, RHYHORN and EXEGGCUTE.
+;
+; Yellow's ten slots are weighted 19.9 / 19.9 / 15.2 / 9.8 / 9.8 / 9.8 / 5.1 /
+; 5.1 / 4.3 / 1.2 and Crystal's seven 30 / 30 / 20 / 10 / 5 / 4 / 1; the kept
+; rows stay in Yellow's slot order, so the weights land by position.
+; Nothing here has a surf table: Yellow gives all four areas
+; `def_water_wildmons 0` with no entries, so data/wild/kanto_water.asm has no
+; SAFARI_ZONE_* block at all (a 0-rate block would still show the areas as
+; Pokedex AREA habitats -- FindNest's .FindWater ignores the rate byte).
+
+; CENTER: drop slot 6 (L27 PARASECT), slot 8 (L32 PARASECT) and slot 5
+; (L23 NIDORINO).  PARASECT is the zone-wide sacrifice; NIDORINO keeps its
+; WEST-area L32 slot in Yellow but that slot is itself dropped below, so
+; ROUTE_9 and NIDORAN_M carry it.  Result: NIDORAN_M 30 / NIDORAN_F 30 /
+; EXEGGCUTE 20 / RHYHORN 10 / PARAS 5 / TANGELA 4 / CHANSEY 1 against
+; Yellow's 19.9 / 19.9 / 15.2 / 9.8 / 5.1 / 4.3 / 1.2 (PARASECT's 14.9 is
+; what the three dropped rows were worth).  Both extremes survive: the L7
+; CHANSEY that makes this the lowest-level grass in Kanto, and the L36
+; NIDORAN_F.
+	def_grass_wildmons SAFARI_ZONE_CENTER
+	db 12 percent, 12 percent, 12 percent ; encounter rates: morn/day/nite
+	; morn
+	db 14, NIDORAN_M
+	db 36, NIDORAN_F
+	db 24, EXEGGCUTE
+	db 20, RHYHORN
+	db 27, PARAS
+	db 22, TANGELA
+	db 7, CHANSEY
+	; day
+	db 14, NIDORAN_M
+	db 36, NIDORAN_F
+	db 24, EXEGGCUTE
+	db 20, RHYHORN
+	db 27, PARAS
+	db 22, TANGELA
+	db 7, CHANSEY
+	; nite
+	db 14, NIDORAN_M
+	db 36, NIDORAN_F
+	db 24, EXEGGCUTE
+	db 20, RHYHORN
+	db 27, PARAS
+	db 22, TANGELA
+	db 7, CHANSEY
+	end_grass_wildmons
+
+; EAST: drop slot 7 (L26 EXEGGCUTE, the duplicate), slot 5 (L32 NIDORINA) and
+; slot 6 (L19 CUBONE).  CUBONE keeps its NORTH and WEST nests; NIDORINA keeps
+; ROUTE_9's.  Result: NIDORAN_M 30 / NIDORAN_F 30 / EXEGGCUTE 20 / TAUROS 10 /
+; MAROWAK 5 / CHANSEY 4 / SCYTHER 1 against Yellow's 19.9 / 19.9 / 20.3 /
+; 9.8 / 5.1 / 4.3 / 1.2 -- EXEGGCUTE's two rows fold into one 20% slot
+; exactly.  The L15 SCYTHER floor survives; the area's ceiling drops from
+; NIDORINA's L32 to NIDORAN_F's L29.
+	def_grass_wildmons SAFARI_ZONE_EAST
+	db 12 percent, 12 percent, 12 percent ; encounter rates: morn/day/nite
+	; morn
+	db 21, NIDORAN_M
+	db 29, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 24, MAROWAK
+	db 21, CHANSEY
+	db 15, SCYTHER
+	; day
+	db 21, NIDORAN_M
+	db 29, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 24, MAROWAK
+	db 21, CHANSEY
+	db 15, SCYTHER
+	; nite
+	db 21, NIDORAN_M
+	db 29, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 24, MAROWAK
+	db 21, CHANSEY
+	db 15, SCYTHER
+	end_grass_wildmons
+
+; NORTH: drop slot 8 (L33 KANGASKHAN, the duplicate), slot 4 (L25 RHYHORN) and
+; slot 5 (L23 NIDORINA).  RHYHORN keeps its CENTER nest, NIDORINA ROUTE_9's.
+; Dropping slot 4 rather than a later row is deliberate: it promotes
+; KANGASKHAN -- found nowhere else in the game -- into the 10% slot, the
+; closest Crystal can get to Yellow's 14.9% for it.  Result: NIDORAN_M 30 /
+; NIDORAN_F 30 / EXEGGCUTE 20 / KANGASKHAN 10 / CUBONE 5 / SCYTHER 4 /
+; PINSIR 1 against Yellow's 19.9 / 19.9 / 15.2 / 14.9 / 5.1 / 4.3 / 1.2.
+; L14 min and L36 max both survive.
+	def_grass_wildmons SAFARI_ZONE_NORTH
+	db 12 percent, 12 percent, 12 percent ; encounter rates: morn/day/nite
+	; morn
+	db 36, NIDORAN_M
+	db 14, NIDORAN_F
+	db 20, EXEGGCUTE
+	db 28, KANGASKHAN
+	db 16, CUBONE
+	db 25, SCYTHER
+	db 15, PINSIR
+	; day
+	db 36, NIDORAN_M
+	db 14, NIDORAN_F
+	db 20, EXEGGCUTE
+	db 28, KANGASKHAN
+	db 16, CUBONE
+	db 25, SCYTHER
+	db 15, PINSIR
+	; nite
+	db 36, NIDORAN_M
+	db 14, NIDORAN_F
+	db 20, EXEGGCUTE
+	db 28, KANGASKHAN
+	db 16, CUBONE
+	db 25, SCYTHER
+	db 15, PINSIR
+	end_grass_wildmons
+
+; WEST: drop slot 7 (L26 EXEGGCUTE, the duplicate), slot 5 (L32 NIDORINO) and
+; slot 8 (L24 MAROWAK).  MAROWAK keeps its EAST nest; NIDORINO ROUTE_9's.
+; Result: NIDORAN_M 30 / NIDORAN_F 30 / EXEGGCUTE 20 / TAUROS 10 / CUBONE 5 /
+; PINSIR 4 / TANGELA 1 against Yellow's 19.9 / 19.9 / 20.3 / 9.8 / 9.8 /
+; 4.3 / 1.2.  The L19 CUBONE floor survives; the ceiling drops from
+; NIDORINO's L32 to NIDORAN_M's L29.
+	def_grass_wildmons SAFARI_ZONE_WEST
+	db 12 percent, 12 percent, 12 percent ; encounter rates: morn/day/nite
+	; morn
+	db 29, NIDORAN_M
+	db 21, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 19, CUBONE
+	db 25, PINSIR
+	db 27, TANGELA
+	; day
+	db 29, NIDORAN_M
+	db 21, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 19, CUBONE
+	db 25, PINSIR
+	db 27, TANGELA
+	; nite
+	db 29, NIDORAN_M
+	db 21, NIDORAN_F
+	db 22, EXEGGCUTE
+	db 21, TAUROS
+	db 19, CUBONE
+	db 25, PINSIR
+	db 27, TANGELA
 	end_grass_wildmons
 
 	db -1 ; end

@@ -71,12 +71,33 @@ KantoWaterWildMons:
 	db 15, SLOWBRO
 	end_water_wildmons
 
+; Kanto hack (M7 10n): Yellow's Route 13 water table
+; (vendor/pokeyellow/data/wild/maps/Route13.asm) is ROUTE_12's row for row --
+; SLOWPOKE L15 in eight of the ten slots (94.5%), SLOWBRO L15 (4.3%) and
+; SLOWBRO L20 (1.2%) -- so it folds the same way: the eight SLOWPOKEs become
+; Crystal's two commons and SLOWBRO takes the 10% slot, 90 / 10 against
+; Yellow's 94.5 / 5.5.  Levels are Yellow's FLOOR because ChooseWildEncounter
+; rolls +0..+4 on water encounters, so base 15 yields L15-19 and reaches
+; Yellow's L20 SLOWBRO rare without overshooting it.  The rate byte is
+; Yellow's own 3/256: the `percent` macro (`* $ff / 100`) cannot express it --
+; `1 percent` is 2 and `2 percent` is 5 -- so it is written literally, as for
+; ROUTE_6 and ROUTE_12 above.  Gone: Crystal's TENTACOOL / QUAGSIRE /
+; TENTACRUEL at L25 (QUAGSIRE is a Gen 2 anachronism).
 	def_water_wildmons ROUTE_13
-	db 6 percent ; encounter rate
-	db 25, TENTACOOL
-	db 25, QUAGSIRE
-	db 25, TENTACRUEL
+	db 3 ; encounter rate: Yellow's own 3/256 (~1.2%)
+	db 15, SLOWPOKE
+	db 15, SLOWPOKE
+	db 15, SLOWBRO
 	end_water_wildmons
+
+; Kanto hack (M7 10n): ROUTE_14 and ROUTE_15 have no block here, and must not
+; gain one: Yellow gives both `def_water_wildmons 0` with no entries
+; (vendor/pokeyellow/data/wild/maps/Route14.asm, Route15.asm), and neither map
+; has surfable water anyway.  Same for the four SAFARI_ZONE areas added to
+; data/wild/kanto_grass.asm in M7 10n -- Yellow gives all four
+; `def_water_wildmons 0`, so the Safari Zone has no surf encounters at all
+; (its water is fishing-only; see FISHGROUP_KANTO_SAFARI* in
+; data/maps/maps.asm).
 
 	def_water_wildmons ROUTE_19
 	db 6 percent ; encounter rate
@@ -184,12 +205,13 @@ KantoWaterWildMons:
 	db 15, MUK
 	end_water_wildmons
 
-	def_water_wildmons FUCHSIA_CITY
-	db 2 percent ; encounter rate
-	db 20, MAGIKARP
-	db 15, MAGIKARP
-	db 10, MAGIKARP
-	end_water_wildmons
+; Kanto hack (M7 10n): FUCHSIA_CITY's surf table is DELETED, not zeroed, for
+; the same reason as VERMILION_CITY above (7m): Yellow has no
+; data/wild/maps/FuchsiaCity.asm at all -- the city's water is fishing-only
+; (FISHGROUP_KANTO_FUCHSIA, data/maps/maps.asm) -- and FindNest's .FindWater
+; never reads the rate byte, so a 0-rate block would still list FUCHSIA CITY
+; as a MAGIKARP habitat on the Pokedex AREA screen.  Gone with it: Crystal's
+; `2 percent` MAGIKARP L20/L15/L10 surf rows.
 
 	def_water_wildmons CINNABAR_ISLAND
 	db 6 percent ; encounter rate

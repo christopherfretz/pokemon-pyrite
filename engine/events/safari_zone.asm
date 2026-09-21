@@ -57,6 +57,10 @@ SafariZoneStepCountdown::
 ; Yellow SafariZoneCheckSteps.  One step of the countdown; carry means the game
 ; just ran out.  Yellow checks for zero BEFORE decrementing, so 502 steps buys
 ; 502 moves and the eject fires on the 503rd.
+; Called from the TOP of CheckTileEvent (engine/overworld/events.asm), behind
+; CheckStepCountEnabled, so that it runs before the warp check and an
+; area-to-area border crossing costs a step as it does in Yellow (M7 10n; it
+; was inside CountStep in 10j, which the warp check returns ahead of).
 	ld hl, wStatusFlags2
 	bit STATUSFLAGS2_SAFARI_GAME_F, [hl]
 	jr z, .not_playing

@@ -321,6 +321,29 @@ CheckTrainerEvent:
 CheckTileEvent:
 ; Check for warps, coord events, or wild battles.
 
+	; Kanto hack M7 10n: spend a step of the SAFARI ZONE game HERE, ahead of
+	; the warp and connection checks, rather than inside CountStep below
+	; (where 10j first put it).  Yellow calls SafariZoneCheckSteps from
+	; OverworldLoopLessDelay the instant the walking animation finishes
+	; (vendor/pokeyellow/home/overworld.asm), i.e. before CheckWarpsNoCollision
+	; and before the wild-encounter roll -- so in Yellow the step that walks
+	; onto an area-to-area border warp costs a SAFARI step like any other.
+	; Ours was free, because .warp_tile below returns carry and PlayerEvents
+	; runs the warp without ever reaching CountStep (10l deviation 1:
+	; 502 -> 460 -> 460 -> 459 across two crossings).
+	;
+	; The CheckStepCountEnabled gate is load-bearing: it is the only thing
+	; that makes this once per COMPLETED step rather than once per frame.
+	; PlayerEvents runs every frame while wMapEventStatus is MAPEVENTS_ON;
+	; DisableEvents zeroes wEnabledPlayerEvents after every pass, and only
+	; CheckPlayerState -> EnableEvents sets it again, on the frame a step
+	; lands.  CountStep sits behind the same gate.
+	call CheckStepCountEnabled
+	jr z, .safari_step_done
+	farcall SafariZoneStepCountdown
+	jr c, .safari_game_over
+.safari_step_done
+
 	call CheckWarpConnectionsEnabled
 	jr z, .connections_disabled
 
@@ -371,6 +394,16 @@ CheckTileEvent:
 
 .not_pit
 	ld a, PLAYEREVENT_WARP
+	scf
+	ret
+
+.safari_game_over
+	; The PA announcement and the ejecting warp, exactly as CountStep used to
+	; do it (M7 10j/10n).
+	ld a, BANK(SafariZoneTimesUpScript)
+	ld hl, SafariZoneTimesUpScript
+	call CallScript
+	ld a, PLAYEREVENT_MAPSCRIPT
 	scf
 	ret
 
@@ -931,14 +964,9 @@ CountStep:
 	; Increase the EXP of (both) DayCare Pokemon by 1.
 	farcall DayCareStep
 
-	; Kanto hack M7 10j: spend a step of the SAFARI ZONE game.  Yellow runs
-	; SafariZoneCheckSteps from OverworldLoopLessDelay's .moveAhead2, i.e. the
-	; moment the step finishes and BEFORE both the poison tick and the wild
-	; encounter check - so a step that walks into a battle still costs a step,
-	; and the bike makes no difference.
-	farcall SafariZoneStepCountdown
-	jr c, .safari_game_over
-
+	; Kanto hack M7 10n: the SAFARI ZONE step countdown used to live here
+	; (10j).  It moved to the top of CheckTileEvent above, because a step onto
+	; a border warp never reaches CountStep and so was free.
 	; Every 4 steps, deal damage to all poisoned Pokemon.
 	ld hl, wPoisonStepCount
 	ld a, [hl]
@@ -960,12 +988,6 @@ CountStep:
 	ld a, -1
 	scf
 	ret
-
-.safari_game_over
-	ld a, BANK(SafariZoneTimesUpScript)
-	ld hl, SafariZoneTimesUpScript
-	call CallScript
-	jr .doscript
 
 .hatch
 	ld a, PLAYEREVENT_HATCH

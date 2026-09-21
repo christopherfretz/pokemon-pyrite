@@ -42,6 +42,8 @@ FishGroups:
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute13_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSafariCenter_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSafari_Super
+; Kanto hack (M7 10n)
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoFuchsia_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -374,6 +376,16 @@ FishGroups:
 	db  70 percent,     MAGIKARP,   10
 	db  90 percent + 1, MAGIKARP,   15
 	db 100 percent,     DRATINI,    15
+
+; db FUCHSIA_CITY, MAGIKARP, 5, MAGIKARP, 10, MAGIKARP, 15, GYARADOS, 15
+; The only GYARADOS row in Yellow's Super Rod table: a ~10% chance of a L15
+; GYARADOS off the city pond, which is also Yellow's cheapest legitimate
+; GYARADOS.  Nothing else in the Kanto act shares this row (M7 10n).
+.KantoFuchsia_Super:
+	db  40 percent,     MAGIKARP,    5
+	db  70 percent,     MAGIKARP,   10
+	db  90 percent + 1, MAGIKARP,   15
+	db 100 percent,     GYARADOS,   15
 
 TimeFishGroups:
 	;  day              nite

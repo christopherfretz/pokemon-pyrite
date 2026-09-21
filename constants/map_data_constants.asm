@@ -91,6 +91,12 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_KANTO_ROUTE_13       ; ROUTE_13
 	const FISHGROUP_KANTO_SAFARI_CENTER  ; SAFARI_ZONE_CENTER
 	const FISHGROUP_KANTO_SAFARI         ; SAFARI_ZONE_EAST/NORTH/WEST
+; Kanto hack (M7 10n): FUCHSIA CITY's own pond.  Yellow's row
+; (`db FUCHSIA_CITY, MAGIKARP, 5, MAGIKARP, 10, MAGIKARP, 15, GYARADOS, 15`)
+; matches no existing group -- it is FISHGROUP_KANTO_SAFARI's row with GYARADOS
+; in place of DRATINI, and it is the only GYARADOS row in Yellow's whole Super
+; Rod table -- so it needs a group of its own.  Appended, never inserted (G7).
+	const FISHGROUP_KANTO_FUCHSIA        ; FUCHSIA_CITY
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections
