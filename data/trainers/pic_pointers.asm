@@ -28,7 +28,7 @@ TrainerPicPointers::
 	dba_pic SchoolboyPic
 	dba_pic BirdKeeperPic
 	dba_pic LassPic
-	dba_pic JaninePic
+	dba_pic KogaPic ; Kanto hack (M7 10h): KOGA_LEADER reuses ELITE FOUR KOGA's pic
 	dba_pic CooltrainermPic
 	dba_pic CooltrainerfPic
 	dba_pic BeautyPic
@@ -73,6 +73,6 @@ TrainerPicPointers::
 	dba_pic JessieJamesPic ; JESSIE_JAMES (Yellow's duo pic)
 	dba_pic GiovanniPic ; GIOVANNI (Yellow's boss pic)
 	dba_pic CueBallPic ; CUE_BALL (Yellow's cueball pic)
-	dba_pic BikerPic ; TAMER -- placeholder; 10h ports Yellow's tamer pic
+	dba_pic TamerPic ; Kanto hack (M7 10h): Yellow's own TAMER pic
 	dba_pic MysticalmanPic
 	assert_table_length NUM_TRAINER_CLASSES

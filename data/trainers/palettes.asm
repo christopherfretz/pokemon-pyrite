@@ -34,7 +34,8 @@ INCBIN "gfx/trainers/youngster.gbcpal", middle_colors
 INCBIN "gfx/trainers/schoolboy.gbcpal", middle_colors
 INCBIN "gfx/trainers/bird_keeper.gbcpal", middle_colors
 INCBIN "gfx/trainers/lass.gbcpal", middle_colors
-INCBIN "gfx/trainers/janine.gbcpal", middle_colors
+; Kanto hack (M7 10h): KOGA_LEADER -- Crystal's KOGA palette, to match the pic
+INCBIN "gfx/trainers/koga.gbcpal", middle_colors
 INCBIN "gfx/trainers/cooltrainer_m.gbcpal", middle_colors
 INCBIN "gfx/trainers/cooltrainer_f.gbcpal", middle_colors
 INCBIN "gfx/trainers/beauty.gbcpal", middle_colors
@@ -79,7 +80,10 @@ INCBIN "gfx/trainers/kanto_rival.gbcpal", middle_colors ; KANTO_RIVAL
 INCBIN "gfx/trainers/jessie_james.gbcpal", middle_colors ; JESSIE_JAMES
 INCBIN "gfx/trainers/giovanni.gbcpal", middle_colors ; GIOVANNI
 INCBIN "gfx/trainers/cueball.gbcpal", middle_colors ; CUE_BALL
-INCBIN "gfx/trainers/biker.gbcpal", middle_colors ; TAMER (placeholder, matches BikerPic)
+; Kanto hack (M7 10h): TAMER now uses Yellow's own pic.  Gen 1 has no
+; per-class palettes, so the two middle colours are ours: a warm skin tone
+; and a circus red for the tamer's coat (see "## 10h findings").
+INCBIN "gfx/trainers/tamer.gbcpal", middle_colors
 INCBIN "gfx/trainers/mysticalman.gbcpal", middle_colors
 
 	assert_table_length NUM_TRAINER_CLASSES + 1

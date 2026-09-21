@@ -255,6 +255,7 @@ KogaGroup:
 	db 44, CROBAT,     DOUBLE_TEAM, QUICK_ATTACK, WING_ATTACK, TOXIC
 	db -1 ; end
 
+
 ChampionGroup:
 	; CHAMPION (1)
 	db "LANCE@", TRAINERTYPE_MOVES
@@ -1069,14 +1070,23 @@ LassGroup:
 	db 23, GLOOM
 	db -1 ; end
 
-JanineGroup:
-	; JANINE (1)
-	db "JANINE@", TRAINERTYPE_MOVES
-	db 36, CROBAT,     SCREECH, SUPERSONIC, CONFUSE_RAY, WING_ATTACK
-	db 36, WEEZING,    SMOG, SLUDGE_BOMB, TOXIC, EXPLOSION
-	db 36, WEEZING,    SMOG, SLUDGE_BOMB, TOXIC, EXPLOSION
-	db 33, ARIADOS,    SCARY_FACE, GIGA_DRAIN, STRING_SHOT, NIGHT_SHADE
-	db 39, VENOMOTH,   FORESIGHT, DOUBLE_TEAM, GUST, PSYCHIC_M
+KogaLeaderGroup:
+	; KOGA_LEADER (1)
+	; Kanto hack (M7 10h): Yellow's FUCHSIA GYM KOGA, over the dead JANINE row.
+	; KOGA (1) in KogaGroup is Crystal's ELITE FOUR KOGA, untouched.  Yellow's KogaData
+	; is `db $FF, 44, VENONAT, 46, VENONAT, 48, VENONAT, 50, VENOMOTH, 0` -- no
+	; explicit moves, so Gen 1 derives each moveset from the mon's level-1 moves
+	; plus every level-up move at or below its level (WriteMonMoves), newest
+	; four kept.  VENONAT L1 = TACKLE/DISABLE, learnset 11 SUPERSONIC,
+	; 19 CONFUSION, 22 POISONPOWDER, 27 LEECH_LIFE, 30 STUN_SPORE, 35 PSYBEAM,
+	; 38 SLEEP_POWDER, 43 PSYCHIC_M; VENOMOTH L1 adds SUPERSONIC/CONFUSION,
+	; learnset 22/27/30/38/43/50.  At L44/46/48/50 all four land on the same
+	; last four moves.  Same convention as BrockGroup/MistyGroup/ErikaGroup.
+	db "KOGA@", TRAINERTYPE_MOVES
+	db 44, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
+	db 46, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
+	db 48, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
+	db 50, VENOMOTH,   STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
 	db -1 ; end
 
 CooltrainerMGroup:
@@ -3351,28 +3361,33 @@ JugglerGroup:
 	db 33, ELECTRODE
 	db -1 ; end
 
-	; JUGGLER (4)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db  6, VOLTORB
-	db 10, VOLTORB
-	db 14, VOLTORB
-	db 18, VOLTORB
+	; JUGGLER (4) = JUGGLER_3: FUCHSIA GYM
+	; Kanto hack (M7 10h): rows 4-6 were dead IRWIN duplicates; they now carry
+	; Yellow's FUCHSIA GYM JugglerData rows 3, 4 and 7, and row 7 (Yellow's
+	; row 8) is appended.  Nameless, so PlaceEnemysName prints "JUGGLER" alone,
+	; as Yellow does -- same convention as TamerGroup and CueBallGroup.
+	db "@", TRAINERTYPE_NORMAL
+	db 31, DROWZEE
+	db 31, DROWZEE
+	db 31, KADABRA
+	db 31, DROWZEE
 	db -1 ; end
 
-	; JUGGLER (5)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
+	; JUGGLER (5) = JUGGLER_4: FUCHSIA GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 34, DROWZEE
+	db 34, HYPNO
 	db -1 ; end
 
-	; JUGGLER (6)
-	db "IRWIN@", TRAINERTYPE_NORMAL
-	db 18, VOLTORB
-	db 22, VOLTORB
-	db 26, VOLTORB
-	db 30, ELECTRODE
+	; JUGGLER (6) = JUGGLER_7: FUCHSIA GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 38, HYPNO
+	db -1 ; end
+
+	; JUGGLER (7) = JUGGLER_8: FUCHSIA GYM
+	db "@", TRAINERTYPE_NORMAL
+	db 34, DROWZEE
+	db 34, KADABRA
 	db -1 ; end
 
 BlackbeltGroup:

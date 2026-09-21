@@ -586,10 +586,10 @@ InitializeEventsScript:
 	variablesprite SPRITE_WEIRD_TREE, SPRITE_SUDOWOODO
 	variablesprite SPRITE_OLIVINE_RIVAL, SPRITE_RIVAL
 	variablesprite SPRITE_AZALEA_ROCKET, SPRITE_ROCKET
-	variablesprite SPRITE_FUCHSIA_GYM_1, SPRITE_JANINE
-	variablesprite SPRITE_FUCHSIA_GYM_2, SPRITE_JANINE
-	variablesprite SPRITE_FUCHSIA_GYM_3, SPRITE_JANINE
-	variablesprite SPRITE_FUCHSIA_GYM_4, SPRITE_JANINE
+; Kanto hack (M7 10h): the four SPRITE_FUCHSIA_GYM_* defaults are dropped --
+; they were only ever used by JANINE's disguised look-alikes in FUCHSIA GYM,
+; which is now Yellow's KOGA gym.  (SPRITE_JANINE_IMPERSONATOR below is already
+; referenced by no map in vanilla Crystal; left alone.)
 	variablesprite SPRITE_COPYCAT, SPRITE_LASS
 	variablesprite SPRITE_JANINE_IMPERSONATOR, SPRITE_LASS
 	setevent EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM

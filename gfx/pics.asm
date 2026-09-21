@@ -799,3 +799,4 @@ KantoRivalPic:       INCBIN "gfx/trainers/kanto_rival.2bpp.lz" ; Yellow's young 
 JessieJamesPic:      INCBIN "gfx/trainers/jessie_james.2bpp.lz" ; Yellow's Jessie & James
 GiovanniPic:         INCBIN "gfx/trainers/giovanni.2bpp.lz" ; Yellow's GIOVANNI (M6 9x)
 CueBallPic:          INCBIN "gfx/trainers/cueball.2bpp.lz" ; Yellow's CUE BALL (M6 9y)
+TamerPic:            INCBIN "gfx/trainers/tamer.2bpp.lz" ; Yellow's TAMER (M7 10h)

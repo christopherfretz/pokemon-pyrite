@@ -12,7 +12,7 @@ PnP_HiddenPeople_BeatE4:
 	db MISTY
 	db LT_SURGE
 	db ERIKA
-	db JANINE
+	db KOGA_LEADER
 	db SABRINA
 	db BLAINE
 	db BLUE

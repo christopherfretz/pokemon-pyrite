@@ -27,7 +27,7 @@ TrainerClassDVs:
 	dn  9,  8,  8,  8 ; SCHOOLBOY
 	dn  9,  8,  8,  8 ; BIRD_KEEPER
 	dn  5,  8,  8,  8 ; LASS
-	dn  9,  8,  8,  8 ; JANINE
+	dn 13, 12, 13, 13 ; KOGA_LEADER
 	dn 13,  8, 12,  8 ; COOLTRAINERM
 	dn  7, 12, 12,  8 ; COOLTRAINERF
 	dn  6,  9, 12,  8 ; BEAUTY

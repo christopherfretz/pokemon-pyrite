@@ -595,7 +595,7 @@
 	const EVENT_BEAT_CAMPER_TODD
 	const EVENT_BEAT_CAMPER_IVAN
 	const EVENT_BEAT_CAMPER_ELLIOT
-	const EVENT_BEAT_CAMPER_BARRY
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_0 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_CAMPER_BARRY
 	const EVENT_BEAT_CAMPER_WENDELL ; Kanto hack: renamed in place (6i), was EVENT_BEAT_CAMPER_LLOYD; Route 25, Yellow's JR_TRAINER_M 2
 	const EVENT_BEAT_CAMPER_DEAN
 	const EVENT_BEAT_YOUNGSTER_AJ ; Kanto hack: renamed in place (M5 8c), was EVENT_BEAT_CAMPER_SID (Crystal's Route 9 CAMPER SID, deleted by 8c); ROUTE 9, Yellow's YOUNGSTER 14 "A.J."
@@ -693,7 +693,7 @@
 	const EVENT_BEAT_ROUTE_15_PICNICKER_7 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_KIP (Crystal's dead ROUTE 15 KIPP)
 	const EVENT_BEAT_SCHOOLBOY_ALAN
 	const EVENT_BEAT_ROUTE_15_BIRD_KEEPER_13 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_JOHNNY (Crystal's dead ROUTE 15 JOHNNY)
-	const EVENT_BEAT_SCHOOLBOY_DANNY
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_5 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_SCHOOLBOY_DANNY
 	const EVENT_BEAT_ROUTE_15_PICNICKER_8 ; Kanto hack: renamed in place (M7 10e); was EVENT_BEAT_SCHOOLBOY_TOMMY (Crystal's dead ROUTE 15 TOMMY)
 	const EVENT_BEAT_YOUNGSTER_GRANT ; Kanto hack: renamed in place (6i), was EVENT_BEAT_SCHOOLBOY_DUDLEY; Route 25, Yellow's YOUNGSTER 5
 	const EVENT_BEAT_YOUNGSTER_COLE ; Kanto hack: renamed in place (6i/N1e), was EVENT_BEAT_SCHOOLBOY_JOE; Route 25, Yellow's YOUNGSTER 6
@@ -712,7 +712,7 @@
 	const EVENT_BEAT_PICNICKER_GINA
 	const EVENT_BEAT_PICNICKER_BROOKE
 	const EVENT_BEAT_PICNICKER_KIM
-	const EVENT_BEAT_PICNICKER_CINDY
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_1 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_PICNICKER_CINDY
 	const EVENT_BEAT_HIKER_MARCOS ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_HOPE
 	const EVENT_BEAT_YOUNGSTER_DUSTIN ; Kanto hack: renamed in place (5e), was EVENT_BEAT_PICNICKER_SHARON
 	const EVENT_BEAT_PICNICKER_DEBRA
@@ -778,7 +778,7 @@
 	const EVENT_BEAT_ROUTE_17_CUE_BALL_3 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (17,58), Yellow's OPP_CUE_BALL 6
 	const EVENT_BEAT_ROUTE_17_CUE_BALL_4 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (2,68), Yellow's OPP_CUE_BALL 7
 	const EVENT_BEAT_ROUTE_17_CUE_BALL_5 ; Kanto hack: renamed in place (M6 9z), dead in vanilla Crystal too; ROUTE 17 (14,98), Yellow's OPP_CUE_BALL 8
-	const EVENT_BEAT_BEAUTY_KENDRA
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_4 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_BEAUTY_KENDRA
 	const EVENT_BEAT_BEAUTY_LILY ; Kanto hack: renamed in place (M6 9q), was the dead EVENT_BEAT_BEAUTY_VERONICA; CELADON GYM trainer 1 (Yellow BEAUTY 1)
 	const EVENT_BEAT_BEAUTY_JULIA
 	const EVENT_POKEMON_TOWER_5F_IN_PURIFIED_ZONE ; Kanto hack (M6 9g): was the dead EVENT_BEAT_BEAUTY_THERESA.  D23's heal latch -- set by #MON TOWER 5F's purified-zone coord_events, cleared by its MAPCALLBACK_NEWMAP, so the free heal happens once per visit to the floor
@@ -797,7 +797,7 @@
 	const EVENT_BEAT_MISTY
 	const EVENT_BEAT_LTSURGE
 	const EVENT_BEAT_ERIKA
-	const EVENT_BEAT_JANINE
+	const EVENT_BEAT_KOGA ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_JANINE
 	const EVENT_BEAT_SABRINA
 	const EVENT_BEAT_BLAINE
 	const EVENT_BEAT_BLUE
@@ -882,10 +882,10 @@
 ; Lass
 	const EVENT_BEAT_LASS_CARRIE
 	const EVENT_BEAT_LASS_BRIDGET
-	const EVENT_BEAT_LASS_ALICE
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_2 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_LASS_ALICE
 	const EVENT_BEAT_LASS_KRISE
 	const EVENT_BEAT_LASS_CONNIE
-	const EVENT_BEAT_LASS_LINDA
+	const EVENT_BEAT_FUCHSIA_GYM_TRAINER_3 ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_LASS_LINDA
 	const EVENT_BEAT_LASS_JODIE ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_LAURA; Route 25, Yellow's LASS 9
 	const EVENT_BEAT_YOUNGSTER_OSCAR ; Kanto hack: renamed in place (6i), was EVENT_BEAT_LASS_SHANNON; Route 25, Yellow's YOUNGSTER 7
 	const EVENT_BEAT_LASS_MICHELLE

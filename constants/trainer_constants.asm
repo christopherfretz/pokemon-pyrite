@@ -249,8 +249,17 @@ DEF KRIS EQU __trainer_class__
 	const TILDA ; Kanto hack: ROUTE 8 (Yellow LASS 16), appended (M5 8j)
 	const HOLLY ; Kanto hack: CELADON GYM (Yellow LASS 18), appended (M6 9q)
 
-	trainerclass JANINE ; 1a
-	const JANINE1
+; Kanto hack (M7 10h): JANINE is gone -- FUCHSIA GYM is Yellow's, and KOGA leads
+; it.  The leader takes JANINE's class slot, renamed in place, rather than
+; Crystal's ELITE FOUR KOGA class: that class's TrainerClassNames entry is
+; "ELITE FOUR", so a gym battle would announce "ELITE FOUR KOGA wants to
+; battle!".  JANINE is Crystal's own FUCHSIA gym-leader class, so its name entry
+; is already "LEADER" -- matching BROCK/MISTY/LT_SURGE/ERIKA/SABRINA/BLAINE.
+; Every other per-class row (pic, palette, DVs, attributes, encounter music,
+; Battle Tower sprite/gender) is retuned to Crystal's KOGA values, so the swap
+; changes only the displayed class name.  ELITE FOUR KOGA is left untouched.
+	trainerclass KOGA_LEADER ; 1a
+	const KOGA_LEADER1
 
 	trainerclass COOLTRAINERM ; 1b
 	const NICK
@@ -685,13 +694,17 @@ DEF KRIS EQU __trainer_class__
 	const RAY
 	const LYLE
 
+; Kanto hack (M7 10h): the three dead IRWIN duplicates are renamed in place for
+; FUCHSIA GYM; the suffixes are Yellow's own OPP_JUGGLER party numbers, as with
+; CUE_BALL_1..9 and BIRD_KEEPER_*.
 	trainerclass JUGGLER ; 31
 	const IRWIN1
 	const FRITZ
 	const HORTON
-	const IRWIN2 ; unused
-	const IRWIN3 ; unused
-	const IRWIN4 ; unused
+	const JUGGLER_3 ; FUCHSIA GYM (was IRWIN2, unused)
+	const JUGGLER_4 ; FUCHSIA GYM (was IRWIN3, unused)
+	const JUGGLER_7 ; FUCHSIA GYM (was IRWIN4, unused)
+	const JUGGLER_8 ; FUCHSIA GYM, appended
 
 	trainerclass BLACKBELT_T ; 32
 	const KENJI1 ; unused
@@ -993,7 +1006,7 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 ; `assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN`.
 ; Every party row leaves the name empty, so PlaceEnemysName prints "TAMER"
 ; alone, which is what Yellow shows.  The pic is Crystal's BIKER for now --
-; 10h ports pokeyellow gfx/trainers/tamer.png.
+; M7 10h ported pokeyellow gfx/trainers/tamer.png, so the pic is Yellow's own.
 	trainerclass TAMER ; 47
 	const TAMER_1 ; FUCHSIA GYM
 	const TAMER_2 ; FUCHSIA GYM
