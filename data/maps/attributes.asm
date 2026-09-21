@@ -717,7 +717,7 @@ ENDM
 	map_attributes CeladonGameCornerPrizeRoom, CELADON_GAME_CORNER_PRIZE_ROOM, $00
 	map_attributes CeladonGym, CELADON_GYM, $00
 	map_attributes CeladonCafe, CELADON_CAFE, $00
-	map_attributes Route16FuchsiaSpeechHouse, ROUTE_16_FUCHSIA_SPEECH_HOUSE, $00
+	map_attributes Route16FuchsiaSpeechHouse, ROUTE_16_FUCHSIA_SPEECH_HOUSE, $0a ; Kanto hack (M6 9y): Yellow's FLY HOUSE border block, like the other House1 rooms
 	map_attributes Route16Gate, ROUTE_16_GATE, $0a
 	map_attributes Route7SaffronGate, ROUTE_7_SAFFRON_GATE, $0a
 	map_attributes Route17Route18Gate, ROUTE_17_ROUTE_18_GATE, $0a

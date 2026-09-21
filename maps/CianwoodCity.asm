@@ -80,32 +80,24 @@ CianwoodCitySuicuneAndEusine:
 .Done:
 	end
 
+; Kanto hack (M6 9y): HM02 FLY now comes from Yellow's ROUTE 16 FLY HOUSE, long
+; before Johto opens, so CHUCK's wife no longer hands it out -- she would be
+; giving a second copy of an HM the player has had since CELADON.  She keeps her
+; two remaining lines: the "train harder" one once CHUCK is beaten, and the
+; sea-crossing one before that.
 CianwoodCityChucksWife:
 	faceplayer
 	opentext
-	checkevent EVENT_GOT_HM02_FLY
-	iftrue .GotFly
-	writetext ChucksWifeEasierToFlyText
-	promptbutton
 	checkevent EVENT_BEAT_CHUCK
 	iftrue .BeatChuck
-	writetext ChucksWifeBeatChuckText
+	writetext ChucksWifeEasierToFlyText
 	waitbutton
 	closetext
 	end
 
 .BeatChuck:
-	writetext ChucksWifeGiveHMText
-	promptbutton
-	verbosegiveitem HM_FLY
-	iffalse .Done
-	setevent EVENT_GOT_HM02_FLY
-	writetext ChucksWifeFlySpeechText
-	promptbutton
-.GotFly:
 	writetext ChucksWifeChubbyText
 	waitbutton
-.Done:
 	closetext
 	end
 
@@ -179,6 +171,8 @@ CianwoodCityEusineDepartMovement:
 	step DOWN
 	step_end
 
+; Kanto hack (M6 9y): the FLY tease and the three HM02 texts are gone with the
+; giveaway above -- the player has had FLY since ROUTE 16.
 ChucksWifeEasierToFlyText:
 	text "You crossed the"
 	line "sea to get here?"
@@ -186,43 +180,9 @@ ChucksWifeEasierToFlyText:
 	para "That must have"
 	line "been hard."
 
-	para "It would be much"
-	line "easier if your"
-
-	para "#MON knew how"
-	line "to FLY…"
-	done
-
-ChucksWifeBeatChuckText:
-	text "But you can't use"
-	line "FLY without this"
-	cont "city's GYM BADGE."
-
-	para "If you beat the"
-	line "GYM LEADER here,"
-	cont "come see me."
-
-	para "I'll have a nice"
-	line "gift for you."
-	done
-
-ChucksWifeGiveHMText:
-	text "That's CIANWOOD's"
-	line "GYM BADGE!"
-
-	para "Then you should"
-	line "take this HM."
-	done
-
-ChucksWifeFlySpeechText:
-	text "Teach FLY to your"
-	line "#MON."
-
-	para "You will be able"
-	line "to FLY instantly"
-
-	para "to anywhere you "
-	line "have visited."
+	para "My husband is in"
+	line "the GYM, waiting"
+	cont "for a challenger."
 	done
 
 ChucksWifeChubbyText:
