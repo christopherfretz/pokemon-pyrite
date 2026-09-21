@@ -21,7 +21,14 @@ DoPlayerMovement::
 	ret z
 
 	ld c, a
-	and PAD_CTRL_PAD
+; Kanto hack (M6 9z, decision D42): Yellow's ForceBikeDown masks
+;   and PAD_CTRL_PAD | PAD_B | PAD_A
+; (vendor/pokeyellow/home/overworld.asm), i.e. holding A or B pins you in
+; place on CYCLING ROAD.  Crystal masked only the d-pad, which made the
+; TRAINER TIPS sign we port onto ROUTE 17 ("Press the A or B Button to stay in
+; place while on a slope") a lie.  One immediate wider; nothing else in the
+; game sets BIKEFLAGS_DOWNHILL_F.
+	and PAD_CTRL_PAD | PAD_B | PAD_A
 	ret nz
 
 	ld a, c
