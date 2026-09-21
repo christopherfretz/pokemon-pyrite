@@ -53,8 +53,14 @@ Route17Route18Gate_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  0,  4, ROUTE_17, 1
-	warp_event  0,  5, ROUTE_17, 2
+; Kanto hack (M6 9z): Yellow's ROUTE 17 has NO warp_events (its gate sits
+; wholly on ROUTE 18 -- Yellow warps 33,8 / 40,8 -> ROUTE_18_GATE_1F), so the
+; re-cut ROUTE 17 has an empty warp list and these two could no longer index
+; into it.  Parked on ROUTE_18's own warps 1/2 -- the tiles you walk in from
+; -- so the west door is a harmless loop instead of a dangling index.  M6 9aa
+; replaces this map with Yellow's ROUTE 18 GATE 1F/2F outright.
+	warp_event  0,  4, ROUTE_18, 1
+	warp_event  0,  5, ROUTE_18, 2
 	warp_event  7,  4, ROUTE_18, 1
 	warp_event  7,  5, ROUTE_18, 2
 
