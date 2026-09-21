@@ -1224,7 +1224,10 @@ CeladonHotel_Blocks:
 	INCBIN "maps/CeladonHotel.blk"
 
 Route16Gate2F_Blocks:
-	INCBIN "maps/Route16Gate2F.blk"
+; Kanto hack (M6 9y): Yellow's Route16Gate2F.blk is byte-identical to its
+; Route11Gate2F.blk, so there is no maps/Route16Gate2F.blk -- the same file is
+; INCBINed twice, exactly as Route12Gate2F does (M5 8l).
+	INCBIN "maps/Route11Gate2F.blk"
 
 Route18Gate2F_Blocks:
 	INCBIN "maps/Route18Gate2F.blk"
