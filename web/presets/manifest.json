@@ -148,5 +148,17 @@
   "title": "ROUTE 16 \u2014 west of CELADON",
   "description": "The Route 16 side of Celadon's west seam, walked in from the city. Chains from 'CELADON CITY' (CUT faked, no RAINBOWBADGE, no BICYCLE): the gate's BICYCLE check, the FLY house (HM02), SNORLAX #2, the CYCLING ROAD and ROUTE 18 are all real and unplayed.",
   "sav": "route16.sav"
+ },
+ {
+  "id": "fuchsia",
+  "title": "FUCHSIA CITY \u2014 BILL's grandpa's doorstep",
+  "description": "Fuchsia City, walked in along the CYCLING ROAD and ROUTE 18 from the 'ROUTE 16' chain (CUT faked, no RAINBOWBADGE, no BICYCLE). Routes 13/14/15, the city, its houses, the WARDEN and the GYM are all real and unplayed; the SAFARI ZONE gate is not open yet in this build.",
+  "sav": "fuchsia.sav"
+ },
+ {
+  "id": "koga",
+  "title": "FUCHSIA CITY \u2014 SOULBADGE won (faked)",
+  "description": "One tile below the FUCHSIA GYM door with all five badges written and TM06 in the bag. FAKED: KOGA and his six trainers are flagged beaten, not fought. Use 'FUCHSIA CITY' for the real gym.",
+  "sav": "koga.sav"
  }
 ]
