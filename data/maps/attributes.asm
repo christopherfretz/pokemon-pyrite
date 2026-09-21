@@ -698,7 +698,7 @@ ENDM
 ; $0f (ViridianForest's, the other TILESET_KANTO map whose edge is solid trees).
 ; No connections: the areas are joined by warps in Yellow, not by map seams.
 	map_attributes Route15Gate2F, ROUTE_15_GATE_2F, $0a
-	map_attributes FuchsiaGoodRodHouse, FUCHSIA_GOOD_ROD_HOUSE, $00
+	map_attributes FuchsiaGoodRodHouse, FUCHSIA_GOOD_ROD_HOUSE, $0c ; Kanto hack (M7 10g): Yellow's own border (db $c) on the SHIP tileset
 	map_attributes SafariZoneGate, SAFARI_ZONE_GATE, $0a
 	map_attributes SafariZoneEast, SAFARI_ZONE_EAST, $0f
 	map_attributes SafariZoneNorth, SAFARI_ZONE_NORTH, $0f

@@ -829,8 +829,12 @@ VermilionPort_Blocks:
 	INCBIN "maps/VermilionPort.blk"
 
 OlivineCafe_Blocks:
-FuchsiaMeetingRoom_Blocks: ; Kanto hack (M7 10a): was SAFARI_ZONE_MAIN_OFFICE
 	INCBIN "maps/OlivineCafe.blk"
+
+; Kanto hack (M7 10g): Yellow's SAFARI ZONE office, 7x4 on the LAB tileset.
+; It shared OlivineCafe's 4x4 alias while 10a only needed a shell.
+FuchsiaMeetingRoom_Blocks:
+	INCBIN "maps/FuchsiaMeetingRoom.blk"
 
 PlayersHouse2F_Blocks:
 	INCBIN "maps/PlayersHouse2F.blk"
@@ -851,8 +855,12 @@ PowerPlant_Blocks:
 	INCBIN "maps/PowerPlant.blk"
 
 PokemonFanClub_Blocks:
-SafariZoneWardensHome_Blocks:
 	INCBIN "maps/PokemonFanClub.blk"
+
+; Kanto hack (M7 10g): Yellow's WARDEN's house, 5x4 on the LAB tileset with
+; the door at (4,7)/(5,7); PokemonFanClub's HOUSE art no longer fits it.
+SafariZoneWardensHome_Blocks:
+	INCBIN "maps/SafariZoneWardensHome.blk"
 
 FightingDojo_Blocks:
 	INCBIN "maps/FightingDojo.blk"
@@ -1058,13 +1066,14 @@ Route24_Blocks:
 
 CeruleanTrashedHouse_Blocks:
 CeruleanBadgeHouse_Blocks:
-; Kanto hack (docs/M7-FUCHSIA.md, 10f): FUCHSIA's GOOD ROD HOUSE is a
+; Kanto hack (docs/M7-FUCHSIA.md, 10f/10g): FUCHSIA's GOOD ROD HOUSE is a
 ; pass-through house in Yellow too -- its back door at (2,0) is the only way
-; into the city's north-east yard.  Moved off the shared House1 alias group
-; (which walls that tile in) onto House1Hole, exactly like the two Cerulean
-; pass-through houses above.  Yellow has it on the SHIP tileset; 10g re-cuts.
+; into the city's north-east yard.  10g re-cut it onto Yellow's own SHIP-
+; tileset layout (Crystal ports that blockset byte for byte), so the blk is
+; Yellow's bytes verbatim: block $09 puts a LADDER at (2,0) and $1b the front
+; door at (2,7)/(3,7).  10f's House1Hole placeholder is retired.
 FuchsiaGoodRodHouse_Blocks:
-	INCBIN "maps/House1Hole.blk"
+	INCBIN "maps/FuchsiaGoodRodHouse.blk"
 
 ; Kanto hack: the Cerulean Cave mouth stub (docs/M3-CERULEAN.md, 6k).  One
 ; 5x4 cave room behind the champion-gated warp; the real cave is its own

@@ -369,7 +369,7 @@ ENDM
 	map_const ROUTE_18,                                    25,  9 ;  4 ; Kanto hack (M6 9aa): Yellow's own dimensions
 	map_const FUCHSIA_CITY,                                20, 18 ;  5
 	map_const FUCHSIA_MART,                                 4,  4 ;  6 ; Kanto hack (M7 10a): Yellow's own dimensions, was 6x4
-	map_const FUCHSIA_MEETING_ROOM,                         4,  4 ;  7 ; Kanto hack (M7 10a): was SAFARI_ZONE_MAIN_OFFICE (Yellow 7x4; re-cut in 10g)
+	map_const FUCHSIA_MEETING_ROOM,                         7,  4 ;  7 ; Kanto hack (M7 10a/10g): was SAFARI_ZONE_MAIN_OFFICE, now Yellow's own 7x4
 	map_const FUCHSIA_GYM,                                  5,  9 ;  8
 	map_const BILLS_OLDER_SISTERS_HOUSE,                    4,  4 ;  9
 	map_const FUCHSIA_POKECENTER_1F,                        7,  4 ; 10 ; Kanto hack (M7 10a): Yellow's own dimensions, was 5x4

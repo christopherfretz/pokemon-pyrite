@@ -1,89 +1,71 @@
+; Kanto hack: Yellow's FUCHSIA #MON CENTER (docs/M7-FUCHSIA.md 10g).  Yellow's
+; cast and every line are Yellow's (vendor/pokeyellow/{data/maps/objects,text}/
+; FuchsiaPokecenter.asm) minus the cable-club receptionist: Crystal keeps the
+; cable club upstairs on POKECENTER_2F, which warp 3 already leads to
+; (docs/PORTING.md §15), the same call Pewter and Viridian made.  Crystal's
+; JANINE-impersonator set piece and its two Johto-act gossips are gone (D65).
+;
+; Two positions move.  The ROCKER goes (4,3) -> (5,3): Yellow parks him directly
+; in front of the CHANSEY at (4,1), which makes CHANSEY's line unreachable
+; across the counter -- the same Yellow quirk Pewter and Viridian already fixed
+; the same way.  The COOLTRAINER_F keeps Yellow's (6,5); Crystal's bench sits on
+; (7,5), so her LEFT_RIGHT beat is (5,5)<->(6,5) instead of Yellow's three tiles
+; -- a wall shortening a walk radius is normal in Crystal and is cheaper than
+; moving her.  10a widened the room to Yellow's 7x4, so the east half is
+; Yellow's footprint with Crystal's cable-club desk left out.
 	object_const_def
 	const FUCHSIAPOKECENTER1F_NURSE
-	const FUCHSIAPOKECENTER1F_COOLTRAINER_M
+	const FUCHSIAPOKECENTER1F_ROCKER
 	const FUCHSIAPOKECENTER1F_COOLTRAINER_F
-	const FUCHSIAPOKECENTER1F_JANINE_IMPERSONATOR
+	const FUCHSIAPOKECENTER1F_CHANSEY
 
 FuchsiaPokecenter1F_MapScripts:
 	def_scene_scripts
-	scene_script FuchsiaPokeCenter1FNoopScene ; unusable
 
 	def_callbacks
-
-FuchsiaPokeCenter1FNoopScene:
-	end
 
 FuchsiaPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
-FuchsiaPokecenter1FCooltrainerMScript:
-	jumptextfaceplayer FuchsiaPokecenter1FCooltrainerMText
+FuchsiaPokecenter1FRockerScript:
+	jumptextfaceplayer FuchsiaPokecenter1FRockerText
 
 FuchsiaPokecenter1FCooltrainerFScript:
 	jumptextfaceplayer FuchsiaPokecenter1FCooltrainerFText
 
-FuchsiaPokecenter1FJanineImpersonatorScript:
-	faceplayer
+; Yellow's PokecenterChanseyText -- one line plus the cry (N1c/N1d).
+FuchsiaPokecenter1FChanseyScript:
 	opentext
-	writetext FuchsiaPokecenter1FJanineImpersonatorText1
+	writetext FuchsiaPokecenter1FChanseyText
+	cry CHANSEY
 	waitbutton
 	closetext
-	applymovement FUCHSIAPOKECENTER1F_JANINE_IMPERSONATOR, FuchsiaPokecenter1FJanineImpersonatorSpinMovement
-	faceplayer
-	variablesprite SPRITE_JANINE_IMPERSONATOR, SPRITE_JANINE
-	special LoadUsedSpritesGFX
-	opentext
-	writetext FuchsiaPokecenter1FJanineImpersonatorText2
-	waitbutton
-	closetext
-	applymovement FUCHSIAPOKECENTER1F_JANINE_IMPERSONATOR, FuchsiaPokecenter1FJanineImpersonatorSpinMovement
-	faceplayer
-	variablesprite SPRITE_JANINE_IMPERSONATOR, SPRITE_LASS
-	special LoadUsedSpritesGFX
 	end
 
-FuchsiaPokecenter1FJanineImpersonatorSpinMovement:
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
-	turn_head LEFT
-	turn_head UP
-	turn_head RIGHT
-	turn_head DOWN
-	step_end
+FuchsiaPokecenter1FRockerText:
+	text "You can't win"
+	line "with just one"
+	cont "strong #MON."
 
-FuchsiaPokecenter1FCooltrainerMText:
-	text "Hey! You have a"
-	line "brand new kind of"
-	cont "#DEX."
-
-	para "Did PROF.OAK give"
-	line "that to you?"
+	para "It's tough, but"
+	line "you have to raise"
+	cont "them evenly."
 	done
 
 FuchsiaPokecenter1FCooltrainerFText:
-	text "I got quite a"
-	line "shock at the GYM."
+	text "There's a narrow"
+	line "trail west of"
+	cont "VIRIDIAN CITY."
 
-	para "There were all"
-	line "these girls who"
-	cont "looked identical."
+	para "It goes to #MON"
+	line "LEAGUE HQ."
+	cont "The HQ governs"
+	cont "all trainers."
 	done
 
-FuchsiaPokecenter1FJanineImpersonatorText1:
-	text "I'm JANINE! Hocus-"
-	line "pocus… Poof!"
-	done
-
-FuchsiaPokecenter1FJanineImpersonatorText2:
-	text "See? I look just"
-	line "like her now!"
+FuchsiaPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
 	done
 
 FuchsiaPokecenter1F_MapEvents:
@@ -99,7 +81,7 @@ FuchsiaPokecenter1F_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FNurseScript, -1
-	object_event  8,  4, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FCooltrainerMScript, -1
-	object_event  1,  4, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FCooltrainerFScript, -1
-	object_event  5,  3, SPRITE_JANINE_IMPERSONATOR, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FJanineImpersonatorScript, -1
+	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FNurseScript, -1
+	object_event  5,  3, SPRITE_ROCKER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FRockerScript, -1
+	object_event  6,  5, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FCooltrainerFScript, -1
+	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FChanseyScript, -1

@@ -352,15 +352,15 @@ MartCeladon5F2:
 	db CALCIUM
 	db -1 ; end
 
+; Kanto hack (M7 10g): Yellow's FuchsiaMartClerkText stock, in Yellow's order.
 MartFuchsia:
-	db 7 ; # items
-	db GREAT_BALL
+	db 6 ; # items
 	db ULTRA_BALL
-	db SUPER_POTION
+	db GREAT_BALL
 	db HYPER_POTION
+	db REVIVE
 	db FULL_HEAL
-	db MAX_REPEL
-	db FLOWER_MAIL
+	db SUPER_REPEL
 	db -1 ; end
 
 MartSaffron:
