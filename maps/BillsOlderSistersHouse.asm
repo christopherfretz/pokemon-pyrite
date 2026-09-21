@@ -9,8 +9,11 @@
 ; survives.  Yellow's three positions all land on floor in Crystal's House1
 ; blockset, so the room itself is unchanged.
 ; Sprites follow the standing substitutions: SPRITE_POKEFAN_F for Yellow's
-; MIDDLE_AGED_WOMAN (docs/AUDIT-NPC-TEXT.md:2334) and SPRITE_GENTLEMAN for its
-; GAMBLER (docs/AUDIT-NPC-TEXT.md:1541, as MUSEUM 1F already does).
+; MIDDLE_AGED_WOMAN (docs/AUDIT-NPC-TEXT.md:2334) and SPRITE_OLD_MAN for its
+; GAMBLER -- M4 superseded the M2-era GENTLEMAN call, because Yellow's
+; gfx/sprites/gambler.png is byte-identical to Crystal's gfx/sprites/old_man.png
+; (see maps/VermilionCity.asm:15-17).  FUCHSIA CITY's own GAMBLER already used
+; SPRITE_OLD_MAN, so M7 was shipping one Yellow sprite two ways (M7 10o).
 	object_const_def
 	const BILLSOLDERSISTERSHOUSE_MIDDLE_AGED_WOMAN
 	const BILLSOLDERSISTERSHOUSE_BILLS_GRANDPA
@@ -71,5 +74,5 @@ BillsOlderSistersHouse_MapEvents:
 
 	def_object_events
 	object_event  2,  3, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, BillsGrandpasHouseWomanScript, -1
-	object_event  7,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, BillsGrandpaScript, -1
+	object_event  7,  2, SPRITE_OLD_MAN, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, BillsGrandpaScript, -1
 	object_event  5,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, BillsGrandpasHouseYoungsterScript, -1

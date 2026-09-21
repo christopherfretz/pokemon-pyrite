@@ -137,9 +137,13 @@ SafariZoneGatePayWhatYouHaveScript:
 	sjump SafariZoneGateEnterTheZoneScript
 
 ; No money at all: the D56 easter egg.  Yellow refuses three times and lets you
-; in for ONE free BALL on the fourth ask.  Yellow's fifth ask would index off
-; the end of its own five-entry pointer table; ours repeats the fourth refusal,
-; which is the only deviation in this file (see "10k findings").
+; in for ONE free BALL on the fourth ask.  Its fifth ask reprints the fourth
+; refusal, because the fifth entry of Pointers_f2100
+; (vendor/pokeyellow/scripts/SafariZoneGate_2.asm:214-219) duplicates
+; _SafariZoneLowCostText8; it is the SIXTH ask that would index off the end of
+; that five-entry table.  Ours clamps there instead, so asks 1-5 are Yellow's
+; behaviour exactly and only ask 6+ differs (corrected in M7 10o; "10k
+; findings" overstated this as the file's only deviation).
 SafariZoneGateNoMoneyScript:
 	readmem wSafariTimeRemaining + 1
 	addval 1
@@ -177,15 +181,30 @@ SafariZoneGateNoMoneyScript:
 ; Yellow walks you UP 3 from the counter row, which spends the third step on
 ; the north door's warp.  GSC fires warps on player input, not on applymovement,
 ; so the door is a warpfacing of its own -- the same shape Crystal's own
-; Route35NationalParkGate uses to walk you into the Bug Contest.  x is always 4
-; here, so this is always Yellow's warp 4 -> SAFARI_ZONE_CENTER warp 2 (15,25).
+; Route35NationalParkGate uses to walk you into the Bug Contest.
+;
+; M7 10o: x is normalised to 4 on the PAY path only (SafariZoneGateCounterScript
+; steps you right off (3,2)).  The other two entries -- the free-BALL branch and
+; SafariZoneGateLeavingEarlyScript's "No" -- keep whatever column you walked in
+; on, and the north doors are two tiles wide, so a player who left through
+; SAFARI_ZONE_CENTER warp 1 (14,25) comes back through (3,0)/(3,1).  Yellow
+; preserves the column (its .not_ready_to_leave auto-walks UP one step from
+; wherever you stand, scripts/SafariZoneGate.asm:174-183), so we branch on x
+; rather than always landing on warp 2.  SafariZoneGateEnterMovement is a single
+; step UP, so VAR_XCOORD still reads the door column here.
 SafariZoneGateEnterTheZoneScript:
 	closetext
 	applymovement PLAYER, SafariZoneGateEnterMovement
 	playsound SFX_ENTER_DOOR
 	special FadeOutToWhite
 	waitsfx
+	readvar VAR_XCOORD
+	ifequal 3, .WestDoor
 	warpfacing UP, SAFARI_ZONE_CENTER, 15, 25
+	end
+
+.WestDoor:
+	warpfacing UP, SAFARI_ZONE_CENTER, 14, 25
 	end
 
 SafariZoneGateWalkDownScript:

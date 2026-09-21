@@ -30,5 +30,8 @@ FruitTreeItems:
 	db PRZCUREBERRY ; ROUTE_8
 	db ICE_BERRY    ; PEWTER_CITY_1
 	db MINT_BERRY   ; PEWTER_CITY_2
-	db BURNT_BERRY  ; FUCHSIA_CITY
+	db BURNT_BERRY  ; FUCHSIA_CITY -- unused (Kanto hack, M7 10f/10o): Yellow's
+	                ; re-cut puts border trees on (8,1), so the tile Crystal
+	                ; hung its tree on is WALL and no map object references
+	                ; this row.  Kept in place; the list is positional (D49).
 	assert_table_length NUM_FRUIT_TREES

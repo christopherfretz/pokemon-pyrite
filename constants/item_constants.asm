@@ -440,6 +440,10 @@ DEF USE_SCRIPT_VAR EQU $00
 DEF ITEM_FROM_MEM  EQU $ff
 
 ; leftovers from red
-DEF SAFARI_BALL    EQU $08 ; MOON_STONE
+DEF SAFARI_BALL    EQU $08 ; MOON_STONE -- do NOT use this name: the Kanto
+                           ; hack's SAFARI BALL is PARK_BALL ($b1, M7 D50).
+                           ; This red leftover aliases MOON_STONE and is inert
+                           ; (its one consumer, the ball multiplier table, is
+                           ; unreachable for a stone).  Noted in M7 10o.
 DEF MOON_STONE_RED EQU $0a ; BURN_HEAL
 DEF FULL_HEAL_RED  EQU $34 ; X_SPEED

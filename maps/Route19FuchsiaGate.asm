@@ -1,47 +1,17 @@
-	object_const_def
-	const ROUTE19FUCHSIAGATE_OFFICER
-
+; Kanto hack (M7 10o): Yellow has no map here at all -- ROUTE 19 runs straight
+; out of FUCHSIA's south edge.  D62/D63 keep Crystal's gate standing as the
+; fence across that seam until M9 ports ROUTES 19-21, but its OFFICER told
+; Crystal's story: CINNABAR's volcano erupting and closing ROUTE 19
+; "indefinitely", with a second branch gated on EVENT_CINNABAR_ROCKS_CLEARED
+; (set only by maps/Route20.asm, unreachable in the Kanto act, so the eruption
+; text always printed).  That is a Gen 2 story beat with no Yellow counterpart,
+; and it was the first NPC a player met walking south out of FUCHSIA.  Gotcha
+; G10 handed it to the leftover audit; there is no Yellow text to port in its
+; place, so the gate is a silent pass-through until M9 retires the map.
 Route19FuchsiaGate_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-
-Route19FuchsiaGateOfficerScript:
-	faceplayer
-	opentext
-	checkevent EVENT_CINNABAR_ROCKS_CLEARED
-	iftrue .RocksCleared
-	writetext Route19FuchsiaGateOfficerText
-	waitbutton
-	closetext
-	end
-
-.RocksCleared:
-	writetext Route19FuchsiaGateOfficerText_RocksCleared
-	waitbutton
-	closetext
-	end
-
-Route19FuchsiaGateOfficerText:
-	text "CINNABAR's volcano"
-	line "erupted."
-
-	para "It hurled boulders"
-	line "that cut off ROUTE"
-	cont "19 indefinitely."
-
-	para "I wonder if the"
-	line "people of CINNABAR"
-	cont "are safe…"
-	done
-
-Route19FuchsiaGateOfficerText_RocksCleared:
-	text "No CINNABAR citi-"
-	line "zens were injured"
-
-	para "by the eruption."
-	line "That's great!"
-	done
 
 Route19FuchsiaGate_MapEvents:
 	db 0, 0 ; filler
@@ -57,4 +27,3 @@ Route19FuchsiaGate_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  1,  4, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route19FuchsiaGateOfficerScript, -1
