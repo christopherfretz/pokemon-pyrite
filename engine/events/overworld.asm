@@ -346,9 +346,15 @@ SurfFunction:
 	dw .AlreadySurfing
 
 .TrySurf:
-	ld de, ENGINE_FOGBADGE
+; Kanto hack (M7 10m): SURF is unlocked by the SOULBADGE, as KOGA's badge text
+; says it is (vendor/pokeyellow/text/FuchsiaGym.asm _FuchsiaGymKogaSoulBadgeInfoText:
+; "It also lets you / SURF outside of / battle!").
+; Was Crystal's FOGBADGE (MORTY's, in Johto), which the Kanto-first player
+; cannot hold at this point in the game.  Same move as the M6 9q STRENGTH
+; re-gate below at .TryStrength.
+	ld de, ENGINE_SOULBADGE
 	call CheckBadge
-	jr c, .nofogbadge
+	jr c, .nosoulbadge
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
 	jr nz, .cannotsurf
@@ -367,7 +373,7 @@ SurfFunction:
 	jr c, .cannotsurf
 	ld a, $1
 	ret
-.nofogbadge
+.nosoulbadge
 	ld a, JUMPTABLE_EXIT
 	ret
 .alreadyfail
@@ -504,7 +510,9 @@ TrySurfOW::
 	call CheckDirection
 	jr c, .quit
 
-	ld de, ENGINE_FOGBADGE
+; Kanto hack (M7 10m): the overworld "want to SURF?" prompt is gated on the same
+; SOULBADGE as .TrySurf above, so the two never disagree.  Was ENGINE_FOGBADGE.
+	ld de, ENGINE_SOULBADGE
 	call CheckEngineFlag
 	jr c, .quit
 
