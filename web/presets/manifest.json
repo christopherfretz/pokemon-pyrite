@@ -142,5 +142,11 @@
   "title": "ROCKET HIDEOUT B4F \u2014 SILPH SCOPE in hand",
   "description": "GIOVANNI's tile on B4F after his defeat, with the SILPH SCOPE really picked up from the ball he leaves behind. FAKED: the LIFT KEY was poked into the bag, JESSIE & JAMES and GIOVANNI are flagged beaten, not fought; the grunts and items on B1F-B3F are untouched. Made for walking back to LAVENDER and testing the POK\u00e9MON TOWER ghost reveal on the real SCOPE.",
   "sav": "scope.sav"
+ },
+ {
+  "id": "route16",
+  "title": "ROUTE 16 \u2014 west of CELADON",
+  "description": "The Route 16 side of Celadon's west seam, walked in from the city. Chains from 'CELADON CITY' (CUT faked, no RAINBOWBADGE, no BICYCLE): the gate's BICYCLE check, the FLY house (HM02), SNORLAX #2, the CYCLING ROAD and ROUTE 18 are all real and unplayed.",
+  "sav": "route16.sav"
  }
 ]
