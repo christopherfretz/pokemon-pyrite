@@ -292,6 +292,18 @@ SilphCo11FGiovanniBattle:
 	special FadeOutToBlack
 	special ReloadSpritesNoPalettes
 	disappear SILPHCO11F_GIOVANNI
+; M8 11k -- the takeover flip.  Yellow runs
+; `farcall SilphCo11FTeamRocketLeavesScript` right here, inside the fade
+; (vendor/pokeyellow/scripts/SilphCo11F.asm lines 155-183): it walks its 47
+; toggleable-object ids, hiding the 41 Rockets/JESSIE/JAMES/GIOVANNI and
+; showing the 6 SAFFRON civilians.  We do it with hide flags instead (D73), so
+; all 41 hides ride on EVENT_BEAT_SILPH_CO_GIOVANNI (set two lines down) and
+; the 6 shows ride on EVENT_SAFFRON_CITY_CIVILIANS_AFTER, which is set at new
+; game (engine/events/std_scripts.asm) and cleared exactly here.  Both flips
+; happen in this one script, so the city, SILPH CO. and the GYM door all
+; change together on the next MAPCALLBACK_OBJECTS -- no HideObject/ShowObject
+; calls, and nothing to re-run after a white-out or a save/load.
+	clearevent EVENT_SAFFRON_CITY_CIVILIANS_AFTER
 	pause 15
 	special FadeInFromBlack
 ; The master flag.  `disappear` above already set it (it IS GIOVANNI's hide
