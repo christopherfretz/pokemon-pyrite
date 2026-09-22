@@ -2039,6 +2039,15 @@ GruntMGroup:
 	db 33, MACHOKE
 	db -1 ; end
 
+	; GRUNTM (57) - SILPH CO. 11F, (15,9).  Yellow OPP_ROCKET 40.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 25, RATTATA
+	db 25, RATTATA
+	db 25, ZUBAT
+	db 25, RATTATA
+	db 25, EKANS
+	db -1 ; end
+
 GentlemanGroup:
 	; GENTLEMAN (1)
 	db "PRESTON@", TRAINERTYPE_NORMAL
@@ -4939,7 +4948,7 @@ GiovanniGroup:
 	db 29, PERSIAN
 	db -1 ; end
 
-	; GIOVANNI (2): SILPH CO. 11F (reserved for M7)
+	; GIOVANNI (2): SILPH CO. 11F (M8 11i)
 	db "@", TRAINERTYPE_NORMAL
 	db 37, NIDORINO
 	db 35, PERSIAN

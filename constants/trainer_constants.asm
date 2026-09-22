@@ -442,6 +442,9 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_54 ; SILPH CO. 9F (2,4), Yellow ROCKET 37
 	const GRUNTM_55 ; SILPH CO. 9F (13,16), Yellow ROCKET 38
 	const GRUNTM_56 ; SILPH CO. 10F (1,9), Yellow ROCKET 39
+; Kanto hack (M8 11i): SILPH CO. 11F's last ROCKET -- Yellow RocketData row 40.
+; Same convention: "GRUNT" over the ROCKET class name.
+	const GRUNTM_57 ; SILPH CO. 11F (15,9), Yellow ROCKET 40
 
 	trainerclass GENTLEMAN ; 20
 	const PRESTON
