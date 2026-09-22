@@ -184,5 +184,17 @@
   "title": "SAFFRON CITY \u2014 MARSHBADGE won for real",
   "description": "The SAFFRON GYM doorstep with the MARSHBADGE and TM81 PSYWAVE ACTUALLY FOUGHT for \u2014 SABRINA and her six trainers were beaten in the harness, not flagged \u2014 and the MASTER BALL really taken from the SILPH CO. president, so TEAM ROCKET has left the city. TWO THINGS ARE FAKED: the party is boosted to level 100 so those fights are deterministic, and the climb to GIOVANNI wrote SILPH's trainer and card-key flags instead of fighting the other thirty (GIOVANNI himself was fought). A post-gym start point, not a balanced save \u2014 use 'SILPH CO. 1F' to play it out.",
   "sav": "sabrina.sav"
+ },
+ {
+  "id": "cinnabar",
+  "title": "CINNABAR ISLAND \u2014 just surfed in",
+  "description": "CINNABAR ISLAND's east shore, surfed in from Route 20 on from the 'MARSHBADGE won' preset: a real FLY to FUCHSIA, then ROUTES 19 and 20 (every swimmer fought) and across the SEAFOAM ISLANDS. The POKeMON MANSION, the SECRET KEY, the LAB's fossil revival and the locked GYM are all real and unplayed. FAKED: RAINBOWBADGE and SOULBADGE (this branch never visited CELADON's gym or FUCHSIA's) and the level-100 party with SURF, as in 'MARSHBADGE won'.",
+  "sav": "cinnabar.sav"
+ },
+ {
+  "id": "blaine",
+  "title": "CINNABAR ISLAND \u2014 VOLCANOBADGE won for real",
+  "description": "Outside the CINNABAR GYM door with the VOLCANOBADGE and TM38 FIRE BLAST ACTUALLY FOUGHT for: the SECRET KEY dug out of the POKeMON MANSION on Yellow's switch route, the gym's six quiz machines answered, BLAINE beaten in the harness. Chains from 'CINNABAR ISLAND \u2014 just surfed in', so the same things are faked (RAINBOW/SOUL badges, the level-100 party). Seven badges; VIRIDIAN's gym is next.",
+  "sav": "blaine.sav"
  }
 ]
