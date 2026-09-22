@@ -817,18 +817,30 @@ FanClubPikachuWalk::
 	ret
 
 FanClubPikachuStep:
-; d = UP or RIGHT.  Walks the follower one tile, blocking until the step is
-; finished the way FollowerHopToCounter animates its hop (a running script
-; stops HandleMap, so nothing else would tick the object).  Carry if it moved.
+; d = DOWN, UP, LEFT or RIGHT.  Walks the follower one tile, blocking until the
+; step is finished the way FollowerHopToCounter animates its hop (a running
+; script stops HandleMap, so nothing else would tick the object).  Carry if it
+; moved.  (7f only needed UP/RIGHT; 12n's CINNABAR GYM step-aside adds DOWN and
+; LEFT.)
 	push de
 	ld a, [wFollowerMapX]
 	ld b, a
 	ld a, [wFollowerMapY]
 	ld c, a
 	ld a, d
+	and a ; DOWN
+	jr nz, .not_down
+	inc c
+	jr .target
+.not_down
 	cp UP
-	jr nz, .rightward
+	jr nz, .not_up
 	dec c
+	jr .target
+.not_up
+	cp LEFT
+	jr nz, .rightward
+	dec b
 	jr .target
 .rightward
 	inc b
@@ -870,3 +882,71 @@ FanClubPikachuStep:
 .done
 	scf
 	ret
+
+
+; --- 12n: CINNABAR GYM, a wrong quiz answer (docs/M9-CINNABAR.md 12n).
+CinnabarGymPikachuStepAside::
+; Special.  Yellow's CinnabarGymScript_74fa3 (vendor/pokeyellow/scripts/
+; CinnabarGym.asm): just before the gate's trainer walks over to the player,
+; Pikachu steps out of the tile the trainer is about to take -- but only when
+; it is standing on that side of the player (GetPikachuFacingDirection, which
+; compares the Y coordinates first and the X coordinates only on a tie).
+;   wScriptVar 0: the gate-2 SUPER NERD, who arrives from BELOW.  If Pikachu
+;     is below the player it does Yellow's $20 $1e $35 -- step right, step up,
+;     look down.
+;   wScriptVar 1: every other gate trainer, who arrives from the RIGHT.  If
+;     Pikachu is to the player's right it does $1d $1f $38 -- step down, step
+;     left, look right.
+; A step onto a wall or an NPC is refused (FollowerCanStandAt) and the rest of
+; the dance is skipped, rather than walking Pikachu into the scenery.
+	ld a, [wPikaFollowFlags]
+	and 1 << FOLLOWER_ENABLED_F | 1 << FOLLOWER_HIDDEN_F | 1 << FOLLOWER_SCRIPTHIDE_F
+	cp 1 << FOLLOWER_ENABLED_F
+	ret nz
+	ld a, [wFollowerFlags] ; OBJECT_FLAGS1
+	bit INVISIBLE_F, a
+	ret nz
+	ld a, [wPlayerMapY]
+	ld b, a
+	ld a, [wScriptVar]
+	and a
+	jr nz, .from_right
+; from below: Yellow's SPRITE_FACING_DOWN = Pikachu's Y is greater
+	ld a, [wFollowerMapY]
+	cp b
+	ret z
+	ret c
+	ld d, RIGHT
+	call FanClubPikachuStep
+	ret nc
+	ld d, UP
+	call FanClubPikachuStep
+	ret nc
+	ld a, OW_DOWN
+	jr .face
+
+.from_right
+; SPRITE_FACING_RIGHT = same Y, Pikachu's X is greater
+	ld a, [wFollowerMapY]
+	cp b
+	ret nz
+	ld a, [wPlayerMapX]
+	ld b, a
+	ld a, [wFollowerMapX]
+	cp b
+	ret z
+	ret c
+	ld d, DOWN
+	call FanClubPikachuStep
+	ret nc
+	ld d, LEFT
+	call FanClubPikachuStep
+	ret nc
+	ld a, OW_RIGHT
+.face
+	ld [wFollowerDirection], a
+	ld a, FOLLOWER_OBJECT
+	ldh [hMapObjectIndex], a
+	ld bc, wFollowerStruct
+	call HandleObjectStep ; refresh OBJECT_FACING now
+	jp UpdateSprites

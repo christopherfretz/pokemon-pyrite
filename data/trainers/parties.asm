@@ -3153,6 +3153,35 @@ SuperNerdGroup:
 	db 19, SLOWPOKE,   CURSE, WATER_GUN, GROWL, STRENGTH
 	db -1 ; end
 
+	; SUPER_NERD (15) - Kanto hack (M9 12n): CINNABAR GYM (17,2), the one gym
+	; trainer with no quiz gate.  Yellow SuperNerdData 9.  The four CINNABAR GYM
+	; SUPER NERDs are appended and nameless (RUSS/NORTON are unused Crystal rows
+	; but carry names Yellow's gym trainers never had).
+	db "@", TRAINERTYPE_NORMAL
+	db 36, VULPIX
+	db 36, VULPIX
+	db 36, NINETALES
+	db -1 ; end
+
+	; SUPER_NERD (16) - CINNABAR GYM (11,4), gate 2.  Yellow SuperNerdData 10.
+	db "@", TRAINERTYPE_NORMAL
+	db 34, PONYTA
+	db 34, CHARMANDER
+	db 34, VULPIX
+	db 34, GROWLITHE
+	db -1 ; end
+
+	; SUPER_NERD (17) - CINNABAR GYM (11,14), gate 4.  Yellow SuperNerdData 11.
+	db "@", TRAINERTYPE_NORMAL
+	db 41, RAPIDASH
+	db -1 ; end
+
+	; SUPER_NERD (18) - CINNABAR GYM (3,8), gate 6.  Yellow SuperNerdData 12.
+	db "@", TRAINERTYPE_NORMAL
+	db 37, GROWLITHE
+	db 37, VULPIX
+	db -1 ; end
+
 Rival2Group:
 	; RIVAL2 (1)
 	db "?@", TRAINERTYPE_MOVES
@@ -3575,11 +3604,18 @@ BikerGroup:
 	db -1 ; end
 
 BlaineGroup:
-	; BLAINE (1)
+	; BLAINE (1) - Kanto hack (M9 12n): Yellow's BlaineData, L48 NINETALES /
+	; L50 RAPIDASH / L54 ARCANINE (was Crystal's MAGCARGO / MAGMAR / RAPIDASH).
+	; The moves are what Yellow's ReadTrainer actually hands him: the Gen 1
+	; level-up moveset at that level (WriteMonMoves), then Yellow's
+	; SpecialTrainerMoves overrides for BLAINE 1
+	; (vendor/pokeyellow/data/trainers/special_moves.asm): NINETALES slot 1
+	; FLAMETHROWER + slot 4 CONFUSE_RAY, ARCANINE slots 1-3 FLAMETHROWER /
+	; FIRE_BLAST / REFLECT.  RAPIDASH has no override.
 	db "BLAINE@", TRAINERTYPE_MOVES
-	db 45, MAGCARGO,   CURSE, SMOG, FLAMETHROWER, ROCK_SLIDE
-	db 45, MAGMAR,     THUNDERPUNCH, FIRE_PUNCH, SUNNY_DAY, CONFUSE_RAY
-	db 50, RAPIDASH,   QUICK_ATTACK, FIRE_SPIN, FURY_ATTACK, FIRE_BLAST
+	db 48, NINETALES,  FLAMETHROWER, TAIL_WHIP, QUICK_ATTACK, CONFUSE_RAY
+	db 50, RAPIDASH,   STOMP, GROWL, FIRE_SPIN, TAKE_DOWN
+	db 54, ARCANINE,   FLAMETHROWER, FIRE_BLAST, REFLECT, TAKE_DOWN
 	db -1 ; end
 
 BurglarGroup:
@@ -3620,6 +3656,25 @@ BurglarGroup:
 	db "@", TRAINERTYPE_NORMAL
 	db 34, GROWLITHE
 	db 34, PONYTA
+	db -1 ; end
+
+	; BURGLAR (7) - Kanto hack (M9 12n): CINNABAR GYM (17,8), quiz gate 1.
+	; Yellow BurglarData 4.  Nameless, like the MANSION's three above.
+	db "@", TRAINERTYPE_NORMAL
+	db 36, GROWLITHE
+	db 36, VULPIX
+	db 36, NINETALES
+	db -1 ; end
+
+	; BURGLAR (8) - CINNABAR GYM (11,8), gate 3.  Yellow BurglarData 5.
+	db "@", TRAINERTYPE_NORMAL
+	db 41, PONYTA
+	db -1 ; end
+
+	; BURGLAR (9) - CINNABAR GYM (3,14), gate 5.  Yellow BurglarData 6.
+	db "@", TRAINERTYPE_NORMAL
+	db 37, VULPIX
+	db 37, GROWLITHE
 	db -1 ; end
 
 FirebreatherGroup:

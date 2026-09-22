@@ -2180,8 +2180,29 @@
 	const EVENT_POKEMON_MANSION_1F_HIDDEN_MOON_STONE   ; (8,16)
 	const EVENT_POKEMON_MANSION_3F_HIDDEN_MAX_REVIVE   ; (1,9)
 	const EVENT_POKEMON_MANSION_B1F_HIDDEN_RARE_CANDY  ; (1,9)
+; Kanto hack (M9 12n): CINNABAR GYM, Yellow's quiz gym.  Yellow keeps the seven
+; gym trainers' flags in EVENT_BEAT_CINNABAR_GYM_TRAINER_0..6 (TRAINER_0 is the
+; gate-less SUPER NERD at (17,2); TRAINER_g guards gate g) and the six quiz
+; gates in EVENT_CINNABAR_GYM_GATE1..6_UNLOCKED, persistent for the rest of the
+; game; EVENT_GOT_TM38 is BLAINE's one-shot TM38 FIRE BLAST.  Appended, never
+; renumbered (D49).  Yellow's EVENT_CINNABAR_GYM_GATE0_UNLOCKED is set by
+; beating TRAINER_0 and read by nothing, so it has no row here.
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_0 ; SUPER NERD (17,2), no gate
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_1 ; BURGLAR (17,8), gate 1
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_2 ; SUPER NERD (11,4), gate 2
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_3 ; BURGLAR (11,8), gate 3
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_4 ; SUPER NERD (11,14), gate 4
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_5 ; BURGLAR (3,14), gate 5
+	const EVENT_BEAT_CINNABAR_GYM_TRAINER_6 ; SUPER NERD (3,8), gate 6
+	const EVENT_CINNABAR_GYM_GATE1_UNLOCKED ; Yellow block (9,3)
+	const EVENT_CINNABAR_GYM_GATE2_UNLOCKED ; Yellow block (6,3)
+	const EVENT_CINNABAR_GYM_GATE3_UNLOCKED ; Yellow block (6,6)
+	const EVENT_CINNABAR_GYM_GATE4_UNLOCKED ; Yellow block (3,8)
+	const EVENT_CINNABAR_GYM_GATE5_UNLOCKED ; Yellow block (2,6)
+	const EVENT_CINNABAR_GYM_GATE6_UNLOCKED ; Yellow block (2,3)
+	const EVENT_GOT_TM38_FIRE_BLAST
 
-; Unused: next 263 events
+; Unused: next 249 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

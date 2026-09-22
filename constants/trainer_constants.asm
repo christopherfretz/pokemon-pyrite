@@ -666,6 +666,12 @@ DEF KRIS EQU __trainer_class__
 	const NORTON ; unused
 	const HUGH
 	const MARKUS
+; Kanto hack (M9 12n): CINNABAR GYM's four SUPER NERDs, Yellow SuperNerdData
+; rows 9-12, appended and nameless.
+	const SUPER_NERD_15 ; CINNABAR GYM (17,2), no gate
+	const SUPER_NERD_16 ; CINNABAR GYM (11,4), gate 2
+	const SUPER_NERD_17 ; CINNABAR GYM (11,14), gate 4
+	const SUPER_NERD_18 ; CINNABAR GYM (3,8), gate 6
 
 	trainerclass RIVAL2 ; 2a
 	const RIVAL2_1_CHIKORITA
@@ -763,6 +769,10 @@ DEF KRIS EQU __trainer_class__
 	const BURGLAR_4 ; POKeMON MANSION 2F (3,17)
 	const BURGLAR_5 ; POKeMON MANSION 3F (5,11)
 	const BURGLAR_6 ; POKeMON MANSION B1F (16,23)
+; Kanto hack (M9 12n): CINNABAR GYM's three BURGLARs, Yellow BurglarData 4-6.
+	const BURGLAR_7 ; CINNABAR GYM (17,8), gate 1
+	const BURGLAR_8 ; CINNABAR GYM (11,8), gate 3
+	const BURGLAR_9 ; CINNABAR GYM (3,14), gate 5
 
 	trainerclass FIREBREATHER ; 30
 	const OTIS

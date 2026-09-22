@@ -18,8 +18,9 @@
 ;
 ; D97 -- deleting BLUE would lock VIRIDIAN GYM forever (gotcha G12): his script
 ; held the only `clearevent EVENT_VIRIDIAN_GYM_BLUE` in the game, and
-; std_scripts.asm sets that flag at new game.  The clearevent moves into the
-; MAPCALLBACK_NEWMAP below, keyed on EVENT_BEAT_BLAINE.  See the comment there.
+; std_scripts.asm sets that flag at new game.  12g parked the clearevent in the
+; MAPCALLBACK_NEWMAP below; 12n moved it to its intended home, BLAINE's
+; VOLCANOBADGE script in maps/CinnabarGym.asm.
 ;
 ; D91 -- 12m gave SECRET_KEY item id $80 (was MACHINE_PART); the locked gym
 ; door checks the item.  See CinnabarIslandGymDoor.
@@ -45,16 +46,8 @@ CinnabarIslandNewMapCallback:
 	setflag ENGINE_FLYPOINT_CINNABAR
 	clearevent EVENT_MANSION_SWITCH_ON
 	clearevent EVENT_LAB_STILL_REVIVING_FOSSIL
-; D97 (fallback form).  The decision is "VIRIDIAN GYM opens when BLAINE is
-; beaten", and the intended home for this clearevent is CINNABAR GYM's TM38
-; script -- but that map is 12n and does not exist yet, so the same rule is
-; enforced here, on every arrival at the island.  12n MOVES these three lines
-; onto CinnabarGymReceiveTM38's GSC equivalent and deletes them from here; the
-; observable behaviour is identical either way.
-	checkevent EVENT_BEAT_BLAINE
-	iffalse .NoVolcanobadge
-	clearevent EVENT_VIRIDIAN_GYM_BLUE
-.NoVolcanobadge:
+; D97's VIRIDIAN GYM clearevent lived here as a fallback until 12n; it is now
+; in BLAINE's victory script (maps/CinnabarGym.asm).
 	endcallback
 
 ; Yellow's CinnabarIslandDefaultScript: standing on the tile below the GYM door
