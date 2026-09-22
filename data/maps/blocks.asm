@@ -906,9 +906,6 @@ RockTunnelB1F_Blocks:
 DiglettsCave_Blocks:
 	INCBIN "maps/DiglettsCave.blk"
 
-SeafoamGym_Blocks:
-	INCBIN "maps/SeafoamGym.blk"
-
 MrPokemonsHouse_Blocks:
 	INCBIN "maps/MrPokemonsHouse.blk"
 
@@ -1172,6 +1169,7 @@ Route2Gate_Blocks:
 ViridianForestSouthGate_Blocks:
 ViridianForestNorthGate_Blocks:
 Route19FuchsiaGate_Blocks:
+SeafoamGym_Blocks: ; M9 12o (D96): dissolved, never drawn; its own .blk is deleted
 	INCBIN "maps/KantoGateNorthSouth.blk"
 
 Route5SaffronGate_Blocks:

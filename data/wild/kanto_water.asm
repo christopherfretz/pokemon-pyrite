@@ -99,25 +99,57 @@ KantoWaterWildMons:
 ; (its water is fishing-only; see FISHGROUP_KANTO_SAFARI* in
 ; data/maps/maps.asm).
 
+; Kanto hack (M9 12o): ROUTES 19, 20 and 21 carry Yellow's one sea table
+; (vendor/pokeyellow/data/wild/maps/Route19.asm, Route20.asm, Route21.asm:
+; rate 5, TENTACOOL L5/10/15/5/10/15/20/30/35/40).  `percent` cannot express
+; 5/256 (`2 percent` is 5, but reads as a rounding accident), so it is written
+; literally as for ROUTE_6.  Crystal's three water slots (60/30/10) take
+; Yellow's top three (L5/L10/L15, 19.9+19.9+15.2 of Yellow's odds); the
+; dropped tail (L5/10/15 repeats, L20/30/35/40, ~45% of Yellow's odds but all
+; TENTACOOL) costs only the high levels -- Crystal's +0..+4 surf level buff
+; reaches L19.  Gone: Crystal's L30-35 TENTACOOL/TENTACRUEL (TENTACRUEL is not
+; a Yellow surf encounter on these routes at all).
 	def_water_wildmons ROUTE_19
-	db 6 percent ; encounter rate
-	db 35, TENTACOOL
-	db 30, TENTACOOL
-	db 35, TENTACRUEL
+	db 5 ; encounter rate: Yellow's own 5/256 (~2.0%)
+	db 5, TENTACOOL
+	db 10, TENTACOOL
+	db 15, TENTACOOL
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_20
-	db 6 percent ; encounter rate
-	db 35, TENTACOOL
-	db 30, TENTACOOL
-	db 35, TENTACRUEL
+	db 5 ; encounter rate: Yellow's own 5/256 (~2.0%)
+	db 5, TENTACOOL
+	db 10, TENTACOOL
+	db 15, TENTACOOL
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_21
-	db 6 percent ; encounter rate
-	db 35, TENTACOOL
+	db 5 ; encounter rate: Yellow's own 5/256 (~2.0%)
+	db 5, TENTACOOL
+	db 10, TENTACOOL
+	db 15, TENTACOOL
+	end_water_wildmons
+
+; Kanto hack (M9 12o): SEAFOAM ISLANDS B3F and B4F -- Yellow's only two Seafoam
+; floors with surf encounters (SeafoamIslandsB3F.asm/B4F.asm: rate 5,
+; TENTACOOL 25/30/20, STARYU 30, TENTACOOL 35, STARYU 30, TENTACOOL 40, STARYU
+; 30/30/30; 1F/B1F/B2F are `def_water_wildmons 0`, so they get no table).
+; A straight top-three (25/30/20 TENTACOOL) would drop STARYU, which is 30.1%
+; of Yellow's odds, so the fold keeps the species split instead: 60% TENTACOOL
+; L25 (slot 1), 30% STARYU L30 (slot 4), 10% TENTACOOL L30 (slot 2) = 70/30
+; against Yellow's 69.9/30.1.
+	def_water_wildmons SEAFOAM_ISLANDS_B3F
+	db 5 ; encounter rate: Yellow's own 5/256 (~2.0%)
+	db 25, TENTACOOL
+	db 30, STARYU
 	db 30, TENTACOOL
-	db 35, TENTACRUEL
+	end_water_wildmons
+
+	def_water_wildmons SEAFOAM_ISLANDS_B4F
+	db 5 ; encounter rate: Yellow's own 5/256 (~2.0%)
+	db 25, TENTACOOL
+	db 30, STARYU
+	db 30, TENTACOOL
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_22
@@ -213,11 +245,11 @@ KantoWaterWildMons:
 ; as a MAGIKARP habitat on the Pokedex AREA screen.  Gone with it: Crystal's
 ; `2 percent` MAGIKARP L20/L15/L10 surf rows.
 
-	def_water_wildmons CINNABAR_ISLAND
-	db 6 percent ; encounter rate
-	db 35, TENTACOOL
-	db 30, TENTACOOL
-	db 35, TENTACRUEL
-	end_water_wildmons
+; Kanto hack (M9 12o): CINNABAR_ISLAND's surf table is DELETED, not zeroed, for
+; the same reason as FUCHSIA_CITY above: Yellow's CINNABAR_ISLAND is
+; NothingWildMons (vendor/pokeyellow/data/wild/grass_water.asm) -- its water is
+; fishing-only (FISHGROUP_KANTO_CINNABAR) -- and a 0-rate block would still list
+; CINNABAR as a habitat on the Pokedex AREA screen.  Gone with it: Crystal's
+; `6 percent` TENTACOOL L35/L30 / TENTACRUEL L35 rows.
 
 	db -1 ; end

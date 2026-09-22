@@ -621,7 +621,6 @@ InitializeEventsScript:
 ; flag, so nothing here may pre-set either.
 	setevent EVENT_COPYCATS_HOUSE_2F_DOLL
 	setevent EVENT_VIRIDIAN_GYM_BLUE
-	setevent EVENT_SEAFOAM_GYM_GYM_GUIDE
 	setevent EVENT_MT_MOON_SQUARE_CLEFAIRY
 	setevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL

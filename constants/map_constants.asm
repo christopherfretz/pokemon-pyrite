@@ -194,7 +194,7 @@ ENDM
 ; resized to Yellow's dimensions here (D94) -- ROUTE_19/20/21 and the
 ; POKeCENTER -- and two are dead men walking: ROUTE_19_FUCHSIA_GATE has no
 ; Yellow counterpart (retired by 12c, D98) and SEAFOAM_GYM is Crystal's
-; relocated BLAINE (dissolved by 12o, D96).  Their map_consts stay as dead
+; relocated BLAINE (dissolved in 12o, D96: stub map, no warps).  Their map_consts stay as dead
 ; positional ids either way.
 	map_const CINNABAR_POKECENTER_1F,                       7,  4 ;  1 ; M9 12a: was 5x4; Yellow's is 7x4 (D94)
 	map_const CINNABAR_POKECENTER_2F_BETA,                  8,  4 ;  2

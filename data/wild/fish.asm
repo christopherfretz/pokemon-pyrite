@@ -44,6 +44,12 @@ FishGroups:
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSafari_Super
 ; Kanto hack (M7 10n)
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoFuchsia_Super
+; Kanto hack (M9 12o)
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute19_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute20_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute21_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoCinnabar_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSeafoam_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -386,6 +392,43 @@ FishGroups:
 	db  70 percent,     MAGIKARP,   10
 	db  90 percent + 1, MAGIKARP,   15
 	db 100 percent,     GYARADOS,   15
+
+; Kanto hack (M9 12o): the Cinnabar act's rows, Yellow's four slots in order.
+; db ROUTE_19, TENTACOOL, 15, STARYU, 20, TENTACOOL, 30, TENTACRUEL, 30
+.KantoRoute19_Super:
+	db  40 percent,     TENTACOOL,  15
+	db  70 percent,     STARYU,     20
+	db  90 percent + 1, TENTACOOL,  30
+	db 100 percent,     TENTACRUEL, 30
+
+; db ROUTE_20, TENTACOOL, 20, TENTACRUEL, 20, STARYU, 30, TENTACRUEL, 40
+.KantoRoute20_Super:
+	db  40 percent,     TENTACOOL,  20
+	db  70 percent,     TENTACRUEL, 20
+	db  90 percent + 1, STARYU,     30
+	db 100 percent,     TENTACRUEL, 40
+
+; db ROUTE_21, TENTACOOL, 15, STARYU, 20, TENTACOOL, 30, TENTACRUEL, 30
+.KantoRoute21_Super:
+	db  40 percent,     TENTACOOL,  15
+	db  70 percent,     STARYU,     20
+	db  90 percent + 1, TENTACOOL,  30
+	db 100 percent,     TENTACRUEL, 30
+
+; db CINNABAR_ISLAND, STARYU, 15, TENTACOOL, 15, STARYU, 10, TENTACOOL, 30
+.KantoCinnabar_Super:
+	db  40 percent,     STARYU,     15
+	db  70 percent,     TENTACOOL,  15
+	db  90 percent + 1, STARYU,     10
+	db 100 percent,     TENTACOOL,  30
+
+; (SEAFOAM_ISLANDS_B4F has the identical row.)
+; db SEAFOAM_ISLANDS_B3F, KRABBY, 25, STARYU, 20, KINGLER, 35, STARYU, 40
+.KantoSeafoam_Super:
+	db  40 percent,     KRABBY,     25
+	db  70 percent,     STARYU,     20
+	db  90 percent + 1, KINGLER,    35
+	db 100 percent,     STARYU,     40
 
 TimeFishGroups:
 	;  day              nite

@@ -503,6 +503,157 @@ KantoGrassWildMons:
 	db 12, DITTO
 	end_grass_wildmons
 
+; M9 12o: SEAFOAM ISLANDS (vendor/pokeyellow/data/wild/maps/SeafoamIslands*.asm).
+; Yellow's rates: 1F 15 -> 6 percent, B1F-B4F 10 -> 4 percent (both exact).
+; CAVE environment, so every floor tile rolls.  Ten Yellow slots fold into
+; Crystal's seven (30/30/20/10/5/4/1) keeping Yellow's order, never losing a
+; species; the dropped slots keep each species' share closest to Yellow's
+; (docs/M9-CINNABAR.md "12o findings" has the per-table deltas).
+; SEAFOAM_ISLANDS_1F: dropped slots 3 (27 KRABBY), 5 (36 ZUBAT) and 8 (9 ZUBAT).
+	def_grass_wildmons SEAFOAM_ISLANDS_1F
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 18, ZUBAT
+	db 25, KRABBY
+	db 27, ZUBAT
+	db 28, SLOWPOKE
+	db 30, SLOWPOKE
+	db 27, GOLBAT
+	db 36, GOLBAT
+	; day
+	db 18, ZUBAT
+	db 25, KRABBY
+	db 27, ZUBAT
+	db 28, SLOWPOKE
+	db 30, SLOWPOKE
+	db 27, GOLBAT
+	db 36, GOLBAT
+	; nite
+	db 18, ZUBAT
+	db 25, KRABBY
+	db 27, ZUBAT
+	db 28, SLOWPOKE
+	db 30, SLOWPOKE
+	db 27, GOLBAT
+	db 36, GOLBAT
+	end_grass_wildmons
+
+; SEAFOAM_ISLANDS_B1F: dropped slots 4 (28 KRABBY), 7 (18 ZUBAT) and 10 (26 SEEL).
+	def_grass_wildmons SEAFOAM_ISLANDS_B1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 27, ZUBAT
+	db 26, KRABBY
+	db 36, ZUBAT
+	db 27, GOLBAT
+	db 29, SLOWPOKE
+	db 28, KINGLER
+	db 22, SEEL
+	; day
+	db 27, ZUBAT
+	db 26, KRABBY
+	db 36, ZUBAT
+	db 27, GOLBAT
+	db 29, SLOWPOKE
+	db 28, KINGLER
+	db 22, SEEL
+	; nite
+	db 27, ZUBAT
+	db 26, KRABBY
+	db 36, ZUBAT
+	db 27, GOLBAT
+	db 29, SLOWPOKE
+	db 28, KINGLER
+	db 22, SEEL
+	end_grass_wildmons
+
+; SEAFOAM_ISLANDS_B2F: dropped slots 3 (36 ZUBAT), 7 (29 KRABBY) and 8 (36 GOLBAT).
+	def_grass_wildmons SEAFOAM_ISLANDS_B2F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 27, ZUBAT
+	db 27, KRABBY
+	db 27, GOLBAT
+	db 28, KINGLER
+	db 24, SEEL
+	db 31, SLOWPOKE
+	db 31, SLOWBRO
+	; day
+	db 27, ZUBAT
+	db 27, KRABBY
+	db 27, GOLBAT
+	db 28, KINGLER
+	db 24, SEEL
+	db 31, SLOWPOKE
+	db 31, SLOWBRO
+	; nite
+	db 27, ZUBAT
+	db 27, KRABBY
+	db 27, GOLBAT
+	db 28, KINGLER
+	db 24, SEEL
+	db 31, SLOWPOKE
+	db 31, SLOWBRO
+	end_grass_wildmons
+
+; SEAFOAM_ISLANDS_B3F: dropped slots 4 (27 ZUBAT), 7 (31 KRABBY) and 10 (32 DEWGONG).
+	def_grass_wildmons SEAFOAM_ISLANDS_B3F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 27, GOLBAT
+	db 36, ZUBAT
+	db 29, KRABBY
+	db 30, KINGLER
+	db 26, SEEL
+	db 30, SEEL
+	db 28, DEWGONG
+	; day
+	db 27, GOLBAT
+	db 36, ZUBAT
+	db 29, KRABBY
+	db 30, KINGLER
+	db 26, SEEL
+	db 30, SEEL
+	db 28, DEWGONG
+	; nite
+	db 27, GOLBAT
+	db 36, ZUBAT
+	db 29, KRABBY
+	db 30, KINGLER
+	db 26, SEEL
+	db 30, SEEL
+	db 28, DEWGONG
+	end_grass_wildmons
+
+; SEAFOAM_ISLANDS_B4F: dropped slots 7 (27 GOLBAT), 8 (45 ZUBAT) and 10 (34 DEWGONG).
+	def_grass_wildmons SEAFOAM_ISLANDS_B4F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 36, GOLBAT
+	db 36, ZUBAT
+	db 30, KRABBY
+	db 32, KINGLER
+	db 28, SEEL
+	db 32, SEEL
+	db 30, DEWGONG
+	; day
+	db 36, GOLBAT
+	db 36, ZUBAT
+	db 30, KRABBY
+	db 32, KINGLER
+	db 28, SEEL
+	db 32, SEEL
+	db 30, DEWGONG
+	; nite
+	db 36, GOLBAT
+	db 36, ZUBAT
+	db 30, KRABBY
+	db 32, KINGLER
+	db 28, SEEL
+	db 32, SEEL
+	db 30, DEWGONG
+	end_grass_wildmons
+
 	def_grass_wildmons VICTORY_ROAD
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
@@ -1251,32 +1402,38 @@ KantoGrassWildMons:
 	db 26, RATICATE
 	end_grass_wildmons
 
+; M9 12o: Yellow's ROUTE 21 grass (vendor/pokeyellow/data/wild/maps/Route21.asm),
+; replacing Crystal's TANGELA / MR__MIME table.  Yellow's rate 25 -> 10 percent
+; (= 25).  Flat across morn/day/nite (Yellow has no time of day).  Ten slots
+; fold into seven keeping Yellow's order; drops chosen to keep each species'
+; share closest to Yellow's.
+; ROUTE_21: dropped slots 4 (11 PIDGEY), 5 (17 PIDGEY) and 6 (15 RATTATA).
 	def_grass_wildmons ROUTE_21
-	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 30, MR__MIME
-	db 28, MR__MIME
-	db 28, MR__MIME
+	db 15, PIDGEY
+	db 13, RATTATA
+	db 13, PIDGEY
+	db 15, RATICATE
+	db 17, PIDGEOTTO
+	db 19, PIDGEOTTO
+	db 15, PIDGEOTTO
 	; day
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 28, MR__MIME
-	db 30, MR__MIME
-	db 30, MR__MIME
+	db 15, PIDGEY
+	db 13, RATTATA
+	db 13, PIDGEY
+	db 15, RATICATE
+	db 17, PIDGEOTTO
+	db 19, PIDGEOTTO
+	db 15, PIDGEOTTO
 	; nite
-	db 30, TANGELA
-	db 25, RATTATA
-	db 35, TANGELA
-	db 20, RATICATE
-	db 30, TANGELA
-	db 28, TANGELA
-	db 28, TANGELA
+	db 15, PIDGEY
+	db 13, RATTATA
+	db 13, PIDGEY
+	db 15, RATICATE
+	db 17, PIDGEOTTO
+	db 19, PIDGEOTTO
+	db 15, PIDGEOTTO
 	end_grass_wildmons
 
 ; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 2): Yellow's Route 22 table,

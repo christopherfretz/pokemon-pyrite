@@ -97,6 +97,16 @@ DEF NUM_MAP_PALETTES EQU const_value
 ; in place of DRATINI, and it is the only GYARADOS row in Yellow's whole Super
 ; Rod table -- so it needs a group of its own.  Appended, never inserted (G7).
 	const FISHGROUP_KANTO_FUCHSIA        ; FUCHSIA_CITY
+; Kanto hack (M9 12o, D102): the Cinnabar act's five Super Rod rows
+; (vendor/pokeyellow/data/wild/super_rod.asm).  ROUTE_21's row is identical to
+; ROUTE_19's but D102 gives it its own group anyway, so the two routes stay
+; independently tunable; SEAFOAM B3F and B4F share one row and one group.
+; Appended, never inserted (G7) -- ids 31-35.
+	const FISHGROUP_KANTO_ROUTE_19       ; ROUTE_19
+	const FISHGROUP_KANTO_ROUTE_20       ; ROUTE_20
+	const FISHGROUP_KANTO_ROUTE_21       ; ROUTE_21
+	const FISHGROUP_KANTO_CINNABAR       ; CINNABAR_ISLAND
+	const FISHGROUP_KANTO_SEAFOAM        ; SEAFOAM_ISLANDS_B3F/B4F
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections
