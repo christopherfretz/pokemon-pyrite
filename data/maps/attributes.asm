@@ -798,7 +798,7 @@ ENDM
 	map_attributes Route27SandstormHouse, ROUTE_27_SANDSTORM_HOUSE, $00
 	map_attributes Route29Route46Gate, ROUTE_29_ROUTE_46_GATE, $00
 	map_attributes FightingDojo, FIGHTING_DOJO, $00
-	map_attributes SaffronGym, SAFFRON_GYM, $00
+	map_attributes SaffronGym, SAFFRON_GYM, $2e ; Kanto hack (M8 11l): Yellow's border block
 	map_attributes SaffronMart, SAFFRON_MART, $00
 	map_attributes SaffronPokecenter1F, SAFFRON_POKECENTER_1F, $00
 	map_attributes SaffronPokecenter2FBeta, SAFFRON_POKECENTER_2F_BETA, $00

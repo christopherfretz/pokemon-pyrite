@@ -2167,10 +2167,14 @@ TeacherGroup:
 
 SabrinaGroup:
 	; SABRINA (1)
-	db "SABRINA@", TRAINERTYPE_MOVES
-	db 46, ESPEON,     SAND_ATTACK, QUICK_ATTACK, SWIFT, PSYCHIC_M
-	db 46, MR__MIME,   BARRIER, REFLECT, BATON_PASS, PSYCHIC_M
-	db 48, ALAKAZAM,   RECOVER, FUTURE_SIGHT, PSYCHIC_M, REFLECT
+; Kanto hack (M8 11l, D79): Yellow's SABRINA -- SabrinaData in
+; vendor/pokeyellow/data/trainers/parties.asm.  Yellow's $FF-prefixed row is a
+; per-#MON level list with no custom moves, so it becomes a plain
+; TRAINERTYPE_NORMAL row here (G9); ESPEON and the Gen 2 movesets are gone.
+	db "SABRINA@", TRAINERTYPE_NORMAL
+	db 50, ABRA
+	db 50, KADABRA
+	db 50, ALAKAZAM
 	db -1 ; end
 
 BugCatcherGroup:
@@ -3717,72 +3721,60 @@ PsychicGroup:
 	db -1 ; end
 
 	; PSYCHIC_T (2)
-	db "FRANKLIN@", TRAINERTYPE_NORMAL
-	db 37, KADABRA
-	db -1 ; end
-
-	; PSYCHIC_T (3)
 	db "HERMAN@", TRAINERTYPE_NORMAL
 	db 30, EXEGGCUTE
 	db 30, EXEGGCUTE
 	db 30, EXEGGUTOR
 	db -1 ; end
 
-	; PSYCHIC_T (4)
+	; PSYCHIC_T (3)
 	db "FIDEL@", TRAINERTYPE_NORMAL
 	db 34, XATU
 	db -1 ; end
 
-	; PSYCHIC_T (5)
+	; PSYCHIC_T (4)
 	db "GREG@", TRAINERTYPE_MOVES
 	db 17, DROWZEE,    HYPNOSIS, DISABLE, DREAM_EATER, NO_MOVE
 	db -1 ; end
 
-	; PSYCHIC_T (6)
+	; PSYCHIC_T (5)
 	db "NORMAN@", TRAINERTYPE_MOVES
 	db 17, SLOWPOKE,   TACKLE, GROWL, WATER_GUN, NO_MOVE
 	db 20, SLOWPOKE,   CURSE, BODY_SLAM, WATER_GUN, CONFUSION
 	db -1 ; end
 
-	; PSYCHIC_T (7)
+	; PSYCHIC_T (6)
 	db "MARK@", TRAINERTYPE_MOVES
 	db 13, ABRA,       TELEPORT, FLASH, NO_MOVE, NO_MOVE
 	db 13, ABRA,       TELEPORT, FLASH, NO_MOVE, NO_MOVE
 	db 15, KADABRA,    TELEPORT, KINESIS, CONFUSION, NO_MOVE
 	db -1 ; end
 
-	; PSYCHIC_T (8)
+	; PSYCHIC_T (7)
 	db "PHIL@", TRAINERTYPE_MOVES
 	db 24, NATU,       LEER, NIGHT_SHADE, FUTURE_SIGHT, CONFUSE_RAY
 	db 26, KADABRA,    DISABLE, PSYBEAM, RECOVER, FUTURE_SIGHT
 	db -1 ; end
 
-	; PSYCHIC_T (9)
+	; PSYCHIC_T (8)
 	db "RICHARD@", TRAINERTYPE_NORMAL
 	db 36, ESPEON
 	db -1 ; end
 
-	; PSYCHIC_T (10)
+	; PSYCHIC_T (9)
 	db "GILBERT@", TRAINERTYPE_NORMAL
 	db 30, STARMIE
 	db 30, EXEGGCUTE
 	db 34, GIRAFARIG
 	db -1 ; end
 
-	; PSYCHIC_T (11)
-	db "JARED@", TRAINERTYPE_NORMAL
-	db 32, MR__MIME
-	db 32, EXEGGCUTE
-	db 35, EXEGGCUTE
-	db -1 ; end
-
-	; PSYCHIC_T (12)
+	; PSYCHIC_T (10)
 	db "RODNEY@", TRAINERTYPE_NORMAL
 	db 29, DROWZEE
 	db 33, HYPNO
 	db -1 ; end
 
-	; PSYCHIC_T (13)
+	; PSYCHIC_T (11)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 1.
 	db "TYRON@", TRAINERTYPE_NORMAL
 	db 31, KADABRA
@@ -3791,14 +3783,14 @@ PsychicGroup:
 	db 31, KADABRA
 	db -1 ; end
 
-	; PSYCHIC_T (14)
+	; PSYCHIC_T (12)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 2.
 	db "HOLLIS@", TRAINERTYPE_NORMAL
 	db 34, MR__MIME
 	db 34, KADABRA
 	db -1 ; end
 
-	; PSYCHIC_T (15)
+	; PSYCHIC_T (13)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 3.
 	db "EZRA@", TRAINERTYPE_NORMAL
 	db 33, SLOWPOKE
@@ -3806,7 +3798,7 @@ PsychicGroup:
 	db 33, SLOWBRO
 	db -1 ; end
 
-	; PSYCHIC_T (16)
+	; PSYCHIC_T (14)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's PsychicData row 4.
 	db "DARIUS@", TRAINERTYPE_NORMAL
 	db 38, SLOWBRO
@@ -4406,33 +4398,21 @@ MediumGroup:
 	db 22, GASTLY
 	db -1 ; end
 
-	; MEDIUM (6)
-	db "REBECCA@", TRAINERTYPE_NORMAL
-	db 35, DROWZEE
-	db 35, HYPNO
-	db -1 ; end
-
-	; MEDIUM (7)
-	db "DORIS@", TRAINERTYPE_NORMAL
-	db 34, SLOWPOKE
-	db 36, SLOWBRO
-	db -1 ; end
-
 ; Kanto hack (M6 9f): #MON TOWER 4F's three channelers -- Yellow ChannelerData
 ; rows 9, 10 and 12 (vendor/pokeyellow/data/trainers/parties.asm:725,726,730).
 ; Names are invented (D13); 9g appends 5F's four and 9h 6F's three after these.
-	; MEDIUM (8)
+	; MEDIUM (6)
 	db "AGNES@", TRAINERTYPE_NORMAL
 	db 24, GASTLY
 	db -1 ; end
 
-	; MEDIUM (9)
+	; MEDIUM (7)
 	db "EDITH@", TRAINERTYPE_NORMAL
 	db 23, GASTLY
 	db 23, GASTLY
 	db -1 ; end
 
-	; MEDIUM (10)
+	; MEDIUM (8)
 	db "HAZEL@", TRAINERTYPE_NORMAL
 	db 22, GASTLY
 	db -1 ; end
@@ -4440,27 +4420,27 @@ MediumGroup:
 ; Kanto hack (M6 9g): #MON TOWER 5F's four channelers -- Yellow ChannelerData
 ; rows 14, 16, 17 and 18 (vendor/pokeyellow/data/trainers/parties.asm:734,
 ; 738, 739, 740).  Names are invented (D13); 9h appends 6F's three after these.
-	; MEDIUM (11)
+	; MEDIUM (9)
 	db "OLIVE@", TRAINERTYPE_NORMAL
 	db 23, HAUNTER
 	db -1 ; end
 
-	; MEDIUM (12)
+	; MEDIUM (10)
 	db "CORA@", TRAINERTYPE_NORMAL
 	db 22, GASTLY
 	db -1 ; end
 
-	; MEDIUM (13)
+	; MEDIUM (11)
 	db "RUBY@", TRAINERTYPE_NORMAL
 	db 24, GASTLY
 	db -1 ; end
 
-	; MEDIUM (14)
+	; MEDIUM (12)
 	db "MYRTLE@", TRAINERTYPE_NORMAL
 	db 22, HAUNTER
 	db -1 ; end
 
-	; MEDIUM (15)
+	; MEDIUM (13)
 	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 19.
 	db "ALMA@", TRAINERTYPE_NORMAL
 	db 22, GASTLY
@@ -4468,32 +4448,32 @@ MediumGroup:
 	db 22, GASTLY
 	db -1 ; end
 
-	; MEDIUM (16)
+	; MEDIUM (14)
 	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 20.
 	db "NORA@", TRAINERTYPE_NORMAL
 	db 24, GASTLY
 	db -1 ; end
 
-	; MEDIUM (17)
+	; MEDIUM (15)
 	; Kanto hack (M6 9h): POKéMON TOWER 6F, Yellow's ChannelerData row 21.
 	db "VERA@", TRAINERTYPE_NORMAL
 	db 24, GASTLY
 	db -1 ; end
 
-	; MEDIUM (18)
+	; MEDIUM (16)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 22.
 	db "TASHA@", TRAINERTYPE_NORMAL
 	db 34, GASTLY
 	db 34, HAUNTER
 	db -1 ; end
 
-	; MEDIUM (19)
+	; MEDIUM (17)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 23.
 	db "MARLENA@", TRAINERTYPE_NORMAL
 	db 38, HAUNTER
 	db -1 ; end
 
-	; MEDIUM (20)
+	; MEDIUM (18)
 	; Kanto hack (M8 11a): SAFFRON GYM, Yellow's ChannelerData row 24.
 	db "BEULAH@", TRAINERTYPE_NORMAL
 	db 33, GASTLY

@@ -2037,8 +2037,12 @@
 ; EVENT_BEAT_SILPH_CO_RIVAL by SilphCo7FObjectsCallback on every map load, the
 ; same shape as the CERULEAN / S.S. ANNE / POKEMON TOWER rivals.
 	const EVENT_SILPH_CO_7F_RIVAL_HIDDEN
+; SAFFRON GYM (11l).  SABRINA hands over TM81 PSYWAVE (Yellow's TM46) exactly
+; once; Yellow's EVENT_GOT_TM46.  Appended at the END of the used list so no
+; existing flag index moves.
+	const EVENT_GOT_TM81_PSYWAVE
 
-; Unused: next 331 events
+; Unused: next 330 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -780,7 +780,6 @@ DEF KRIS EQU __trainer_class__
 
 	trainerclass PSYCHIC_T ; 34
 	const NATHAN
-	const FRANKLIN
 	const HERMAN
 	const FIDEL
 	const GREG
@@ -789,7 +788,6 @@ DEF KRIS EQU __trainer_class__
 	const PHIL
 	const RICHARD
 	const GILBERT
-	const JARED
 	const RODNEY
 ; Kanto hack (M8 11a, docs/M8-SAFFRON.md 0.6): SAFFRON GYM's four psychics,
 ; Yellow's PSYCHIC_TR 1-4.  Yellow gives them no names, so these are invented
@@ -917,8 +915,6 @@ DEF KRIS EQU __trainer_class__
 	const BETHANY ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 5
 	const MARGRET ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 6
 	const ETHEL ; Kanto hack (M6 9f): #MON TOWER 3F, Yellow's CHANNELER 8
-	const REBECCA
-	const DORIS
 	const AGNES ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 9
 	const EDITH ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 10
 	const HAZEL ; Kanto hack (M6 9f): #MON TOWER 4F, Yellow's CHANNELER 12
