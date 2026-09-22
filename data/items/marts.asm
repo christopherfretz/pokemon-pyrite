@@ -34,6 +34,7 @@ Marts:
 	dw MartMtMoon
 	dw MartIndigoPlateau
 	dw MartUnderground
+	dw MartCinnabar
 	assert_table_length NUM_MARTS
 
 MartCherrygrove:
@@ -366,6 +367,19 @@ MartFuchsia:
 MartSaffron:
 ; Kanto hack (M8 11d): Yellow's SAFFRON MART stock, exactly.
 	db 6 ; # items
+	db GREAT_BALL
+	db HYPER_POTION
+	db MAX_REPEL
+	db ESCAPE_ROPE
+	db FULL_HEAL
+	db REVIVE
+	db -1 ; end
+
+MartCinnabar:
+; Kanto hack (M9 12h): Yellow's CinnabarMartClerkText stock, in Yellow's order
+; (vendor/pokeyellow/data/items/marts.asm).
+	db 7 ; # items
+	db ULTRA_BALL
 	db GREAT_BALL
 	db HYPER_POTION
 	db MAX_REPEL

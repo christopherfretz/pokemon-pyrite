@@ -44,4 +44,7 @@ DEF NUM_MART_TYPES EQU const_value
 	const MART_MT_MOON
 	const MART_INDIGO_PLATEAU
 	const MART_UNDERGROUND
+; Kanto hack (M9 12h): Yellow's CINNABAR MART, appended so no existing
+; index moves.
+	const MART_CINNABAR
 DEF NUM_MARTS EQU const_value
