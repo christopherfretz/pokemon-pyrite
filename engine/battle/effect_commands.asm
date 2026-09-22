@@ -675,26 +675,45 @@ BattleCommand_CheckObedience:
 	ret z
 
 .obeylevel
-	; The maximum obedience level is constrained by owned badges:
+	; The maximum obedience level is constrained by owned badges.  This is the
+	; Kanto-first hack (docs/D77-OBEDIENCE.md): the KANTO act runs Yellow's
+	; ladder off wKantoBadges (CASCADE 30 / RAINBOW 50 / MARSH 70 / EARTH all,
+	; `CheckForDisobedience` in pokeyellow's engine/battle/core.asm) and the
+	; JOHTO act keeps Crystal's off wJohtoBadges (HIVE / FOG / STORM /
+	; RISING).  The ceiling is the HIGHER of the two acts' ladders.
+	;
+	; The two ladders sit rung-for-rung on the SAME bit positions, and the
+	; ladder is a function of the highest set rung alone, so
+	; max(ladder(johto), ladder(kanto)) is exactly ladder(johto | kanto):
+	; one extra OR instead of a second copy of the ladder.  The four rungless
+	; badges in each byte are never tested, so OR-ing them in is harmless.
+	ASSERT HIVEBADGE   == CASCADEBADGE
+	ASSERT FOGBADGE    == RAINBOWBADGE
+	ASSERT STORMBADGE  == MARSHBADGE
+	ASSERT RISINGBADGE == EARTHBADGE
+	ASSERT wKantoBadges == wJohtoBadges + 1
 	ld hl, wJohtoBadges
+	ld a, [hli]
+	or [hl] ; wKantoBadges
+	ld e, a
 
-	; risingbadge
-	bit RISINGBADGE, [hl]
+	; risingbadge / earthbadge
+	bit RISINGBADGE, e
 	ld a, MAX_LEVEL + 1
 	jr nz, .getlevel
 
-	; stormbadge
-	bit STORMBADGE, [hl]
+	; stormbadge / marshbadge
+	bit STORMBADGE, e
 	ld a, 70
 	jr nz, .getlevel
 
-	; fogbadge
-	bit FOGBADGE, [hl]
+	; fogbadge / rainbowbadge
+	bit FOGBADGE, e
 	ld a, 50
 	jr nz, .getlevel
 
-	; hivebadge
-	bit HIVEBADGE, [hl]
+	; hivebadge / cascadebadge
+	bit HIVEBADGE, e
 	ld a, 30
 	jr nz, .getlevel
 
