@@ -107,6 +107,8 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_KANTO_ROUTE_21       ; ROUTE_21
 	const FISHGROUP_KANTO_CINNABAR       ; CINNABAR_ISLAND
 	const FISHGROUP_KANTO_SEAFOAM        ; SEAFOAM_ISLANDS_B3F/B4F
+; Kanto hack (M10 13e-1): Yellow's ROUTE_23 Super Rod row -- id 36, appended.
+	const FISHGROUP_KANTO_ROUTE_23       ; ROUTE_23
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections

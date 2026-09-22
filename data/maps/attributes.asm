@@ -435,6 +435,12 @@ ENDM
 	connection west, Route9, ROUTE_9, 0
 
 	map_attributes IndigoPlateau, INDIGO_PLATEAU, $0f
+
+; Kanto hack (M10 13e-1): Yellow's ROUTE 23.  No connections yet: Yellow's
+; north connection to INDIGO PLATEAU waits for 13e-2 (a GSC connection strip is
+; read through the current map's tileset collision, and the plateau is still on
+; TILESET_KANTO); (9,0)/(10,0) are carpet warps in the meantime.
+	map_attributes Route23, ROUTE_23, $0f
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $00
 	map_attributes SproutTower2F, SPROUT_TOWER_2F, $00
 	map_attributes SproutTower3F, SPROUT_TOWER_3F, $00

@@ -44,6 +44,7 @@
 	const TILESET_KANTO_INTERIOR ; 2a
 	const TILESET_KANTO_LAB ; 2b
 	const TILESET_KANTO_GYM ; 2c
+	const TILESET_KANTO_PLATEAU ; 2d (M10 13e-1: Yellow's PLATEAU)
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

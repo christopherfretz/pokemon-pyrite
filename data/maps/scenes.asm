@@ -93,4 +93,5 @@ MapScenes::
 	scene_var PEWTER_CITY,                                 wPewterCitySceneID
 	scene_var BILLS_HOUSE,                                 wBillsHouseSceneID
 	scene_var VERMILION_CITY,                              wVermilionCitySceneID
+	scene_var ROUTE_23,                                    wRoute23SceneID ; M10 13e-1
 	db -1 ; end

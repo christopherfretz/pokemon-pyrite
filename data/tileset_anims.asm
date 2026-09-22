@@ -227,6 +227,9 @@ UnusedTilesetRocketHouseAnim: ; unreferenced
 	tileframe WaitTileAnimation
 	tileframe DoneTileAnimation
 
+TilesetKantoPlateauAnim:
+; Kanto hack (M10 13e-1): Yellow's PLATEAU header is TILEANIM_WATER on tile $14
+; (ROUTE 23's lake), outdoors like SHIP_PORT's sea -- same list.
 TilesetKantoDockAnim:
 ; Kanto hack (docs/M4-VERMILION.md P1/A): Yellow's SHIP_PORT sea, tile $14.
 ; Crystal's TilesetPortAnim uses AnimateWaterTile, which REPLACES tile $14 with

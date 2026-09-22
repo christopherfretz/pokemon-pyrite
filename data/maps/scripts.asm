@@ -463,6 +463,7 @@ INCLUDE "maps/Route24.asm"
 INCLUDE "maps/Route3.asm"
 INCLUDE "maps/Route4.asm"
 INCLUDE "maps/IndigoPlateau.asm"
+INCLUDE "maps/Route23.asm" ; Kanto hack (M10 13e-1)
 INCLUDE "maps/SilverCavePokecenter1F.asm"
 INCLUDE "maps/Route28SteelWingHouse.asm"
 

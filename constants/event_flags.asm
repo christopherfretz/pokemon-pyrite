@@ -295,7 +295,7 @@
 	const EVENT_BEVERLY_ASKED_FOR_PHONE_NUMBER
 	const EVENT_BEAT_KANTO_ELITE_FOUR ; Kanto hack (M10 13d, D109): renamed in place, was an unused const_skip in Crystal's phone block; set ONLY by the Kanto Hall of Fame (13k).  Crystal's EVENT_BEAT_ELITE_FOUR stays clear for the Johto act (C-6).  Read by VICTORY ROAD GATE (south/west seal, D132); 13k re-points the Pewter gramps and the Cerulean Cave guard to it
 	const EVENT_HUEY_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_ROUTE_23_HIDDEN_FULL_RESTORE ; Kanto hack (M10 13e-1): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's ROUTE 23 hidden item (9,44)
 	const EVENT_GOT_PROTEIN_FROM_HUEY
 	const EVENT_GOT_HP_UP_FROM_JOEY
 	const EVENT_GOT_CARBOS_FROM_VANCE
@@ -303,9 +303,9 @@
 	const EVENT_GOT_CALCIUM_FROM_ERIN
 	const EVENT_KENJI_ON_BREAK
 	const EVENT_GAVEN_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_ROUTE_23_HIDDEN_ULTRA_BALL ; Kanto hack (M10 13e-1): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's ROUTE 23 hidden item (19,70)
 	const EVENT_BETH_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_ROUTE_23_HIDDEN_MAX_ETHER ; Kanto hack (M10 13e-1): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's ROUTE 23 hidden item (8,90)
 	const EVENT_JOSE_ASKED_FOR_PHONE_NUMBER
 	const_skip ; unused in Crystal
 	const EVENT_REENA_ASKED_FOR_PHONE_NUMBER
@@ -1760,8 +1760,9 @@
 ; three youngster flags and the two dead PSYCHIC_T flags were renamed in place
 ; above, the remaining six are appended here.  EVENT_BEAT_ROUTE_12_SNORLAX is
 ; Yellow's EVENT_BEAT_ROUTE12_SNORLAX, read by the gate's left binoculars; it
-; could not reuse Crystal's EVENT_FOUGHT_SNORLAX, which is still live in
-; VictoryRoadGate and engine/phone/scripts/irwin_gossip.asm.  482 free -> 476.
+; could not reuse Crystal's EVENT_FOUGHT_SNORLAX, which was then live in
+; VictoryRoadGate and engine/phone/scripts/irwin_gossip.asm (VictoryRoadGate
+; stopped reading it in M10 13d; irwin_gossip still does).  482 free -> 476.
 	const EVENT_BEAT_YOUNGSTER_CLIFF ; ROUTE 11, Yellow's YOUNGSTER 12
 	const EVENT_BEAT_GENTLEMAN_ARTHUR ; ROUTE 11, Yellow's GAMBLER 1
 	const EVENT_BEAT_GENTLEMAN_LEOPOLD ; ROUTE 11, Yellow's GAMBLER 2

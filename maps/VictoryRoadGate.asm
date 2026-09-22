@@ -22,10 +22,10 @@
 ;    whatever the badges and steps the player back UP, and the left BLACK BELT
 ;    (hidden only by EVENT_OPENED_MT_SILVER) keeps blocking the row-5 west
 ;    corridor.  With the flag set, both behave exactly as in Crystal (M11).
-;  * NORTH door (9,0)/(10,0): 13e's ROUTE_23.  Until then it warps onto
-;    itself (a harmless no-op), because Crystal's VICTORY_ROAD behind it leads
-;    to Crystal's Silver fight and the Indigo lobby's TELEPORT GUY -> NEW BARK
-;    (C-8/C-12).
+;  * NORTH door (9,0)/(10,0): ROUTE_23's south mouth (M10 13e-1), Yellow's
+;    ROUTE 22 GATE north exit.  (13d parked it on itself, because Crystal's
+;    VICTORY_ROAD behind it leads to Crystal's Silver fight and the Indigo
+;    lobby's TELEPORT GUY -> NEW BARK, C-8/C-12.)
 VictoryRoadGate_MapScripts:
 	def_scene_scripts
 	scene_script VictoryRoadGateNoop1Scene, SCENE_VICTORYROADGATE_BADGE_CHECK
@@ -253,11 +253,11 @@ VictoryRoadGate_MapEvents:
 	warp_event 18,  7, ROUTE_22, 1
 	warp_event  9, 17, ROUTE_26, 1
 	warp_event 10, 17, ROUTE_26, 1
-	; Kanto hack (M10 13d): placeholder -- the north door warps onto itself
-	; until 13e points it at the new ROUTE_23's south mouth (Crystal had
+	; Kanto hack (M10 13e-1): the north door is Yellow's ROUTE 22 GATE north
+	; exit, onto ROUTE_23's south mouth (7,139)/(8,139) (Crystal had
 	; VICTORY_ROAD, 1).
-	warp_event  9,  0, VICTORY_ROAD_GATE, 5
-	warp_event 10,  0, VICTORY_ROAD_GATE, 6
+	warp_event  9,  0, ROUTE_23, 1
+	warp_event 10,  0, ROUTE_23, 2
 	warp_event  1,  7, ROUTE_28, 2
 	warp_event  2,  7, ROUTE_28, 2
 

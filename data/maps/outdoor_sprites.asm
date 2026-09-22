@@ -257,7 +257,11 @@ rept MAX_OUTDOOR_SPRITES - 14
 endr
 
 IndigoGroupSprites:
-rept MAX_OUTDOOR_SPRITES - 0
+; Kanto hack (M10 13e-1): ROUTE 23's badge guards -- Yellow's GUARD sheet is
+; our OFFICER; its two lake guards are SWIMMER_GUY (Yellow's SWIMMER).
+	db SPRITE_OFFICER
+	db SPRITE_SWIMMER_GUY
+rept MAX_OUTDOOR_SPRITES - 2
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

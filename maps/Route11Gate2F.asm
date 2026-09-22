@@ -14,8 +14,9 @@
 ;         wStringBuffer2 for text_decimal.
 ;   (1,2)/(6,2) binoculars.  The left pair reads the SNORLAX on ROUTE 12; the
 ;         flag is EVENT_BEAT_ROUTE_12_SNORLAX (appended in 7l -- Crystal's
-;         EVENT_FOUGHT_SNORLAX is still live in VictoryRoadGate and
-;         irwin_gossip, so it could not be renamed in place).
+;         EVENT_FOUGHT_SNORLAX was then live in VictoryRoadGate and
+;         irwin_gossip, so it could not be renamed in place; VictoryRoadGate
+;         stopped reading it in M10 13d, irwin_gossip still does).
 DEF ROUTE11GATE2F_ITEMFINDER_DEX_REQUIREMENT EQU 30
 
 Route11Gate2F_MapScripts:

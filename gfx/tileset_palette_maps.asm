@@ -138,6 +138,10 @@ INCLUDE "gfx/tilesets/kanto_lab_palette_map.asm"
 TilesetKantoGymPalMap:
 INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"
 
+; Kanto hack: Yellow's PLATEAU tileset, ROUTE 23 (+ INDIGO PLATEAU, 13e-2) (M10 13e-1).
+TilesetKantoPlateauPalMap:
+INCLUDE "gfx/tilesets/kanto_plateau_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

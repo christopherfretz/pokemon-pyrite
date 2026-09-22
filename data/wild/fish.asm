@@ -50,6 +50,8 @@ FishGroups:
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute21_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoCinnabar_Super
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSeafoam_Super
+; Kanto hack (M10 13e-1)
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute23_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -429,6 +431,13 @@ FishGroups:
 	db  70 percent,     STARYU,     20
 	db  90 percent + 1, KINGLER,    35
 	db 100 percent,     STARYU,     40
+
+; Kanto hack (M10 13e-1): Yellow's ROUTE_23 super_rod.asm row.
+.KantoRoute23_Super:
+	db  40 percent,     POLIWAG,    25
+	db  70 percent,     POLIWAG,    30
+	db  90 percent + 1, POLIWHIRL,  30
+	db 100 percent,     POLIWHIRL,  40
 
 TimeFishGroups:
 	;  day              nite

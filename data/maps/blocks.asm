@@ -1435,4 +1435,9 @@ CinnabarGym_Blocks:
 ViridianGym_Blocks:
 	INCBIN "maps/ViridianGym.blk"
 
+; M10 13e-1: Yellow's ROUTE 23 (10x72, 720 B) on TILESET_KANTO_PLATEAU, with the
+; four warp tiles swapped for their clones; scripts/kanto_plateau_blk.py.
+Route23_Blocks:
+	INCBIN "maps/Route23.blk"
+
 ENDSECTION

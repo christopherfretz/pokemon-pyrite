@@ -3293,8 +3293,9 @@ wRoute22SceneID::                                 db
 wPewterCitySceneID::                              db
 wBillsHouseSceneID::                              db ; 6j
 wVermilionCitySceneID::                           db ; 7j
+wRoute23SceneID::                                 db ; M10 13e-1: badge checks passed, 0-7
 
-	ds 42
+	ds 41
 
 ; fight counts
 wJackFightCount::    db
