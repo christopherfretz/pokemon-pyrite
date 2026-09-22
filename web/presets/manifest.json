@@ -166,5 +166,23 @@
   "title": "SAFARI ZONE \u2014 game just started",
   "description": "Inside the SAFARI ZONE's central area, one step in from the gate, with a paid game running: 30 SAFARI BALLs, 502 steps, \u00a5500 taken. Chains from 'SOULBADGE won' (badges faked, KOGA not fought). All four areas, the rest houses, the SECRET HOUSE (HM03) and the GOLD TEETH are real and unplayed.",
   "sav": "safari.sav"
+ },
+ {
+  "id": "saffron",
+  "title": "SAFFRON CITY \u2014 under TEAM ROCKET",
+  "description": "SAFFRON's west entrance, walked in from Route 7 through the gate hut. TEAM ROCKET still holds the city: eight ROCKETs are on the streets and four of them block COPYCAT's house, the GYM, the PIDGEY house and SILPH CO.'s door, so beat SILPH first. One thing is FAKED: the guards' drink flag (Route 7's gate would otherwise turn you back). This branch of the chain forks before CELADON, so it carries three badges and a level-6 party \u2014 the city, SILPH, the DOJO and the GYM are all real and unplayed.",
+  "sav": "saffron.sav"
+ },
+ {
+  "id": "silph",
+  "title": "SILPH CO. 1F \u2014 the raid starts here",
+  "description": "The SILPH CO. lobby, walked in from the 'SAFFRON CITY' preset (same three badges, same level-6 party, same faked drink flag). All eleven floors are untouched: every trainer, the CARD KEY and its twenty doors, the teleport pads, the rival on 7F, JESSIE & JAMES, GIOVANNI and the president's MASTER BALL are real and unplayed. The lift is right there.",
+  "sav": "silph.sav"
+ },
+ {
+  "id": "sabrina",
+  "title": "SAFFRON CITY \u2014 MARSHBADGE won for real",
+  "description": "The SAFFRON GYM doorstep with the MARSHBADGE and TM81 PSYWAVE ACTUALLY FOUGHT for \u2014 SABRINA and her six trainers were beaten in the harness, not flagged \u2014 and the MASTER BALL really taken from the SILPH CO. president, so TEAM ROCKET has left the city. TWO THINGS ARE FAKED: the party is boosted to level 100 so those fights are deterministic, and the climb to GIOVANNI wrote SILPH's trainer and card-key flags instead of fighting the other thirty (GIOVANNI himself was fought). A post-gym start point, not a balanced save \u2014 use 'SILPH CO. 1F' to play it out.",
+  "sav": "sabrina.sav"
  }
 ]
