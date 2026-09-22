@@ -26,7 +26,7 @@
 ;
 ; 12l: the two secret switches at (20,3) and (18,25) and this floor's four
 ; movable gates hang off a `callback MAPCALLBACK_TILES,
-; PokemonMansionB1FSwitchCallback` added below.  Gate blocks (Yellow block
+; PokemonMansionB1FSwitchCallback` (below).  Gate blocks (Yellow block
 ; coords, changeblock coords are 2x these):
 ;   (13,8) off $0e / on $2d | (6,11) off $0e / on $5f
 ;   (4,3)  off $5f / on $0e | (8,8)  off $54 / on $0e
@@ -44,8 +44,40 @@ PokemonMansionB1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	; 12l hangs the switches here:
-	; callback MAPCALLBACK_TILES, PokemonMansionB1FSwitchCallback
+	callback MAPCALLBACK_TILES, PokemonMansionB1FSwitchCallback
+
+; 12l: Yellow's MansionB1FCheckReplaceSwitchDoorBlocks, run on every
+; load of this floor (Yellow: BIT_CUR_MAP_LOADED_1).  The gates live in a
+; subroutine so the switch statue can redraw them in place, as Yellow does.
+PokemonMansionB1FSwitchCallback:
+	scall PokemonMansionB1FGates
+	endcallback
+
+PokemonMansionB1FGates:
+	checkevent EVENT_MANSION_SWITCH_ON
+	iftrue .On
+	changeblock 26, 16, $0e ; Yellow block (13,8)
+	changeblock 12, 22, $0e ; Yellow block (6,11)
+	changeblock  8,  6, $5f ; Yellow block (4,3)
+	changeblock 16, 16, $54 ; Yellow block (8,8)
+	end
+
+.On:
+	changeblock 26, 16, $2d ; Yellow block (13,8)
+	changeblock 12, 22, $5f ; Yellow block (6,11)
+	changeblock  8,  6, $0e ; Yellow block (4,3)
+	changeblock 16, 16, $0e ; Yellow block (8,8)
+	end
+
+; The statues (BGEVENT_UP, Yellow's SPRITE_FACING_UP hidden_events).
+PokemonMansionB1FSwitch:
+	scall PokemonMansionSwitchScript
+	iffalse .NotPressed
+	scall PokemonMansionB1FGates
+	sjump PokemonMansionSwitchRedrawScript
+
+.NotPressed:
+	end
 
 TrainerPokemonMansionB1FBurglar:
 	trainer BURGLAR, BURGLAR_6, EVENT_BEAT_POKEMON_MANSION_B1F_BURGLAR, PokemonMansionB1FBurglarSeenText, PokemonMansionB1FBurglarBeatenText, 0, .Script
@@ -139,6 +171,8 @@ PokemonMansionB1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event 20,  3, BGEVENT_UP, PokemonMansionB1FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
+	bg_event 18, 25, BGEVENT_UP, PokemonMansionB1FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 	bg_event  1,  9, BGEVENT_ITEM, PokemonMansionB1FHiddenRareCandy ; Yellow's hidden RARE CANDY (data/events/hidden_events.asm:135)
 
 	def_object_events

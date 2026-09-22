@@ -20,8 +20,8 @@
 ; global override in data/tilesets/kanto_facility_collision.asm.
 ;
 ; 12l: the secret switch at (2,11) and this floor's three movable gates hang
-; off a `callback MAPCALLBACK_TILES, PokemonMansion2FSwitchCallback` added
-; below.  Gate blocks (Yellow block coords, changeblock coords are 2x these):
+; off a `callback MAPCALLBACK_TILES, PokemonMansion2FSwitchCallback`
+; (below).  Gate blocks (Yellow block coords, changeblock coords are 2x these):
 ;   (4,2) off $0e / on $5f | (9,4) off $54 / on $0e | (3,11) off $5f / on $0e
 	object_const_def
 	const POKEMONMANSION2F_SUPER_NERD
@@ -33,8 +33,38 @@ PokemonMansion2F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	; 12l hangs the switch here:
-	; callback MAPCALLBACK_TILES, PokemonMansion2FSwitchCallback
+	callback MAPCALLBACK_TILES, PokemonMansion2FSwitchCallback
+
+; 12l: Yellow's Mansion2CheckReplaceSwitchDoorBlocks, run on every
+; load of this floor (Yellow: BIT_CUR_MAP_LOADED_1).  The gates live in a
+; subroutine so the switch statue can redraw them in place, as Yellow does.
+PokemonMansion2FSwitchCallback:
+	scall PokemonMansion2FGates
+	endcallback
+
+PokemonMansion2FGates:
+	checkevent EVENT_MANSION_SWITCH_ON
+	iftrue .On
+	changeblock  8,  4, $0e ; Yellow block (4,2)
+	changeblock 18,  8, $54 ; Yellow block (9,4)
+	changeblock  6, 22, $5f ; Yellow block (3,11)
+	end
+
+.On:
+	changeblock  8,  4, $5f ; Yellow block (4,2)
+	changeblock 18,  8, $0e ; Yellow block (9,4)
+	changeblock  6, 22, $0e ; Yellow block (3,11)
+	end
+
+; The statue (BGEVENT_UP, Yellow's SPRITE_FACING_UP hidden_event).
+PokemonMansion2FSwitch:
+	scall PokemonMansionSwitchScript
+	iffalse .NotPressed
+	scall PokemonMansion2FGates
+	sjump PokemonMansionSwitchRedrawScript
+
+.NotPressed:
+	end
 
 TrainerPokemonMansion2FBurglar:
 	trainer BURGLAR, BURGLAR_4, EVENT_BEAT_POKEMON_MANSION_2F_BURGLAR, PokemonMansion2FBurglarSeenText, PokemonMansion2FBurglarBeatenText, 0, .Script
@@ -103,6 +133,7 @@ PokemonMansion2F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  2, 11, BGEVENT_UP, PokemonMansion2FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 
 	def_object_events
 	object_event  3, 17, SPRITE_SUPER_NERD, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, TrainerPokemonMansion2FBurglar, -1

@@ -28,7 +28,7 @@
 ; Yellow.
 ;
 ; 12l: the secret switch at (10,5) and this floor's two movable gates hang off
-; a `callback MAPCALLBACK_TILES, PokemonMansion3FSwitchCallback` added below.
+; a `callback MAPCALLBACK_TILES, PokemonMansion3FSwitchCallback` (below).
 ; Gate blocks (Yellow block coords, changeblock coords are 2x these):
 ;   (7,2) off $0e / on $5f | (7,5) off $5f / on $0e
 	object_const_def
@@ -42,8 +42,36 @@ PokemonMansion3F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	; 12l hangs the switch here:
-	; callback MAPCALLBACK_TILES, PokemonMansion3FSwitchCallback
+	callback MAPCALLBACK_TILES, PokemonMansion3FSwitchCallback
+
+; 12l: Yellow's Mansion3CheckReplaceSwitchDoorBlocks, run on every
+; load of this floor (Yellow: BIT_CUR_MAP_LOADED_1).  The gates live in a
+; subroutine so the switch statue can redraw them in place, as Yellow does.
+PokemonMansion3FSwitchCallback:
+	scall PokemonMansion3FGates
+	endcallback
+
+PokemonMansion3FGates:
+	checkevent EVENT_MANSION_SWITCH_ON
+	iftrue .On
+	changeblock 14,  4, $0e ; Yellow block (7,2)
+	changeblock 14, 10, $5f ; Yellow block (7,5)
+	end
+
+.On:
+	changeblock 14,  4, $5f ; Yellow block (7,2)
+	changeblock 14, 10, $0e ; Yellow block (7,5)
+	end
+
+; The statue (BGEVENT_UP, Yellow's SPRITE_FACING_UP hidden_event).
+PokemonMansion3FSwitch:
+	scall PokemonMansionSwitchScript
+	iffalse .NotPressed
+	scall PokemonMansion3FGates
+	sjump PokemonMansionSwitchRedrawScript
+
+.NotPressed:
+	end
 
 TrainerPokemonMansion3FBurglar:
 	trainer BURGLAR, BURGLAR_5, EVENT_BEAT_POKEMON_MANSION_3F_BURGLAR, PokemonMansion3FBurglarSeenText, PokemonMansion3FBurglarBeatenText, 0, .Script
@@ -131,6 +159,7 @@ PokemonMansion3F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event 10,  5, BGEVENT_UP, PokemonMansion3FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 	bg_event  1,  9, BGEVENT_ITEM, PokemonMansion3FHiddenMaxRevive ; Yellow's hidden MAX REVIVE (data/events/hidden_events.asm:130)
 
 	def_object_events

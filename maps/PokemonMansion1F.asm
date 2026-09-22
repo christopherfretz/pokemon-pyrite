@@ -32,7 +32,7 @@
 ; front-door idiom and it is deliberate.
 ;
 ; 12l: the secret switch at (2,5) and this floor's four movable gates hang off
-; a `callback MAPCALLBACK_TILES, PokemonMansion1FSwitchCallback` added below.
+; a `callback MAPCALLBACK_TILES, PokemonMansion1FSwitchCallback` (below).
 ; Gate blocks (Yellow block coords, changeblock coords are 2x these):
 ;   (12,6) off $0e / on $2d | (8,3) off $2d / on $0e | (10,8) off $2d / on $0e
 ;   (13,13) off $2d / on $98  <-- NOT $0e: (13,13) is the back-door warp clone,
@@ -46,8 +46,78 @@ PokemonMansion1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	; 12l hangs the switch here:
-	; callback MAPCALLBACK_TILES, PokemonMansion1FSwitchCallback
+	callback MAPCALLBACK_TILES, PokemonMansion1FSwitchCallback
+
+; 12l: Yellow's Mansion1CheckReplaceSwitchDoorBlocks, run on every
+; load of this floor (Yellow: BIT_CUR_MAP_LOADED_1).  The gates live in a
+; subroutine so the switch statue can redraw them in place, as Yellow does.
+PokemonMansion1FSwitchCallback:
+	scall PokemonMansion1FGates
+	endcallback
+
+PokemonMansion1FGates:
+	checkevent EVENT_MANSION_SWITCH_ON
+	iftrue .On
+	changeblock 24, 12, $0e ; Yellow block (12,6)
+	changeblock 16,  6, $2d ; Yellow block (8,3)
+	changeblock 20, 16, $2d ; Yellow block (10,8)
+	changeblock 26, 26, $2d ; Yellow block (13,13)
+	end
+
+.On:
+	changeblock 24, 12, $2d ; Yellow block (12,6)
+	changeblock 16,  6, $0e ; Yellow block (8,3)
+	changeblock 20, 16, $0e ; Yellow block (10,8)
+	changeblock 26, 26, $98 ; Yellow block (13,13) -- the back-door warp clone, NOT Yellow's $0e (12k)
+	end
+
+; The statue (BGEVENT_UP, Yellow's SPRITE_FACING_UP hidden_event).
+PokemonMansion1FSwitch:
+	scall PokemonMansionSwitchScript
+	iffalse .NotPressed
+	scall PokemonMansion1FGates
+	sjump PokemonMansionSwitchRedrawScript
+
+.NotPressed:
+	end
+
+; 12l: the body every one of the five statues shares (all four floors are in
+; SECTION "Map Scripts 30", so the scall/sjump are same-bank).  Yellow's
+; PokemonMansion{1F,2F}SwitchText (3F and B1F reuse 2F's) -- "A secret
+; switch! / Press it?", YES/NO; YES prints "Who wouldn't?", plays SFX_GO_INSIDE
+; (our SFX_ENTER_DOOR) and TOGGLES EVENT_MANSION_SWITCH_ON
+; (CheckAndSetEvent / ResetEventReuseHL), then the floor's gates are redrawn in
+; place; NO prints "Not quite yet!".  Returns wScriptVar TRUE if pressed.
+; CINNABAR ISLAND clears the flag on every arrival (maps/CinnabarIsland.asm).
+PokemonMansionSwitchScript:
+	opentext
+	writetext PokemonMansion1FSwitchText
+	yesorno
+	iffalse .NotPressed
+	writetext PokemonMansion1FSwitchPressedText
+	playsound SFX_ENTER_DOOR
+	checkevent EVENT_MANSION_SWITCH_ON
+	iftrue .TurnOff
+	setevent EVENT_MANSION_SWITCH_ON
+	setval TRUE
+	end
+
+.TurnOff:
+	clearevent EVENT_MANSION_SWITCH_ON
+	setval TRUE
+	end
+
+.NotPressed:
+	writetext PokemonMansion1FSwitchNotPressedText
+	waitbutton
+	closetext
+	end ; wScriptVar is still yesorno's FALSE
+
+PokemonMansionSwitchRedrawScript:
+	refreshmap
+	closetext
+	waitsfx
+	end
 
 TrainerPokemonMansion1FScientist:
 	trainer SCIENTIST, SCIENTIST_10, EVENT_BEAT_POKEMON_MANSION_1F_SCIENTIST, PokemonMansion1FScientistSeenText, PokemonMansion1FScientistBeatenText, 0, .Script
@@ -85,6 +155,20 @@ PokemonMansion1FScientistAfterBattleText:
 	cont "talking about."
 	done
 
+PokemonMansion1FSwitchText:
+	text "A secret switch!"
+
+	para "Press it?"
+	done
+
+PokemonMansion1FSwitchPressedText:
+	text "Who wouldn't?"
+	prompt
+
+PokemonMansion1FSwitchNotPressedText:
+	text "Not quite yet!"
+	done
+
 PokemonMansion1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -102,6 +186,7 @@ PokemonMansion1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  2,  5, BGEVENT_UP, PokemonMansion1FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 	bg_event  8, 16, BGEVENT_ITEM, PokemonMansion1FHiddenMoonStone ; Yellow's hidden MOON STONE (data/events/hidden_events.asm:547)
 
 	def_object_events
