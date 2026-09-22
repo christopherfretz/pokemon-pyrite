@@ -130,6 +130,10 @@ INCLUDE "gfx/tilesets/kanto_facility_palette_map.asm"
 TilesetKantoInteriorPalMap:
 INCLUDE "gfx/tilesets/kanto_interior_palette_map.asm"
 
+; Kanto hack: Yellow's LAB tileset, CINNABAR LAB + its three rooms (M9 12i).
+TilesetKantoLabPalMap:
+INCLUDE "gfx/tilesets/kanto_lab_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

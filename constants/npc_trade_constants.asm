@@ -25,6 +25,9 @@ DEF NPCTRADE_STRUCT_LENGTH EQU _RS
 	const NPC_TRADE_RICKY  ; 8 ; Kanto hack (docs/M4-VERMILION.md, 7d)
 	const NPC_TRADE_GURIO  ; 9 ; Kanto hack (docs/M4-VERMILION.md, 7l)
 	const NPC_TRADE_SPIKE  ; 10 ; Kanto hack (docs/M6-CELADON.md, 9aa)
+	const NPC_TRADE_BUFFY   ; 11 ; Kanto hack (docs/M9-CINNABAR.md, 12i)
+	const NPC_TRADE_CEZANNE ; 12 ; Kanto hack (docs/M9-CINNABAR.md, 12i)
+	const NPC_TRADE_STICKY  ; 13 ; Kanto hack (docs/M9-CINNABAR.md, 12i)
 DEF NUM_NPC_TRADES EQU const_value
 
 ; trade gender limits
@@ -52,4 +55,5 @@ DEF NUM_TRADE_DIALOGS EQU const_value
 	const TRADE_DIALOGSET_GIRL
 	const TRADE_DIALOGSET_CASUAL ; Kanto hack: Yellow's CASUAL trader voice
 	const TRADE_DIALOGSET_YELLOW_HAPPY ; Kanto hack: Yellow's HAPPY trader voice (7d)
+	const TRADE_DIALOGSET_YELLOW_EVOLUTION ; Kanto hack: Yellow's EVOLUTION trader voice (12i, D108)
 DEF NUM_TRADE_DIALOGSETS EQU const_value

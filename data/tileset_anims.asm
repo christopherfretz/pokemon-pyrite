@@ -278,6 +278,7 @@ TilesetAerodactylWordRoomAnim:
 TilesetKantoGateAnim:
 TilesetKantoTowerAnim:
 TilesetKantoInteriorAnim:
+TilesetKantoLabAnim:
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation

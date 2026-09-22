@@ -2124,6 +2124,11 @@
 ; CinnabarIslandGymDoor's `checkevent` for `checkitem SECRET_KEY`, after which
 ; this row is dead (kept, never renumbered -- D49).
 	const EVENT_GOT_SECRET_KEY
+; M9 12i: the R-and-D room scientist's one-off TM35 METRONOME gift, Yellow's
+; EVENT_GOT_TM35 (vendor/pokeyellow/scripts/CinnabarLabMetronomeRoom.asm).
+; Crystal has no free TM-gift flag that is not already spoken for, so this is a
+; new one appended at the end -- never renumber (D49).
+	const EVENT_GOT_TM35_METRONOME
 
 ; Unused: next 284 events
 

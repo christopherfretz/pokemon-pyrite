@@ -1624,6 +1624,52 @@ _NPCTradeAfterText6::
 	line "doing great!"
 	done
 
+; Kanto hack: Yellow's EVOLUTION trader (vendor/pokeyellow/data/text/text_9.asm,
+; _WannaTrade2Text / _NoTrade2Text / _WrongMon2Text / _Thanks2Text /
+; _AfterTrade2Text), verbatim.  The set is called EVOLUTION only as a leftover
+; of the Japanese Blue trades; English Yellow's copy never mentions evolving.
+; wStringBuffer1 is the species the trader wants (Yellow's
+; wInGameTradeGiveMonName), wStringBuffer2 the one he offers
+; (wInGameTradeReceiveMonName).  Used by CINNABAR LAB's GRAMPS (BUFFY), 12i.
+_NPCTradeIntroText7::
+	text "Hello there! Do"
+	line "you want to trade"
+
+	para "your @"
+	text_ram wStringBuffer1
+	text_start
+	line "for @"
+	text_ram wStringBuffer2
+	text "?"
+	done
+
+_NPCTradeCancelText7::
+	text "Well, if you"
+	line "don't want to…"
+	done
+
+_NPCTradeWrongText7::
+	text "Hmmm? This isn't"
+	line "@"
+	text_ram wStringBuffer1
+	text "."
+
+	para "Think of me when"
+	line "you get one."
+	done
+
+_NPCTradeCompleteText7::
+	text "Thanks!"
+	done
+
+_NPCTradeAfterText7::
+	text "Hello there! Your"
+	line "old @"
+	text_ram wStringBuffer1
+	text " is"
+	cont "magnificent!"
+	done
+
 _MomLeavingText1::
 	text "Wow, that's a cute"
 	line "#MON."

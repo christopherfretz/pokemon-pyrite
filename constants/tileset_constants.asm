@@ -42,6 +42,7 @@
 	const TILESET_KANTO_TOWER ; 28
 	const TILESET_KANTO_FACILITY ; 29
 	const TILESET_KANTO_INTERIOR ; 2a
+	const TILESET_KANTO_LAB ; 2b
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

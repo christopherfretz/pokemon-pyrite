@@ -417,6 +417,7 @@ TradeTexts:
 	dw NPCTradeIntroText3
 	dw NPCTradeIntroText5
 	dw NPCTradeIntroText6
+	dw NPCTradeIntroText7
 ; TRADE_DIALOG_CANCEL
 	dw NPCTradeCancelText1
 	dw NPCTradeCancelText2
@@ -424,6 +425,7 @@ TradeTexts:
 	dw NPCTradeCancelText3
 	dw NPCTradeCancelText5
 	dw NPCTradeCancelText6
+	dw NPCTradeCancelText7
 ; TRADE_DIALOG_WRONG
 	dw NPCTradeWrongText1
 	dw NPCTradeWrongText2
@@ -431,6 +433,7 @@ TradeTexts:
 	dw NPCTradeWrongText3
 	dw NPCTradeWrongText5
 	dw NPCTradeWrongText6
+	dw NPCTradeWrongText7
 ; TRADE_DIALOG_COMPLETE
 	dw NPCTradeCompleteText1
 	dw NPCTradeCompleteText2
@@ -438,6 +441,7 @@ TradeTexts:
 	dw NPCTradeCompleteText3
 	dw NPCTradeCompleteText5
 	dw NPCTradeCompleteText6
+	dw NPCTradeCompleteText7
 ; TRADE_DIALOG_AFTER
 	dw NPCTradeAfterText1
 	dw NPCTradeAfterText2
@@ -445,6 +449,7 @@ TradeTexts:
 	dw NPCTradeAfterText3
 	dw NPCTradeAfterText5
 	dw NPCTradeAfterText6
+	dw NPCTradeAfterText7
 	assert_table_length NUM_TRADE_DIALOGS * NUM_TRADE_DIALOGSETS
 
 NPCTradeCableText:
@@ -571,4 +576,25 @@ NPCTradeCompleteText6:
 
 NPCTradeAfterText6:
 	text_far _NPCTradeAfterText6
+	text_end
+
+; Kanto hack (M9 12i, D108): Yellow's EVOLUTION trader voice.
+NPCTradeIntroText7:
+	text_far _NPCTradeIntroText7
+	text_end
+
+NPCTradeCancelText7:
+	text_far _NPCTradeCancelText7
+	text_end
+
+NPCTradeWrongText7:
+	text_far _NPCTradeWrongText7
+	text_end
+
+NPCTradeCompleteText7:
+	text_far _NPCTradeCompleteText7
+	text_end
+
+NPCTradeAfterText7:
+	text_far _NPCTradeAfterText7
 	text_end

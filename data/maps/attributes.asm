@@ -576,10 +576,14 @@ ENDM
 	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $1d
 	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $1d
 	map_attributes CinnabarMart, CINNABAR_MART, $00
-	map_attributes CinnabarLab, CINNABAR_LAB, $00
-	map_attributes CinnabarLabTradeRoom, CINNABAR_LAB_TRADE_ROOM, $00
-	map_attributes CinnabarLabMetronomeRoom, CINNABAR_LAB_METRONOME_ROOM, $00
-	map_attributes CinnabarLabFossilRoom, CINNABAR_LAB_FOSSIL_ROOM, $00
+; 12i: the four LAB maps take Yellow's own border, block $17 (`db $17 ; border
+; block` in all four of vendor/pokeyellow/data/maps/objects/CinnabarLab*.asm) --
+; a 2x2 of the LAB wall tile $36, which TILESET_KANTO_LAB carries at the same
+; index because kanto_lab_metatiles.bin IS lab.bst.
+	map_attributes CinnabarLab, CINNABAR_LAB, $17
+	map_attributes CinnabarLabTradeRoom, CINNABAR_LAB_TRADE_ROOM, $17
+	map_attributes CinnabarLabMetronomeRoom, CINNABAR_LAB_METRONOME_ROOM, $17
+	map_attributes CinnabarLabFossilRoom, CINNABAR_LAB_FOSSIL_ROOM, $17
 	map_attributes PokemonMansion1F, POKEMON_MANSION_1F, $2e
 	map_attributes PokemonMansion2F, POKEMON_MANSION_2F, $2e
 	map_attributes PokemonMansion3F, POKEMON_MANSION_3F, $2e
