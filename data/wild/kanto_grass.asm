@@ -379,6 +379,130 @@ KantoGrassWildMons:
 	db 29, HAUNTER
 	end_grass_wildmons
 
+; M9 12k: the POKeMON MANSION (vendor/pokeyellow/data/wild/maps/
+; PokemonMansion*.asm).  Yellow's rate is 10/256 on every floor.  The maps are
+; DUNGEON environment, so every floor tile rolls.  Ten Yellow slots fold into
+; Crystal's seven (30/30/20/10/5/4/1) keeping Yellow's order; the dropped slots
+; were picked to keep each species' share closest to Yellow's.
+; 1F: dropped slots 5 (37 RATTATA), 6 (37 RATICATE) and 8 (26 GRIMER).
+	def_grass_wildmons POKEMON_MANSION_1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 34, RATTATA
+	db 34, RATICATE
+	db 23, GRIMER
+	db 26, GROWLITHE
+	db 30, GROWLITHE
+	db 34, GROWLITHE
+	db 38, GROWLITHE
+	; day
+	db 34, RATTATA
+	db 34, RATICATE
+	db 23, GRIMER
+	db 26, GROWLITHE
+	db 30, GROWLITHE
+	db 34, GROWLITHE
+	db 38, GROWLITHE
+	; nite
+	db 34, RATTATA
+	db 34, RATICATE
+	db 23, GRIMER
+	db 26, GROWLITHE
+	db 30, GROWLITHE
+	db 34, GROWLITHE
+	db 38, GROWLITHE
+	end_grass_wildmons
+
+; 2F: dropped slots 5 (40 RATTATA), 6 (40 RATICATE) and 8 (35 GRIMER).
+	def_grass_wildmons POKEMON_MANSION_2F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 37, RATTATA
+	db 37, RATICATE
+	db 26, GRIMER
+	db 29, GRIMER
+	db 32, GRIMER
+	db 35, MUK
+	db 38, MUK
+	; day
+	db 37, RATTATA
+	db 37, RATICATE
+	db 26, GRIMER
+	db 29, GRIMER
+	db 32, GRIMER
+	db 35, MUK
+	db 38, MUK
+	; nite
+	db 37, RATTATA
+	db 37, RATICATE
+	db 26, GRIMER
+	db 29, GRIMER
+	db 32, GRIMER
+	db 35, MUK
+	db 38, MUK
+	end_grass_wildmons
+
+; 3F: dropped slots 5 (43 RATTATA), 6 (43 RATICATE) and 8 (38 GRIMER).
+	def_grass_wildmons POKEMON_MANSION_3F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 40, RATTATA
+	db 40, RATICATE
+	db 32, GRIMER
+	db 35, GRIMER
+	db 38, GRIMER
+	db 38, MUK
+	db 41, MUK
+	; day
+	db 40, RATTATA
+	db 40, RATICATE
+	db 32, GRIMER
+	db 35, GRIMER
+	db 38, GRIMER
+	db 38, MUK
+	db 41, MUK
+	; nite
+	db 40, RATTATA
+	db 40, RATICATE
+	db 32, GRIMER
+	db 35, GRIMER
+	db 38, GRIMER
+	db 38, MUK
+	db 41, MUK
+	end_grass_wildmons
+
+; B1F: dropped slots 2 (38 GRIMER), 6 (43 RATICATE) and 8 (46 RATICATE).  No
+; fold keeps all four species near Yellow's shares (GRIMER/RATICATE ~40% each,
+; MUK and DITTO ~10%); this one gives 30/50/10/10 and loses the L43/L46
+; RATICATE and the L38 GRIMER.
+	def_grass_wildmons POKEMON_MANSION_B1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 35, GRIMER
+	db 37, RATICATE
+	db 40, RATICATE
+	db 41, MUK
+	db 24, DITTO
+	db 18, DITTO
+	db 12, DITTO
+	; day
+	db 35, GRIMER
+	db 37, RATICATE
+	db 40, RATICATE
+	db 41, MUK
+	db 24, DITTO
+	db 18, DITTO
+	db 12, DITTO
+	; nite
+	db 35, GRIMER
+	db 37, RATICATE
+	db 40, RATICATE
+	db 41, MUK
+	db 24, DITTO
+	db 18, DITTO
+	db 12, DITTO
+	end_grass_wildmons
+
 	def_grass_wildmons VICTORY_ROAD
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn

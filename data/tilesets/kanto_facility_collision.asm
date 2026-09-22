@@ -61,7 +61,7 @@
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 37
 	tilecoll WALL, FLOOR, WALL, FLOOR ; 38
 	tilecoll WALL, FLOOR, WALL, FLOOR ; 39
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 3a
+	tilecoll FLOOR, STAIRCASE, FLOOR, FLOOR ; 3a
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 3b
 	tilecoll WALL, WALL, WALL, FLOOR ; 3c
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 3d
@@ -81,7 +81,7 @@
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 4b
 	tilecoll FLOOR, FLOOR, WALL, WALL ; 4c
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 4d
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 4e
+	tilecoll FLOOR, FLOOR, FLOOR, STAIRCASE ; 4e
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 4f
 	tilecoll WALL, FLOOR, WALL, WALL ; 50
 	tilecoll FLOOR, WALL, WALL, WALL ; 51
@@ -109,7 +109,7 @@
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 67
 	tilecoll WALL, WALL, WALL, WALL ; 68
 	tilecoll WALL, WALL, WALL, WALL ; 69
-	tilecoll WALL, WALL, FLOOR, FLOOR ; 6a
+	tilecoll WALL, WALL, STAIRCASE, FLOOR ; 6a
 	tilecoll WALL, WALL, WALL, WALL ; 6b
 	tilecoll WALL, FLOOR, WALL, FLOOR ; 6c
 	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 6d
@@ -118,7 +118,7 @@
 	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 70
 	tilecoll FLOOR, WALL, FLOOR, FLOOR ; 71
 	tilecoll FLOOR, FLOOR, WALL, WALL ; 72
-	tilecoll WALL, WALL, FLOOR, FLOOR ; 73
+	tilecoll WALL, WALL, STAIRCASE, FLOOR ; 73
 	tilecoll WALL, FLOOR, WALL, FLOOR ; 74
 	tilecoll WALL, WALL, WALL, WALL ; 75
 	tilecoll WALL, WALL, WALL, WALL ; 76
@@ -156,3 +156,12 @@
 	tilecoll FLOOR, WALL, WALK_RIGHT, WALK_CONTINUE ; 93  from $26
 	tilecoll WALK_CONTINUE, WALK_RIGHT, WALK_UP, FLOOR ; 94  from $27
 	tilecoll WALK_CONTINUE, FLOOR, WALL, WALL ; 95  from $29
+; M9 12k: POKeMON MANSION 1F's six south-wall door tiles and 3F's
+; three holes.  Same
+; artwork as the block each was cloned from -- only the overridden
+; quadrants' collision differs (see MANSION_BLOCKS).
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 96  1F front door, west half -- clone of $3f
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 97  1F front door, east half -- clone of $3b
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 98  1F back door -- clone of $0e
+	tilecoll PIT, PIT, FLOOR, FLOOR ; 99  3F holes (16,14)+(17,14) -- clone of $01
+	tilecoll FLOOR, PIT, FLOOR, FLOOR ; 9a  3F hole (19,14) -- clone of $01

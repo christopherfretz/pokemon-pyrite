@@ -585,9 +585,9 @@ ENDM
 	map_attributes CinnabarLabMetronomeRoom, CINNABAR_LAB_METRONOME_ROOM, $17
 	map_attributes CinnabarLabFossilRoom, CINNABAR_LAB_FOSSIL_ROOM, $17
 	map_attributes PokemonMansion1F, POKEMON_MANSION_1F, $2e
-	map_attributes PokemonMansion2F, POKEMON_MANSION_2F, $2e
-	map_attributes PokemonMansion3F, POKEMON_MANSION_3F, $2e
-	map_attributes PokemonMansionB1F, POKEMON_MANSION_B1F, $2e
+	map_attributes PokemonMansion2F, POKEMON_MANSION_2F, $01
+	map_attributes PokemonMansion3F, POKEMON_MANSION_3F, $01
+	map_attributes PokemonMansionB1F, POKEMON_MANSION_B1F, $01
 	map_attributes CinnabarGym, CINNABAR_GYM, $2e
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00

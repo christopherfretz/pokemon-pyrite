@@ -127,6 +127,12 @@ DEF KRIS EQU __trainer_class__
 ; ScientistData rows 10-11.  Nameless, same as 8-15 above.
 	const SCIENTIST_16 ; SILPH CO. 9F (21,13)
 	const SCIENTIST_17 ; SILPH CO. 10F (10,2)
+; Kanto hack (M9 12k): the POKeMON MANSION's two SCIENTISTs -- Yellow
+; ScientistData rows 12-13.  Nameless, same as 8-17 above.  The MANSION 1F
+; SCIENTIST is NOT here: Yellow's ScientistData row 4 serves both SILPH CO. 3F
+; and MANSION 1F, so that map reuses SCIENTIST_10 rather than duplicating it.
+	const SCIENTIST_18 ; POKeMON MANSION 3F (20,11)
+	const SCIENTIST_19 ; POKeMON MANSION B1F (27,11)
 
 	trainerclass ERIKA ; 15
 	const ERIKA1
@@ -748,6 +754,15 @@ DEF KRIS EQU __trainer_class__
 	const DUNCAN
 	const EDDIE
 	const COREY
+; Kanto hack (M9 12k): the POKeMON MANSION's three BURGLARs -- Yellow
+; BurglarData rows 7-9.  DUNCAN/EDDIE/COREY above are live JOHTO trainers
+; (FastShipCabins_NNW_NNE_NE, GoldenrodUndergroundSwitchRoomEntrances), so
+; none of them can be re-pointed; these three are new and nameless, the same
+; way the SILPH CO. SCIENTISTs are.  Yellow draws them with the SUPER NERD
+; overworld sprite, not Crystal's PHARMACIST.
+	const BURGLAR_4 ; POKeMON MANSION 2F (3,17)
+	const BURGLAR_5 ; POKeMON MANSION 3F (5,11)
+	const BURGLAR_6 ; POKeMON MANSION B1F (16,23)
 
 	trainerclass FIREBREATHER ; 30
 	const OTIS

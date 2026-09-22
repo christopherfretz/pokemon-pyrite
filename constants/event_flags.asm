@@ -2156,7 +2156,32 @@
 	const EVENT_LAB_FOSSIL_IS_HELIX
 	const EVENT_LAB_FOSSIL_IS_AMBER
 
-; Unused: next 281 events
+; M9 12k: the POKeMON MANSION.  Yellow keeps its six trainers in
+; EVENT_BEAT_MANSION_{1,2,3,4}_TRAINER_{0,1} and its ten item balls in the
+; per-map "missable object" hide list, neither of which GSC has, so every one
+; of them needs a flag of its own here.  Appended after 12j's rows, never
+; renumbered (D49).  The SECRET KEY ball is the exception: it reuses 12g's
+; EVENT_GOT_SECRET_KEY above, which the CINNABAR GYM door already checks.
+	const EVENT_BEAT_POKEMON_MANSION_1F_SCIENTIST  ; Yellow EVENT_BEAT_MANSION_1_TRAINER_0
+	const EVENT_BEAT_POKEMON_MANSION_2F_BURGLAR    ; Yellow EVENT_BEAT_MANSION_2_TRAINER_0
+	const EVENT_BEAT_POKEMON_MANSION_3F_BURGLAR    ; Yellow EVENT_BEAT_MANSION_3_TRAINER_0
+	const EVENT_BEAT_POKEMON_MANSION_3F_SCIENTIST  ; Yellow EVENT_BEAT_MANSION_3_TRAINER_1
+	const EVENT_BEAT_POKEMON_MANSION_B1F_BURGLAR   ; Yellow EVENT_BEAT_MANSION_4_TRAINER_0
+	const EVENT_BEAT_POKEMON_MANSION_B1F_SCIENTIST ; Yellow EVENT_BEAT_MANSION_4_TRAINER_1
+	const EVENT_POKEMON_MANSION_1F_ESCAPE_ROPE     ; ball (14,3)
+	const EVENT_POKEMON_MANSION_1F_CARBOS          ; ball (18,21)
+	const EVENT_POKEMON_MANSION_2F_CALCIUM         ; ball (28,7)
+	const EVENT_POKEMON_MANSION_3F_MAX_POTION      ; ball (1,16)
+	const EVENT_POKEMON_MANSION_3F_IRON            ; ball (25,5)
+	const EVENT_POKEMON_MANSION_B1F_RARE_CANDY     ; ball (10,2)
+	const EVENT_POKEMON_MANSION_B1F_FULL_RESTORE   ; ball (1,22)
+	const EVENT_POKEMON_MANSION_B1F_TM_BLIZZARD    ; ball (19,25), Yellow TM14
+	const EVENT_POKEMON_MANSION_B1F_TM_SOLARBEAM   ; ball (5,4), Yellow TM22
+	const EVENT_POKEMON_MANSION_1F_HIDDEN_MOON_STONE   ; (8,16)
+	const EVENT_POKEMON_MANSION_3F_HIDDEN_MAX_REVIVE   ; (1,9)
+	const EVENT_POKEMON_MANSION_B1F_HIDDEN_RARE_CANDY  ; (1,9)
+
+; Unused: next 263 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

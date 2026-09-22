@@ -629,6 +629,17 @@ INCLUDE "maps/CinnabarLabTradeRoom.asm"
 INCLUDE "maps/CinnabarLabMetronomeRoom.asm"
 INCLUDE "maps/CinnabarLabFossilRoom.asm"
 
+; Kanto hack (M9 12k): the POKeMON MANSION's four floors.  They were parked in
+; "Map Scripts 32" ($1c) as 12a skeletons; populated they are ~3.8 KB, and $1c
+; is the bank that also has to hold ROUTES 19-21, CINNABAR ISLAND, the three
+; SEAFOAM floors and the GYM.  $76 has the slack, so the four INCLUDEs move
+; here now -- before the maps carry any *_MapEvents a savestate could pin
+; (11n H-2: rehoming a populated map invalidates every savestate on it).
+INCLUDE "maps/PokemonMansion1F.asm"
+INCLUDE "maps/PokemonMansion2F.asm"
+INCLUDE "maps/PokemonMansion3F.asm"
+INCLUDE "maps/PokemonMansionB1F.asm"
+
 ENDSECTION
 
 
@@ -682,10 +693,6 @@ INCLUDE "maps/CinnabarIsland.asm"
 INCLUDE "maps/SeafoamIslands1F.asm"
 INCLUDE "maps/SeafoamIslandsB3F.asm"
 INCLUDE "maps/SeafoamIslandsB4F.asm"
-INCLUDE "maps/PokemonMansion1F.asm"
-INCLUDE "maps/PokemonMansion2F.asm"
-INCLUDE "maps/PokemonMansion3F.asm"
-INCLUDE "maps/PokemonMansionB1F.asm"
 INCLUDE "maps/CinnabarGym.asm"
 
 ENDSECTION

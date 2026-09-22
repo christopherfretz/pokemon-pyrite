@@ -415,6 +415,20 @@ ScientistGroup:
 	db 29, KOFFING
 	db -1 ; end
 
+	; SCIENTIST (18) - Kanto hack (M9 12k): POKeMON MANSION 3F, (20,11).
+	; Yellow ScientistData 12.  Nameless, same as 8-17 above.
+	db "@", TRAINERTYPE_NORMAL
+	db 33, MAGNEMITE
+	db 33, MAGNETON
+	db 33, VOLTORB
+	db -1 ; end
+
+	; SCIENTIST (19) - POKeMON MANSION B1F, (27,11).  Yellow ScientistData 13.
+	db "@", TRAINERTYPE_NORMAL
+	db 34, MAGNEMITE
+	db 34, ELECTRODE
+	db -1 ; end
+
 ErikaGroup:
 	; ERIKA (1)
 	; Kanto hack: Yellow's ERIKA (docs/M6-CELADON.md 5.1, M6 9q).  ErikaData is
@@ -3588,6 +3602,24 @@ BurglarGroup:
 	db 28, MAGMAR
 	db 25, KOFFING
 	db 30, KOFFING
+	db -1 ; end
+
+	; BURGLAR (4) - Kanto hack (M9 12k): POKeMON MANSION 2F, (3,17).
+	; Yellow BurglarData 7.  Nameless: PlaceEnemysName prints "BURGLAR" alone.
+	db "@", TRAINERTYPE_NORMAL
+	db 34, CHARMANDER
+	db 34, CHARMELEON
+	db -1 ; end
+
+	; BURGLAR (5) - POKeMON MANSION 3F, (5,11).  Yellow BurglarData 8.
+	db "@", TRAINERTYPE_NORMAL
+	db 38, NINETALES
+	db -1 ; end
+
+	; BURGLAR (6) - POKeMON MANSION B1F, (16,23).  Yellow BurglarData 9.
+	db "@", TRAINERTYPE_NORMAL
+	db 34, GROWLITHE
+	db 34, PONYTA
 	db -1 ; end
 
 FirebreatherGroup:
