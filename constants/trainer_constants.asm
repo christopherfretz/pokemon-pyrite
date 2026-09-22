@@ -118,6 +118,11 @@ DEF KRIS EQU __trainer_class__
 	const SCIENTIST_10 ; SILPH CO. 3F (7,9)
 	const SCIENTIST_11 ; SILPH CO. 4F (14,6)
 	const SCIENTIST_12 ; SILPH CO. 5F (8,3)
+; Kanto hack (M8 11g): SILPH CO. 6F-8F's three SCIENTISTs -- Yellow
+; ScientistData rows 7-9.  Nameless, same as 8-12 above.
+	const SCIENTIST_13 ; SILPH CO. 6F (7,8)
+	const SCIENTIST_14 ; SILPH CO. 7F (2,13)
+	const SCIENTIST_15 ; SILPH CO. 8F (10,2)
 
 	trainerclass ERIKA ; 15
 	const ERIKA1
@@ -419,6 +424,15 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_44 ; SILPH CO. 4F (26,10), Yellow ROCKET 27
 	const GRUNTM_45 ; SILPH CO. 5F (8,16), Yellow ROCKET 28
 	const GRUNTM_46 ; SILPH CO. 5F (28,4), Yellow ROCKET 29
+; Kanto hack (M8 11g): SILPH CO. 6F-8F's seven ROCKETs -- Yellow OPP_ROCKET
+; 30-36.  Same convention: "GRUNT" over the ROCKET class name.
+	const GRUNTM_47 ; SILPH CO. 6F (17,3), Yellow ROCKET 30
+	const GRUNTM_48 ; SILPH CO. 6F (14,15), Yellow ROCKET 31
+	const GRUNTM_49 ; SILPH CO. 7F (13,1), Yellow ROCKET 32
+	const GRUNTM_50 ; SILPH CO. 7F (20,2), Yellow ROCKET 33
+	const GRUNTM_51 ; SILPH CO. 7F (19,14), Yellow ROCKET 34
+	const GRUNTM_52 ; SILPH CO. 8F (19,2), Yellow ROCKET 35
+	const GRUNTM_53 ; SILPH CO. 8F (12,15), Yellow ROCKET 36
 
 	trainerclass GENTLEMAN ; 20
 	const PRESTON
@@ -987,6 +1001,9 @@ DEF KRIS EQU __trainer_class__
 	const KANTO_RIVAL_5 ; POKEMON TOWER 2F, the JOLTEON branch of the Eevee rule (9e)
 	const KANTO_RIVAL_6 ; POKEMON TOWER 2F, the FLAREON branch (9e)
 	const KANTO_RIVAL_7 ; POKEMON TOWER 2F, the VAPOREON branch (9e)
+	const KANTO_RIVAL_8 ; SILPH CO. 7F, the JOLTEON branch (11g)
+	const KANTO_RIVAL_9 ; SILPH CO. 7F, the FLAREON branch (11g)
+	const KANTO_RIVAL_10 ; SILPH CO. 7F, the VAPOREON branch (11g)
 
 ; Kanto hack: Yellow's rival-starter selector, ported value for value from
 ; vendor/pokeyellow/constants/pokemon_constants.asm:207-209.  Yellow keeps it in

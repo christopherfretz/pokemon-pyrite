@@ -2028,8 +2028,17 @@
 ; SILPH CO. 2F's SILPH WORKER F hands over TM75 SELFDESTRUCT (Yellow's TM36)
 ; exactly once (11f).
 	const EVENT_GOT_TM75_SELFDESTRUCT
+; SILPH CO. 7F (11g).  Appended at the END of the used list, like the flag
+; above, so no existing flag index moves.
+; The SILPH WORKER at (1,5) hands over the LAPRAS exactly once (Yellow's
+; BIT_GOT_LAPRAS in wStatusFlags4).
+	const EVENT_GOT_LAPRAS
+; The 7F rival is off the map once he has been beaten -- derived from
+; EVENT_BEAT_SILPH_CO_RIVAL by SilphCo7FObjectsCallback on every map load, the
+; same shape as the CERULEAN / S.S. ANNE / POKEMON TOWER rivals.
+	const EVENT_SILPH_CO_7F_RIVAL_HIDDEN
 
-; Unused: next 333 events
+; Unused: next 331 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

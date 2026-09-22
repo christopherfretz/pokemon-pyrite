@@ -380,6 +380,28 @@ ScientistGroup:
 	db 26, MAGNEMITE
 	db -1 ; end
 
+	; SCIENTIST (13) - Kanto hack (M8 11g): SILPH CO. 6F, (7,8).  Yellow
+	; ScientistData 7.
+	db "@", TRAINERTYPE_NORMAL
+	db 25, VOLTORB
+	db 25, KOFFING
+	db 25, MAGNETON
+	db 25, MAGNEMITE
+	db 25, KOFFING
+	db -1 ; end
+
+	; SCIENTIST (14) - SILPH CO. 7F, (2,13).  Yellow ScientistData 8.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, ELECTRODE
+	db 29, MUK
+	db -1 ; end
+
+	; SCIENTIST (15) - SILPH CO. 8F, (10,2).  Yellow ScientistData 9.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, GRIMER
+	db 29, ELECTRODE
+	db -1 ; end
+
 ErikaGroup:
 	; ERIKA (1)
 	; Kanto hack: Yellow's ERIKA (docs/M6-CELADON.md 5.1, M6 9q).  ErikaData is
@@ -1934,6 +1956,55 @@ GruntMGroup:
 	; GRUNTM (46) - SILPH CO. 5F, (28,4).  Yellow OPP_ROCKET 29.
 	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 33, HYPNO
+	db -1 ; end
+
+	; GRUNTM (47) - Kanto hack (M8 11g): SILPH CO. 6F, (17,3).  Yellow
+	; OPP_ROCKET 30.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 29, MACHOP
+	db 29, MACHOKE
+	db -1 ; end
+
+	; GRUNTM (48) - SILPH CO. 6F, (14,15).  Yellow OPP_ROCKET 31.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, ZUBAT
+	db 28, ZUBAT
+	db 28, GOLBAT
+	db -1 ; end
+
+	; GRUNTM (49) - SILPH CO. 7F, (13,1).  Yellow OPP_ROCKET 32.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 26, RATICATE
+	db 26, ARBOK
+	db 26, KOFFING
+	db 26, GOLBAT
+	db -1 ; end
+
+	; GRUNTM (50) - SILPH CO. 7F, (20,2).  Yellow OPP_ROCKET 33.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 29, CUBONE
+	db 29, CUBONE
+	db -1 ; end
+
+	; GRUNTM (51) - SILPH CO. 7F, (19,14).  Yellow OPP_ROCKET 34.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 29, SANDSHREW
+	db 29, SANDSLASH
+	db -1 ; end
+
+	; GRUNTM (52) - SILPH CO. 8F, (19,2).  Yellow OPP_ROCKET 35.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 26, RATICATE
+	db 26, ZUBAT
+	db 26, GOLBAT
+	db 26, RATTATA
+	db -1 ; end
+
+	; GRUNTM (53) - SILPH CO. 8F, (12,15).  Yellow OPP_ROCKET 36.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, WEEZING
+	db 28, GOLBAT
+	db 28, KOFFING
 	db -1 ; end
 
 GentlemanGroup:
@@ -4752,6 +4823,43 @@ KantoRivalGroup:
 	db 22, MAGNEMITE
 	db 20, SANDSHREW
 	db 25, EEVEE
+	db -1 ; end
+
+	; KANTO_RIVAL (8)-(10): SILPH CO. 7F -- Yellow's sixth rival fight
+	; (OPP_RIVAL2 / wTrainerNo = wRivalStarter + 4, Rival2Data rows 5-7 at
+	; vendor/pokeyellow/data/trainers/parties.asm:694-696).  Selected by
+	; `special GetKantoRivalStarter` -- see maps/SilphCo7F.asm.
+	;
+	; This is the first fight in which the EEVEE has actually evolved: slot 5 is
+	; the L40 JOLTEON/FLAREON/VAPOREON itself, and slots 2 and 3 again cover the
+	; two evolutions he did not take.  Slots 1 and 4 (SANDSLASH, KADABRA) are
+	; the same in all three rows.
+
+	; KANTO_RIVAL (8): SILPH CO. 7F, RIVAL_STARTER_JOLTEON
+	db "?@", TRAINERTYPE_NORMAL
+	db 38, SANDSLASH
+	db 35, NINETALES
+	db 37, CLOYSTER
+	db 35, KADABRA
+	db 40, JOLTEON
+	db -1 ; end
+
+	; KANTO_RIVAL (9): SILPH CO. 7F, RIVAL_STARTER_FLAREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 38, SANDSLASH
+	db 35, CLOYSTER
+	db 37, MAGNETON
+	db 35, KADABRA
+	db 40, FLAREON
+	db -1 ; end
+
+	; KANTO_RIVAL (10): SILPH CO. 7F, RIVAL_STARTER_VAPOREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 38, SANDSLASH
+	db 35, MAGNETON
+	db 37, NINETALES
+	db 35, KADABRA
+	db 40, VAPOREON
 	db -1 ; end
 
 JessieJamesGroup:
