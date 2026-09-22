@@ -2337,13 +2337,28 @@ StopDangerSound:
 	ld [wLowHealthAlarm], a
 	ret
 
-FaintYourPokemon:
-	call StopDangerSound
-	call WaitSFX
+PlayPlayerMonFaintCry:
+; a = party slot of the mon that just fainted.  A1: Yellow plays PikachuCry4
+; for the starter Pikachu instead of its cry (vendor/pokeyellow/engine/battle/
+; core.asm:1053-1059); everyone else gets Crystal's stereo cry as before.
+	ld c, a
+	farcall IsStarterPikachuInSlot
+	jr nc, .regular
+	ld e, PikachuCry4
+	farcall PlayPikachuVoiceClip
+	ret
+
+.regular
 	ld a, $f0
 	ld [wCryTracks], a
 	ld a, [wBattleMonSpecies]
-	call PlayStereoCry
+	jp PlayStereoCry
+
+FaintYourPokemon:
+	call StopDangerSound
+	call WaitSFX
+	ld a, [wCurBattleMon]
+	call PlayPlayerMonFaintCry
 	call PlayerMonFaintedAnimation
 	hlcoord 9, 7
 	lb bc, 5, 11
@@ -4152,6 +4167,27 @@ SendOutPlayerMon:
 	call Call_PlayBattleAnim
 
 .not_shiny
+; A1: Yellow's starter Pikachu greets you with a sampled clip, not a cry --
+; PikachuCry37 if it is asleep, PikachuCry11 otherwise (vendor/pokeyellow/
+; engine/battle/core.asm:1806-1818).  Yellow plays it whatever the status,
+; where Crystal skips the cry entirely for a statused mon, so this sits in
+; front of the CheckFaintedFrzSlp gate.  Every caller of SendOutPlayerMon sets
+; wCurBattleMon and calls InitBattleMon first, so wBattleMonStatus is the
+; starter's own status -- Yellow's IsPlayerPikachuAsleepInParty by another road.
+	ld a, [wCurBattleMon]
+	ld c, a
+	farcall IsStarterPikachuInSlot
+	jr nc, .not_starter_pikachu
+	ld a, [wBattleMonStatus]
+	and SLP_MASK
+	ld e, PikachuCry11
+	jr z, .got_pika_clip
+	ld e, PikachuCry37
+.got_pika_clip
+	farcall PlayPikachuVoiceClip
+	jr .statused
+
+.not_starter_pikachu
 	ld a, MON_SPECIES
 	call GetPartyParamLocation
 	ld b, h
@@ -4287,10 +4323,8 @@ PursuitSwitch:
 	jr nz, .done
 
 ; BUG: A Pokémon that fainted from Pursuit will have its old status condition when revived (see docs/bugs_and_glitches.md)
-	ld a, $f0
-	ld [wCryTracks], a
-	ld a, [wBattleMonSpecies]
-	call PlayStereoCry
+	ld a, [wLastPlayerMon]
+	call PlayPlayerMonFaintCry
 	ld a, [wLastPlayerMon]
 	ld c, a
 	ld hl, wBattleParticipantsNotFainted

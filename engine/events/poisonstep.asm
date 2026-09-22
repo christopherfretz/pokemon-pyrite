@@ -131,6 +131,16 @@ DoPoisonStep::
 	farcall GetPartyNickname
 	ld hl, .PoisonFaintText
 	call PrintText
+; A1: the starter Pikachu fainting to field poison gets Yellow's sampled clip,
+; after the text, exactly as vendor/pokeyellow/engine/events/poison.asm:65-68.
+; de is the wPoisonStepPartyFlags cursor and is pushed at .party_loop, so it is
+; safe to load the clip id into e here.
+	ld a, [wCurPartyMon]
+	ld c, a
+	farcall IsStarterPikachuInSlot
+	jr nc, .mon_not_fainted
+	ld e, PikachuCry4
+	farcall PlayPikachuVoiceClip
 
 .mon_not_fainted
 	pop de

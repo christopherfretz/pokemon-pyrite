@@ -399,14 +399,20 @@ StarterPikachuEmotionCommand_pcm:
 	pop de
 	ret
 
-PlayPikachuVoiceClip:
-; e = the Yellow voice-clip id, or PIKACRY_NONE.  Decision A: we have no PCM
-; engine, so every clip is the standard PIKACHU cry for now.  The id is kept in
-; e and NOT in a on purpose: farcall loads the callee's bank into a, so a
-; future PCM player in another bank can still be reached with the id intact.
+PlayPikachuVoiceClip::
+; e = the Yellow voice-clip id, or PIKACRY_NONE.  The id is kept in e and NOT
+; in a on purpose: farcall loads the callee's bank into a, so every hook site
+; outside this bank can still reach us with the id intact.
+;
+; A1-S1: ids whose .pcm is linked in (Tier 1: 4, 11, 17, 28, 37) play Yellow's
+; sampled clip; every other id still falls back to Crystal's synthesized
+; PIKACHU cry, which is what PlayPikachuSoundClip's no-carry return means.
+; Porting another clip is a data-only change -- data/pikachu/cry_pointers.asm.
 	ld a, e
 	cp PIKACRY_NONE
 	ret z
+	call PlayPikachuSoundClip
+	ret c
 	ld a, PIKACHU
 	call PlayMonCry
 	ret

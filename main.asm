@@ -769,6 +769,8 @@ INCLUDE "engine/events/safari_zone.asm"
 SECTION "Pikachu Emotions", ROMX, BANK[$3F]
 
 INCLUDE "engine/pikachu/emotions.asm"
+INCLUDE "engine/pikachu/pikachu_pcm.asm"
+INCLUDE "data/pikachu/cry_pointers.asm"
 INCLUDE "engine/pikachu/pikapic.asm"
 INCLUDE "data/pikachu/pikapic_gfx_headers.asm"
 INCLUDE "data/pikachu/pikapic_anims.asm"

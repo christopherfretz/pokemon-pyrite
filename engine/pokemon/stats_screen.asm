@@ -841,18 +841,61 @@ StatsScreen_PlaceFrontpic:
 .egg
 	call .AnimateEgg
 	call SetDefaultBGPAndOBP
-	ret
+	jp .StarterPikachuClip
 
 .no_cry
 	call .AnimateMon
 	call SetDefaultBGPAndOBP
-	ret
+	jp .StarterPikachuClip
 
 .cry
 	call SetDefaultBGPAndOBP
 	call .AnimateMon
+	call .StarterPikachuClip
+	ret c
 	ld a, [wCurPartySpecies]
 	call PlayMonCry2
+	ret
+
+.StarterPikachuClip:
+; A1: Yellow's status screen shouts PikachuCry17 for the starter Pikachu
+; (vendor/pokeyellow/engine/pokemon/status_screen.asm:176-184).  Returns carry
+; if the clip played.
+;
+; It is called from all three frontpic paths on purpose.  Crystal only reaches
+; .cry for a WILDMON: StatsScreen_GetAnimationParam returns carry for a healthy
+; party or box mon (it falls through into .egg, whose .AnimateEgg is really the
+; animated-frontpic path), and 0 for a fainted/frozen/asleep one.  A hook in
+; .cry alone would therefore never fire from the party menu, and Yellow plays
+; the clip whatever the mon's status.
+;
+; Yellow needs two predicates here (party and box); StatsScreen_CopyToTempMon
+; has already copied whichever mon is on screen into wTempMon, so one
+; species+OT-ID test over wTempMon covers both -- the same check
+; IsStarterPikachuInSlot makes, which cannot be used as-is because it indexes
+; wPartyMon1Species and a BOXMON is not in the party.  The enemy's Pikachu
+; (OTPARTYMON) never cries with it.
+	ld a, [wMonType]
+	cp OTPARTYMON
+	jr z, .not_starter_pikachu
+	ld a, [wCurPartySpecies]
+	cp PIKACHU
+	jr nz, .not_starter_pikachu
+	ld hl, wTempMonID
+	ld a, [wPlayerID]
+	cp [hl]
+	jr nz, .not_starter_pikachu
+	inc hl
+	ld a, [wPlayerID + 1]
+	cp [hl]
+	jr nz, .not_starter_pikachu
+	ld e, PikachuCry17
+	farcall PlayPikachuVoiceClip
+	scf
+	ret
+
+.not_starter_pikachu
+	and a
 	ret
 
 .AnimateMon:

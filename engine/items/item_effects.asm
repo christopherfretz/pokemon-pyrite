@@ -1209,7 +1209,14 @@ EvoStoneEffect:
 
 	ld a, TRUE
 	ld [wForceEvolution], a
+; A1: EvolvePokemon walks the whole party and leaves wCurPartyMon one past its
+; end, so the slot the player actually chose has to survive the call -- the
+; refusal hook in .NoEffect reads it back.
+	ld a, [wCurPartyMon]
+	push af
 	farcall EvolvePokemon
+	pop af
+	ld [wCurPartyMon], a
 
 	ld a, [wMonTriedToEvolve]
 	and a
@@ -1220,6 +1227,15 @@ EvoStoneEffect:
 .NoEffect:
 ; F3 (A3 row 6): the starter Pikachu refusing a stone sours its mood.
 	farcall PikachuRefusedStoneMood
+; A1: ...and shouts about it with Yellow's sampled PikachuCry28, before the
+; refusal message (vendor/pokeyellow/engine/items/item_effects.asm:811-819).
+	ld a, [wCurPartyMon]
+	ld c, a
+	farcall IsStarterPikachuInSlot
+	jr nc, .not_starter_pikachu
+	ld e, PikachuCry28
+	farcall PlayPikachuVoiceClip
+.not_starter_pikachu
 	call WontHaveAnyEffectMessage
 
 .DecidedNotToUse:
