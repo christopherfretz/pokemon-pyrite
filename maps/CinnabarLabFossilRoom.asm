@@ -416,6 +416,12 @@ CinnabarLabFossilRoomBoxIsFullText:
 	cont "accept any more!"
 	done
 
+; Yellow's two `hidden_event 0/2, 4, OpenPokemonCenterPC, SPRITE_FACING_UP`
+; (data/events/hidden_events.asm) -- full #MON Center PCs, as GSC bg_events
+; (the SilphCo11F / CeladonMansion2F precedent: `jumpstd PCScript`).  12p.
+CinnabarLabFossilRoomPC:
+	jumpstd PCScript
+
 CinnabarLabFossilRoom_MapEvents:
 	db 0, 0 ; filler
 
@@ -426,6 +432,8 @@ CinnabarLabFossilRoom_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_UP, CinnabarLabFossilRoomPC ; Yellow's OpenPokemonCenterPC hidden event
+	bg_event  2,  4, BGEVENT_UP, CinnabarLabFossilRoomPC ; Yellow's OpenPokemonCenterPC hidden event
 
 	def_object_events
 	object_event  5,  2, SPRITE_SCIENTIST, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CinnabarLabFossilRoomScientist1Script, -1

@@ -18,9 +18,7 @@
 ; The party rows are nameless (`db "@", TRAINERTYPE_NORMAL`), so PlaceEnemysName
 ; prints the class alone, as Gen 1 does.
 ;
-; The two warps are 12b's SEAFOAM ISLANDS mouths.  Yellow's east mouth lands on
-; its SEAFOAM_ISLANDS_1F warp 3; the 12a stub only has two warps, so it still
-; points at warp 2 -- 12d re-points it when the real 1F lands.
+; The two warps are 12b's SEAFOAM ISLANDS mouths, on Yellow's 1F warps 1 and 3.
 
 	object_const_def
 	const ROUTE20_SWIMMER1
