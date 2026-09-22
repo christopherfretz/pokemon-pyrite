@@ -39,21 +39,44 @@ PewterCityDraggerCallback:
 
 ; Yellow's east-exit trigger tiles. Each one walks the player back under the
 ; youngster at (35,16) first, then they all share the escort.
+;
+; P3 (playtest report, 2026-09-22): the callback above is the ONLY thing that
+; derives the scene, and MapSetupScript_Continue runs LoadMapAttributes_SkipObjects
+; -- MAPCALLBACK_OBJECTS never fires when the player continues from a battery
+; save.  A save written while the scene was armed (the web editor's faked
+; "after BROCK" preset, and any real save made in Pewter before BROCK whose
+; flag is then edited) therefore still drags the player east of the gym.
+; Re-check EVENT_BEAT_BROCK on the trigger itself and disarm the scene, so the
+; stored byte can never outrank the flag it is derived from.
 PewterCityDraggerFrom3517:
+	checkevent EVENT_BEAT_BROCK
+	iftrue PewterCityDraggerDisarm
 	applymovement PLAYER, PewterCity_PlayerToDragger3517
 	sjump PewterCityDraggerEscort
 
 PewterCityDraggerFrom3617:
+	checkevent EVENT_BEAT_BROCK
+	iftrue PewterCityDraggerDisarm
 	applymovement PLAYER, PewterCity_PlayerToDragger3617
 	sjump PewterCityDraggerEscort
 
 PewterCityDraggerFrom3718:
+	checkevent EVENT_BEAT_BROCK
+	iftrue PewterCityDraggerDisarm
 	applymovement PLAYER, PewterCity_PlayerToDragger3718
 	sjump PewterCityDraggerEscort
 
 PewterCityDraggerFrom3719:
+	checkevent EVENT_BEAT_BROCK
+	iftrue PewterCityDraggerDisarm
 	applymovement PLAYER, PewterCity_PlayerToDragger3719
 	sjump PewterCityDraggerEscort
+
+; BROCK is already beaten: retire the scene and hand control straight back, so
+; the player walks on to ROUTE 3 without ever seeing the youngster move.
+PewterCityDraggerDisarm:
+	setscene SCENE_PEWTERCITY_NOOP
+	end
 
 ; The youngster leads, the player trails one tile behind (GSC's `follow`, the
 ; idiomatic stand-in for Yellow's simulated-joypad drag). He stops one tile
@@ -146,8 +169,32 @@ PewterCity_YoungsterToGym:
 	step RIGHT
 	step_end
 
+; He walks off WEST and is hidden only once he is off the screen, and the
+; re-post to (35,16) happens out of sight (operator ruling 2026-09-22).
+;
+; Yellow does the same thing mirrored: its escort ends with the player on
+; (11,18), it re-posts the guard to (12,18) and walks him RIGHT five tiles to
+; (17,18) -- the first column outside the 10-metatile view (7..16) -- and only
+; then HideObject-s him and re-posts him to (35,16) (measured in the Yellow
+; harness, docs/M2-PEWTER-CITY.md "## P3 findings").  East is impossible for
+; us: our escort ends at the gym door (16,18) and (18,18)-(18,20) is the fence
+; between the gym lot and the MART sidewalk.  So he goes west instead.
+;
+; He steps DOWN out of the player's row first -- the player is standing on
+; (16,18) and an object cannot be walked through -- then west along row 19,
+; whose x=4..17 are all floor.  With the player on x=16 the view is x=12..21,
+; so x=11 is the first fully off-screen column; it is also the LAST column
+; CheckObjectStillVisible keeps (MAPOBJECT_SCREEN_WIDTH = 12 counts from
+; wXCoord-5), so stopping there both hides him and keeps the object alive for
+; the applymovement to finish.  Exactly Yellow's one-column margin.
 PewterCity_YoungsterLeaves:
-	step RIGHT
+	step DOWN
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
+	step LEFT
 	step_end
 
 PewterCityYoungsterScript:
