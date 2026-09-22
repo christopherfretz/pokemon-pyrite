@@ -81,19 +81,22 @@ rept MAX_OUTDOOR_SPRITES - 7
 endr
 
 CinnabarGroupSprites:
-; Kanto hack (M9 12c, gotcha G15): derived with
+; Kanto hack (M9 12c, re-derived 12g; gotcha G15): written by
 ; scripts/trim_outdoor_sprites.py --write Cinnabar.  The group's own outdoor
-; maps (ROUTEs 19/20/21 and CINNABAR ISLAND) use four sheets -- BLUE,
-; SWIMMER_GUY, COOLTRAINER_M and FISHER -- and the other nine are the maps one
-; connection away: PALLET TOWN (north of ROUTE 21) and FUCHSIA CITY (north of
-; ROUTE 19), so neither crossing pays RefreshConnectionSprites' ~27-frame
-; reload.  Walking sheets first (SortUsedSprites), still ones last; 13 entries,
-; 152 tiles, nothing dropped.  SPRITE_SWIMMER_GIRL left with 12b's invented
-; SWIMMERFs: Yellow's routes use one swimmer sheet for every swimmer.
+; maps (ROUTEs 19/20/21 and CINNABAR ISLAND) use five sheets -- SWIMMER_GUY,
+; COOLTRAINER_M, FISHER and, from 12g, LASS and OLD_MAN (CINNABAR ISLAND's GIRL
+; and GAMBLER) -- and the rest are the maps one connection away: PALLET TOWN
+; (north of ROUTE 21) and FUCHSIA CITY (north of ROUTE 19), so neither crossing
+; pays RefreshConnectionSprites' ~27-frame reload.  Walking sheets first
+; (SortUsedSprites), still ones last; 13 entries, 152 tiles, nothing dropped.
+; SPRITE_BLUE left with 12g's deletion of CINNABAR ISLAND's BLUE; no map in or
+; beside this group uses that sheet any more.  SPRITE_SWIMMER_GIRL left with
+; 12b's invented SWIMMERFs: Yellow's routes use one swimmer sheet for every
+; swimmer.
 	db SPRITE_OAK
-	db SPRITE_BLUE
 	db SPRITE_TWIN
 	db SPRITE_YOUNGSTER
+	db SPRITE_LASS
 	db SPRITE_FISHER
 	db SPRITE_MONSTER
 	db SPRITE_OLD_MAN

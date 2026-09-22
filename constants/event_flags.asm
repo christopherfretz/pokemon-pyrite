@@ -2111,7 +2111,21 @@
 ; blackout leaves the bird in place.
 	const EVENT_BEAT_ARTICUNO ; (6, 1) SEAFOAM ISLANDS B4F
 
-; Unused: next 287 events
+; M9 12g: three flags Yellow has and Crystal does not.
+; EVENT_MANSION_SWITCH_ON and EVENT_LAB_STILL_REVIVING_FOSSIL are Yellow's own
+; (vendor/pokeyellow/constants/event_constants.asm); CinnabarIsland's
+; MAPCALLBACK_NEWMAP clears both on every arrival, exactly as
+; vendor/pokeyellow/scripts/CinnabarIsland.asm:5-6 does.  12l sets the mansion
+; switch, 12j the fossil machine.
+	const EVENT_MANSION_SWITCH_ON
+	const EVENT_LAB_STILL_REVIVING_FOSSIL
+; D91/12m stand-in: SECRET_KEY has no item id yet, so the CINNABAR GYM door
+; checks this flag instead of the bag.  12m claims an item id and swaps
+; CinnabarIslandGymDoor's `checkevent` for `checkitem SECRET_KEY`, after which
+; this row is dead (kept, never renumbered -- D49).
+	const EVENT_GOT_SECRET_KEY
+
+; Unused: next 284 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

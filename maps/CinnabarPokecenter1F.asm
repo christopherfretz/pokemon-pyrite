@@ -36,8 +36,12 @@ CinnabarPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  3,  7, CINNABAR_ISLAND, 1
-	warp_event  4,  7, CINNABAR_ISLAND, 1
+; M9 12g: CINNABAR ISLAND now carries Yellow's five warps, and the POKeCENTRE
+; is its FOURTH (Yellow returns to LAST_MAP, 4 from here).  Crystal's town had
+; one door, so these two rows used to say 1; left at 1 they would spit the
+; player out of the POKeMON MANSION's front door.
+	warp_event  3,  7, CINNABAR_ISLAND, 4
+	warp_event  4,  7, CINNABAR_ISLAND, 4
 	warp_event  0,  7, POKECENTER_2F, 1
 
 	def_coord_events
