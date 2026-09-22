@@ -285,6 +285,11 @@ TilesetKantoLabAnim:
 	tileframe WaitTileAnimation
 	tileframe DoneTileAnimation
 
+TilesetKantoGymAnim:
+; Kanto hack (M10 13a): Yellow's GYM header is TILEANIM_WATER_FLOWER, and GYM's
+; tile $14 is the same pool-water tile slot FACILITY rotates, so the GYM shares
+; this list.  The flower half (tile $03, block $33 only) is not ported: no map
+; on this tileset uses block $33.
 TilesetKantoFacilityAnim:
 ; Kanto hack (docs/M8-SAFFRON.md, M8 11b / D71).  Yellow's FACILITY header is
 ; `tileset Facility, $12, -1, -1, -1, TILEANIM_WATER`, and TILEANIM_WATER in

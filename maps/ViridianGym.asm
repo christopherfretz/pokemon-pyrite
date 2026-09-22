@@ -178,16 +178,22 @@ ViridianGymGuideWinText:
 ViridianGym_MapEvents:
 	db 0, 0 ; filler
 
+; Kanto hack (M10 13a): Yellow's 10x9 room on TILESET_KANTO_GYM.  Warps are
+; Yellow's (16,17)/(17,17) on the exit mat; the statues are Yellow's
+; hidden_events (15,15)/(18,15), SPRITE_FACING_UP.  The twelve arrow runs are
+; collision (D115, scripts/kanto_gym_blk.py), not coord_events.  BLUE and the
+; guide are 13b's to replace; until then BLUE stands on GIOVANNI's tile (2,1)
+; and the guide on Yellow's GYM GUIDE tile (16,15), both off every run.
 	def_warp_events
-	warp_event  4, 17, VIRIDIAN_CITY, 1
-	warp_event  5, 17, VIRIDIAN_CITY, 1
+	warp_event 16, 17, VIRIDIAN_CITY, 1
+	warp_event 17, 17, VIRIDIAN_CITY, 1
 
 	def_coord_events
 
 	def_bg_events
-	bg_event  3, 13, BGEVENT_READ, ViridianGymStatue
-	bg_event  6, 13, BGEVENT_READ, ViridianGymStatue
+	bg_event 15, 15, BGEVENT_UP, ViridianGymStatue
+	bg_event 18, 15, BGEVENT_UP, ViridianGymStatue
 
 	def_object_events
-	object_event  5,  3, SPRITE_BLUE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianGymBlueScript, EVENT_VIRIDIAN_GYM_BLUE
-	object_event  7, 13, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianGymGuideScript, EVENT_VIRIDIAN_GYM_BLUE
+	object_event  2,  1, SPRITE_BLUE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianGymBlueScript, EVENT_VIRIDIAN_GYM_BLUE
+	object_event 16, 15, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianGymGuideScript, EVENT_VIRIDIAN_GYM_BLUE

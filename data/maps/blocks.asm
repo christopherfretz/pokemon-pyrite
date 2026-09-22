@@ -855,9 +855,6 @@ FightingDojo_Blocks:
 SilphCo1F_Blocks:
 	INCBIN "maps/SilphCo1F.blk"
 
-ViridianGym_Blocks:
-	INCBIN "maps/ViridianGym.blk"
-
 TrainerHouse1F_Blocks:
 	INCBIN "maps/TrainerHouse1F.blk"
 
@@ -1431,5 +1428,11 @@ PokemonMansionB1F_Blocks:
 
 CinnabarGym_Blocks:
 	INCBIN "maps/CinnabarGym.blk"
+
+; M10 13a: VIRIDIAN GYM re-cut to Yellow's 10x9 on TILESET_KANTO_GYM, moved here
+; from "Map Blocks 3" (90 B, 45 more than the old 5x9).  Yellow's .blk with the
+; arrow-run blocks swapped for their D115 clones; scripts/kanto_gym_blk.py.
+ViridianGym_Blocks:
+	INCBIN "maps/ViridianGym.blk"
 
 ENDSECTION

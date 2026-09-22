@@ -529,7 +529,7 @@ ENDM
 	map_const ROUTE_2,                                     10, 27 ;  1
 	map_const ROUTE_22,                                    20,  9 ;  2
 	map_const VIRIDIAN_CITY,                               20, 18 ;  3
-	map_const VIRIDIAN_GYM,                                 5,  9 ;  4
+	map_const VIRIDIAN_GYM,                                10,  9 ;  4 ; Kanto hack (M10 13a): Yellow's 10x9
 	map_const VIRIDIAN_NICKNAME_SPEECH_HOUSE,               4,  4 ;  5
 	map_const TRAINER_HOUSE_1F,                             5,  7 ;  6
 	map_const TRAINER_HOUSE_B1F,                            5,  8 ;  7

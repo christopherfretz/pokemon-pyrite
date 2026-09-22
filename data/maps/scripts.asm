@@ -186,7 +186,6 @@ INCLUDE "maps/DanceTheater.asm"
 INCLUDE "maps/EcruteakMart.asm"
 INCLUDE "maps/EcruteakGym.asm"
 INCLUDE "maps/EcruteakItemfinderHouse.asm"
-INCLUDE "maps/ViridianGym.asm"
 INCLUDE "maps/ViridianNicknameSpeechHouse.asm"
 INCLUDE "maps/TrainerHouse1F.asm"
 INCLUDE "maps/TrainerHouseB1F.asm"
@@ -669,6 +668,10 @@ INCLUDE "maps/SilphCoElevator.asm"
 ; current and no ARTICUNO, ~730 B of the 5898 left in this bank.
 INCLUDE "maps/SeafoamIslandsB1F.asm"
 INCLUDE "maps/SeafoamIslandsB2F.asm"
+
+; Kanto hack (M10 13a, docs/M10-INDIGO.md): VIRIDIAN GYM moves out of "Map
+; Scripts 11" ($26, ~600 B free) ahead of 13b's eight trainers and GIOVANNI.
+INCLUDE "maps/ViridianGym.asm"
 
 ENDSECTION
 
