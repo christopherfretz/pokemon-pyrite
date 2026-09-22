@@ -497,6 +497,18 @@ InitializeEventsScript:
 	setevent EVENT_BOULDER_IN_ICE_PATH_2A
 	setevent EVENT_BOULDER_IN_ICE_PATH_3A
 	setevent EVENT_BOULDER_IN_ICE_PATH_4A
+; Kanto hack (M9 12e): SEAFOAM ISLANDS' boulder pairs.  Each of these is a
+; HIDE flag on an object that only exists once the boulder above it has been
+; pushed down its hole, so it starts SET (hidden).  The 1F and B3F starting
+; boulders, and B3F's two non-toggleable decoys, start visible.
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_3
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_4
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_2
 	setevent EVENT_ROUTE_30_YOUNGSTER_JOEY
 	setevent EVENT_BUG_CATCHING_CONTESTANT_1A
 	setevent EVENT_BUG_CATCHING_CONTESTANT_2A

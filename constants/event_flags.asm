@@ -2078,7 +2078,36 @@
 	const EVENT_BEAT_ROUTE_21_TRAINER_7
 	const EVENT_BEAT_ROUTE_21_TRAINER_8
 
-; Unused: next 311 events
+; M9 12e -- SEAFOAM ISLANDS.  Twelve boulder HIDE flags (set = the object is
+; hidden) reproducing Yellow's `toggleable_objects.asm` initial states, and
+; eight "this boulder went down that hole" flags reproducing Yellow's
+; EVENT_SEAFOAM{1,2,3,4}_BOULDER{1,2}_DOWN_HOLE.  The ones that start hidden
+; are set at new game in InitializeEventsScript (engine/events/std_scripts.asm).
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_1F_1  ; (18,10), visible
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_1F_2  ; (26, 7), visible
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_1 ; (17, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_2 ; (22, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_1 ; (18, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_2 ; (23, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_1 ; ( 3,15), visible
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_2 ; ( 8,14), visible
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_3 ; (18, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_4 ; (19, 6), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_1 ; ( 4,15), starts hidden
+	const EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_2 ; ( 5,15), starts hidden
+	const EVENT_SEAFOAM_ISLANDS_1F_BOULDER_1_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_1F_BOULDER_2_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B1F_BOULDER_1_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B1F_BOULDER_2_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_1_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_2_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B3F_BOULDER_1_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B3F_BOULDER_2_DOWN_HOLE
+	const EVENT_SEAFOAM_ISLANDS_B2F_HIDDEN_NUGGET
+	const EVENT_SEAFOAM_ISLANDS_B3F_HIDDEN_MAX_ELIXER
+	const EVENT_SEAFOAM_ISLANDS_B4F_HIDDEN_ULTRA_BALL
+
+; Unused: next 288 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -38,6 +38,42 @@ Route20_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, Route20SeafoamBoulderResetCallback
+
+; M9 12e: Yellow's Route20BoulderScript (vendor/pokeyellow/scripts/Route20.asm),
+; which runs on every ROUTE 20 load after the player has been inside SEAFOAM
+; ISLANDS.  Once a stage of the boulder puzzle is complete the OBJECTS are put
+; back to their starting arrangement while the DOWN_HOLE flags stay set, so the
+; puzzle can be replayed and (12f) the current stays stopped for good.  Yellow
+; calls HideObject/ShowObject on another map's toggleable list; GSC's
+; appear/disappear only reach the current map, so this writes the hide flags
+; directly, which is the same thing one layer down.  Yellow's
+; EVENT_IN_SEAFOAM_ISLANDS guard is dropped: the reset is idempotent and its
+; conditions can only become true inside the islands.
+Route20SeafoamBoulderResetCallback:
+	checkevent EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_1_DOWN_HOLE
+	iffalse .check_b3f
+	checkevent EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_2_DOWN_HOLE
+	iffalse .check_b3f
+	clearevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_1F_1
+	clearevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_1F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B1F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B2F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_3
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_4
+.check_b3f
+	checkevent EVENT_SEAFOAM_ISLANDS_B3F_BOULDER_1_DOWN_HOLE
+	iffalse .done
+	checkevent EVENT_SEAFOAM_ISLANDS_B3F_BOULDER_2_DOWN_HOLE
+	iffalse .done
+	clearevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_1
+	clearevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B3F_2
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_1
+	setevent EVENT_BOULDER_IN_SEAFOAM_ISLANDS_B4F_2
+.done
+	endcallback
 
 TrainerSwimmerm8:
 	trainer SWIMMERM, SWIMMERM_8, EVENT_BEAT_ROUTE_20_TRAINER_0, Route20Swimmer1SeenText, Route20Swimmer1BeatenText, 0, .Script

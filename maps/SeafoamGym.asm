@@ -1,3 +1,18 @@
+; Kanto hack (M9 12e, D96): UNREACHABLE.  Crystal put BLAINE in a gym on the
+; SEAFOAM ISLANDS; Yellow's SEAFOAM ISLANDS are a five-floor cave with ARTICUNO
+; in them and BLAINE's gym is on CINNABAR ISLAND.  12d cut Yellow's five floors
+; in and 12e wired their 32 warps, so ROUTE 20's two mouths now lead to
+; SEAFOAM_ISLANDS_1F and nothing anywhere warps here any more -- grep
+; SEAFOAM_GYM: only this file's own labels remain.
+;
+; The file stays in the build, unreferenced, following 12c's ROUTE 19 FUCHSIA
+; GATE (and Crystal's own FuchsiaPokecenter2FBeta): the `map SeafoamGym, ...`
+; row in data/maps/maps.asm names these labels, and SEAFOAM_GYM stays
+; registered in constants/map_constants.asm as a dead positional id (D49: never
+; renumber).  §0.6 schedules the actual deletion of the map row for 12o, after
+; 12n rebuilds BLAINE on CINNABAR ISLAND, so that the gym's leader, trainers
+; and TM38 can be lifted out of here in one move rather than two.
+
 	object_const_def
 	const SEAFOAMGYM_BLAINE
 	const SEAFOAMGYM_GYM_GUIDE
