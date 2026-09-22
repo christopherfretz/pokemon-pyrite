@@ -565,14 +565,16 @@ ENDM
 	map_attributes Route19FuchsiaGate, ROUTE_19_FUCHSIA_GATE, $0a
 	map_attributes SeafoamGym, SEAFOAM_GYM, $09
 ; Kanto hack (M9 12a): Yellow's CINNABAR arc.  Borders follow the nearest
-; precedent -- $01 is MtMoon1F's TILESET_CAVE wall, $2e is SilphCo2F's
-; TILESET_KANTO_FACILITY wall, $00 is the plain indoor border every Kanto
-; house/mart/centre uses.  No connections: all fifteen are indoor maps.
-	map_attributes SeafoamIslands1F, SEAFOAM_ISLANDS_1F, $01
-	map_attributes SeafoamIslandsB1F, SEAFOAM_ISLANDS_B1F, $01
-	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $01
-	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $01
-	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $01
+; precedent -- $2e is SilphCo2F's TILESET_KANTO_FACILITY wall, $00 is the plain
+; indoor border every Kanto house/mart/centre uses.  No connections: all
+; fifteen are indoor maps.
+; 12d: the Seafoam floors take Yellow's own border, cavern block $7d (a 2x2
+; boulder field), whose exact TILESET_CAVE twin is metatile $1d.
+	map_attributes SeafoamIslands1F, SEAFOAM_ISLANDS_1F, $1d
+	map_attributes SeafoamIslandsB1F, SEAFOAM_ISLANDS_B1F, $1d
+	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $1d
+	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $1d
+	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $1d
 	map_attributes CinnabarMart, CINNABAR_MART, $00
 	map_attributes CinnabarLab, CINNABAR_LAB, $00
 	map_attributes CinnabarLabTradeRoom, CINNABAR_LAB_TRADE_ROOM, $00

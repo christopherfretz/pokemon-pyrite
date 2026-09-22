@@ -1382,9 +1382,9 @@ Route20_Blocks:
 Route21_Blocks:
 	INCBIN "maps/Route21.blk"
 
-; The five SEAFOAM ISLANDS floors are flat TILESET_CAVE FLOOR ($02) fills at
-; Yellow's 15x9 -- 12d maps the sixteen unmapped cavern.bst ids and re-cuts
-; them for real.  Placeholders, not geometry.
+; The five SEAFOAM ISLANDS floors, cut from Yellow's cavern.bst onto
+; TILESET_CAVE by scripts/seafoam_blk.py (M9 12d).  Six new cave metatiles
+; $48-$4d; collision verified against Yellow with scripts/cave_reach.py --walk.
 SeafoamIslands1F_Blocks:
 	INCBIN "maps/SeafoamIslands1F.blk"
 

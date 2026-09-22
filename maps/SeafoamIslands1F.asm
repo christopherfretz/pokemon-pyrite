@@ -1,7 +1,8 @@
-; Kanto hack (M9 12a): placeholder.  Registered so the map has an id, a
-; header, attributes and a .blk.
-; SEAFOAM ISLANDS 1F -- 12d cuts the geometry, 12e the boulders.  12b gave
-; it the two ROUTE 20 mouths so the route's warps have a real destination.
+; SEAFOAM ISLANDS 1F.  Geometry cut from Yellow by scripts/seafoam_blk.py
+; (M9 12d); warps 1-4 are Yellow's two ROUTE 20 mouths, at Yellow's own
+; coordinates and in Yellow's own order, so ROUTE_20 can go back to warping
+; at `, 1` and `, 3` as it does there.  12e adds warps 5-7 (to B1F), the two
+; boulders and the hidden items.
 SeafoamIslands1F_MapScripts:
 	def_scene_scripts
 
@@ -10,12 +11,13 @@ SeafoamIslands1F_MapScripts:
 SeafoamIslands1F_MapEvents:
 	db 0, 0 ; filler
 
-	; Kanto hack (M9 12b): the two mouths ROUTE 20 warps into, on the BR CAVE
-	; quadrant of cave block $37 (scripts/route19_21_blk.py puts the blocks
-	; there).  12d replaces the whole stub with Yellow's geometry.
+	; Yellow's warps 1-4: each mouth is two tiles wide, both halves of the
+	; WARP_CARPET_DOWN pair on cave metatile $40 (cavern block $24).
 	def_warp_events
-	warp_event  3,  3, ROUTE_20, 1
-	warp_event 11,  3, ROUTE_20, 2
+	warp_event  4, 17, ROUTE_20, 1
+	warp_event  5, 17, ROUTE_20, 1
+	warp_event 26, 17, ROUTE_20, 2
+	warp_event 27, 17, ROUTE_20, 2
 
 	def_coord_events
 
