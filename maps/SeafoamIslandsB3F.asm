@@ -1,5 +1,5 @@
-; SEAFOAM ISLANDS B3F (M9 12d geometry, 12e warps/boulders/hidden item;
-; currents in 12f).
+; SEAFOAM ISLANDS B3F (M9 12d geometry, 12e warps/boulders/hidden item,
+; 12f currents).
 ;
 ; Warps 1-7 Yellow's; 8-9 the anchors for B2F's holes ((18,7)/(19,7), Yellow's
 ; DungeonWarpData -- both on WATER, and GSC's map_setup .CheckSurfing puts the
@@ -26,7 +26,150 @@ SeafoamIslandsB3F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, SeafoamIslandsB3FCurrentCallback
 	callback MAPCALLBACK_CMDQUEUE, SeafoamIslandsB3FSetUpStoneTableCallback
+
+; --- 12f: the STRONG CURRENT ------------------------------------------------
+; Yellow drives the currents with StartSimulatingJoypadStates over an RLE list
+; (vendor/pokeyellow/scripts/SeafoamIslandsB3F.asm).  Two things about that
+; data are easy to get wrong and were checked in the Yellow harness before
+; these paths were written:
+;
+;   * the simulated-joypad buffer is consumed BACKWARDS, so Yellow's
+;     `DOWN 6 / RIGHT 5 / DOWN 3` actually plays as DOWN 3, RIGHT 5, DOWN 6.
+;     The movement data below is in play order.
+;   * `CheckBothEventsSet` sets Z when BOTH events ARE set, and the scripts
+;     `ret z` on it -- so the current is ON until both boulders are down the
+;     holes, and OFF afterwards.  B3F's currents are gated on the pair pushed
+;     in on B2F (Yellow's EVENT_SEAFOAM3_*), NOT on this floor's own pair.
+;
+; Observed in vanilla Yellow (map, x, y), boulders still up:
+;   (15, 8) -> ... -> B3F (20,17) -> B4F (20,17) -> B4F (20,15)
+;   (18, 7) -> ... -> B3F (20,17) -> B4F (20,17) -> B4F (20,15)
+;   (19, 7) -> LEFT to (18,7) -> ... -> B3F (20,17) -> B4F (20,15)
+;
+; (18,7)/(19,7) are the landings from B2F's two holes, i.e. WARP arrivals, and
+; GSC's EnterMap calls DisableEvents, so a coord_event there would never fire.
+; The arrival paths are queued with LoadMemScript instead (engine/overworld/
+; events.asm): RunMemScript is the one PlayerEvents entry that is not gated on
+; wEnabledPlayerEvents, so it runs on the first frame after the map loads.
+; A scene script would have been the other option but every map with scenes
+; needs its own saved WRAM byte, and WRAM1 is full.
+
+SeafoamIslandsB3FCurrentCallback:
+	callasm SeafoamIslandsB3FQueueCurrent
+	endcallback
+
+SeafoamIslandsB3FQueueCurrent:
+	ld b, BANK(SeafoamIslandsB3FArrivalCurrent)
+	ld de, SeafoamIslandsB3FArrivalCurrent
+	farcall LoadMemScript
+	ret
+
+SeafoamIslandsB3FArrivalCurrent:
+	callasm SeafoamIslandsB3FCurrentIsOff
+	iftrue .nocurrent
+	readvar VAR_YCOORD
+	ifnotequal 7, .nocurrent
+	readvar VAR_XCOORD
+	ifequal 18, .westhole
+	ifequal 19, .easthole
+	sjump .nocurrent
+
+.westhole:
+	applymovement PLAYER, SeafoamIslandsB3FCurrentFromWestHole
+	sjump .sweptdown
+
+.easthole:
+	applymovement PLAYER, SeafoamIslandsB3FCurrentFromEastHole
+
+.sweptdown:
+	warp SEAFOAM_ISLANDS_B4F, 20, 17
+
+.nocurrent:
+	end
+
+SeafoamIslandsB3FCurrentNearSteps:
+	callasm SeafoamIslandsB3FCurrentIsOff
+	iftrue .nocurrent
+	applymovement PLAYER, SeafoamIslandsB3FCurrentNearStepsMovement
+	warp SEAFOAM_ISLANDS_B4F, 20, 17
+
+.nocurrent:
+	end
+
+; wScriptVar = 1 when BOTH of B2F's boulders are down their holes, i.e. when
+; Yellow's `CheckBothEventsSet` / `ret z` would have stopped the current.
+SeafoamIslandsB3FCurrentIsOff:
+	ld a, 0
+	ld [wScriptVar], a
+	ld de, EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_1_DOWN_HOLE
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret z
+	ld de, EVENT_SEAFOAM_ISLANDS_B2F_BOULDER_2_DOWN_HOLE
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret z
+	ld a, 1
+	ld [wScriptVar], a
+	ret
+
+; Play order, not Yellow's RLE order (see above).
+SeafoamIslandsB3FCurrentNearStepsMovement:
+; (15,8) -> (20,17); Yellow's RLEList_ForcedSurfingStrongCurrentNearSteps
+	step DOWN
+	step DOWN
+	step DOWN
+	step RIGHT
+	step RIGHT
+	step RIGHT
+	step RIGHT
+	step RIGHT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+SeafoamIslandsB3FCurrentFromWestHole:
+; (18,7) -> (20,17); Yellow's .RLEList_StrongCurrentNearLeftBoulder
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step RIGHT
+	step RIGHT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+SeafoamIslandsB3FCurrentFromEastHole:
+; (19,7) -> (20,17); Yellow's .RLEList_StrongCurrentNearRightBoulder
+	step LEFT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step RIGHT
+	step RIGHT
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
 
 SeafoamIslandsB3FSetUpStoneTableCallback:
 	writecmdqueue .CommandQueue
@@ -87,6 +230,7 @@ SeafoamIslandsB3F_MapEvents:
 	warp_event  6, 16, SEAFOAM_ISLANDS_B4F, 6 ; hole
 
 	def_coord_events
+	coord_event 15,  8, -1, SeafoamIslandsB3FCurrentNearSteps
 
 	def_bg_events
 	bg_event  9, 16, BGEVENT_ITEM, SeafoamIslandsB3FHiddenMaxElixer

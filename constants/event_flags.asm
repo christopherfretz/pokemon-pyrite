@@ -2106,8 +2106,12 @@
 	const EVENT_SEAFOAM_ISLANDS_B2F_HIDDEN_NUGGET
 	const EVENT_SEAFOAM_ISLANDS_B3F_HIDDEN_MAX_ELIXER
 	const EVENT_SEAFOAM_ISLANDS_B4F_HIDDEN_ULTRA_BALL
+; M9 12f: ARTICUNO's hide flag, Yellow's EVENT_BEAT_ARTICUNO.  Set by a win, a
+; catch OR a successful run, exactly as Yellow's EndTrainerBattle does; only a
+; blackout leaves the bird in place.
+	const EVENT_BEAT_ARTICUNO ; (6, 1) SEAFOAM ISLANDS B4F
 
-; Unused: next 288 events
+; Unused: next 287 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
