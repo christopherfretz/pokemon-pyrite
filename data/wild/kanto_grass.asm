@@ -1792,8 +1792,8 @@ KantoGrassWildMons:
 
 ; Kanto hack (M10 13e-1): Yellow's Route 23 table, vendor/pokeyellow/data/wild/
 ; maps/Route23.asm.  Yellow's rate byte is 10 = `4 percent`; its ten slots fold
-; to seven by dropping slots 5, 6 and 9 (L44 NIDORINO, L44 NIDORINA, L41
-; PRIMEAPE) -- the same positions as ROUTE_22's fold -- keeping Yellow's order
+; to seven by dropping slots 4, 5 and 9 (1-based; L44 NIDORINO, L44 NIDORINA, L41
+; PRIMEAPE) -- the duplicated middle entries, as in ROUTE_22's fold -- keeping Yellow's order
 ; and every species; morn = day = nite.  Yellow's water rate is 0: no surf table.
 	def_grass_wildmons ROUTE_23
 	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
