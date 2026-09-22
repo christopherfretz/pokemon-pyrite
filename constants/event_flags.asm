@@ -2129,8 +2129,34 @@
 ; Crystal has no free TM-gift flag that is not already spoken for, so this is a
 ; new one appended at the end -- never renumber (D49).
 	const EVENT_GOT_TM35_METRONOME
+; M9 12j: the CINNABAR LAB fossil revival.
+;
+; EVENT_GAVE_FOSSIL_TO_LAB is Yellow's own flag
+; (vendor/pokeyellow/constants/event_constants.asm); together with
+; EVENT_LAB_STILL_REVIVING_FOSSIL (12g, cleared by CINNABAR ISLAND's
+; MAPCALLBACK_NEWMAP) it is the whole state machine: GAVE+STILL = "come back
+; later", GAVE alone = "your fossil is back to life".
+;
+; The two _IS_ rows replace Yellow's wFossilItem/wFossilMon pair, which say
+; WHICH fossil is in the machine.  Yellow keeps them in unsaved scratch WRAM
+; ($d1xx, outside the Gen 1 save range), so saving and resetting mid-revival
+; loses the answer; our WRAM1 is full besides (HANDOFF "Budgets"), so the two
+; bits live in the saved event array instead:
+;     neither set  -> DOME FOSSIL  -> KABUTO
+;     _IS_HELIX    -> HELIX FOSSIL -> OMANYTE
+;     _IS_AMBER    -> OLD AMBER    -> AERODACTYL
+; Both are cleared again when the mon is handed over, so all three fossils can
+; be revived in one save, one at a time.
+;
+; Yellow's third flag, EVENT_LAB_HANDING_OVER_FOSSIL_MON, is deliberately NOT
+; ported: it is set at scripts/CinnabarLabFossilRoom.asm:76 and reset at :82
+; and is read NOWHERE in the whole game, so porting it would only hand the M9
+; audit a dead row.
+	const EVENT_GAVE_FOSSIL_TO_LAB
+	const EVENT_LAB_FOSSIL_IS_HELIX
+	const EVENT_LAB_FOSSIL_IS_AMBER
 
-; Unused: next 284 events
+; Unused: next 281 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
