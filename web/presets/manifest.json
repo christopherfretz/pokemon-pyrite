@@ -196,5 +196,17 @@
   "title": "CINNABAR ISLAND \u2014 VOLCANOBADGE won for real",
   "description": "Outside the CINNABAR GYM door with the VOLCANOBADGE and TM38 FIRE BLAST ACTUALLY FOUGHT for: the SECRET KEY dug out of the POKeMON MANSION on Yellow's switch route, the gym's six quiz machines answered, BLAINE beaten in the harness. Chains from 'CINNABAR ISLAND \u2014 just surfed in', so the same things are faked (RAINBOW/SOUL badges, the level-100 party). Seven badges; VIRIDIAN's gym is next.",
   "sav": "blaine.sav"
+ },
+ {
+  "id": "earthbadge",
+  "title": "VIRIDIAN CITY \u2014 EARTHBADGE won for real",
+  "description": "Outside the VIRIDIAN GYM door with all eight badges and TM69 FISSURE. Flown in from 'VOLCANOBADGE won': the spinner maze walked tile by tile, all eight gym trainers and GIOVANNI ACTUALLY FOUGHT in the harness, then his farewell. Chains from 'VOLCANOBADGE won', so the same things are faked (RAINBOW/SOUL badges, the level-100 party). ROUTE 22's rivals are real and unplayed: rival #1 was never fought on this branch and comes first, then rival #2.",
+  "sav": "earthbadge.sav"
+ },
+ {
+  "id": "route22_rival2",
+  "title": "ROUTE 22 \u2014 both rival fights won",
+  "description": "ROUTE 22 just after the second rival battle, walked west from 'EARTHBADGE won': rival #1 (never fought on this branch) and then rival #2 ACTUALLY FOUGHT in the harness. Same fakes as 'EARTHBADGE won' (RAINBOW/SOUL badges, the level-100 party). The ROUTE 22 GATE, the badge checks and VICTORY ROAD lie west.",
+  "sav": "route22_rival2.sav"
  }
 ]
