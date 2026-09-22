@@ -659,8 +659,8 @@
 	const EVENT_BEAT_PSYCHIC_RODNEY
 ; Firebreather
 	const EVENT_BEAT_BUG_CATCHER_COLTON ; Kanto hack: was EVENT_BEAT_FIREBREATHER_OTIS; Route 3, Yellow's BUG_CATCHER 4
-	const EVENT_BEAT_FIREBREATHER_DICK
-	const EVENT_BEAT_FIREBREATHER_NED
+	const EVENT_ROUTE22_RIVAL_2 ; Kanto hack (M10 13c): was EVENT_BEAT_FIREBREATHER_DICK (never referenced, even in vanilla Crystal; renamed in place).  Route 22 rival #2's object hide flag; the OBJECTS callback derives it on every load
+	const EVENT_BEAT_ROUTE22_RIVAL_2ND_BATTLE ; Kanto hack (M10 13c): was EVENT_BEAT_FIREBREATHER_NED (never referenced, even in vanilla Crystal; renamed in place).  Yellow's flag of the same name, set on the win
 	const EVENT_BEAT_LASS_JANICE ; Kanto hack: was EVENT_BEAT_FIREBREATHER_BURT; Route 3, Yellow's LASS 1
 	const EVENT_BEAT_FIREBREATHER_BILL
 	const EVENT_BEAT_FIREBREATHER_WALT

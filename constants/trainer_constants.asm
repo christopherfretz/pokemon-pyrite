@@ -1064,6 +1064,9 @@ DEF KRIS EQU __trainer_class__
 	const KANTO_RIVAL_8 ; SILPH CO. 7F, the JOLTEON branch (11g)
 	const KANTO_RIVAL_9 ; SILPH CO. 7F, the FLAREON branch (11g)
 	const KANTO_RIVAL_10 ; SILPH CO. 7F, the VAPOREON branch (11g)
+	const KANTO_RIVAL_11 ; ROUTE 22 after 8 badges, the JOLTEON branch (M10 13c)
+	const KANTO_RIVAL_12 ; ROUTE 22 after 8 badges, the FLAREON branch (M10 13c)
+	const KANTO_RIVAL_13 ; ROUTE 22 after 8 badges, the VAPOREON branch (M10 13c)
 
 ; Kanto hack: Yellow's rival-starter selector, ported value for value from
 ; vendor/pokeyellow/constants/pokemon_constants.asm:207-209.  Yellow keeps it in

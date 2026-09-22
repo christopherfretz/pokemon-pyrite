@@ -5099,6 +5099,45 @@ KantoRivalGroup:
 	db 40, VAPOREON
 	db -1 ; end
 
+	; KANTO_RIVAL (11)-(13): ROUTE 22 after the eighth badge -- Yellow's
+	; seventh rival fight (OPP_RIVAL2 / wTrainerNo = wRivalStarter + 7,
+	; Rival2Data rows 8-10 at vendor/pokeyellow/data/trainers/parties.asm:
+	; 698-700).  Selected by `special GetKantoRivalStarter` -- see
+	; maps/Route22.asm (M10 13c).  TRAINERTYPE_NORMAL like rows 1-10: Yellow's
+	; special_moves.asm lists no RIVAL2 rows, so every mon has its level-up
+	; moves, exactly as in Yellow.  Slots 1, 2 and 5 are the same in all three
+	; rows; slots 3 and 4 cover the two evolutions he did not take.
+
+	; KANTO_RIVAL (11): ROUTE 22 #2, RIVAL_STARTER_JOLTEON
+	db "?@", TRAINERTYPE_NORMAL
+	db 47, SANDSLASH
+	db 45, EXEGGCUTE
+	db 45, NINETALES
+	db 47, CLOYSTER
+	db 50, KADABRA
+	db 53, JOLTEON
+	db -1 ; end
+
+	; KANTO_RIVAL (12): ROUTE 22 #2, RIVAL_STARTER_FLAREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 47, SANDSLASH
+	db 45, EXEGGCUTE
+	db 45, CLOYSTER
+	db 47, MAGNETON
+	db 50, KADABRA
+	db 53, FLAREON
+	db -1 ; end
+
+	; KANTO_RIVAL (13): ROUTE 22 #2, RIVAL_STARTER_VAPOREON
+	db "?@", TRAINERTYPE_NORMAL
+	db 47, SANDSLASH
+	db 45, EXEGGCUTE
+	db 45, MAGNETON
+	db 47, NINETALES
+	db 50, KADABRA
+	db 53, VAPOREON
+	db -1 ; end
+
 JessieJamesGroup:
 	; JESSIE_JAMES (1): Mt. Moon B2F (Yellow's OPP_ROCKET $2a)
 	; Name is empty: PlaceEnemysName prints the class name "JESSIE&JAMES" alone.
