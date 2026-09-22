@@ -123,6 +123,10 @@ DEF KRIS EQU __trainer_class__
 	const SCIENTIST_13 ; SILPH CO. 6F (7,8)
 	const SCIENTIST_14 ; SILPH CO. 7F (2,13)
 	const SCIENTIST_15 ; SILPH CO. 8F (10,2)
+; Kanto hack (M8 11h): SILPH CO. 9F-10F's two SCIENTISTs -- Yellow
+; ScientistData rows 10-11.  Nameless, same as 8-15 above.
+	const SCIENTIST_16 ; SILPH CO. 9F (21,13)
+	const SCIENTIST_17 ; SILPH CO. 10F (10,2)
 
 	trainerclass ERIKA ; 15
 	const ERIKA1
@@ -433,6 +437,11 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_51 ; SILPH CO. 7F (19,14), Yellow ROCKET 34
 	const GRUNTM_52 ; SILPH CO. 8F (19,2), Yellow ROCKET 35
 	const GRUNTM_53 ; SILPH CO. 8F (12,15), Yellow ROCKET 36
+; Kanto hack (M8 11h): SILPH CO. 9F-10F's three ROCKETs -- Yellow RocketData
+; rows 37-39.  Same convention: "GRUNT" over the ROCKET class name.
+	const GRUNTM_54 ; SILPH CO. 9F (2,4), Yellow ROCKET 37
+	const GRUNTM_55 ; SILPH CO. 9F (13,16), Yellow ROCKET 38
+	const GRUNTM_56 ; SILPH CO. 10F (1,9), Yellow ROCKET 39
 
 	trainerclass GENTLEMAN ; 20
 	const PRESTON

@@ -402,6 +402,19 @@ ScientistGroup:
 	db 29, ELECTRODE
 	db -1 ; end
 
+	; SCIENTIST (16) - SILPH CO. 9F, (21,13).  Yellow ScientistData 10.
+	db "@", TRAINERTYPE_NORMAL
+	db 28, VOLTORB
+	db 28, KOFFING
+	db 28, MAGNETON
+	db -1 ; end
+
+	; SCIENTIST (17) - SILPH CO. 10F, (10,2).  Yellow ScientistData 11.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, MAGNEMITE
+	db 29, KOFFING
+	db -1 ; end
+
 ErikaGroup:
 	; ERIKA (1)
 	; Kanto hack: Yellow's ERIKA (docs/M6-CELADON.md 5.1, M6 9q).  ErikaData is
@@ -2005,6 +2018,25 @@ GruntMGroup:
 	db 28, WEEZING
 	db 28, GOLBAT
 	db 28, KOFFING
+	db -1 ; end
+
+	; GRUNTM (54) - SILPH CO. 9F, (2,4).  Yellow OPP_ROCKET 37.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, DROWZEE
+	db 28, GRIMER
+	db 28, MACHOP
+	db -1 ; end
+
+	; GRUNTM (55) - SILPH CO. 9F, (13,16).  Yellow OPP_ROCKET 38.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, GOLBAT
+	db 28, DROWZEE
+	db 28, HYPNO
+	db -1 ; end
+
+	; GRUNTM (56) - SILPH CO. 10F, (1,9).  Yellow OPP_ROCKET 39.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 33, MACHOKE
 	db -1 ; end
 
 GentlemanGroup:
