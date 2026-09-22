@@ -344,6 +344,42 @@ ScientistGroup:
 	db 18, MAGNETON
 	db -1 ; end
 
+	; SCIENTIST (8) - Kanto hack (M8 11f): SILPH CO. 2F, (5,12).  Yellow
+	; ScientistData 2.  Nameless, so PlaceEnemysName prints "SCIENTIST"
+	; alone, as Yellow does.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, GRIMER
+	db 26, WEEZING
+	db 26, KOFFING
+	db 26, WEEZING
+	db -1 ; end
+
+	; SCIENTIST (9) - SILPH CO. 2F, (24,13).  Yellow ScientistData 3.
+	db "@", TRAINERTYPE_NORMAL
+	db 28, MAGNEMITE
+	db 28, VOLTORB
+	db 28, MAGNETON
+	db -1 ; end
+
+	; SCIENTIST (10) - SILPH CO. 3F, (7,9).  Yellow ScientistData 4.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, ELECTRODE
+	db 29, WEEZING
+	db -1 ; end
+
+	; SCIENTIST (11) - SILPH CO. 4F, (14,6).  Yellow ScientistData 5.
+	db "@", TRAINERTYPE_NORMAL
+	db 33, ELECTRODE
+	db -1 ; end
+
+	; SCIENTIST (12) - SILPH CO. 5F, (8,3).  Yellow ScientistData 6.
+	db "@", TRAINERTYPE_NORMAL
+	db 26, MAGNETON
+	db 26, KOFFING
+	db 26, WEEZING
+	db 26, MAGNEMITE
+	db -1 ; end
+
 ErikaGroup:
 	; ERIKA (1)
 	; Kanto hack: Yellow's ERIKA (docs/M6-CELADON.md 5.1, M6 9q).  ErikaData is
@@ -1852,6 +1888,52 @@ GruntMGroup:
 	db "GRUNT@", TRAINERTYPE_NORMAL
 	db 21, KOFFING
 	db 21, ZUBAT
+	db -1 ; end
+
+	; GRUNTM (40) - Kanto hack (M8 11f): SILPH CO. 2F, (16,11).  Yellow
+	; OPP_ROCKET 23.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 29, CUBONE
+	db 29, ZUBAT
+	db -1 ; end
+
+	; GRUNTM (41) - SILPH CO. 2F, (24,7).  Yellow OPP_ROCKET 24.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 25, GOLBAT
+	db 25, ZUBAT
+	db 25, ZUBAT
+	db 25, RATICATE
+	db 25, ZUBAT
+	db -1 ; end
+
+	; GRUNTM (42) - SILPH CO. 3F, (20,7).  Yellow OPP_ROCKET 25.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, RATICATE
+	db 28, HYPNO
+	db 28, RATICATE
+	db -1 ; end
+
+	; GRUNTM (43) - SILPH CO. 4F, (9,14).  Yellow OPP_ROCKET 26.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 29, MACHOP
+	db 29, DROWZEE
+	db -1 ; end
+
+	; GRUNTM (44) - SILPH CO. 4F, (26,10).  Yellow OPP_ROCKET 27.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 28, EKANS
+	db 28, ZUBAT
+	db 28, CUBONE
+	db -1 ; end
+
+	; GRUNTM (45) - SILPH CO. 5F, (8,16).  Yellow OPP_ROCKET 28.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 33, ARBOK
+	db -1 ; end
+
+	; GRUNTM (46) - SILPH CO. 5F, (28,4).  Yellow OPP_ROCKET 29.
+	db "GRUNT@", TRAINERTYPE_NORMAL
+	db 33, HYPNO
 	db -1 ; end
 
 GentlemanGroup:
@@ -3388,6 +3470,13 @@ JugglerGroup:
 	db "@", TRAINERTYPE_NORMAL
 	db 34, DROWZEE
 	db 34, KADABRA
+	db -1 ; end
+
+	; JUGGLER (8) = JUGGLER_9: Kanto hack (M8 11f) SILPH CO. 5F, (18,10).
+	; Yellow JugglerData 1, on SPRITE_ROCKER.  Nameless, as above.
+	db "@", TRAINERTYPE_NORMAL
+	db 29, KADABRA
+	db 29, MR__MIME
 	db -1 ; end
 
 BlackbeltGroup:

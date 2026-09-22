@@ -2025,8 +2025,11 @@
 ; and 11k's takeover script clears it.  Same shape as RADIO TOWER's
 ; EVENT_RADIO_TOWER_CIVILIANS_AFTER.
 	const EVENT_SAFFRON_CITY_CIVILIANS_AFTER
+; SILPH CO. 2F's SILPH WORKER F hands over TM75 SELFDESTRUCT (Yellow's TM36)
+; exactly once (11f).
+	const EVENT_GOT_TM75_SELFDESTRUCT
 
-; Unused: next 334 events
+; Unused: next 333 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

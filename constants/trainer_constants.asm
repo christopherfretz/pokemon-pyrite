@@ -109,6 +109,15 @@ DEF KRIS EQU __trainer_class__
 ; Kanto hack: ROUTE 11's engineers (7l) -- Yellow ENGINEER 2/3
 	const MAXWELL
 	const THURSTON
+; Kanto hack (M8 11f): SILPH CO. 2F-5F's five SCIENTISTs -- Yellow
+; ScientistData rows 2-6.  Yellow leaves them nameless, so the party rows carry
+; an empty name and PlaceEnemysName prints "SCIENTIST" alone (the M7 10h
+; JUGGLER precedent).
+	const SCIENTIST_8 ; SILPH CO. 2F (5,12)
+	const SCIENTIST_9 ; SILPH CO. 2F (24,13)
+	const SCIENTIST_10 ; SILPH CO. 3F (7,9)
+	const SCIENTIST_11 ; SILPH CO. 4F (14,6)
+	const SCIENTIST_12 ; SILPH CO. 5F (8,3)
 
 	trainerclass ERIKA ; 15
 	const ERIKA1
@@ -400,6 +409,16 @@ DEF KRIS EQU __trainer_class__
 	const GRUNTM_37 ; ROCKET HIDEOUT B3F ROCKET 1
 	const GRUNTM_38 ; ROCKET HIDEOUT B3F ROCKET 2
 	const GRUNTM_39 ; ROCKET HIDEOUT B4F ROCKET (drops the LIFT KEY)
+; Kanto hack (M8 11f): SILPH CO. 2F-5F's seven ROCKETs -- Yellow OPP_ROCKET
+; 23-29.  Same convention as the hideout grunts above: "GRUNT" over the ROCKET
+; class name.
+	const GRUNTM_40 ; SILPH CO. 2F (16,11), Yellow ROCKET 23
+	const GRUNTM_41 ; SILPH CO. 2F (24,7), Yellow ROCKET 24
+	const GRUNTM_42 ; SILPH CO. 3F (20,7), Yellow ROCKET 25
+	const GRUNTM_43 ; SILPH CO. 4F (9,14), Yellow ROCKET 26
+	const GRUNTM_44 ; SILPH CO. 4F (26,10), Yellow ROCKET 27
+	const GRUNTM_45 ; SILPH CO. 5F (8,16), Yellow ROCKET 28
+	const GRUNTM_46 ; SILPH CO. 5F (28,4), Yellow ROCKET 29
 
 	trainerclass GENTLEMAN ; 20
 	const PRESTON
@@ -705,6 +724,7 @@ DEF KRIS EQU __trainer_class__
 	const JUGGLER_4 ; FUCHSIA GYM (was IRWIN3, unused)
 	const JUGGLER_7 ; FUCHSIA GYM (was IRWIN4, unused)
 	const JUGGLER_8 ; FUCHSIA GYM, appended
+	const JUGGLER_9 ; Kanto hack (M8 11f): SILPH CO. 5F (18,10), Yellow JugglerData 1
 
 	trainerclass BLACKBELT_T ; 32
 	const KENJI1 ; unused
