@@ -397,7 +397,6 @@ INCLUDE "maps/Route35.asm"
 INCLUDE "maps/Route43.asm"
 INCLUDE "maps/Route44.asm"
 INCLUDE "maps/Route45.asm"
-INCLUDE "maps/Route19.asm"
 INCLUDE "maps/Route25.asm"
 
 
@@ -442,7 +441,6 @@ INCLUDE "maps/ViridianCity.asm"
 INCLUDE "maps/CeladonCity.asm"
 INCLUDE "maps/Route15.asm"
 INCLUDE "maps/VermilionCity.asm"
-INCLUDE "maps/CinnabarPokecenter1F.asm"
 INCLUDE "maps/CinnabarPokecenter2FBeta.asm"
 INCLUDE "maps/Route19FuchsiaGate.asm"
 INCLUDE "maps/SeafoamGym.asm"
@@ -454,9 +452,6 @@ INCLUDE "maps/Route33.asm"
 INCLUDE "maps/Route2.asm"
 INCLUDE "maps/Route1.asm"
 INCLUDE "maps/PalletTown.asm"
-INCLUDE "maps/Route21.asm"
-INCLUDE "maps/CinnabarIsland.asm"
-INCLUDE "maps/Route20.asm"
 INCLUDE "maps/Route18.asm"
 INCLUDE "maps/Route17.asm"
 INCLUDE "maps/Route16.asm"
@@ -623,6 +618,17 @@ INCLUDE "maps/SafariZoneWestRestHouse.asm"
 INCLUDE "maps/SafariZoneEastRestHouse.asm"
 INCLUDE "maps/SafariZoneNorthRestHouse.asm"
 
+; Kanto hack (M9 12a, docs/M9-CINNABAR.md 0.3): CINNABAR's quiet interiors --
+; the four LAB rooms, the MART and the POKeCENTRE that regrows to Yellow's 7x4
+; here.  0.3 budgets them ~3.2 KB against this bank's 10233 free, so they stay
+; clear of the 11.6 KB that has to fit in "Map Scripts 32".
+INCLUDE "maps/CinnabarPokecenter1F.asm"
+INCLUDE "maps/CinnabarMart.asm"
+INCLUDE "maps/CinnabarLab.asm"
+INCLUDE "maps/CinnabarLabTradeRoom.asm"
+INCLUDE "maps/CinnabarLabMetronomeRoom.asm"
+INCLUDE "maps/CinnabarLabFossilRoom.asm"
+
 ENDSECTION
 
 
@@ -647,5 +653,39 @@ INCLUDE "maps/SilphCo9F.asm"
 INCLUDE "maps/SilphCo10F.asm"
 INCLUDE "maps/SilphCo11F.asm"
 INCLUDE "maps/SilphCoElevator.asm"
+
+; Kanto hack (M9 12a, docs/M9-CINNABAR.md 0.3): the two SEAFOAM floors with no
+; current and no ARTICUNO, ~730 B of the 5898 left in this bank.
+INCLUDE "maps/SeafoamIslandsB1F.asm"
+INCLUDE "maps/SeafoamIslandsB2F.asm"
+
+ENDSECTION
+
+
+SECTION "Map Scripts 32", ROMX
+
+; Kanto hack (M9 12a, docs/M9-CINNABAR.md D93): M9's heavy maps.  0.3 puts the
+; milestone's script+text bill at ~15.5 KB; "Map Scripts 30" ($76, 10233 free)
+; and "Map Scripts 31" ($7a, 5898) would only just cover it with no slack for
+; the leftover audit's fixes, so 12a opens a third home in $1c -- the largest
+; tail left in the tree at 11242 bytes.  Pinned in layout.link; floating, it
+; bin-packs into bank $01, which has 102 free bytes (G2).
+;
+; ROUTES 19-21 and CINNABAR ISLAND move here from "Map Scripts 20"/"24" while
+; they are still Crystal-sized stubs: 12b and 12c multiply them and an
+; already-populated map is far more expensive to rehome (moving a map's
+; *_MapEvents block invalidates every savestate taken on it, 11n H-2).
+INCLUDE "maps/Route19.asm"
+INCLUDE "maps/Route20.asm"
+INCLUDE "maps/Route21.asm"
+INCLUDE "maps/CinnabarIsland.asm"
+INCLUDE "maps/SeafoamIslands1F.asm"
+INCLUDE "maps/SeafoamIslandsB3F.asm"
+INCLUDE "maps/SeafoamIslandsB4F.asm"
+INCLUDE "maps/PokemonMansion1F.asm"
+INCLUDE "maps/PokemonMansion2F.asm"
+INCLUDE "maps/PokemonMansion3F.asm"
+INCLUDE "maps/PokemonMansionB1F.asm"
+INCLUDE "maps/CinnabarGym.asm"
 
 ENDSECTION

@@ -556,6 +556,25 @@ ENDM
 	map_attributes CinnabarPokecenter2FBeta, CINNABAR_POKECENTER_2F_BETA, $00
 	map_attributes Route19FuchsiaGate, ROUTE_19_FUCHSIA_GATE, $0a
 	map_attributes SeafoamGym, SEAFOAM_GYM, $09
+; Kanto hack (M9 12a): Yellow's CINNABAR arc.  Borders follow the nearest
+; precedent -- $01 is MtMoon1F's TILESET_CAVE wall, $2e is SilphCo2F's
+; TILESET_KANTO_FACILITY wall, $00 is the plain indoor border every Kanto
+; house/mart/centre uses.  No connections: all fifteen are indoor maps.
+	map_attributes SeafoamIslands1F, SEAFOAM_ISLANDS_1F, $01
+	map_attributes SeafoamIslandsB1F, SEAFOAM_ISLANDS_B1F, $01
+	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $01
+	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $01
+	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $01
+	map_attributes CinnabarMart, CINNABAR_MART, $00
+	map_attributes CinnabarLab, CINNABAR_LAB, $00
+	map_attributes CinnabarLabTradeRoom, CINNABAR_LAB_TRADE_ROOM, $00
+	map_attributes CinnabarLabMetronomeRoom, CINNABAR_LAB_METRONOME_ROOM, $00
+	map_attributes CinnabarLabFossilRoom, CINNABAR_LAB_FOSSIL_ROOM, $00
+	map_attributes PokemonMansion1F, POKEMON_MANSION_1F, $2e
+	map_attributes PokemonMansion2F, POKEMON_MANSION_2F, $2e
+	map_attributes PokemonMansion3F, POKEMON_MANSION_3F, $2e
+	map_attributes PokemonMansionB1F, POKEMON_MANSION_B1F, $2e
+	map_attributes CinnabarGym, CINNABAR_GYM, $2e
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
 	map_attributes BikeShop, BIKE_SHOP, $00

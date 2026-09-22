@@ -42,9 +42,6 @@ BetaSproutTower5_Blocks: ; unreferenced
 BetaSproutTower9_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaSproutTower9.blk"
 
-Route19_Blocks:
-	INCBIN "maps/Route19.blk"
-
 BetaBlackthornCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaBlackthornCity.blk"
 
@@ -99,9 +96,6 @@ BetaSproutTower2_Blocks: ; unreferenced
 
 BetaGoldenrodCity_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaGoldenrodCity.blk"
-
-Route20_Blocks:
-	INCBIN "maps/Route20.blk"
 
 BetaSproutTower6_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaSproutTower6.blk"
@@ -217,9 +211,6 @@ ViridianCity_Blocks:
 Route13_Blocks:
 	INCBIN "maps/Route13.blk"
 
-Route21_Blocks:
-	INCBIN "maps/Route21.blk"
-
 BetaSproutTower7_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaSproutTower7.blk"
 
@@ -310,7 +301,6 @@ OlivinePokecenter1F_Blocks:
 MahoganyPokecenter1F_Blocks:
 EcruteakPokecenter1F_Blocks:
 BlackthornPokecenter1F_Blocks:
-CinnabarPokecenter1F_Blocks:
 CeruleanPokecenter1F_Blocks:
 Route10Pokecenter1F_Blocks:
 AzaleaPokecenter1F_Blocks:
@@ -1288,12 +1278,18 @@ Route15_Blocks:
 ; Pewter/Saffron/Vermilion/Viridian are byte-identical), and Yellow's SAFFRON
 ; Pokecentre .blk is byte-identical to its FUCHSIA one, so SAFFRON stacks its
 ; labels here instead of carrying its own copies.
+; M9 12a: Yellow's CINNABAR MART .blk is byte-identical to its FUCHSIA one
+; (md5 94e260f2), and so is its POKeCENTRE (md5 f7e1a18c), so CINNABAR stacks
+; its labels here too.  The POKeCENTRE label moves off the shared Crystal 5x4
+; Pokecenter1F.blk above, because CINNABAR_POKECENTER_1F is 7x4 from 12a on.
 FuchsiaMart_Blocks:
 SaffronMart_Blocks:
+CinnabarMart_Blocks:
 	INCBIN "maps/FuchsiaMart.blk"
 
 FuchsiaPokecenter1F_Blocks:
 SaffronPokecenter1F_Blocks:
+CinnabarPokecenter1F_Blocks:
 	INCBIN "maps/FuchsiaPokecenter1F.blk"
 
 ; Kanto hack (M7 10a): the SAFARI ZONE.  Flat placeholder fills at Yellow's own
@@ -1364,5 +1360,78 @@ SilphCo10F_Blocks:
 
 SilphCo11F_Blocks:
 	INCBIN "maps/SilphCo11F.blk"
+
+ENDSECTION
+
+SECTION "Map Blocks 4", ROMX
+
+; Kanto hack (M9 12a, docs/M9-CINNABAR.md D92): "Map Blocks 3" ($2c) ended M8
+; with 461 free bytes and M9's .blk bill is ~2.2 KB, so this is the fourth and
+; (with $73's 9391-byte tail) last blocks bank Kanto should ever need.  Pinned
+; in layout.link -- see the comment there.
+;
+; ROUTES 19-21 move here out of "Map Blocks 1": at Yellow's dimensions (D94)
+; they are 270/450/450 bytes against Crystal's 180/270/180, which $2a's 535
+; free bytes could not have absorbed on their own.
+Route19_Blocks:
+	INCBIN "maps/Route19.blk"
+
+Route20_Blocks:
+	INCBIN "maps/Route20.blk"
+
+Route21_Blocks:
+	INCBIN "maps/Route21.blk"
+
+; The five SEAFOAM ISLANDS floors are flat TILESET_CAVE FLOOR ($02) fills at
+; Yellow's 15x9 -- 12d maps the sixteen unmapped cavern.bst ids and re-cuts
+; them for real.  Placeholders, not geometry.
+SeafoamIslands1F_Blocks:
+	INCBIN "maps/SeafoamIslands1F.blk"
+
+SeafoamIslandsB1F_Blocks:
+	INCBIN "maps/SeafoamIslandsB1F.blk"
+
+SeafoamIslandsB2F_Blocks:
+	INCBIN "maps/SeafoamIslandsB2F.blk"
+
+SeafoamIslandsB3F_Blocks:
+	INCBIN "maps/SeafoamIslandsB3F.blk"
+
+SeafoamIslandsB4F_Blocks:
+	INCBIN "maps/SeafoamIslandsB4F.blk"
+
+; The four LAB rooms are flat FLOOR ($0e) fills; 12i buys TILESET_KANTO_LAB
+; (D95) and cuts them from Yellow's lab.bst then.
+CinnabarLab_Blocks:
+	INCBIN "maps/CinnabarLab.blk"
+
+CinnabarLabTradeRoom_Blocks:
+	INCBIN "maps/CinnabarLabTradeRoom.blk"
+
+CinnabarLabMetronomeRoom_Blocks:
+	INCBIN "maps/CinnabarLabMetronomeRoom.blk"
+
+CinnabarLabFossilRoom_Blocks:
+	INCBIN "maps/CinnabarLabFossilRoom.blk"
+
+; The MANSION and the GYM are Yellow's own .blk files byte-for-byte:
+; kanto_facility_metatiles.bin is identical to Yellow's facility.bst over ids
+; $00-$7f (docs/M9-CINNABAR.md 0.4 #1) and these maps top out at $77 and $6b,
+; so the ids already mean the right thing.  Same byte cost as a fill, so 12k
+; and 12n get the geometry for free -- the 11a precedent with Silph Co.
+PokemonMansion1F_Blocks:
+	INCBIN "maps/PokemonMansion1F.blk"
+
+PokemonMansion2F_Blocks:
+	INCBIN "maps/PokemonMansion2F.blk"
+
+PokemonMansion3F_Blocks:
+	INCBIN "maps/PokemonMansion3F.blk"
+
+PokemonMansionB1F_Blocks:
+	INCBIN "maps/PokemonMansionB1F.blk"
+
+CinnabarGym_Blocks:
+	INCBIN "maps/CinnabarGym.blk"
 
 ENDSECTION

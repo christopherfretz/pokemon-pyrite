@@ -189,14 +189,36 @@ ENDM
 	endgroup
 
 	newgroup CINNABAR                                             ;  6
-	map_const CINNABAR_POKECENTER_1F,                       5,  4 ;  1
+; Kanto hack (M9 12a): ids 1-8 are Crystal's and NEVER get renumbered (D49);
+; ids 9-23 are Yellow's CINNABAR arc, appended.  Four of Crystal's eight are
+; resized to Yellow's dimensions here (D94) -- ROUTE_19/20/21 and the
+; POKeCENTER -- and two are dead men walking: ROUTE_19_FUCHSIA_GATE has no
+; Yellow counterpart (retired by 12c, D98) and SEAFOAM_GYM is Crystal's
+; relocated BLAINE (dissolved by 12o, D96).  Their map_consts stay as dead
+; positional ids either way.
+	map_const CINNABAR_POKECENTER_1F,                       7,  4 ;  1 ; M9 12a: was 5x4; Yellow's is 7x4 (D94)
 	map_const CINNABAR_POKECENTER_2F_BETA,                  8,  4 ;  2
 	map_const ROUTE_19_FUCHSIA_GATE,                        5,  4 ;  3
 	map_const SEAFOAM_GYM,                                  5,  4 ;  4
-	map_const ROUTE_19,                                    10, 18 ;  5
-	map_const ROUTE_20,                                    30,  9 ;  6
-	map_const ROUTE_21,                                    10, 18 ;  7
+	map_const ROUTE_19,                                    10, 27 ;  5 ; M9 12a: was 10x18 (D94)
+	map_const ROUTE_20,                                    50,  9 ;  6 ; M9 12a: was 30x9 (D94)
+	map_const ROUTE_21,                                    10, 45 ;  7 ; M9 12a: was 10x18 (D94)
 	map_const CINNABAR_ISLAND,                             10,  9 ;  8
+	map_const SEAFOAM_ISLANDS_1F,                          15,  9 ;  9
+	map_const SEAFOAM_ISLANDS_B1F,                         15,  9 ; 10
+	map_const SEAFOAM_ISLANDS_B2F,                         15,  9 ; 11
+	map_const SEAFOAM_ISLANDS_B3F,                         15,  9 ; 12
+	map_const SEAFOAM_ISLANDS_B4F,                         15,  9 ; 13
+	map_const CINNABAR_MART,                                4,  4 ; 14
+	map_const CINNABAR_LAB,                                 9,  4 ; 15
+	map_const CINNABAR_LAB_TRADE_ROOM,                      4,  4 ; 16
+	map_const CINNABAR_LAB_METRONOME_ROOM,                  4,  4 ; 17
+	map_const CINNABAR_LAB_FOSSIL_ROOM,                     4,  4 ; 18
+	map_const POKEMON_MANSION_1F,                          15, 14 ; 19
+	map_const POKEMON_MANSION_2F,                          15, 14 ; 20
+	map_const POKEMON_MANSION_3F,                          15,  9 ; 21
+	map_const POKEMON_MANSION_B1F,                         15, 14 ; 22
+	map_const CINNABAR_GYM,                                10,  9 ; 23
 	endgroup
 
 	newgroup CERULEAN                                             ;  7

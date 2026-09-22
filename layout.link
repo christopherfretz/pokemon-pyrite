@@ -111,6 +111,13 @@ ROMX $1b
 ROMX $1c
 	"Map Scripts 7"
 	"Egg Moves" ; Kanto hack (M6 9q): moved out of bank $08, see there
+	; Kanto hack: ROUTES 19-21, CINNABAR ISLAND, the SEAFOAM ISLANDS' three
+	; scripted floors, the four POKeMON MANSION floors and CINNABAR GYM (M9
+	; 12a, docs/M9-CINNABAR.md D93).  $1c's tail (11242 B) was the largest
+	; left in the tree and M9's script bill is ~15.5 KB, more than "Map
+	; Scripts 30" ($76) + "Map Scripts 31" ($7a) can absorb with any slack.
+	; Unpinned it would bin-pack into bank $01, which has 102 free bytes.
+	"Map Scripts 32"
 ROMX $1d
 	"Map Scripts 8"
 ROMX $1e
@@ -324,6 +331,13 @@ ROMX $72
 	"Miscellaneous Text"
 ROMX $73
 	"Pokedex Entries 129-192"
+	; Kanto hack: "Map Blocks 3" ($2c) finished at 461 free bytes against M9's
+	; ~2.2 KB of .blk, and "Map Blocks 1"/"2" have 535/283 (M9 12a,
+	; docs/M9-CINNABAR.md D92).  $73 has the largest contiguous tail of any
+	; bank with a single tenant (9391 B), and HANDOFF already nominated it for
+	; block overflow.  This is the first *blocks* section to share a bank with
+	; another tenant, so it must be pinned: floating, it lands in bank $01.
+	"Map Blocks 4"
 ROMX $74
 	"Pokedex Entries 193-251"
 	; Kanto hack: the ten S.S. ANNE maps (7h).  With their objects, trainers
