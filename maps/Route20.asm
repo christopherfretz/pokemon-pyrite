@@ -7,11 +7,6 @@ Route20_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_NEWMAP, Route20ClearRocksCallback
-
-Route20ClearRocksCallback:
-	setevent EVENT_CINNABAR_ROCKS_CLEARED
-	endcallback
 
 TrainerSwimmerfNicole:
 	trainer SWIMMERF, NICOLE, EVENT_BEAT_SWIMMERF_NICOLE, SwimmerfNicoleSeenText, SwimmerfNicoleBeatenText, 0, .Script
@@ -114,7 +109,14 @@ Route20_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event 38,  7, SEAFOAM_GYM, 1
+	; Kanto hack (M9 12b): Yellow's two SEAFOAM ISLANDS mouths
+	; (vendor/pokeyellow/data/maps/objects/Route20.asm), both on the CAVE
+	; quadrant of kanto block $89.  They land in the 12a SeafoamIslands1F
+	; stub until 12d cuts the real floors.  Crystal's SEAFOAM_GYM warp at
+	; (38,7) is gone -- that tile is open water in Yellow's layout; the map
+	; itself stays registered until 12o dissolves it (D96).
+	warp_event 48,  5, SEAFOAM_ISLANDS_1F, 1
+	warp_event 58,  9, SEAFOAM_ISLANDS_1F, 2
 
 	def_coord_events
 

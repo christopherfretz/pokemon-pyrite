@@ -140,4 +140,7 @@ CinnabarIsland_MapEvents:
 	bg_event  9,  1, BGEVENT_ITEM, CinnabarIslandHiddenRareCandy
 
 	def_object_events
-	object_event  9,  6, SPRITE_BLUE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CinnabarIslandBlue, EVENT_BLUE_IN_CINNABAR
+	; Kanto hack (M9 12b): was (9,6), which is inside a building in Yellow's
+	; layout.  Moved one tile onto the walkable forecourt; 12g/D97 relocates
+	; his `clearevent EVENT_VIRIDIAN_GYM_BLUE` and cuts him.
+	object_event 10,  5, SPRITE_BLUE, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CinnabarIslandBlue, EVENT_BLUE_IN_CINNABAR

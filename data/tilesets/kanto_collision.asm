@@ -297,3 +297,13 @@
 ; Yellow's overworld record $00 with its tile $4f drawn as kanto $3c, and
 ; scripts/saffron_blk.py rewrites every $00 in SaffronCity.blk to point here.
 	tilecoll WALL, WALL, WALL, WALL ; ca
+
+; ---- M9 12b: the kanto blockset's LEDGE_TWIN.  FUCHSIA CITY's two ROUTE 19
+; gate doors are COLL_WARP_CARPET_DOWN, a *directional* warp, and GSC checks
+; CheckMovingOffEdgeOfMap before CheckWarpTile.  With Yellow's real
+; `connection south, Route19, ROUTE_19, 5` the tiles below those doors became
+; ROUTE 19's HOP_DOWN terrace top ($1a), so the step crossed the seam and the
+; gate stopped warping.  This is kanto $1a's art with WALL x4 collision;
+; scripts/route19_21_blk.py points ROUTE 19 blocks (4,0) and (5,0) at it.
+; 12c/D98 retires the gate and this patch with it.
+	tilecoll WALL, WALL, WALL, WALL ; cb

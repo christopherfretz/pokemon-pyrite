@@ -282,14 +282,22 @@ ENDM
 
 	map_attributes Route20, ROUTE_20, $43
 	connection west, CinnabarIsland, CINNABAR_ISLAND, 0
-	connection east, Route19, ROUTE_19, -9
+	; Kanto hack (M9 12b): Yellow's own offset (Route20.asm
+	; `connection east, Route19, ROUTE_19, -18`), now that ROUTE 19 is 10x27.
+	connection east, Route19, ROUTE_19, -18
 
 	map_attributes Route19, ROUTE_19, $43
-	connection north, FuchsiaCity, FUCHSIA_CITY, 0
-	connection west, Route20, ROUTE_20, 9
+	; Kanto hack (M9 12b): Yellow's own offsets (Route19.asm
+	; `connection north, FuchsiaCity, FUCHSIA_CITY, -5` and
+	; `connection west, Route20, ROUTE_20, 18`).  ROUTE 19 column 13 is
+	; FUCHSIA column 23; ROUTE 19 row 18 is ROUTE 20 row 0.
+	connection north, FuchsiaCity, FUCHSIA_CITY, -5
+	connection west, Route20, ROUTE_20, 18
 
 	map_attributes FuchsiaCity, FUCHSIA_CITY, $0f
-	connection south, Route19, ROUTE_19, 0
+	; Kanto hack (M9 12b): Yellow's own offset (FuchsiaCity.asm
+	; `connection south, Route19, ROUTE_19, 5`), now that ROUTE 19 is 10x27.
+	connection south, Route19, ROUTE_19, 5
 	; Kanto hack (M6 9aa): Yellow's own offset (FuchsiaCity.asm
 	; `connection west, Route18, ROUTE_18, 4`), now that ROUTE 18 is 25x9.
 	connection west, Route18, ROUTE_18, 4
