@@ -1268,18 +1268,17 @@ CooltrainerMGroup:
 	db 10, SQUIRTLE
 	db -1 ; end
 
-	; COOLTRAINERM (14)
-	db "ANDY@", TRAINERTYPE_NORMAL
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
+	; COOLTRAINERM (14) = COOLTRAINERM_VIRIDIAN_1 (Yellow CoolTrainerMData 9)
+	; Kanto hack (M10 13b): Crystal's unused ANDY row, taken over nameless.
+	db "@", TRAINERTYPE_NORMAL
+	db 39, SANDSLASH
+	db 39, DUGTRIO
 	db -1 ; end
 
-	; COOLTRAINERM (15)
-	db "TYLER@", TRAINERTYPE_NORMAL
-	db 10, BULBASAUR
-	db 10, CHARMANDER
-	db 10, SQUIRTLE
+	; COOLTRAINERM (15) = COOLTRAINERM_VIRIDIAN_2 (Yellow CoolTrainerMData 10)
+	; Kanto hack (M10 13b): Crystal's unused TYLER row, taken over nameless.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, RHYHORN
 	db -1 ; end
 
 	; COOLTRAINERM (16)
@@ -1296,11 +1295,11 @@ CooltrainerMGroup:
 	db 35, WARTORTLE
 	db -1 ; end
 
-	; COOLTRAINERM (18)
-	db "STEVE@", TRAINERTYPE_NORMAL
-	db 14, BULBASAUR
-	db 14, CHARMANDER
-	db 14, SQUIRTLE
+	; COOLTRAINERM (18) = COOLTRAINERM_VIRIDIAN_3 (Yellow CoolTrainerMData 1)
+	; Kanto hack (M10 13b): Crystal's unused STEVE row, taken over nameless.
+	db "@", TRAINERTYPE_NORMAL
+	db 39, NIDORINO
+	db 39, NIDOKING
 	db -1 ; end
 
 	; COOLTRAINERM (19)
@@ -3876,6 +3875,25 @@ BlackbeltGroup:
 	db 31, PRIMEAPE
 	db -1 ; end
 
+	; Kanto hack (M10 13b): VIRIDIAN GYM, Yellow BlackbeltData 6-8.
+	; BLACKBELT_T (15) = BLACKBELT_VIRIDIAN_1 (Yellow BlackbeltData 6)
+	db "@", TRAINERTYPE_NORMAL
+	db 40, MACHOP
+	db 40, MACHOKE
+	db -1 ; end
+
+	; BLACKBELT_T (16) = BLACKBELT_VIRIDIAN_2 (Yellow BlackbeltData 7)
+	db "@", TRAINERTYPE_NORMAL
+	db 43, MACHOKE
+	db -1 ; end
+
+	; BLACKBELT_T (17) = BLACKBELT_VIRIDIAN_3 (Yellow BlackbeltData 8)
+	db "@", TRAINERTYPE_NORMAL
+	db 38, MACHOKE
+	db 38, MACHOP
+	db 38, MACHOKE
+	db -1 ; end
+
 ExecutiveMGroup:
 	; EXECUTIVEM (1)
 	db "EXECUTIVE@", TRAINERTYPE_MOVES
@@ -5134,13 +5152,18 @@ GiovanniGroup:
 	db 41, NIDOQUEEN
 	db -1 ; end
 
-	; GIOVANNI (3): VIRIDIAN GYM (reserved for M8)
-	db "@", TRAINERTYPE_NORMAL
-	db 50, DUGTRIO
-	db 53, PERSIAN
-	db 53, NIDOQUEEN
-	db 55, NIDOKING
-	db 55, RHYDON
+	; GIOVANNI (3): VIRIDIAN GYM (M10 13b)
+	; Yellow's moves: WriteMonMoves' level-up fill at each level, then
+	; vendor/pokeyellow/data/trainers/special_moves.asm's GIOVANNI 3 overrides
+	; (DUGTRIO 3:FISSURE; PERSIAN 2:DOUBLE_TEAM; NIDOQUEEN 1:EARTHQUAKE
+	; 3:THUNDER; NIDOKING 1:EARTHQUAKE 2:LEER 3:THUNDER; RHYDON 1:ROCK_SLIDE
+	; 4:EARTHQUAKE).
+	db "@", TRAINERTYPE_MOVES
+	db 50, DUGTRIO,   DIG, SAND_ATTACK, FISSURE, EARTHQUAKE
+	db 53, PERSIAN,   SCREECH, DOUBLE_TEAM, FURY_SWIPES, SLASH
+	db 53, NIDOQUEEN, EARTHQUAKE, TAIL_WHIP, THUNDER, DOUBLE_KICK
+	db 55, NIDOKING,  EARTHQUAKE, LEER, THUNDER, DOUBLE_KICK
+	db 55, RHYDON,    ROCK_SLIDE, FURY_ATTACK, HORN_DRILL, EARTHQUAKE
 	db -1 ; end
 
 ; Kanto hack (M6 9y): CUE BALL, Yellow's CueBallData rows 1-9 verbatim

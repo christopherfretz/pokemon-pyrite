@@ -2701,6 +2701,23 @@ IsGymLeaderCommon:
 	ld de, 1
 	call IsInArray
 	pop de
+	ret c
+; Kanto hack (M10 13b, D117): GIOVANNI is a gym leader in his own gym only --
+; Yellow keys the leader music on wGymLeaderNo, which only VIRIDIAN GYM sets.
+; One row test here covers the battle music (IsKantoGymLeader), the victory
+; music and HAPPINESS_GYMBATTLE (IsGymLeader) at once.  Rows 1-2 (HIDEOUT,
+; SILPH) stay ordinary trainer battles.
+	ld a, [wOtherTrainerClass]
+	cp GIOVANNI
+	jr nz, .not_leader
+	ld a, [wOtherTrainerID]
+	cp GIOVANNI_3
+	jr nz, .not_leader
+	scf
+	ret
+
+.not_leader
+	and a
 	ret
 
 INCLUDE "data/trainers/leaders.asm"

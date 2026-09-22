@@ -39,8 +39,8 @@
 ; parties.asm), SPRITE_SILPH_PRESIDENT as in Yellow (docs/M9-CINNABAR.md §0.4
 ; #7), VOLCANOBADGE, and TM38 FIRE BLAST once; beating him retires all seven
 ; trainers (Yellow's SetEventRange).  Gates are NOT opened by beating him --
-; Yellow doesn't either.  D97: his victory also clears EVENT_VIRIDIAN_GYM_BLUE
-; (moved here from CINNABAR ISLAND's NEWMAP callback, where 12g parked it).
+; Yellow doesn't either.  (D97's clearevent EVENT_VIRIDIAN_GYM_BLUE lived here
+; until M10 13b retired that flag with BLUE -- D116.)
 
 DEF CINNABAR_GYM_H_GATE EQU $54 ; Yellow HORIZONTAL_GATE_BLOCK
 DEF CINNABAR_GYM_V_GATE EQU $5f ; Yellow VERTICAL_GATE_BLOCK
@@ -263,9 +263,6 @@ CinnabarGymBlaineScript:
 	setevent EVENT_BEAT_CINNABAR_GYM_TRAINER_4
 	setevent EVENT_BEAT_CINNABAR_GYM_TRAINER_5
 	setevent EVENT_BEAT_CINNABAR_GYM_TRAINER_6
-	; D97: VIRIDIAN GYM opens once BLAINE is beaten.  std_scripts.asm sets
-	; this at new game; this is the only clearevent of it in the game.
-	clearevent EVENT_VIRIDIAN_GYM_BLUE
 	opentext
 	writetext CinnabarReceivedVolcanoBadgeText
 	playsound SFX_GET_BADGE

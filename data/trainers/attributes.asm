@@ -410,8 +410,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_TYPES | AI_OPPORTUNIST | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Giovanni
-	db NO_ITEM, NO_ITEM ; items
+; Giovanni -- Kanto hack (M10 13b, D126): Yellow's GIOVANNI AI uses a GUARD SPEC.
+	db GUARD_SPEC, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_TYPES | AI_OPPORTUNIST | AI_SMART | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES

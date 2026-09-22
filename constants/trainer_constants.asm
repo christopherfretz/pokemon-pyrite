@@ -302,11 +302,11 @@ DEF KRIS EQU __trainer_class__
 	const BLAKE
 	const BRIAN
 	const ERICK ; unused
-	const ANDY ; unused
-	const TYLER ; unused
+	const COOLTRAINERM_VIRIDIAN_1 ; Kanto hack (M10 13b): was ANDY (unused) -- VIRIDIAN GYM, Yellow CoolTrainerMData 9
+	const COOLTRAINERM_VIRIDIAN_2 ; Kanto hack (M10 13b): was TYLER (unused) -- VIRIDIAN GYM, Yellow CoolTrainerMData 10
 	const SEAN
 	const KEVIN
-	const STEVE ; unused
+	const COOLTRAINERM_VIRIDIAN_3 ; Kanto hack (M10 13b): was STEVE (unused) -- VIRIDIAN GYM, Yellow CoolTrainerMData 1
 	const ALLEN
 	const DARIN
 
@@ -816,6 +816,10 @@ DEF KRIS EQU __trainer_class__
 	const BLACKBELT_DOJO_2
 	const BLACKBELT_DOJO_3
 	const BLACKBELT_DOJO_4
+; Kanto hack (M10 13b): VIRIDIAN GYM, Yellow BlackbeltData 6-8, appended nameless.
+	const BLACKBELT_VIRIDIAN_1
+	const BLACKBELT_VIRIDIAN_2
+	const BLACKBELT_VIRIDIAN_3
 
 	trainerclass EXECUTIVEM ; 33
 	const EXECUTIVEM_1
@@ -1123,8 +1127,8 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	trainerclass TAMER ; 47
 	const TAMER_1 ; FUCHSIA GYM
 	const TAMER_2 ; FUCHSIA GYM
-	const TAMER_3 ; VIRIDIAN GYM (reserved for M8)
-	const TAMER_4 ; VIRIDIAN GYM (reserved for M8)
+	const TAMER_3 ; VIRIDIAN GYM (M10 13b)
+	const TAMER_4 ; VIRIDIAN GYM (M10 13b)
 	const TAMER_5 ; VICTORY ROAD 2F (reserved for M8)
 
 	trainerclass MYSTICALMAN ; 48

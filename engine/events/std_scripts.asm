@@ -620,7 +620,8 @@ InitializeEventsScript:
 ; EVENT_GOT_NUGGET_ON_ROUTE_24 and gave him EVENT_GOT_SS_TICKET as a hide
 ; flag, so nothing here may pre-set either.
 	setevent EVENT_COPYCATS_HOUSE_2F_DOLL
-	setevent EVENT_VIRIDIAN_GYM_BLUE
+; Kanto hack (M10 13b, D116): no `setevent EVENT_VIRIDIAN_GYM_BLUE` any more --
+; BLUE left VIRIDIAN GYM and the 7-badge door gates the gym on its own.
 	setevent EVENT_MT_MOON_SQUARE_CLEFAIRY
 	setevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
 	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL

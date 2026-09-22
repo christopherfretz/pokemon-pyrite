@@ -16,11 +16,10 @@
 ;     LAB FOSSIL ROOM and the POKeCENTRE).  EVENT_CINNABAR_ISLAND_HIDDEN_RARE_CANDY
 ;     stays in constants/event_flags.asm as a dead row (D49: never renumber).
 ;
-; D97 -- deleting BLUE would lock VIRIDIAN GYM forever (gotcha G12): his script
-; held the only `clearevent EVENT_VIRIDIAN_GYM_BLUE` in the game, and
-; std_scripts.asm sets that flag at new game.  12g parked the clearevent in the
-; MAPCALLBACK_NEWMAP below; 12n moved it to its intended home, BLAINE's
-; VOLCANOBADGE script in maps/CinnabarGym.asm.
+; D97 -- (retired by M10 13b, D116.)  EVENT_VIRIDIAN_GYM_BLUE once hid BLUE in
+; VIRIDIAN GYM until BLAINE's win cleared it; 12g parked that clearevent in this
+; map's NEWMAP callback, 12n moved it to maps/CinnabarGym.asm, and 13b removed
+; BLUE, the flag's new-game set and its clear.  The 7-badge door gates the gym.
 ;
 ; D91 -- 12m gave SECRET_KEY item id $80 (was MACHINE_PART); the locked gym
 ; door checks the item.  See CinnabarIslandGymDoor.

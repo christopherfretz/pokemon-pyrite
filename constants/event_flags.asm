@@ -811,7 +811,7 @@
 	const EVENT_BEAT_KOGA ; Kanto hack (M7 10h): renamed in place, was EVENT_BEAT_JANINE
 	const EVENT_BEAT_SABRINA
 	const EVENT_BEAT_BLAINE
-	const EVENT_BEAT_BLUE
+	const EVENT_BEAT_VIRIDIAN_GYM_GIOVANNI ; Kanto hack (M10 13b): was EVENT_BEAT_BLUE (dead, renamed in place)
 ; PokefanM
 	const EVENT_BEAT_POKEFANM_WILLIAM
 	const EVENT_BEAT_POKEFANM_DEREK
@@ -939,9 +939,9 @@
 	const EVENT_BEAT_BUG_CATCHER_KEN
 	const EVENT_BEAT_ROCKET_HIDEOUT_JESSIE_JAMES ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F JESSIE & JAMES (was EVENT_BEAT_BUG_CATCHER_WADE2, a dead Johto rematch flag)
 	const EVENT_BEAT_ROUTE_18_BIRD_KEEPER_3 ; Kanto hack (M6 9aa): renamed in place, was EVENT_BEAT_BUG_CATCHER_WADE3 -- a dead Gen 2 phone-rematch flag (the Pokegear and the rematch system are cut)
-	const EVENT_BEAT_BUG_CATCHER_DOUG
-	const EVENT_BEAT_BUG_CATCHER_ARNIE2
-	const EVENT_BEAT_BUG_CATCHER_ARNIE3
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_3 ; Kanto hack (M10 13b): was EVENT_BEAT_BUG_CATCHER_DOUG (dead, renamed in place)
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_4 ; Kanto hack (M10 13b): was EVENT_BEAT_BUG_CATCHER_ARNIE2 (dead, renamed in place)
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_5 ; Kanto hack (M10 13b): was EVENT_BEAT_BUG_CATCHER_ARNIE3 (dead, renamed in place)
 ; Officer
 	const EVENT_BEAT_OFFICER_KEITH
 	const EVENT_BEAT_OFFICER_DIRK
@@ -959,11 +959,11 @@
 	const EVENT_BEAT_COOLTRAINERM_BLAKE
 	const EVENT_BEAT_COOLTRAINERM_BRIAN
 	const EVENT_BEAT_GENTLEMAN_REUBEN ; Kanto hack: renamed in place (M5 8j), was the dead EVENT_BEAT_COOLTRAINERM_ERICK; ROUTE 8, Yellow's GAMBLER 7
-	const EVENT_BEAT_COOLTRAINERM_ANDY
-	const EVENT_BEAT_COOLTRAINERM_TYLER
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_0 ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERM_ANDY (dead, renamed in place)
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_1 ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERM_TYLER (dead, renamed in place)
 	const EVENT_BEAT_COOLTRAINERM_SEAN
 	const EVENT_BEAT_HIKER_ARCHIE ; Kanto hack: renamed in place (6i), was EVENT_BEAT_COOLTRAINERM_KEVIN; Route 25, Yellow's HIKER 3
-	const EVENT_BEAT_COOLTRAINERM_STEVE
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_2 ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERM_STEVE (dead, renamed in place)
 	const EVENT_BEAT_COOLTRAINERM_ALLEN
 ; CooltrainerF
 	const EVENT_BEAT_COOLTRAINERF_GWEN
@@ -983,9 +983,9 @@
 	const EVENT_BEAT_COOLTRAINERF_EMMA
 	const EVENT_BEAT_COOLTRAINERF_CYBIL
 	const EVENT_BEAT_COOLTRAINERF_JENN
-	const EVENT_BEAT_COOLTRAINERF_BETH3
-	const EVENT_BEAT_COOLTRAINERF_REENA2
-	const EVENT_BEAT_COOLTRAINERF_REENA3
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_6 ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERF_BETH3 (dead, renamed in place)
+	const EVENT_BEAT_VIRIDIAN_GYM_TRAINER_7 ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERF_REENA2 (dead, renamed in place)
+	const EVENT_GOT_TM27_FISSURE ; Kanto hack (M10 13b): was EVENT_BEAT_COOLTRAINERF_REENA3 (dead, renamed in place)
 ; ExecutiveF
 	const EVENT_BEAT_ROCKET_EXECUTIVEF_1
 	const EVENT_BEAT_ROCKET_EXECUTIVEF_2
@@ -1024,8 +1024,8 @@
 	const EVENT_BEAT_MEDIUM_BETHANY ; Kanto hack (M6 9f): #MON TOWER 3F channeler 1
 	const EVENT_BEAT_MEDIUM_MARGRET ; Kanto hack (M6 9f): #MON TOWER 3F channeler 2
 	const EVENT_BEAT_MEDIUM_ETHEL ; Kanto hack (M6 9f): #MON TOWER 3F channeler 3
-	const EVENT_BEAT_MEDIUM_REBECCA ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
-	const EVENT_BEAT_MEDIUM_DORIS ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_VIRIDIAN_GYM_REVIVE ; Kanto hack (M10 13b): was EVENT_BEAT_MEDIUM_REBECCA (dead, renamed in place)
+	const EVENT_VIRIDIAN_GYM_GIOVANNI_GONE ; Kanto hack (M10 13b): was EVENT_BEAT_MEDIUM_DORIS (dead, renamed in place)
 ; Skier
 	const EVENT_BEAT_SKIER_ROXANNE
 	const EVENT_BEAT_SKIER_CLARISSA
@@ -1433,7 +1433,7 @@
 	const EVENT_COPYCATS_HOUSE_2F_DOLL
 	const EVENT_LEFT_FANCLUB_AFTER_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_VERMILION_FAN_CLUB_DOLL (the CLEFAIRY DOLL prop is deleted); Yellow's flag, set by VermilionCity's NEWMAP callback once the voucher is in the bag
 	const EVENT_BLUE_IN_CINNABAR
-	const EVENT_VIRIDIAN_GYM_BLUE
+	const EVENT_VIRIDIAN_GYM_BLUE ; Kanto hack (M10 13b): DEAD -- BLUE left the gym; pre-Blaine saves still have it SET, so never reuse as a hide flag
 	const EVENT_SEAFOAM_GYM_GYM_GUIDE
 	const EVENT_MT_MOON_1F_RARE_CANDY ; Kanto hack: renamed in place (5e), was EVENT_MT_MOON_SQUARE_ROCK
 	const EVENT_MT_MOON_SQUARE_CLEFAIRY
@@ -1441,7 +1441,7 @@
 	const EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
 	const EVENT_TELEPORT_GUY
 ; Kanto itemballs
-	const EVENT_PICKED_UP_FOCUS_BAND
+	const EVENT_ROUTE22_RIVAL_2_WANTS_BATTLE ; Kanto hack (M10 13b): was EVENT_PICKED_UP_FOCUS_BAND (dead, renamed in place)
 	const EVENT_BEAT_HIKER_NORRIS ; Kanto hack: renamed in place (M5 8e); was Crystal's ROCK TUNNEL 1F ELIXER ball, deleted with the rest of 1F's Crystal items.  ROCK TUNNEL 1F, Yellow's HIKER 14
 	const EVENT_BEAT_POKEMANIAC_JASPER ; Kanto hack: renamed in place (M5 8e); was Crystal's ROCK TUNNEL 1F TM_STEEL_WING ball.  ROCK TUNNEL 1F, Yellow's POKEMANIAC 7
 	const EVENT_BEAT_HIKER_LOWELL ; Kanto hack: renamed in place (M5 8f); was Crystal's ROCK TUNNEL B1F IRON ball, deleted with the rest of B1F's Crystal items.  ROCK TUNNEL B1F, Yellow's HIKER 9
