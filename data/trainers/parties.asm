@@ -935,6 +935,15 @@ BirdKeeperGroup:
 	db 28, DODUO
 	db -1 ; end
 
+
+	; BIRD_KEEPER (28) = BIRD_KEEPER_15 -- Kanto hack (M9 12c): Yellow's ROUTE 20
+	; COOLTRAINER_M, OPP_BIRD_KEEPER 11.  Appended: the class has had no dead
+	; rows since 10d.
+	db "@", TRAINERTYPE_NORMAL
+	db 30, FEAROW
+	db 30, FEAROW
+	db 30, PIDGEOTTO
+	db -1 ; end
 LassGroup:
 	; LASS (1)
 	db "CARRIE@", TRAINERTYPE_MOVES
@@ -1480,28 +1489,47 @@ BeautyGroup:
 	db -1 ; end
 
 	; BEAUTY (8)
-	db "CARLENE@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; = BEAUTY_5 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER5,
+	; OPP_BEAUTY 12 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 27, POLIWAG
+	db 27, GOLDEEN
+	db 27, SEAKING
+	db 27, GOLDEEN
+	db 27, POLIWAG
 	db -1 ; end
 
 	; BEAUTY (9)
-	db "JESSICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; = BEAUTY_6 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER6,
+	; OPP_BEAUTY 13 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, GOLDEEN
+	db 30, SEAKING
 	db -1 ; end
 
 	; BEAUTY (10)
-	db "RACHAEL@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; = BEAUTY_7 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER8,
+	; OPP_BEAUTY 14 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, STARYU
+	db 29, STARYU
+	db 29, STARYU
 	db -1 ; end
 
 	; BEAUTY (11)
-	db "ANGELICA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; = BEAUTY_8 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER2,
+	; OPP_BEAUTY 15 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, SEADRA
+	db 30, HORSEA
+	db 30, SEADRA
 	db -1 ; end
 
 	; BEAUTY (12)
-	db "KENDRA@", TRAINERTYPE_NORMAL
-	db 15, SENTRET
+	; = BEAUTY_9 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER3,
+	; OPP_BEAUTY 6 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 35, SEAKING
 	db -1 ; end
 
 	; BEAUTY (13) - Kanto hack: CELADON GYM, Yellow's BEAUTY 1 (M6 9q).
@@ -1537,6 +1565,21 @@ BeautyGroup:
 	; BEAUTY (17)
 	db "OLIVIA@", TRAINERTYPE_NORMAL
 	db 19, CORSOLA
+	db -1 ; end
+
+	; BEAUTY (18) = BEAUTY_10 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER7,
+	; OPP_BEAUTY 7.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 30, SHELLDER
+	db 30, SHELLDER
+	db 30, CLOYSTER
+	db -1 ; end
+
+	; BEAUTY (19) = BEAUTY_11 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER9,
+	; OPP_BEAUTY 8.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 31, POLIWAG
+	db 31, SEAKING
 	db -1 ; end
 
 PokemaniacGroup:
@@ -2401,8 +2444,13 @@ FisherGroup:
 	db -1 ; end
 
 	; FISHER (3)
-	db "ARNOLD@", TRAINERTYPE_NORMAL
-	db 34, TENTACRUEL
+	; = FISHER_1 -- Kanto hack (M9 12c): Yellow's ROUTE 21 FISHER1,
+	; OPP_FISHER 7 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 28, SEAKING
+	db 28, GOLDEEN
+	db 28, SEAKING
+	db 28, SEAKING
 	db -1 ; end
 
 	; FISHER (4) - Kanto hack: ROUTE 12, Yellow's FISHER 3 (M5 8l).  Crystal's
@@ -2570,11 +2618,38 @@ FisherGroup:
 	db 24, MAGIKARP
 	db -1 ; end
 
+	; FISHER (28) = FISHER_2 -- Kanto hack (M9 12c): Yellow's ROUTE 21 FISHER2,
+	; OPP_FISHER 9.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 27, MAGIKARP
+	db 27, MAGIKARP
+	db 27, MAGIKARP
+	db 27, MAGIKARP
+	db 27, MAGIKARP
+	db 27, MAGIKARP
+	db -1 ; end
+
+	; FISHER (29) = FISHER_3 -- Kanto hack (M9 12c): Yellow's ROUTE 21 FISHER3,
+	; OPP_FISHER 8.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 31, SHELLDER
+	db 31, CLOYSTER
+	db -1 ; end
+
+	; FISHER (30) = FISHER_4 -- Kanto hack (M9 12c): Yellow's ROUTE 21 FISHER4,
+	; OPP_FISHER 10.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 33, SEAKING
+	db 33, GOLDEEN
+	db -1 ; end
+
 SwimmerMGroup:
 	; SWIMMERM (1)
-	db "HAROLD@", TRAINERTYPE_NORMAL
-	db 32, REMORAID
-	db 30, SEADRA
+	; = SWIMMERM_1 -- Kanto hack (M9 12c): Yellow's ROUTE 19 COOLTRAINER_M1,
+	; OPP_SWIMMER 2 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, TENTACOOL
+	db 30, SHELLDER
 	db -1 ; end
 
 	; SWIMMERM (2)
@@ -2624,84 +2699,106 @@ SwimmerMGroup:
 	db -1 ; end
 
 	; SWIMMERM (9)
-	db "HAL@", TRAINERTYPE_NORMAL
-	db 24, SEEL
-	db 25, DEWGONG
-	db 24, SEEL
+	; = SWIMMERM_2 -- Kanto hack (M9 12c): Yellow's ROUTE 19 COOLTRAINER_M2,
+	; OPP_SWIMMER 3 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, GOLDEEN
+	db 29, HORSEA
+	db 29, STARYU
 	db -1 ; end
 
 	; SWIMMERM (10)
-	db "PATON@", TRAINERTYPE_NORMAL
-	db 26, PILOSWINE
-	db 26, PILOSWINE
+	; = SWIMMERM_3 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER1,
+	; OPP_SWIMMER 4 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, POLIWAG
+	db 30, POLIWHIRL
 	db -1 ; end
 
 	; SWIMMERM (11)
-	db "DARYL@", TRAINERTYPE_NORMAL
-	db 24, SHELLDER
-	db 25, CLOYSTER
-	db 24, SHELLDER
+	; = SWIMMERM_4 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER2,
+	; OPP_SWIMMER 5 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 27, HORSEA
+	db 27, TENTACOOL
+	db 27, TENTACOOL
+	db 27, GOLDEEN
 	db -1 ; end
 
 	; SWIMMERM (12)
-	db "WALTER@", TRAINERTYPE_NORMAL
-	db 15, HORSEA
-	db 15, HORSEA
-	db 20, SEADRA
+	; = SWIMMERM_5 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER3,
+	; OPP_SWIMMER 6 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 29, GOLDEEN
+	db 29, SHELLDER
+	db 29, SEAKING
 	db -1 ; end
 
 	; SWIMMERM (13)
-	db "TONY@", TRAINERTYPE_NORMAL
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
+	; = SWIMMERM_6 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER4,
+	; OPP_SWIMMER 7 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, HORSEA
+	db 30, HORSEA
 	db -1 ; end
 
 	; SWIMMERM (14)
-	db "JEROME@", TRAINERTYPE_NORMAL
-	db 26, SEADRA
-	db 28, TENTACOOL
-	db 30, TENTACRUEL
-	db 28, GOLDEEN
+	; = SWIMMERM_7 -- Kanto hack (M9 12c): Yellow's ROUTE 19 SWIMMER7,
+	; OPP_SWIMMER 8 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 27, TENTACOOL
+	db 27, TENTACOOL
+	db 27, STARYU
+	db 27, HORSEA
+	db 27, TENTACRUEL
 	db -1 ; end
 
 	; SWIMMERM (15)
-	db "TUCKER@", TRAINERTYPE_NORMAL
-	db 30, SHELLDER
-	db 34, CLOYSTER
+	; = SWIMMERM_8 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER1,
+	; OPP_SWIMMER 9 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 31, SHELLDER
+	db 31, CLOYSTER
 	db -1 ; end
 
 	; SWIMMERM (16)
-	db "RICK@", TRAINERTYPE_NORMAL
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
+	; = SWIMMERM_9 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER5,
+	; OPP_SWIMMER 10 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 35, STARYU
 	db -1 ; end
 
 	; SWIMMERM (17)
-	db "CAMERON@", TRAINERTYPE_NORMAL
-	db 34, MARILL
+	; = SWIMMERM_10 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER6,
+	; OPP_SWIMMER 11 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 28, HORSEA
+	db 28, HORSEA
+	db 28, SEADRA
+	db 28, HORSEA
 	db -1 ; end
 
 	; SWIMMERM (18)
-	db "SETH@", TRAINERTYPE_NORMAL
-	db 29, QUAGSIRE
-	db 29, OCTILLERY
-	db 32, QUAGSIRE
+	; = SWIMMERM_11 -- Kanto hack (M9 12c): Yellow's ROUTE 21 SWIMMER1,
+	; OPP_SWIMMER 12 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 33, SEADRA
+	db 33, TENTACRUEL
 	db -1 ; end
 
 	; SWIMMERM (19)
-	db "JAMES@", TRAINERTYPE_NORMAL
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
+	; = SWIMMERM_12 -- Kanto hack (M9 12c): Yellow's ROUTE 21 SWIMMER3,
+	; OPP_SWIMMER 13 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 37, STARMIE
 	db -1 ; end
 
 	; SWIMMERM (20)
-	db "LEWIS@", TRAINERTYPE_NORMAL
-	db 13, STARYU
-	db 18, STARMIE
-	db 16, HORSEA
+	; = SWIMMERM_13 -- Kanto hack (M9 12c): Yellow's ROUTE 21 SWIMMER4,
+	; OPP_SWIMMER 14 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 33, STARYU
+	db 33, WARTORTLE
 	db -1 ; end
 
 	; SWIMMERM (21)
@@ -2710,6 +2807,14 @@ SwimmerMGroup:
 	db "LUIS@", TRAINERTYPE_NORMAL
 	db 16, HORSEA
 	db 16, SHELLDER
+	db -1 ; end
+
+	; SWIMMERM (22) = SWIMMERM_14 -- Kanto hack (M9 12c): Yellow's ROUTE 21 SWIMMER5,
+	; OPP_SWIMMER 15.  Appended: the class had no dead rows left.
+	db "@", TRAINERTYPE_NORMAL
+	db 32, POLIWHIRL
+	db 32, TENTACOOL
+	db 32, SEADRA
 	db -1 ; end
 
 SwimmerFGroup:
@@ -3833,14 +3938,20 @@ PicnickerGroup:
 	db -1 ; end
 
 	; PICNICKER (6)
-	db "HOPE@", TRAINERTYPE_NORMAL
-	db 34, FLAAFFY
+	; = PICNICKER_9 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER4,
+	; OPP_JR_TRAINER_F 24 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 30, TENTACOOL
+	db 30, HORSEA
+	db 30, SEEL
 	db -1 ; end
 
 	; PICNICKER (7)
-	db "SHARON@", TRAINERTYPE_NORMAL
-	db 31, FURRET
-	db 33, RAPIDASH
+	; = PICNICKER_10 -- Kanto hack (M9 12c): Yellow's ROUTE 20 SWIMMER8,
+	; OPP_JR_TRAINER_F 16 (vendor/pokeyellow/data/trainers/parties.asm).
+	db "@", TRAINERTYPE_NORMAL
+	db 31, GOLDEEN
+	db 31, SEAKING
 	db -1 ; end
 
 	; PICNICKER (8)
@@ -4998,7 +5109,8 @@ CueBallGroup:
 	db 29, MACHOKE
 	db -1 ; end
 
-	; CUE BALL (9): ROUTE 21 (reserved for M7)
+	; CUE BALL (9) = CUE_BALL_9 -- Kanto hack (M9 12c): Yellow's ROUTE 21 SWIMMER2,
+	; OPP_CUE_BALL 9.  The row was reserved by M6 9z and is wired up here.
 	db "@", TRAINERTYPE_NORMAL
 	db 31, TENTACOOL
 	db 31, TENTACOOL

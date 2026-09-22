@@ -542,16 +542,20 @@
 ; Was EVENT_BEAT_SWIMMERF_MARY.  POKéMON TOWER 6F CHANNELER 3.
 	const EVENT_POKEMON_TOWER_6F_RARE_CANDY ; Kanto hack: renamed in place
 ; (M6 9h).  Was EVENT_BEAT_SWIMMERF_KATIE.
-	const EVENT_BEAT_SWIMMERF_DAWN
+	const EVENT_BEAT_ROUTE_19_TRAINER_0 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERF_DAWN.  Yellow's own flag name.
 	const EVENT_POKEMON_TOWER_6F_X_ACCURACY ; Kanto hack: renamed in place
 ; (M6 9h).  Was EVENT_BEAT_SWIMMERF_TARA.
-	const EVENT_BEAT_SWIMMERF_NICOLE
-	const EVENT_BEAT_SWIMMERF_LORI
+	const EVENT_BEAT_ROUTE_19_TRAINER_1 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERF_NICOLE.  Yellow's own flag name.
+	const EVENT_BEAT_ROUTE_19_TRAINER_2 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERF_LORI.  Yellow's own flag name.
 	const EVENT_BEAT_GHOST_MAROWAK ; Kanto hack: renamed in place (M6 9h).
 ; Was EVENT_BEAT_SWIMMERF_JODY.  Yellow's EVENT_BEAT_GHOST_MAROWAK: set when
 ; the restless soul on POKéMON TOWER 6F is calmed, which unblocks the 7F
 ; stairs at (9,16).
-	const EVENT_BEAT_SWIMMERF_NIKKI
+	const EVENT_BEAT_ROUTE_19_TRAINER_3 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERF_NIKKI.  Yellow's own flag name.
 	const EVENT_BEAT_PICNICKER_DIANA ; Kanto hack: renamed in place (6e,
 ; docs/M3-CERULEAN.md).  Was EVENT_BEAT_SWIMMERF_DIANA; Yellow's Cerulean Gym
 ; JR.TRAINER^F is a PICNICKER named DIANA, so the flag keeps its meaning.
@@ -665,7 +669,8 @@
 ; Fisher
 	const EVENT_BEAT_FISHER_JUSTIN
 	const EVENT_BEAT_FISHER_RALPH
-	const EVENT_BEAT_FISHER_ARNOLD
+	const EVENT_BEAT_ROUTE_19_TRAINER_4 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_FISHER_ARNOLD.  Yellow's own flag name.
 	const EVENT_BEAT_FISHER_KYLE ; Kanto hack (M5 8l): ROUTE 12, Yellow's FISHER 3 (kept the name, re-partied to Yellow's)
 	const EVENT_BEAT_FISHER_HENRY
 	const EVENT_BEAT_FISHER_MARVIN
@@ -1025,7 +1030,8 @@
 	const EVENT_BEAT_SKIER_ROXANNE
 	const EVENT_BEAT_SKIER_CLARISSA
 ; SwimmerM
-	const EVENT_BEAT_SWIMMERM_HAROLD
+	const EVENT_BEAT_ROUTE_19_TRAINER_5 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERM_HAROLD.  Yellow's own flag name.
 	const EVENT_BEAT_SWIMMERM_SIMON
 	const EVENT_BEAT_SWIMMERM_RANDALL
 	const EVENT_BEAT_SWIMMERM_CHARLIE
@@ -1049,11 +1055,15 @@
 	const EVENT_BEAT_MEDIUM_HAZEL
 	const EVENT_BEAT_MEDIUM_OLIVE ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_WALTER; #MON TOWER 5F channeler 1
 	const EVENT_BEAT_MEDIUM_CORA ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_TONY; #MON TOWER 5F channeler 2
-	const EVENT_BEAT_SWIMMERM_JEROME
-	const EVENT_BEAT_SWIMMERM_TUCKER
+	const EVENT_BEAT_ROUTE_19_TRAINER_6 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERM_JEROME.  Yellow's own flag name.
+	const EVENT_BEAT_ROUTE_19_TRAINER_7 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERM_TUCKER.  Yellow's own flag name.
 	const EVENT_BEAT_MEDIUM_RUBY ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_RICK; #MON TOWER 5F channeler 3
-	const EVENT_BEAT_SWIMMERM_CAMERON
-	const EVENT_BEAT_SWIMMERM_SETH
+	const EVENT_BEAT_ROUTE_19_TRAINER_8 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERM_CAMERON.  Yellow's own flag name.
+	const EVENT_BEAT_ROUTE_19_TRAINER_9 ; Kanto hack (M9 12c): renamed in
+; place, was EVENT_BEAT_SWIMMERM_SETH.  Yellow's own flag name.
 	const EVENT_BEAT_MEDIUM_MYRTLE ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_JAMES; #MON TOWER 5F channeler 4
 	const EVENT_POKEMON_TOWER_5F_NUGGET ; Kanto hack (M6 9g): was EVENT_BEAT_SWIMMERM_LEWIS; the 5F item ball
 	const EVENT_BEAT_SWIMMERM_LUIS ; Kanto hack: renamed in place (6e,
@@ -2045,8 +2055,30 @@
 ; once; Yellow's EVENT_GOT_TM46.  Appended at the END of the used list so no
 ; existing flag index moves.
 	const EVENT_GOT_TM81_PSYWAVE
+; Kanto hack (M9 12c): ROUTES 20 and 21, Yellow's own flag names.  ROUTE 19's
+; ten were renamed in place above; these nineteen are appended at the END of
+; the used list so no existing flag index moves.
+	const EVENT_BEAT_ROUTE_20_TRAINER_0
+	const EVENT_BEAT_ROUTE_20_TRAINER_1
+	const EVENT_BEAT_ROUTE_20_TRAINER_2
+	const EVENT_BEAT_ROUTE_20_TRAINER_3
+	const EVENT_BEAT_ROUTE_20_TRAINER_4
+	const EVENT_BEAT_ROUTE_20_TRAINER_5
+	const EVENT_BEAT_ROUTE_20_TRAINER_6
+	const EVENT_BEAT_ROUTE_20_TRAINER_7
+	const EVENT_BEAT_ROUTE_20_TRAINER_8
+	const EVENT_BEAT_ROUTE_20_TRAINER_9
+	const EVENT_BEAT_ROUTE_21_TRAINER_0
+	const EVENT_BEAT_ROUTE_21_TRAINER_1
+	const EVENT_BEAT_ROUTE_21_TRAINER_2
+	const EVENT_BEAT_ROUTE_21_TRAINER_3
+	const EVENT_BEAT_ROUTE_21_TRAINER_4
+	const EVENT_BEAT_ROUTE_21_TRAINER_5
+	const EVENT_BEAT_ROUTE_21_TRAINER_6
+	const EVENT_BEAT_ROUTE_21_TRAINER_7
+	const EVENT_BEAT_ROUTE_21_TRAINER_8
 
-; Unused: next 330 events
+; Unused: next 311 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

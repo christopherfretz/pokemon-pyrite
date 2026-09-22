@@ -227,6 +227,9 @@ DEF KRIS EQU __trainer_class__
 ; 6/7).  The class still has no dead rows, so both are appended.
 	const BIRD_KEEPER_13 ; ROUTE 15 (Kanto hack, M7 10e), appended
 	const BIRD_KEEPER_14 ; ROUTE 15 (Kanto hack, M7 10e), appended
+; Kanto hack (M9 12c): ROUTE 20's lone COOLTRAINER_M (Yellow OPP_BIRD_KEEPER
+; 11).  The class still has no dead rows, so it is appended.
+	const BIRD_KEEPER_15 ; ROUTE 20 (Kanto hack, M9 12c), appended
 
 	trainerclass LASS ; 19
 	const CARRIE
@@ -340,16 +343,21 @@ DEF KRIS EQU __trainer_class__
 	const BEAUTY_3 ; ROUTE 15 (Kanto hack, M7 10e; was the unused BRENDA)
 	const CASSIE
 	const BEAUTY_4 ; ROUTE 15 (Kanto hack, M7 10e; was the unused CAROLINE)
-	const CARLENE ; unused
-	const JESSICA ; unused
-	const RACHAEL ; unused
-	const ANGELICA ; unused
-	const KENDRA ; unused
+; Kanto hack (M9 12c): Yellow's ROUTE 19/20 BEAUTY-class swimmers (OPP_BEAUTY
+; 6/7/8/12/13/14/15).  Five of Crystal's "; unused" rows are renamed in place;
+; the last two are appended at the end of the class.
+	const BEAUTY_5 ; ROUTES 19/20 (M9 12c; was the unused CARLENE)
+	const BEAUTY_6 ; ROUTES 19/20 (M9 12c; was the unused JESSICA)
+	const BEAUTY_7 ; ROUTES 19/20 (M9 12c; was the unused RACHAEL)
+	const BEAUTY_8 ; ROUTES 19/20 (M9 12c; was the unused ANGELICA)
+	const BEAUTY_9 ; ROUTES 19/20 (M9 12c; was the unused KENDRA)
 	const LILY ; Kanto hack: CELADON GYM (Yellow BEAUTY 1); renamed in place (M6 9q), was the unused VERONICA
 	const JULIA ; Kanto hack: CELADON GYM (Yellow BEAUTY 2); kept in place (M6 9q)
 	const POPPY ; Kanto hack: CELADON GYM (Yellow BEAUTY 3); renamed in place (M6 9q), was the unused THERESA
 	const VALERIE
 	const OLIVIA
+	const BEAUTY_10 ; ROUTE 20 (M9 12c), appended
+	const BEAUTY_11 ; ROUTE 20 (M9 12c), appended
 
 	trainerclass POKEMANIAC ; 1e
 	const LARRY
@@ -524,7 +532,10 @@ DEF KRIS EQU __trainer_class__
 	trainerclass FISHER ; 25
 	const JUSTIN
 	const RALPH1
-	const ARNOLD
+; Kanto hack (M9 12c): Yellow's four ROUTE 21 FISHERs (OPP_FISHER 7/8/9/10).
+; ARNOLD was 12a's ROUTE 21 placeholder and is renamed in place; the other
+; three are appended at the end of the class.
+	const FISHER_1 ; ROUTE 21 (M9 12c; was ARNOLD)
 	const KYLE
 	const HENRY
 	const MARVIN
@@ -552,9 +563,17 @@ DEF KRIS EQU __trainer_class__
 	const PERCY
 ; Kanto hack: ROUTE 12's fifth fisher (Yellow FISHER 11), M5 8l
 	const ELWOOD
+	const FISHER_2 ; ROUTE 21 (M9 12c), appended
+	const FISHER_3 ; ROUTE 21 (M9 12c), appended
+	const FISHER_4 ; ROUTE 21 (M9 12c), appended
 
 	trainerclass SWIMMERM ; 26
-	const HAROLD
+; Kanto hack (M9 12c): Yellow's ROUTES 19/20/21 swimmers (OPP_SWIMMER 2-15).
+; Thirteen of Crystal's dead SWIMMERM rows are renamed in place -- HAROLD was
+; 12a's placeholder and the rest were "; unused" -- so nothing renumbers; the
+; fourteenth is appended at the end of the class.  Rows are nameless, so
+; PlaceEnemysName prints "SWIMMER" alone, as Gen 1 does.
+	const SWIMMERM_1 ; ROUTES 19/20/21 (M9 12c; was HAROLD)
 	const SIMON
 	const RANDALL
 	const CHARLIE
@@ -562,20 +581,21 @@ DEF KRIS EQU __trainer_class__
 	const BERKE
 	const KIRK
 	const MATHEW
-	const HAL ; unused
-	const PATON ; unused
-	const DARYL ; unused
-	const WALTER ; unused
-	const TONY ; unused
-	const JEROME
-	const TUCKER
-	const RICK ; unused
-	const CAMERON
-	const SETH
-	const JAMES ; unused
-	const LEWIS ; unused
+	const SWIMMERM_2 ; ROUTES 19/20/21 (M9 12c; was HAL)
+	const SWIMMERM_3 ; ROUTES 19/20/21 (M9 12c; was PATON)
+	const SWIMMERM_4 ; ROUTES 19/20/21 (M9 12c; was DARYL)
+	const SWIMMERM_5 ; ROUTES 19/20/21 (M9 12c; was WALTER)
+	const SWIMMERM_6 ; ROUTES 19/20/21 (M9 12c; was TONY)
+	const SWIMMERM_7 ; ROUTES 19/20/21 (M9 12c; was JEROME)
+	const SWIMMERM_8 ; ROUTES 19/20/21 (M9 12c; was TUCKER)
+	const SWIMMERM_9 ; ROUTES 19/20/21 (M9 12c; was RICK)
+	const SWIMMERM_10 ; ROUTES 19/20/21 (M9 12c; was CAMERON)
+	const SWIMMERM_11 ; ROUTES 19/20/21 (M9 12c; was SETH)
+	const SWIMMERM_12 ; ROUTES 19/20/21 (M9 12c; was JAMES)
+	const SWIMMERM_13 ; ROUTES 19/20/21 (M9 12c; was LEWIS)
 	const LUIS ; Kanto hack: Cerulean Gym, Yellow's SWIMMER 1 (was PARKER,
 	           ; Crystal's own gym swimmer; renamed in place, 6e)
+	const SWIMMERM_14 ; ROUTE 21 (M9 12c), appended -- the class had only 13 dead rows
 
 	trainerclass SWIMMERF ; 27
 	const ELAINE
@@ -803,8 +823,11 @@ DEF KRIS EQU __trainer_class__
 	const BROOKE
 	const KIM
 	const CINDY
-	const HOPE
-	const SHARON
+; Kanto hack (M9 12c): ROUTE 20's two JR.TRAINERs^F (Yellow OPP_JR_TRAINER_F
+; 16/24) take over two rows that fell dead when M4 replaced Crystal's ROUTE 4
+; picnickers, so nothing renumbers and no const is added.
+	const PICNICKER_9 ; ROUTE 20 (M9 12c; was HOPE, dead since M4)
+	const PICNICKER_10 ; ROUTE 20 (M9 12c; was SHARON, dead since M4)
 	const DEBRA
 	const GINA2
 	const ERIN1

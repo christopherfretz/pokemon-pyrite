@@ -37,6 +37,10 @@ PalletGroupSprites:
 	db SPRITE_TWIN
 	db SPRITE_YOUNGSTER
 	db SPRITE_FISHER
+; Kanto hack (M9 12c): ROUTE 21's swimmers, one connection south of PALLET.
+; Yellow uses one swimmer sheet for every swimmer on ROUTES 19/20/21, and it is
+; SWIMMER_GUY.  A walking sheet, so it goes ahead of the still ones.
+	db SPRITE_SWIMMER_GUY
 ; Kanto hack (L2): VIRIDIAN CITY's own sprites, so walking Route 1 -> VIRIDIAN
 ; CITY finds them already loaded and RefreshConnectionSprites' ~27-frame reload
 ; never fires on the line the player crosses most.  A group's list must cover
@@ -45,7 +49,7 @@ PalletGroupSprites:
 	db SPRITE_FRUIT_TREE
 	db SPRITE_OLD_MAN
 	db SPRITE_OLD_MAN_ASLEEP_OW
-rept MAX_OUTDOOR_SPRITES - 7
+rept MAX_OUTDOOR_SPRITES - 8
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
@@ -77,21 +81,32 @@ rept MAX_OUTDOOR_SPRITES - 7
 endr
 
 CinnabarGroupSprites:
+; Kanto hack (M9 12c, gotcha G15): derived with
+; scripts/trim_outdoor_sprites.py --write Cinnabar.  The group's own outdoor
+; maps (ROUTEs 19/20/21 and CINNABAR ISLAND) use four sheets -- BLUE,
+; SWIMMER_GUY, COOLTRAINER_M and FISHER -- and the other nine are the maps one
+; connection away: PALLET TOWN (north of ROUTE 21) and FUCHSIA CITY (north of
+; ROUTE 19), so neither crossing pays RefreshConnectionSprites' ~27-frame
+; reload.  Walking sheets first (SortUsedSprites), still ones last; 13 entries,
+; 152 tiles, nothing dropped.  SPRITE_SWIMMER_GIRL left with 12b's invented
+; SWIMMERFs: Yellow's routes use one swimmer sheet for every swimmer.
+	db SPRITE_OAK
 	db SPRITE_BLUE
-	db SPRITE_SWIMMER_GUY
-	db SPRITE_SWIMMER_GIRL
+	db SPRITE_TWIN
+	db SPRITE_YOUNGSTER
 	db SPRITE_FISHER
-rept MAX_OUTDOOR_SPRITES - 4
+	db SPRITE_MONSTER
+	db SPRITE_OLD_MAN
+	db SPRITE_SEEL_OW
+	db SPRITE_COOLTRAINER_M
+	db SPRITE_SWIMMER_GUY
+	db SPRITE_POKE_BALL
+	db SPRITE_FOSSIL
+	db SPRITE_CHANSEY
+rept MAX_OUTDOOR_SPRITES - 13
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
-; Kanto hack (G1, docs/M3-CERULEAN.md): ORDER MATTERS HERE.  ArrangeUsedSprites
-; fills table 1 (vtiles $00-$7f, VRAM bank 1) first and stops at FOLLOWER_VTILE
-; $6c, which is the player plus exactly EIGHT 12-tile sheets; the rest go to
-; table 2 (vtiles $80+, VRAM bank 0), and GetUsedSprite copies NO walking half
-; for those -- bank 0 $8800-$8fff is BG tile data.  A sheet that animates from
-; table 2 therefore indexes BG font tiles for every walking frame.  So every
-; sheet this group ever WALKS must come first; standing/still sheets last.
 CeruleanGroupSprites:
 ; walks: keep inside table 1 (the first eight entries)
 	db SPRITE_KANTO_RIVAL   ; CERULEAN CITY 6d cutscene applymovement
@@ -188,7 +203,7 @@ VermilionGroupSprites:
 	db SPRITE_FISHER
 	db SPRITE_BIG_SNORLAX
 	db SPRITE_POKE_BALL
-rept MAX_OUTDOOR_SPRITES - 14
+rept MAX_OUTDOOR_SPRITES - 15
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 
@@ -206,7 +221,7 @@ FuchsiaGroupSprites:
 ; and land in table 1 ahead of the still ones.  14 entries, 164 tiles, nothing
 ; dropped.  CHANSEY and SEEL_OW are STANDING_SPRITEs: 12 tiles with no walking
 ; half in ROM at all, so table 2 is correct for them and they slide exactly as
-; Yellow's own SEEL does.
+; Yellow's own SEEL does.  (M9 12c added SWIMMER_GUY: 15 entries, 176 tiles.)
 	db SPRITE_YOUNGSTER
 	db SPRITE_FISHER
 	; M7 10f: FUCHSIA's zoo -- KANGASKHAN and SLOWPOKE share SPRITE_MONSTER and
@@ -219,6 +234,10 @@ FuchsiaGroupSprites:
 	db SPRITE_COOLTRAINER_F
 	db SPRITE_BEAUTY
 	db SPRITE_BIKER
+	; Kanto hack (M9 12c): ROUTE 19's swimmers, one connection south.  Yellow
+	; uses one swimmer sheet for every swimmer on ROUTES 19/20/21, male or
+	; female, and it is SWIMMER_GUY.  A walking sheet, so it goes in table 1.
+	db SPRITE_SWIMMER_GUY
 	; Kanto hack (M7 10c/10f): cross-connection entries -- ROUTE 12's SNORLAX and
 	; the SUPER_NERD one connection off the group, carried so walking back out of
 	; the group pays no sprite reload.  Neither is used inside the group.

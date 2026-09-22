@@ -7,9 +7,12 @@
 ; is closed / JANINE / no-littering set) is gone, and so is the Gen 2 fruit
 ; tree -- Yellow's cut has border trees at (8,1) (D66, same call as 10c).
 ;
-; Warps 1-9 are Yellow's, in Yellow's order.  Warps 10/11 are the Gen 2 ROUTE
-; 19 gate, kept as the city's only south exit (D62/D63) and kept LAST so
-; Route19FuchsiaGate's `FUCHSIA_CITY, 10`/`, 11` still resolve.  Warp 9 (the
+; Warps 1-9 are Yellow's, in Yellow's order -- and now they are ALL the warps.
+; M9 12c/D98 retired ROUTE_19_FUCHSIA_GATE: Yellow has no gate south of
+; FUCHSIA, so the two gate warps (10/11, deliberately kept last by 10f) are
+; deleted and nothing renumbers.  The south edge is Yellow's again -- plain
+; FLOOR, walked off onto ROUTE 19 by the `connection south` at offset 5.
+; Warp 9 (the
 ; good-rod house back door at 31,24) is the new $c5 metatile: art of Yellow's
 ; $38 with a LADDER quadrant, the Celadon-mansion-back-door trick, because a
 ; GSC warp needs a $7x collision and that door is the only way into the
@@ -302,8 +305,6 @@ FuchsiaCity_MapEvents:
 	warp_event 22, 13, FUCHSIA_MEETING_ROOM, 1
 	warp_event 31, 27, FUCHSIA_GOOD_ROD_HOUSE, 2
 	warp_event 31, 24, FUCHSIA_GOOD_ROD_HOUSE, 1 ; the back door, on the $c5 LADDER metatile
-	warp_event 19, 35, ROUTE_19_FUCHSIA_GATE, 2 ; M1: the Yellow-art gate has only ONE north door tile (5,0); its warp 1 at (4,0) is on the WALL half, so BOTH city doors use warp 2, exactly as ROUTE 2's do
-	warp_event 20, 35, ROUTE_19_FUCHSIA_GATE, 2
 
 	def_coord_events
 

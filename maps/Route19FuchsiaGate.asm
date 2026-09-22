@@ -1,14 +1,22 @@
-; Kanto hack (M7 10o): Yellow has no map here at all -- ROUTE 19 runs straight
-; out of FUCHSIA's south edge.  D62/D63 keep Crystal's gate standing as the
-; fence across that seam until M9 ports ROUTES 19-21, but its OFFICER told
-; Crystal's story: CINNABAR's volcano erupting and closing ROUTE 19
-; "indefinitely", with a second branch gated on EVENT_CINNABAR_ROCKS_CLEARED
-; (set only by maps/Route20.asm, unreachable in the Kanto act, so the eruption
-; text always printed; M9 12b deleted that setevent with the rest of the rocks
-; fiction, and the flag now has no setter anywhere).  That is a Gen 2 story beat with no Yellow counterpart,
-; and it was the first NPC a player met walking south out of FUCHSIA.  Gotcha
-; G10 handed it to the leftover audit; there is no Yellow text to port in its
-; place, so the gate is a silent pass-through until M9 retires the map.
+; Kanto hack (M9 12c, D98): RETIRED.  Yellow has no map here at all -- ROUTE 19
+; runs straight out of FUCHSIA CITY's south edge, and 12c restored that: the
+; city's two gate warps and ROUTE 19's landing warp are deleted, FUCHSIA's
+; bottom block row is Yellow's plain FLOOR again, and 12b's $cb LEDGE_TWIN
+; fence on ROUTE 19 blocks (4,0)/(5,0) is gone.  Nothing warps here and nothing
+; warps out; the map is unreachable.
+;
+; The file stays in the build, unreferenced, exactly like
+; FuchsiaPokecenter2FBeta -- the `map Route19FuchsiaGate, ...` row in
+; data/maps/maps.asm names these labels, and ROUTE_19_FUCHSIA_GATE stays
+; registered in constants/map_constants.asm as a dead positional id (D49: never
+; renumber).  Its warp list is emptied because the destinations it named
+; (FUCHSIA_CITY warps 10/11, ROUTE_19 warp 1) no longer exist.
+;
+; M7 10o's note on what was deleted, for the record: the gate's OFFICER told
+; Crystal's story -- CINNABAR's volcano erupting and closing ROUTE 19
+; "indefinitely" -- a Gen 2 story beat with no Yellow counterpart, and the
+; first NPC a player met walking south out of FUCHSIA.  There was no Yellow
+; text to port in its place, so 10o made the gate a silent pass-through.
 Route19FuchsiaGate_MapScripts:
 	def_scene_scripts
 
@@ -18,10 +26,6 @@ Route19FuchsiaGate_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4,  0, FUCHSIA_CITY, 10
-	warp_event  5,  0, FUCHSIA_CITY, 11
-	warp_event  4,  7, ROUTE_19, 1
-	warp_event  5,  7, ROUTE_19, 1
 
 	def_coord_events
 
