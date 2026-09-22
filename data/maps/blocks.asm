@@ -927,8 +927,8 @@ Route39Barn_Blocks:
 VictoryRoad_Blocks:
 	INCBIN "maps/VictoryRoad.blk"
 
-Route23_Blocks:
-	INCBIN "maps/Route23.blk"
+IndigoPlateau_Blocks:
+	INCBIN "maps/IndigoPlateau.blk"
 
 LancesRoom_Blocks:
 	INCBIN "maps/LancesRoom.blk"

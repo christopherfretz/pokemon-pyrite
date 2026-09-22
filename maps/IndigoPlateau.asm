@@ -1,10 +1,10 @@
-Route23_MapScripts:
+IndigoPlateau_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_NEWMAP, Route23FlypointCallback
+	callback MAPCALLBACK_NEWMAP, IndigoPlateauFlypointCallback
 
-Route23FlypointCallback:
+IndigoPlateauFlypointCallback:
 	setflag ENGINE_FLYPOINT_INDIGO_PLATEAU
 	endcallback
 
@@ -20,7 +20,7 @@ IndigoPlateauSignText:
 	para "#MON LEAGUE HQ"
 	done
 
-Route23_MapEvents:
+IndigoPlateau_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events

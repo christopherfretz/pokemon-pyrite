@@ -249,7 +249,7 @@ VictoryRoad_MapEvents:
 	warp_event 17, 19, VICTORY_ROAD, 6
 	warp_event  0, 11, VICTORY_ROAD, 9
 	warp_event  0, 27, VICTORY_ROAD, 8
-	warp_event 13,  5, ROUTE_23, 3
+	warp_event 13,  5, INDIGO_PLATEAU, 3
 
 	def_coord_events
 	coord_event 12,  8, SCENE_VICTORYROAD_RIVAL_BATTLE, VictoryRoadRivalLeft
