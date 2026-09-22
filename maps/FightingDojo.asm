@@ -123,7 +123,13 @@ TrainerBlackbeltDojo4:
 	end
 
 FightingDojoHitmonleeBall:
+; Kanto hack (M8 11n): Yellow hides ONLY the ball you take
+; (vendor/pokeyellow/scripts/FightingDojo.asm:249,284 -- one HideObject each on
+; TOGGLE_FIGHTING_DOJO_GIFT_1 / _2).  The other stays on the floor and answers
+; "Better not get greedy..." forever (the CheckEitherEventSet at :228/:262).
 	opentext
+	checkevent EVENT_GOT_FIGHTING_DOJO_GIFT
+	iftrue .Greedy
 	writetext FightingDojoHitmonleePokeBallText
 	yesorno
 	iffalse .Declined
@@ -135,13 +141,24 @@ FightingDojoHitmonleeBall:
 	setevent EVENT_GOT_HITMONLEE
 	setevent EVENT_GOT_FIGHTING_DOJO_GIFT
 	disappear FIGHTINGDOJO_HITMONLEE_POKE_BALL
-	disappear FIGHTINGDOJO_HITMONCHAN_POKE_BALL
 .Declined:
 	closetext
 	end
 
+.Greedy:
+	writetext FightingDojoBetterNotGetGreedyText
+	waitbutton
+	closetext
+	end
+
 FightingDojoHitmonchanBall:
+; Kanto hack (M8 11n): Yellow hides ONLY the ball you take
+; (vendor/pokeyellow/scripts/FightingDojo.asm:249,284 -- one HideObject each on
+; TOGGLE_FIGHTING_DOJO_GIFT_1 / _2).  The other stays on the floor and answers
+; "Better not get greedy..." forever (the CheckEitherEventSet at :228/:262).
 	opentext
+	checkevent EVENT_GOT_FIGHTING_DOJO_GIFT
+	iftrue .Greedy
 	writetext FightingDojoHitmonchanPokeBallText
 	yesorno
 	iffalse .Declined
@@ -152,11 +169,23 @@ FightingDojoHitmonchanBall:
 	ifequal 2, .Declined
 	setevent EVENT_GOT_HITMONCHAN
 	setevent EVENT_GOT_FIGHTING_DOJO_GIFT
-	disappear FIGHTINGDOJO_HITMONLEE_POKE_BALL
 	disappear FIGHTINGDOJO_HITMONCHAN_POKE_BALL
 .Declined:
 	closetext
 	end
+
+.Greedy:
+	writetext FightingDojoBetterNotGetGreedyText
+	waitbutton
+	closetext
+	end
+
+FightingDojoBetterNotGetGreedyText:
+; Yellow: _FightingDojoBetterNotGetGreedyText
+; (vendor/pokeyellow/text/FightingDojo.asm:127).
+	text "Better not get"
+	line "greedy…"
+	done
 
 FightingDojoStatue:
 	jumptext FightingDojoStatueText
@@ -339,5 +368,5 @@ FightingDojo_MapEvents:
 	object_event  3,  6, SPRITE_BLACK_BELT, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerBlackbeltDojo2, -1
 	object_event  5,  5, SPRITE_BLACK_BELT, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBlackbeltDojo3, -1
 	object_event  5,  7, SPRITE_BLACK_BELT, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerBlackbeltDojo4, -1
-	object_event  4,  1, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FightingDojoHitmonleeBall, EVENT_GOT_FIGHTING_DOJO_GIFT
-	object_event  5,  1, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FightingDojoHitmonchanBall, EVENT_GOT_FIGHTING_DOJO_GIFT
+	object_event  4,  1, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FightingDojoHitmonleeBall, EVENT_GOT_HITMONLEE
+	object_event  5,  1, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FightingDojoHitmonchanBall, EVENT_GOT_HITMONCHAN

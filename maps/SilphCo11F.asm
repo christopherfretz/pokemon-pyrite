@@ -39,8 +39,12 @@
 ;                 JESSIE (3,8) +4 -> (3,4), below him,    facing UP
 ;   player (2,3): JAMES  (2,8) +4 -> (2,4), below him,    facing UP
 ;                 JESSIE (3,8) +5 -> (3,3), right of him, facing LEFT
-;   player (1,3): JAMES  (2,8) +5 -> (2,3), right of him, facing UP
-;                 JESSIE (3,8) +6 -> (3,2)                facing LEFT
+;   player (1,3): JAMES  (2,8) UP,UP,LEFT,UP,UP    -> (1,4), below him, facing UP
+;                 JESSIE (3,8) UP,UP,UP,LEFT,UP,UP -> (2,3), right of him, facing LEFT
+; (M8 11n: the (1,3) row used to read "+5 -> (2,3)" / "+6 -> (3,2)", reading
+; Yellow's data bytes as step counts.  They are directions: Func_5288
+; (vendor/pokeyellow/engine/overworld/movement.asm:869) decodes $4=DOWN,
+; $5=UP, $6=LEFT, $7=RIGHT, so _6230b/_62311 each contain one LEFT.)
 ;
 ; ⚠ DEVIATION (docs/M8-SAFFRON.md "11i findings"): Yellow's dispatch is buggy.
 ; SilphCo11FScript5/8 read CheckEitherEventSet EVENT_780, EVENT_781, which
@@ -188,9 +192,9 @@ SilphCo11FJessieJamesSceneFromTile1:
 	closetext
 	turnobject PLAYER, DOWN
 	showemote EMOTE_SHOCK, PLAYER, 15
-	applymovement SILPHCO11F_JAMES, SilphCo11FWalkUp5
+	applymovement SILPHCO11F_JAMES, SilphCo11FJamesApproachFromTile1
 	turnobject SILPHCO11F_JAMES, UP
-	applymovement SILPHCO11F_JESSIE, SilphCo11FWalkUp6
+	applymovement SILPHCO11F_JESSIE, SilphCo11FJessieApproachFromTile1
 	turnobject SILPHCO11F_JESSIE, LEFT
 	sjump SilphCo11FJessieJamesBattle
 
@@ -377,11 +381,24 @@ SilphCo11FWalkUp5:
 	step UP
 	step_end
 
-SilphCo11FWalkUp6:
+; Kanto hack (M8 11n): the (1,3) approaches are Yellow's _6230b / _62311, which
+; dog-leg LEFT one tile ($6 == LEFT) so the pair land BESIDE and BELOW the
+; player instead of walking past him.  These replace the old straight
+; SilphCo11FWalkUp6 (six step UP), which came from mis-reading the data bytes
+; as a step count.
+SilphCo11FJamesApproachFromTile1:
+	step UP
+	step UP
+	step LEFT
+	step UP
+	step UP
+	step_end
+
+SilphCo11FJessieApproachFromTile1:
 	step UP
 	step UP
 	step UP
-	step UP
+	step LEFT
 	step UP
 	step UP
 	step_end

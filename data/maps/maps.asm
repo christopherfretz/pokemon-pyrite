@@ -160,7 +160,7 @@ MapGroup_Dungeons:
 	map DragonShrine, TILESET_LAB, INDOOR, LANDMARK_DRAGONS_DEN, MUSIC_DRAGONS_DEN, TRUE, PALETTE_NITE, FISHGROUP_SHORE
 	map TohjoFalls, TILESET_CAVE, CAVE, LANDMARK_TOHJO_FALLS, MUSIC_UNION_CAVE, TRUE, PALETTE_NITE, FISHGROUP_LAKE
 	map DiglettsCave, TILESET_CAVE, CAVE, LANDMARK_DIGLETTS_CAVE, MUSIC_MT_MOON, TRUE, PALETTE_NITE, FISHGROUP_SHORE
-	map UndergroundPath, TILESET_UNDERGROUND, GATE, LANDMARK_UNDERGROUND_PATH, MUSIC_ROUTE_1, FALSE, PALETTE_NITE, FISHGROUP_SHORE ; Kanto hack (M4 audit): Yellow's UNDERGROUND_PATH_NORTH_SOUTH plays MUSIC_ROUTES1, the Route 1/2 theme, not a dungeon track (vendor/pokeyellow/data/maps/songs.asm:122)
+	map UndergroundPath, TILESET_UNDERGROUND, GATE, LANDMARK_UNDERGROUND_PATH, MUSIC_ROUTE_1, FALSE, PALETTE_NITE, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (M4 audit): Yellow's UNDERGROUND_PATH_NORTH_SOUTH plays MUSIC_ROUTES1, the Route 1/2 theme, not a dungeon track (vendor/pokeyellow/data/maps/songs.asm:122)
 	map RockTunnel1F, TILESET_DARK_CAVE, CAVE, LANDMARK_ROCK_TUNNEL, MUSIC_MT_MOON, TRUE, PALETTE_DARK, FISHGROUP_SHORE
 	map RockTunnelB1F, TILESET_DARK_CAVE, CAVE, LANDMARK_ROCK_TUNNEL, MUSIC_MT_MOON, TRUE, PALETTE_DARK, FISHGROUP_SHORE
 	map SafariZoneFuchsiaGateBeta, TILESET_GATE, INDOOR, LANDMARK_FUCHSIA_CITY, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M7 10n): unused beta map; its FISHGROUP_SHORE was a CORSOLA leak in waiting and is now NONE
@@ -169,7 +169,7 @@ MapGroup_Dungeons:
 	map MtMoon1F, TILESET_CAVE, CAVE, LANDMARK_MT_MOON, MUSIC_MT_MOON, TRUE, PALETTE_NITE, FISHGROUP_SHORE
 	map MtMoonB1F, TILESET_CAVE, CAVE, LANDMARK_MT_MOON, MUSIC_MT_MOON, TRUE, PALETTE_NITE, FISHGROUP_SHORE
 	map MtMoonB2F, TILESET_CAVE, CAVE, LANDMARK_MT_MOON, MUSIC_MT_MOON, TRUE, PALETTE_NITE, FISHGROUP_SHORE
-	map UndergroundPathWestEast, TILESET_UNDERGROUND, GATE, LANDMARK_UNDERGROUND_PATH, MUSIC_ROUTE_1, FALSE, PALETTE_NITE, FISHGROUP_SHORE ; Kanto hack (docs/M5-LAVENDER.md, 8b)
+	map UndergroundPathWestEast, TILESET_UNDERGROUND, GATE, LANDMARK_UNDERGROUND_PATH, MUSIC_ROUTE_1, FALSE, PALETTE_NITE, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (docs/M5-LAVENDER.md, 8b)
 	assert_table_length NUM_DUNGEONS_MAPS
 
 MapGroup_Ecruteak:
@@ -319,7 +319,7 @@ MapGroup_Vermilion:
 	map VermilionOldRodHouse, TILESET_HOUSE, INDOOR, LANDMARK_VERMILION_CITY, MUSIC_VERMILION_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE
 	map VermilionGym, TILESET_GAME_CORNER, INDOOR, LANDMARK_VERMILION_CITY, MUSIC_GYM, TRUE, PALETTE_DAY, FISHGROUP_SHORE
 	map Route6SaffronGate, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_6, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M8 11m): gate hut, nothing to fish; FISHGROUP_SHORE leaked CORSOLA.  Kanto hack (M4 audit): Yellow gives every Kanto gate MUSIC_CITIES1, the town theme (vendor/pokeyellow/data/maps/songs.asm) -- our Kanto-town stand-in, matching Route5SaffronGate
-	map Route6UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_6, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE ; Kanto hack (M4 audit): Yellow gives every Kanto gate MUSIC_CITIES1, the town theme (vendor/pokeyellow/data/maps/songs.asm) -- our Kanto-town stand-in, matching Route5SaffronGate
+	map Route6UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_6, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (M4 audit): Yellow gives every Kanto gate MUSIC_CITIES1, the town theme (vendor/pokeyellow/data/maps/songs.asm) -- our Kanto-town stand-in, matching Route5SaffronGate
 	map Route11Gate1F, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_11, MUSIC_VERMILION_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE ; Kanto hack (docs/M4-VERMILION.md, 7c)
 	map Route11Gate2F, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_11, MUSIC_VERMILION_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE ; Kanto hack (docs/M4-VERMILION.md, 7c)
 	map DiglettsCaveRoute11, TILESET_CAVE, CAVE, LANDMARK_DIGLETTS_CAVE, MUSIC_MT_MOON, TRUE, PALETTE_NITE, FISHGROUP_SHORE ; Kanto hack (docs/M4-VERMILION.md, 7c)
@@ -423,7 +423,7 @@ MapGroup_Lavender:
 	table_width MAP_LENGTH
 	map Route8, TILESET_KANTO, ROUTE, LANDMARK_ROUTE_8, MUSIC_ROUTE_3, FALSE, PALETTE_AUTO, FISHGROUP_SHORE
 	map Route12, TILESET_KANTO, ROUTE, LANDMARK_ROUTE_12, MUSIC_ROUTE_12, FALSE, PALETTE_AUTO, FISHGROUP_KANTO_ROUTE_12 ; Kanto hack (M5 8m): Yellow-faithful Kanto fishing (vendor/pokeyellow/data/wild/super_rod.asm): HORSEA 20/25, SEADRA 25/35 -- 8l's FISHGROUP_WHIRL_ISLANDS stand-in retired
-	map Route8UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_8, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE ; Kanto hack (docs/M5-LAVENDER.md, 8b)
+	map Route8UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_8, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (docs/M5-LAVENDER.md, 8b)
 	map LavenderTown, TILESET_KANTO, TOWN, LANDMARK_LAVENDER_TOWN, MUSIC_LAVENDER_TOWN, FALSE, PALETTE_AUTO, FISHGROUP_SHORE
 	map LavenderPokecenter1F, TILESET_POKECENTER, INDOOR, LANDMARK_LAVENDER_TOWN, MUSIC_POKEMON_CENTER, FALSE, PALETTE_DAY, FISHGROUP_SHORE
 	map LavenderPokecenter2FBeta, TILESET_POKECENTER, INDOOR, LANDMARK_LAVENDER_TOWN, MUSIC_POKEMON_CENTER, FALSE, PALETTE_DAY, FISHGROUP_SHORE
@@ -498,7 +498,7 @@ MapGroup_Celadon:
 	map Route16Gate, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_16, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE
 	map Route7SaffronGate, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_7, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M8 11m): gate hut, nothing to fish; FISHGROUP_SHORE leaked CORSOLA.  Kanto hack (M5 8k): Yellow plays MUSIC_CITIES1 (== our MUSIC_VIRIDIAN_CITY) inside every gate hut, not the route theme
 	map Route17Route18Gate, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_18, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M6 9aa): this is Yellow's ROUTE 18 GATE 1F -- it stands on ROUTE 18, and Yellow plays MUSIC_CITIES1 (== our MUSIC_VIRIDIAN_CITY) inside every gate hut
-	map Route7UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_7, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_SHORE ; Kanto hack (docs/M5-LAVENDER.md, 8b)
+	map Route7UndergroundPathEntrance, TILESET_KANTO_GATE, GATE, LANDMARK_ROUTE_7, MUSIC_VIRIDIAN_CITY, FALSE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (docs/M5-LAVENDER.md, 8b)
 ; Kanto hack (M6 9o, docs/M6-CELADON.md 1.2): Yellow's nine missing CELADON
 ; interiors.  INDOOR, not DUNGEON: Yellow's ROCKET HIDEOUT has no wild table.
 	map RocketHideoutB1F, TILESET_KANTO_FACILITY, INDOOR, LANDMARK_CELADON_CITY, MUSIC_ROCKET_HIDEOUT, FALSE, PALETTE_DAY, FISHGROUP_SHORE

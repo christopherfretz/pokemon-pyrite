@@ -224,7 +224,7 @@
 ; EVENT_GOT_PASS_FROM_COPYCAT are left alone: the second is still read by
 ; engine/phone/scripts/irwin_gossip.asm, and the PASS itself is wanted for the
 ; Johto act's MAGNET TRAIN, so only the SAFFRON half of the quest is retired.
-	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT
+	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT ; Kanto hack (M8 11n audit): DEAD since M8 11d (D75: Crystal's LOST ITEM -> PASS quest retired in Kanto) -- no live reference anywhere; free to rename in place (D49)
 	const EVENT_GOT_PASS_FROM_COPYCAT
 	const EVENT_GOT_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB (Crystal's LOST_ITEM quest deleted); Yellow's EVENT_GOT_BIKE_VOUCHER
 	const EVENT_PIKACHU_FAN_BOAST ; Kanto hack: renamed in place (7f), was EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL; Yellow's boast toggle -- SET means the CLEFAIRY fan brags back next
@@ -238,7 +238,7 @@
 	const EVENT_SS_ANNE_1F_ROOMS_TM_BODY_SLAM ; Kanto hack: renamed in place (7h), was EVENT_GOT_CLEANSE_TAG; S.S. ANNE 1F Rooms item ball (12,15)
 	const EVENT_GOT_TM21_MEGA_DRAIN ; Kanto hack: renamed in place (M6 9q), was EVENT_GOT_TM19_GIGA_DRAIN; ERIKA's TM is Yellow's TM21 MEGA DRAIN (our TM67)
 	const EVENT_GOT_TM06_TOXIC
-	const EVENT_GOT_UP_GRADE
+	const EVENT_GOT_UP_GRADE ; Kanto hack (M8 11n audit): DEAD since M8 11e (Crystal's SILPH 1F OFFICER + UP_GRADE deleted; Yellow has neither) -- no live reference anywhere; free to rename in place (D49)
 	const EVENT_GOT_TM07_ZAP_CANNON
 	const EVENT_GOT_TM42_DREAM_EATER
 	const EVENT_TALKED_TO_OAK_IN_KANTO
@@ -642,7 +642,7 @@
 	const EVENT_BEAT_ROUTE_17_BIKER_4 ; was EVENT_BEAT_BIKER_GLENN; ROUTE 17 (5,98), Yellow's OPP_BIKER 11
 ; Psychic
 	const EVENT_BEAT_PSYCHIC_NATHAN
-	const EVENT_BEAT_PSYCHIC_FRANKLIN
+	const EVENT_BEAT_PSYCHIC_FRANKLIN ; Kanto hack (M8 11n audit): DEAD since M8 11l (Crystal's SAFFRON GYM roster replaced by Yellow's seven) -- no live reference anywhere; free to rename in place (D49)
 	const EVENT_BEAT_SCIENTIST_MAXWELL ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_HERMAN; ROUTE 11, Yellow's ENGINEER 2
 	const EVENT_BEAT_SCIENTIST_THURSTON ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_FIDEL; ROUTE 11, Yellow's ENGINEER 3
 	const EVENT_BEAT_PSYCHIC_GREG
@@ -651,7 +651,7 @@
 	const EVENT_BEAT_PSYCHIC_PHIL
 	const EVENT_BEAT_PSYCHIC_RICHARD
 	const EVENT_BEAT_PSYCHIC_GILBERT
-	const EVENT_BEAT_PSYCHIC_JARED
+	const EVENT_BEAT_PSYCHIC_JARED ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
 	const EVENT_BEAT_PSYCHIC_RODNEY
 ; Firebreather
 	const EVENT_BEAT_BUG_CATCHER_COLTON ; Kanto hack: was EVENT_BEAT_FIREBREATHER_OTIS; Route 3, Yellow's BUG_CATCHER 4
@@ -1019,8 +1019,8 @@
 	const EVENT_BEAT_MEDIUM_BETHANY ; Kanto hack (M6 9f): #MON TOWER 3F channeler 1
 	const EVENT_BEAT_MEDIUM_MARGRET ; Kanto hack (M6 9f): #MON TOWER 3F channeler 2
 	const EVENT_BEAT_MEDIUM_ETHEL ; Kanto hack (M6 9f): #MON TOWER 3F channeler 3
-	const EVENT_BEAT_MEDIUM_REBECCA
-	const EVENT_BEAT_MEDIUM_DORIS
+	const EVENT_BEAT_MEDIUM_REBECCA ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_BEAT_MEDIUM_DORIS ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
 ; Skier
 	const EVENT_BEAT_SKIER_ROXANNE
 	const EVENT_BEAT_SKIER_CLARISSA
@@ -1281,8 +1281,8 @@
 	const EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	const EVENT_ROUTE_34_ILEX_FOREST_GATE_TEACHER_IN_WALKWAY
 	const EVENT_ILEX_FOREST_LASS
-	const EVENT_COPYCAT_1
-	const EVENT_COPYCAT_2
+	const EVENT_COPYCAT_1 ; Kanto hack (M8 11n audit): DEAD since M8 11d (as EVENT_RETURNED_LOST_ITEM_TO_COPYCAT) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_COPYCAT_2 ; Kanto hack (M8 11n audit): DEAD since M8 11d (as above) -- no live reference anywhere; free to rename in place (D49)
 	const EVENT_GOLDENROD_SALE_OFF
 	const EVENT_GOLDENROD_SALE_ON
 	const_skip ; unused in Crystal
@@ -2008,7 +2008,7 @@
 	const EVENT_BEAT_PSYCHIC_DARIUS
 ; The FIGHTING DOJO (11d).  Its four BLACKBELTs get numbered flags rather than
 ; name-keyed ones because Yellow leaves them nameless; KARATE MASTER's loss
-; opens the two choice balls, and taking one clears the other.
+; opens the two choice balls, and taking one locks the other out.
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_1
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_2
 	const EVENT_BEAT_FIGHTING_DOJO_TRAINER_3
@@ -2016,8 +2016,12 @@
 	const EVENT_DEFEATED_FIGHTING_DOJO ; the KARATE MASTER is beaten
 	const EVENT_GOT_HITMONLEE
 	const EVENT_GOT_HITMONCHAN
-; 11d: both balls vanish once either is taken, so they share one HIDE flag --
-; a per-ball flag would make the other reappear on the next map load.
+; 11d/11n: EVENT_GOT_HITMONLEE / _HITMONCHAN are each ball's own HIDE flag, so
+; only the ball you take disappears -- Yellow hides exactly one
+; (vendor/pokeyellow/scripts/FightingDojo.asm:249,284).  This flag is no longer
+; a HIDE flag: it is the "you already chose" marker the surviving ball reads to
+; print "Better not get greedy..." (11d shipped both balls sharing it, which
+; deleted the one you did not pick -- corrected by the 11n audit).
 	const EVENT_GOT_FIGHTING_DOJO_GIFT
 ; SAFFRON CITY's six civilians (11c).  Yellow keeps them off the map with its
 ; global data/maps/toggleable_objects.asm table, which GSC has no analogue for,

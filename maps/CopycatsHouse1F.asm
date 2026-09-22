@@ -53,6 +53,13 @@ CopycatsHouse1FChanseyText:
 	line "sey!"
 	done
 
+CopycatsHouse1FBookshelf:
+; Kanto hack (M8 11n): Yellow reads tile $32 at (0,1) and (1,1) of
+; CopycatsHouse1F.blk (vendor/pokeyellow/data/tilesets/bookshelf_tile_ids.asm:12);
+; vanilla Crystal's own RedsHouse1F, on the same block $1b, declares the same
+; two.  Crystal's CopycatsHouse1F omitted them and 11d inherited the omission.
+	jumpstd DifficultBookshelfScript
+
 CopycatsHouse1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -64,6 +71,8 @@ CopycatsHouse1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_READ, CopycatsHouse1FBookshelf
+	bg_event  1,  1, BGEVENT_READ, CopycatsHouse1FBookshelf
 
 	def_object_events
 	object_event  2,  2, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CopycatsHouse1FMiddleAgedWomanScript, -1

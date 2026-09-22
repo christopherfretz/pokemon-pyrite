@@ -65,6 +65,24 @@ SaffronPidgeyHousePaperText:
 	cont "of techniques!"
 	done
 
+SaffronPidgeyHouseBookshelf:
+; Kanto hack (M8 11n): Yellow reads tile $1E at (0,1), (1,1) and (7,1) of this
+; map's blk (vendor/pokeyellow/data/tilesets/bookshelf_tile_ids.asm:10).  It
+; shares maps/House1.blk with MR PSYCHIC's HOUSE, which already declares the
+; first two; vanilla Crystal declares none on this art.
+	jumpstd DifficultBookshelfScript
+
+SaffronPidgeyHouseTownMap:
+	jumptext SaffronPidgeyHouseTownMapText
+
+SaffronPidgeyHouseTownMapText:
+; Yellow: _TownMapText (vendor/pokeyellow/data/text/text_2.asm:861), the wall
+; picture that House1's art keeps at (3,0).  Closes the deferral recorded in
+; docs/AUDIT-NPC-TEXT.md.  Plain text, not Crystal's TownMapScript: Yellow just
+; prints this, it does not open the map.
+	text "A TOWN MAP."
+	done
+
 SaffronPidgeyHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -75,6 +93,10 @@ SaffronPidgeyHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_READ, SaffronPidgeyHouseBookshelf
+	bg_event  1,  1, BGEVENT_READ, SaffronPidgeyHouseBookshelf
+	bg_event  7,  1, BGEVENT_READ, SaffronPidgeyHouseBookshelf
+	bg_event  3,  0, BGEVENT_READ, SaffronPidgeyHouseTownMap
 
 	def_object_events
 	object_event  2,  3, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SaffronPidgeyHouseBrunetteGirlScript, -1

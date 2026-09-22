@@ -38,6 +38,17 @@ MrPsychic:
 MrPsychicsHouseBookshelf:
 	jumpstd DifficultBookshelfScript
 
+MrPsychicsHouseTownMap:
+	jumptext MrPsychicsHouseTownMapText
+
+MrPsychicsHouseTownMapText:
+; Yellow: _TownMapText (vendor/pokeyellow/data/text/text_2.asm:861), the wall
+; picture that House1's art keeps at (3,0).  Closes the deferral recorded in
+; docs/AUDIT-NPC-TEXT.md.  Plain text, not Crystal's TownMapScript: Yellow just
+; prints this, it does not open the map.
+	text "A TOWN MAP."
+	done
+
 MrPsychicYouWantedThisText:
 	text "…Wait! Don't"
 	line "say a word!"
@@ -70,6 +81,8 @@ MrPsychicsHouse_MapEvents:
 	def_bg_events
 	bg_event  0,  1, BGEVENT_READ, MrPsychicsHouseBookshelf
 	bg_event  1,  1, BGEVENT_READ, MrPsychicsHouseBookshelf
+	bg_event  7,  1, BGEVENT_READ, MrPsychicsHouseBookshelf ; Kanto hack (M8 11n): Yellow's third $1E on this art
+	bg_event  3,  0, BGEVENT_READ, MrPsychicsHouseTownMap
 
 	def_object_events
 	object_event  5,  3, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MrPsychic, -1
