@@ -43,6 +43,18 @@ SilphCo3FDoorCallback:
 .done
 	endcallback
 
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo3FDoor1Script:
+	silph_card_key_door EVENT_SILPH_CO_3F_UNLOCKED_DOOR_1, 8, 8, $0e ; Yellow block (4,4)
+
+SilphCo3FDoor2Script:
+	silph_card_key_door EVENT_SILPH_CO_3F_UNLOCKED_DOOR_2, 16, 8, $0e ; Yellow block (8,4)
+
 SilphCo3FSilphWorkerMScript:
 	faceplayer
 	opentext
@@ -149,6 +161,12 @@ SilphCo3F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	; card-key door 1, Yellow block (4,4): walled right column -- faced from the east (or from inside, to the west)
+	bg_event  9,  8, BGEVENT_READ, SilphCo3FDoor1Script
+	bg_event  9,  9, BGEVENT_READ, SilphCo3FDoor1Script
+	; card-key door 2, Yellow block (8,4): walled right column -- faced from the east (or from inside, to the west)
+	bg_event 17,  8, BGEVENT_READ, SilphCo3FDoor2Script
+	bg_event 17,  9, BGEVENT_READ, SilphCo3FDoor2Script
 
 	def_object_events
 	object_event 24,  8, SPRITE_SILPH_WORKER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCo3FSilphWorkerMScript, -1

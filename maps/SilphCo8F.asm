@@ -21,7 +21,7 @@
 ;
 ; Card-key door: Yellow block coordinate (3,4), VERTICAL, shut block $5f.
 ; `changeblock` takes MAP TILE coordinates (see maps/SilphCo2F.asm).  The
-; bg_event that opens it is 11j's.
+; bg_events that open it are 11j's and are now shipped.
 	object_const_def
 	const SILPHCO8F_SILPH_WORKER_M
 	const SILPHCO8F_ROCKET1
@@ -40,6 +40,15 @@ SilphCo8FDoorCallback:
 	changeblock  6,  8, $5f ; shut door, Yellow block (3,4)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo8FDoorScript:
+	silph_card_key_door EVENT_SILPH_CO_8F_UNLOCKED_DOOR, 6, 8, $0e ; Yellow block (3,4)
 
 SilphCo8FSilphWorkerMScript:
 	faceplayer
@@ -162,6 +171,9 @@ SilphCo8F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	; the card-key door, Yellow block (3,4): walled right column -- faced from the east (or from inside, to the west)
+	bg_event  7,  8, BGEVENT_READ, SilphCo8FDoorScript
+	bg_event  7,  9, BGEVENT_READ, SilphCo8FDoorScript
 
 	def_object_events
 	object_event  4,  2, SPRITE_SILPH_WORKER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCo8FSilphWorkerMScript, -1

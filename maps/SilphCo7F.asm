@@ -26,7 +26,8 @@
 ;
 ; Card-key doors: Yellow block coordinates (5,3), (10,2) and (10,6), all three
 ; HORIZONTAL, so the shut block is $54.  `changeblock` takes MAP TILE
-; coordinates (see maps/SilphCo2F.asm).  The bg_events that open them are 11j's.
+; coordinates (see maps/SilphCo2F.asm).  The bg_events that open them are 11j's
+; and are now shipped.
 	object_const_def
 	const SILPHCO7F_SILPH_WORKER_M1
 	const SILPHCO7F_SILPH_WORKER_M2
@@ -61,6 +62,21 @@ SilphCo7FDoorCallback:
 	changeblock 20, 12, $54 ; shut door, Yellow block (10,6)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo7FDoor1Script:
+	silph_card_key_door EVENT_SILPH_CO_7F_UNLOCKED_DOOR_1, 10, 6, $0e ; Yellow block (5,3)
+
+SilphCo7FDoor2Script:
+	silph_card_key_door EVENT_SILPH_CO_7F_UNLOCKED_DOOR_2, 20, 4, $0e ; Yellow block (10,2)
+
+SilphCo7FDoor3Script:
+	silph_card_key_door EVENT_SILPH_CO_7F_UNLOCKED_DOOR_3, 20, 12, $0e ; Yellow block (10,6)
 
 ; docs/PORTING.md 3.4: the rival's hide flag is DERIVED from the stored fact
 ; EVENT_BEAT_SILPH_CO_RIVAL on every map load, never toggled once, so a
@@ -644,6 +660,15 @@ SilphCo7F_MapEvents:
 	coord_event  3,  3, -1, SilphCo7FRivalSceneSouth
 
 	def_bg_events
+	; card-key door 1, Yellow block (5,3): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 10,  6, BGEVENT_READ, SilphCo7FDoor1Script
+	bg_event 11,  6, BGEVENT_READ, SilphCo7FDoor1Script
+	; card-key door 2, Yellow block (10,2): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 20,  4, BGEVENT_READ, SilphCo7FDoor2Script
+	bg_event 21,  4, BGEVENT_READ, SilphCo7FDoor2Script
+	; card-key door 3, Yellow block (10,6): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 20, 12, BGEVENT_READ, SilphCo7FDoor3Script
+	bg_event 21, 12, BGEVENT_READ, SilphCo7FDoor3Script
 
 	def_object_events
 	object_event  1,  5, SPRITE_SILPH_WORKER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCo7FSilphWorkerM1Script, -1

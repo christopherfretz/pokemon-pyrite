@@ -9,7 +9,7 @@
 ; (vendor/pokeyellow/text/SilphCo5F.asm).
 ;
 ; The CARD KEY sits in a plain item ball at (21,16), exactly where Yellow puts
-; it, behind the third locked door.  11j turns it into a working key.
+; it, behind the third locked door.  11j turned it into a working key.
 ;
 ; D81: Yellow's three #MON REPORTs are SPRITE_CLIPBOARD objects; here they are
 ; bg_events, which costs no sprite id and no object slot.  All three tiles are
@@ -53,6 +53,21 @@ SilphCo5FDoorCallback:
 	changeblock 14, 10, $5f ; shut door, Yellow block (7,5)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo5FDoor1Script:
+	silph_card_key_door EVENT_SILPH_CO_5F_UNLOCKED_DOOR_1, 6, 4, $0e ; Yellow block (3,2)
+
+SilphCo5FDoor2Script:
+	silph_card_key_door EVENT_SILPH_CO_5F_UNLOCKED_DOOR_2, 6, 12, $0e ; Yellow block (3,6)
+
+SilphCo5FDoor3Script:
+	silph_card_key_door EVENT_SILPH_CO_5F_UNLOCKED_DOOR_3, 14, 10, $0e ; Yellow block (7,5)
 
 SilphCo5FSilphWorkerMScript:
 	faceplayer
@@ -264,6 +279,15 @@ SilphCo5F_MapEvents:
 	bg_event 25, 10, BGEVENT_READ, SilphCo5FPokemonReport2 ; Yellow's CLIPBOARD 2 (D81)
 	bg_event 24,  6, BGEVENT_READ, SilphCo5FPokemonReport3 ; Yellow's CLIPBOARD 3 (D81)
 	bg_event 12,  3, BGEVENT_ITEM, SilphCo5FHiddenElixer ; Yellow's hidden ELIXER (data/events/hidden_events.asm:117)
+	; card-key door 1, Yellow block (3,2): walled right column -- faced from the east (or from inside, to the west)
+	bg_event  7,  4, BGEVENT_READ, SilphCo5FDoor1Script
+	bg_event  7,  5, BGEVENT_READ, SilphCo5FDoor1Script
+	; card-key door 2, Yellow block (3,6): walled right column -- faced from the east (or from inside, to the west)
+	bg_event  7, 12, BGEVENT_READ, SilphCo5FDoor2Script
+	bg_event  7, 13, BGEVENT_READ, SilphCo5FDoor2Script
+	; card-key door 3, Yellow block (7,5): walled right column -- faced from the east (or from inside, to the west)
+	bg_event 15, 10, BGEVENT_READ, SilphCo5FDoor3Script
+	bg_event 15, 11, BGEVENT_READ, SilphCo5FDoor3Script
 
 	def_object_events
 	object_event 13,  9, SPRITE_SILPH_WORKER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, SilphCo5FSilphWorkerMScript, -1

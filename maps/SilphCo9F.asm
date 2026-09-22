@@ -26,7 +26,7 @@
 ; .blk is Yellow's and Yellow ships every gate as open floor ($0e), closing it
 ; from this per-floor callback on each map load -- so the callback is ours too.
 ; `changeblock` takes MAP TILE coordinates (see maps/SilphCo2F.asm).  The
-; bg_events that open them are 11j's.
+; bg_events that open them are 11j's and are now shipped.
 	object_const_def
 	const SILPHCO9F_NURSE
 	const SILPHCO9F_ROCKET1
@@ -57,6 +57,24 @@ SilphCo9FDoorCallback:
 	changeblock 10, 12, $5f ; shut door, Yellow block (5,6)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo9FDoor1Script:
+	silph_card_key_door EVENT_SILPH_CO_9F_UNLOCKED_DOOR_1, 2, 8, $0e ; Yellow block (1,4)
+
+SilphCo9FDoor2Script:
+	silph_card_key_door EVENT_SILPH_CO_9F_UNLOCKED_DOOR_2, 18, 4, $0e ; Yellow block (9,2)
+
+SilphCo9FDoor3Script:
+	silph_card_key_door EVENT_SILPH_CO_9F_UNLOCKED_DOOR_3, 18, 10, $0e ; Yellow block (9,5)
+
+SilphCo9FDoor4Script:
+	silph_card_key_door EVENT_SILPH_CO_9F_UNLOCKED_DOOR_4, 10, 12, $0e ; Yellow block (5,6)
 
 SilphCo9FNurseScript:
 	faceplayer
@@ -195,6 +213,18 @@ SilphCo9F_MapEvents:
 
 	def_bg_events
 	bg_event  2, 15, BGEVENT_ITEM, SilphCo9FHiddenMaxPotion ; Yellow's hidden MAX POTION (data/events/hidden_item_coords.asm:9)
+	; card-key door 1, Yellow block (1,4): walled right column -- faced from the east (or from inside, to the west)
+	bg_event  3,  8, BGEVENT_READ, SilphCo9FDoor1Script
+	bg_event  3,  9, BGEVENT_READ, SilphCo9FDoor1Script
+	; card-key door 2, Yellow block (9,2): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 18,  4, BGEVENT_READ, SilphCo9FDoor2Script
+	bg_event 19,  4, BGEVENT_READ, SilphCo9FDoor2Script
+	; card-key door 3, Yellow block (9,5): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 18, 10, BGEVENT_READ, SilphCo9FDoor3Script
+	bg_event 19, 10, BGEVENT_READ, SilphCo9FDoor3Script
+	; card-key door 4, Yellow block (5,6): walled right column -- faced from the east (or from inside, to the west)
+	bg_event 11, 12, BGEVENT_READ, SilphCo9FDoor4Script
+	bg_event 11, 13, BGEVENT_READ, SilphCo9FDoor4Script
 
 	def_object_events
 	object_event  3, 14, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SilphCo9FNurseScript, -1

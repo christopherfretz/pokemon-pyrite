@@ -22,7 +22,7 @@
 ; `lb bc, 4, 5`).  Our .blk is Yellow's and ships the gate as open floor ($0e),
 ; so this per-floor MAPCALLBACK_TILES shuts it on every map load until the flag
 ; is set.  `changeblock` takes MAP TILE coordinates (see maps/SilphCo2F.asm).
-; The bg_event that opens it is 11j's.
+; The bg_events that open it are 11j's and are now shipped.
 	object_const_def
 	const SILPHCO10F_ROCKET
 	const SILPHCO10F_SCIENTIST
@@ -43,6 +43,15 @@ SilphCo10FDoorCallback:
 	changeblock 10,  8, $54 ; shut door, Yellow block (5,4)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo10FDoorScript:
+	silph_card_key_door EVENT_SILPH_CO_10F_UNLOCKED_DOOR, 10, 8, $0e ; Yellow block (5,4)
 
 TrainerSilphCo10FRocket:
 	trainer GRUNTM, GRUNTM_56, EVENT_BEAT_SILPH_CO_10F_ROCKET, SilphCo10FRocketSeenText, SilphCo10FRocketBeatenText, 0, .Script
@@ -148,6 +157,9 @@ SilphCo10F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	; the card-key door, Yellow block (5,4): walled top row -- faced from the north (or from inside, to the south)
+	bg_event 10,  8, BGEVENT_READ, SilphCo10FDoorScript
+	bg_event 11,  8, BGEVENT_READ, SilphCo10FDoorScript
 
 	def_object_events
 	object_event  1,  9, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerSilphCo10FRocket, EVENT_BEAT_SILPH_CO_GIOVANNI

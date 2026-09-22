@@ -21,8 +21,8 @@
 ; is a byte-for-byte copy of Yellow's, so that callback is not optional -- it is
 ; what makes the doors walls.  Yellow's block coordinates (2,2) and (2,5) are
 ; `changeblock 4, 4` and `changeblock 4, 10`: GSC's changeblock takes MAP TILE
-; coordinates (see maps/RocketHideoutB1F.asm).  11j adds the bg_events that set
-; the flags; until then the doors never open.
+; coordinates (see maps/RocketHideoutB1F.asm).  11j added the BGEVENT_READs on
+; the doors' walled tiles that set those flags (macros/scripts/card_key.asm).
 	object_const_def
 	const SILPHCO2F_SILPH_WORKER_F
 	const SILPHCO2F_SCIENTIST1
@@ -46,6 +46,18 @@ SilphCo2FDoorCallback:
 	changeblock  4, 10, $54 ; shut door, Yellow block (2,5)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo2FDoor1Script:
+	silph_card_key_door EVENT_SILPH_CO_2F_UNLOCKED_DOOR_1, 4, 4, $0e ; Yellow block (2,2)
+
+SilphCo2FDoor2Script:
+	silph_card_key_door EVENT_SILPH_CO_2F_UNLOCKED_DOOR_2, 4, 10, $0e ; Yellow block (2,5)
 
 ; Yellow's SILPH WORKER F mistakes you for a ROCKET, then hands over TM36
 ; SELFDESTRUCT -- our TM75 (docs/TM-LEDGER.md row 24).  GSC's verbosegiveitem
@@ -229,6 +241,12 @@ SilphCo2F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	; card-key door 1, Yellow block (2,2): walled top row -- faced from the north (or from inside, to the south)
+	bg_event  4,  4, BGEVENT_READ, SilphCo2FDoor1Script
+	bg_event  5,  4, BGEVENT_READ, SilphCo2FDoor1Script
+	; card-key door 2, Yellow block (2,5): walled top row -- faced from the north (or from inside, to the south)
+	bg_event  4, 10, BGEVENT_READ, SilphCo2FDoor2Script
+	bg_event  5, 10, BGEVENT_READ, SilphCo2FDoor2Script
 
 	def_object_events
 	object_event 10,  1, SPRITE_SILPH_WORKER_F, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, SilphCo2FSilphWorkerFScript, -1

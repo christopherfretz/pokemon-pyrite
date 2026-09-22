@@ -21,6 +21,7 @@ INCLUDE "macros/scripts/oam_anims.asm"
 INCLUDE "macros/scripts/pic_anims.asm"
 INCLUDE "macros/scripts/pikaemotion.asm"
 INCLUDE "macros/scripts/pikapic.asm"
+INCLUDE "macros/scripts/card_key.asm"
 
 INCLUDE "constants/hardware.inc"
 INCLUDE "constants/deco_constants.asm"

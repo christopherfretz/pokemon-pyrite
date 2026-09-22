@@ -633,6 +633,9 @@ SECTION "Map Scripts 31", ROMX
 ; so M8 spends the last wholly EMPTY bank, $7a, pinned in layout.link.  All
 ; eleven maps carry placeholder skeletons with Yellow's stair/elevator warps;
 ; 11f-11h fill in the trainers, the item balls and the card-key doors.
+; 11j: the 20 card-key doors' shared tail and texts.  It leads the section so
+; every floor's per-door sjump stays a 2-byte same-bank jump.
+INCLUDE "maps/SilphCoCardKeyDoors.asm"
 INCLUDE "maps/SilphCo2F.asm"
 INCLUDE "maps/SilphCo3F.asm"
 INCLUDE "maps/SilphCo4F.asm"

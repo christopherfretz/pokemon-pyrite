@@ -23,7 +23,7 @@
 ; load until the flag is set.  `changeblock` takes MAP TILE coordinates.
 ; Block $20 is FLOOR/FLOOR/WALL/WALL, i.e. it walls tiles (6,13) and (7,13);
 ; the player stands at (6,14)/(7,14) and faces UP.  The bg_event that opens it
-; is 11j's.
+; is 11j's and now shipped (bg_events below).
 ;
 ; --- JESSIE & JAMES #4 -----------------------------------------------------
 ; Yellow's trigger is wYCoord == 3 AND wXCoord < 4, i.e. (1,3), (2,3), (3,3) --
@@ -111,6 +111,15 @@ SilphCo11FDoorCallback:
 	changeblock  6, 12, $20 ; shut door, Yellow block (3,6)
 .done
 	endcallback
+
+; 11j -- the card-key doors.  One BGEVENT_READ per walled tile (Yellow's engine
+; is tile-driven, so either tile of a door works, from either side); the macro
+; is macros/scripts/card_key.asm and the shared text/sound tail is
+; maps/SilphCoCardKeyDoors.asm.  The changeblock here is what opens the door
+; NOW -- the callback above only runs on a map LOAD.
+
+SilphCo11FDoorScript:
+	silph_card_key_door EVENT_SILPH_CO_11F_UNLOCKED_DOOR, 6, 12, $03 ; Yellow block (3,6)
 
 SilphCo11FObjectsCallback:
 ; JESSIE and JAMES stand here from the first visit (Yellow never ShowObjects
@@ -527,6 +536,9 @@ SilphCo11F_MapEvents:
 
 	def_bg_events
 	bg_event 10, 12, BGEVENT_UP, SilphCo11FPC ; Yellow's OpenPokemonCenterPC hidden event
+	; the card-key door, Yellow block (3,6): walled bottom row -- faced from the south (or from inside, to the north)
+	bg_event  6, 13, BGEVENT_READ, SilphCo11FDoorScript
+	bg_event  7, 13, BGEVENT_READ, SilphCo11FDoorScript
 
 	def_object_events
 	object_event  7,  5, SPRITE_SILPH_PRESIDENT, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SilphCo11FSilphPresidentScript, -1
