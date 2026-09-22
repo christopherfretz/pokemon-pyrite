@@ -274,6 +274,24 @@ gfx/trainers/%.2bpp: RGBGFXFLAGS += --columns
 gfx/trainers/%.2bpp: gfx/trainers/%.png gfx/trainers/%.gbcpal
 	$(RGBGFX) $(RGBGFXFLAGS) --colors gbc:$(word 2,$^) -o $@ $<
 
+# Kanto hack (B2): make only prefers the rule above over the catch-all
+# `%.2bpp: %.png` (--colors dmg, at the bottom of this file) when the .gbcpal
+# prerequisite already EXISTS or is an explicit target -- a pattern rule whose
+# prerequisite would itself have to be made implicitly loses the first pass of
+# make's implicit-rule search.  Every trainer palette is INCBIN'd by
+# data/trainers/palettes.asm and so happens to be built first, EXCEPT janine's:
+# M7 10h renamed JANINE's class slot to KOGA_LEADER and pointed its palette row
+# at koga.gbcpal, while gfx/pics.asm still assembles JaninePic.  From a clean
+# checkout that made gfx/trainers/janine.2bpp fall through to --colors dmg,
+# which a colour trainer pic cannot satisfy ("it contains a non-gray color
+# #f7947b"); a warm tree only built because a stale .2bpp was on disk.
+# A static pattern rule makes every trainer palette an explicit target, so rule
+# selection no longer depends on what else happens to reference the .gbcpal.
+trainer_gbcpals := $(patsubst %.png,%.gbcpal,$(wildcard gfx/trainers/*.png))
+$(trainer_gbcpals): %.gbcpal: %.png
+	$(RGBGFX) -p $@ $<
+	tools/gbcpal $(tools/gbcpal) $@ $@ || ($(RM) $@ && false)
+
 # Egg does not have a back sprite, so it only uses front.gbcpal
 gfx/pokemon/egg/front.2bpp: gfx/pokemon/egg/front.png gfx/pokemon/egg/front.gbcpal
 gfx/pokemon/egg/front.2bpp: RGBGFXFLAGS += --colors gbc:$(word 2,$^)
