@@ -13,13 +13,10 @@
 ; and SCIENTIST_19.  The BURGLAR uses the SUPER NERD overworld sprite, as
 ; Yellow does.
 ;
-; *** THE SECRET KEY BALL IS A STAND-IN. ***  D91 retires MACHINE_PART ($80)
-; and renames that item slot SECRET_KEY in 12m; until then this ball hands out
-; MACHINE_PART, which is already a KEY_ITEM (so it lands in wKeyItems, the same
-; pocket the SECRET KEY will) and is otherwise unobtainable, so nothing
-; regresses.  The ball's trailing event flag is ALREADY the real one --
-; EVENT_GOT_SECRET_KEY, which CinnabarIsland's gym door checks -- so the gate
-; is live today and 12m only swaps the item name on one line.
+; SECRET KEY: Yellow's (5,13) ball.  12k shipped it as a MACHINE_PART stand-in;
+; 12m (D91) renamed item $80 to SECRET_KEY, so it is the real key now.  Its
+; trailing flag EVENT_GOT_SECRET_KEY only hides the ball -- CINNABAR ISLAND's
+; gym door checks the item itself (`checkitem SECRET_KEY`), as Yellow does.
 ;
 ; WARP: the single staircase at (23,22) is block (11,11) $6e, whose top-right
 ; quadrant already reads STAIRCASE.
@@ -114,7 +111,7 @@ PokemonMansionB1FTMSolarbeam:
 	itemball TM_SOLARBEAM
 
 PokemonMansionB1FSecretKey:
-	itemball MACHINE_PART ; D91/12m: becomes SECRET_KEY
+	itemball SECRET_KEY
 
 PokemonMansionB1FDiary:
 	jumptext PokemonMansionB1FDiaryText

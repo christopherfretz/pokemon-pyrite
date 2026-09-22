@@ -136,8 +136,13 @@ PowerPlantManager:
 	opentext
 	checkevent EVENT_RETURNED_MACHINE_PART
 	iftrue .ReturnedMachinePart
-	checkitem MACHINE_PART
-	iftrue .FoundMachinePart
+; Kanto hack (M9 12m, D91): `checkitem MACHINE_PART / iftrue .FoundMachinePart`
+; and the hand-in branch below it are gone -- MACHINE_PART's id ($80) is
+; Yellow's SECRET_KEY now, and a manager that took it would eat the CINNABAR
+; GYM key.  Crystal's Power Plant errand is Gen 2 content; the Yellow Power
+; Plant (ZAPDOS, no errand) replaces this map later.  Nothing here sets
+; EVENT_RETURNED_MACHINE_PART or EVENT_RESTORED_POWER_TO_KANTO any more: both
+; stay live flags for the M11 Johto re-route to set from wherever it decides.
 	checkevent EVENT_MET_MANAGER_AT_POWER_PLANT
 	iftrue .MetManager
 	writetext PowerPlantManagerWhoWouldRuinMyGeneratorText
@@ -156,16 +161,6 @@ PowerPlantManager:
 	closetext
 	end
 
-.FoundMachinePart:
-	writetext PowerPlantManagerThatsThePartText
-	promptbutton
-	takeitem MACHINE_PART
-	setevent EVENT_RETURNED_MACHINE_PART
-	clearevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
-	; Kanto hack (7d): the Route 5/6 Underground Path blockers are gone with
-	; Yellow's Route 5/6, and their flag is now EVENT_GAVE_SAFFRON_GUARDS_DRINK.
-	setevent EVENT_RESTORED_POWER_TO_KANTO
-	clearevent EVENT_GOLDENROD_TRAIN_STATION_GENTLEMAN
 .ReturnedMachinePart:
 	checkevent EVENT_GOT_TM07_ZAP_CANNON
 	iftrue .GotZapCannon
@@ -346,15 +341,6 @@ PowerPlantManagerIWontForgiveCulpritText:
 	line "hammer him!"
 
 	para "Gahahahah!"
-	done
-
-PowerPlantManagerThatsThePartText:
-	text "MANAGER: Ah! Yeah!"
-
-	para "That's the missing"
-	line "PART from my be-"
-	cont "loved generator!"
-	cont "You found it?"
 	done
 
 PowerPlantManagerTakeThisTMText:

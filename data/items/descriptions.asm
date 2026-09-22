@@ -129,7 +129,7 @@ ItemDescriptions:
 	dw HardStoneDesc
 	dw LuckyEggDesc
 	dw CardKeyDesc
-	dw MachinePartDesc
+	dw SecretKeyDesc
 	dw EggTicketDesc
 	dw LostItemDesc
 	dw StardustDesc
@@ -769,9 +769,11 @@ CardKeyDesc:
 	db   "Opens shutters in"
 	next "the RADIO TOWER.@"
 
-MachinePartDesc:
-	db   "A machine part for"
-	next "the POWER PLANT.@"
+; Kanto hack (M9 12m, D91): Yellow's SECRET KEY, on the retired MACHINE_PART
+; id.  Gen 1 has no item descriptions; this names what the key opens.
+SecretKeyDesc:
+	db   "The key to the"
+	next "CINNABAR GYM door.@"
 
 EggTicketDesc:
 	db   "May use at Golden-"

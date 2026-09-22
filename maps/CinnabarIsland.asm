@@ -21,8 +21,8 @@
 ; std_scripts.asm sets that flag at new game.  The clearevent moves into the
 ; MAPCALLBACK_NEWMAP below, keyed on EVENT_BEAT_BLAINE.  See the comment there.
 ;
-; D91 -- SECRET_KEY has no item id yet (12m claims one); the locked gym door
-; checks EVENT_GOT_SECRET_KEY as a named stand-in.  See CinnabarIslandGymDoor.
+; D91 -- 12m gave SECRET_KEY item id $80 (was MACHINE_PART); the locked gym
+; door checks the item.  See CinnabarIslandGymDoor.
 
 	object_const_def
 	const CINNABARISLAND_GIRL
@@ -66,12 +66,11 @@ CinnabarIslandNewMapCallback:
 ; map with no scene scripts at all (docs/PORTING.md 3.2), which is the same
 ; shape ViridianCity's own locked-gym door uses.
 ;
-; D91/12m: Yellow tests `ld b, SECRET_KEY / call IsItemInBag`.  SECRET_KEY has no
-; item id in this build, so the test is EVENT_GOT_SECRET_KEY, set by the MANSION
-; B1F item ball (12l).  When 12m claims the id, this becomes `checkitem
-; SECRET_KEY` -- a ONE-LINE swap, and the flag then goes back to being a dead row.
+; D91/12m: Yellow tests `ld b, SECRET_KEY / call IsItemInBag`; so does this.
+; With the key the tile is just a tile -- no text, as in Yellow.
+; (EVENT_GOT_SECRET_KEY is only the MANSION B1F ball's hide flag.)
 CinnabarIslandGymDoor:
-	checkevent EVENT_GOT_SECRET_KEY
+	checkitem SECRET_KEY
 	iftrue .Unlocked
 	turnobject PLAYER, UP
 	opentext

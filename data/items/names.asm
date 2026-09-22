@@ -127,7 +127,7 @@ ItemNames::
 	li "HARD STONE"
 	li "LUCKY EGG"
 	li "CARD KEY"
-	li "MACHINE PART"
+	li "SECRET KEY" ; was MACHINE PART (M9 12m, D91)
 	li "EGG TICKET"
 	li "LOST ITEM"
 	li "STARDUST"

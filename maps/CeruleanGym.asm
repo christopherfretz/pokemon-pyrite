@@ -10,7 +10,7 @@
 ; Deleted with Crystal's Johto plot: the Rocket grunt object and his
 ; SCENE_CERULEANGYM_GRUNT_RUNS_OUT cutscene, the two "MISTY is out on a date"
 ; statue notes, Crystal's third swimmer, and the hidden MACHINE_PART at (3,8).
-; NOTE for M5 (Johto re-route): the MACHINE_PART for the Power Plant quest no
+; NOTE for M5 (Johto re-route; M9 12m gave item $80 to SECRET_KEY): the MACHINE_PART for the Power Plant quest no
 ; longer has a location -- PowerPlant.asm still clears
 ; EVENT_FOUND_MACHINE_PART_IN_CERULEAN_GYM and still points the gym at
 ; SCENE_CERULEANGYM_GRUNT_RUNS_OUT, so that scene id is deliberately kept below

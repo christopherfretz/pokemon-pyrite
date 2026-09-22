@@ -42,6 +42,13 @@
 ; and its item_attribute row was already KEY_ITEM / price 0 / CANT_SELECT |
 ; CANT_TOSS, exactly what EXP.ALL wants.  `DEF GS_BALL EQU EXP_ALL` keeps the
 ; three dead Celebi scripts compiling.
+; M9 12m (docs/M9-CINNABAR.md D91) retired MACHINE_PART ($80) for Yellow's
+; SECRET_KEY (the CINNABAR GYM door).  MACHINE_PART was Crystal's Kanto Power
+; Plant errand item; nothing in this build hands it out (its hidden ball in
+; CERULEAN GYM went with M3's gym rebuild), and its item_attribute row was
+; already KEY_ITEM / price 0 / CANT_SELECT | CANT_TOSS / ITEMMENU_NOUSE, which
+; is exactly Yellow's unusable, untossable SECRET KEY.  The Power Plant
+; manager's hand-in branch was deleted with it (maps/PowerPlant.asm).
 ; $ff is reserved (ITEM_FROM_MEM / item-list terminator) and can never be used.
 	const_def
 	const NO_ITEM      ; 00
@@ -179,7 +186,7 @@ DEF GS_BALL EQU EXP_ALL
 	const HARD_STONE   ; 7d
 	const LUCKY_EGG    ; 7e
 	const CARD_KEY     ; 7f
-	const MACHINE_PART ; 80
+	const SECRET_KEY   ; 80 (was MACHINE_PART; Kanto hack M9 12m, D91)
 	const EGG_TICKET   ; 81
 	const LOST_ITEM    ; 82
 	const STARDUST     ; 83
