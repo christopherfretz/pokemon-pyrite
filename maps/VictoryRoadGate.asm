@@ -1,12 +1,36 @@
 	object_const_def
 	const VICTORYROADGATE_OFFICER
 	const VICTORYROADGATE_BLACK_BELT1
-	const VICTORYROADGATE_BLACK_BELT2
+	const VICTORYROADGATE_ROUTE22_OFFICER ; Kanto hack (M10 13d): was BLACK_BELT2
 
+; Kanto hack (M10 13d, docs/M10-INDIGO.md D112/D132): this hub is Yellow's
+; ROUTE 22 GATE as well as Crystal's VICTORY ROAD GATE.
+;
+;  * EAST WING (Route 22 door (17,7)/(18,7)): Yellow's BOULDERBADGE guard
+;    (vendor/pokeyellow/scripts/Route22Gate.asm).  The wing joins the centre
+;    column only through the 1-wide row-5 corridor, entered at (16,5), and
+;    (16,5) can only be stepped on from (17,5).  The OFFICER stands on (16,6),
+;    off the corridor, facing it.  Crossing (16,5) without BOULDERBADGE plays
+;    Yellow's text + SFX_DENIED (our SFX_WRONG) and steps the player back
+;    RIGHT (Yellow steps DOWN: back the way he came).  With it, Yellow's pass
+;    text + item jingle once, and the check retires for good -- Yellow's
+;    SCRIPT_ROUTE22GATE_NOOP is persistent; ours is scene
+;    SCENE_VICTORYROADGATE_BOULDER_PASSED.  Talking to him re-runs the check,
+;    as Yellow's talk does (Route22GateGuardText is both).
+;  * SOUTH (ROUTE_26) / WEST (ROUTE_28): Johto.  While EVENT_BEAT_KANTO_ELITE_FOUR
+;    is clear, the (10,11) OFFICER refuses the 1-wide (10,11) choke point
+;    whatever the badges and steps the player back UP, and the left BLACK BELT
+;    (hidden only by EVENT_OPENED_MT_SILVER) keeps blocking the row-5 west
+;    corridor.  With the flag set, both behave exactly as in Crystal (M11).
+;  * NORTH door (9,0)/(10,0): 13e's ROUTE_23.  Until then it warps onto
+;    itself (a harmless no-op), because Crystal's VICTORY_ROAD behind it leads
+;    to Crystal's Silver fight and the Indigo lobby's TELEPORT GUY -> NEW BARK
+;    (C-8/C-12).
 VictoryRoadGate_MapScripts:
 	def_scene_scripts
 	scene_script VictoryRoadGateNoop1Scene, SCENE_VICTORYROADGATE_BADGE_CHECK
 	scene_script VictoryRoadGateNoop2Scene, SCENE_VICTORYROADGATE_NOOP
+	scene_script VictoryRoadGateNoop3Scene, SCENE_VICTORYROADGATE_BOULDER_PASSED ; Kanto hack (M10 13d)
 
 	def_callbacks
 
@@ -16,12 +40,29 @@ VictoryRoadGateNoop1Scene:
 VictoryRoadGateNoop2Scene:
 	end
 
+VictoryRoadGateNoop3Scene:
+	end
+
 VictoryRoadGateBadgeCheckScript:
 	turnobject PLAYER, LEFT
-	sjump _VictoryRoadGateBadgeCheckScript
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue _VictoryRoadGateBadgeCheckScript
+; Kanto hack (M10 13d, D132): Kanto act -- the road south (ROUTE_26) is Johto's
+; and stays shut until the Kanto HALL OF FAME.  The player can only reach this
+; tile from the north here, so the step back is UP.
+	opentext
+	writetext VictoryRoadGateRoadClosedText
+	waitbutton
+	closetext
+	applymovement PLAYER, VictoryRoadGateStepUpMovement
+	end
 
 VictoryRoadGateOfficerScript:
 	faceplayer
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue _VictoryRoadGateBadgeCheckScript
+	jumptext VictoryRoadGateRoadClosedText
+
 _VictoryRoadGateBadgeCheckScript:
 	opentext
 	writetext VictoryRoadGateOfficerText
@@ -64,11 +105,59 @@ VictoryRoadGateLeftBlackBeltScript:
 	closetext
 	end
 
-VictoryRoadGateRightBlackBeltScript:
-	jumptextfaceplayer VictoryRoadGateRightBlackBeltText
+; Kanto hack (M10 13d): Yellow's ROUTE 22 GATE guard (Route22GateGuardText),
+; replacing Crystal's right BLACK BELT (hidden by EVENT_FOUGHT_SNORLAX, which
+; nothing sets, so he sealed the corridor for good -- C-9).
+VictoryRoadGateBoulderCheckScript:
+	turnobject VICTORYROADGATE_ROUTE22_OFFICER, UP
+	checkflag ENGINE_BOULDERBADGE
+	iftrue VictoryRoadGateBoulderPassScript
+	opentext
+	writetext VictoryRoadGateNoBoulderBadgeText
+	playsound SFX_WRONG
+	waitsfx
+	writetext VictoryRoadGateRulesAreRulesText
+	waitbutton
+	closetext
+	applymovement PLAYER, VictoryRoadGateStepRightMovement
+	end
+
+VictoryRoadGateRoute22OfficerScript:
+	faceplayer
+	checkflag ENGINE_BOULDERBADGE
+	iftrue VictoryRoadGateBoulderPassScript
+; Talking from beside him (not on the corridor): the same lines, but no step
+; back -- there is nothing to undo.
+	opentext
+	writetext VictoryRoadGateNoBoulderBadgeText
+	playsound SFX_WRONG
+	waitsfx
+	writetext VictoryRoadGateRulesAreRulesText
+	waitbutton
+	closetext
+	end
+
+VictoryRoadGateBoulderPassScript:
+	opentext
+	writetext VictoryRoadGateGoRightAheadText
+	waitbutton
+	closetext
+	checkscene
+	ifnotequal SCENE_VICTORYROADGATE_BADGE_CHECK, .done
+	setscene SCENE_VICTORYROADGATE_BOULDER_PASSED
+.done
+	end
 
 VictoryRoadGateStepDownMovement:
 	step DOWN
+	step_end
+
+VictoryRoadGateStepUpMovement:
+	step UP
+	step_end
+
+VictoryRoadGateStepRightMovement:
+	step RIGHT
 	step_end
 
 VictoryRoadGateOfficerText:
@@ -116,15 +205,44 @@ VictoryRoadGateLeftBlackBeltText:
 	cont "there."
 	done
 
-VictoryRoadGateRightBlackBeltText:
-	text "Off to the #MON"
-	line "LEAGUE, are you?"
+; Kanto hack (M10 13d): Yellow text/Route22Gate.asm, verbatim.  Yellow ends the
+; first text with "@" and plays SFX_DENIED from its text_asm before the second,
+; which opens with a paragraph break; writetext + playsound + writetext is the
+; same sequence (the <PARA> waits for A over the first text, then clears).
+VictoryRoadGateNoBoulderBadgeText:
+	text "Only truly skilled"
+	line "trainers are"
+	cont "allowed through."
 
-	para "The ELITE FOUR are"
-	line "so strong it's"
+	para "You don't have the"
+	line "BOULDERBADGE yet!"
+	done
 
-	para "scary, and they're"
-	line "ready for you!"
+VictoryRoadGateRulesAreRulesText:
+	text_start
+
+	para "The rules are"
+	line "rules. I can't"
+	cont "let you pass."
+	done
+
+; Yellow: "...Go right ahead!@" then sound_get_item_1 -- GSC's TX_SOUND_ITEM
+; is a text command, so the string is closed first (SilphCoCardKeyDoors.asm).
+VictoryRoadGateGoRightAheadText:
+	text "Oh! That is the"
+	line "BOULDERBADGE!"
+	cont "Go right ahead!@"
+	sound_item
+	text_end
+
+; Kanto hack (M10 13d, D132): OUR text, not Yellow's (Yellow's gate has no
+; south door).  Written in the Yellow guards' register.
+VictoryRoadGateRoadClosedText:
+	text "Sorry! The road"
+	line "beyond is closed."
+
+	para "The #MON LEAGUE"
+	line "is up north!"
 	done
 
 VictoryRoadGate_MapEvents:
@@ -135,17 +253,22 @@ VictoryRoadGate_MapEvents:
 	warp_event 18,  7, ROUTE_22, 1
 	warp_event  9, 17, ROUTE_26, 1
 	warp_event 10, 17, ROUTE_26, 1
-	warp_event  9,  0, VICTORY_ROAD, 1
-	warp_event 10,  0, VICTORY_ROAD, 1
+	; Kanto hack (M10 13d): placeholder -- the north door warps onto itself
+	; until 13e points it at the new ROUTE_23's south mouth (Crystal had
+	; VICTORY_ROAD, 1).
+	warp_event  9,  0, VICTORY_ROAD_GATE, 5
+	warp_event 10,  0, VICTORY_ROAD_GATE, 6
 	warp_event  1,  7, ROUTE_28, 2
 	warp_event  2,  7, ROUTE_28, 2
 
 	def_coord_events
 	coord_event 10, 11, SCENE_VICTORYROADGATE_BADGE_CHECK, VictoryRoadGateBadgeCheckScript
+	coord_event 10, 11, SCENE_VICTORYROADGATE_BOULDER_PASSED, VictoryRoadGateBadgeCheckScript ; Kanto hack (M10 13d)
+	coord_event 16,  5, SCENE_VICTORYROADGATE_BADGE_CHECK, VictoryRoadGateBoulderCheckScript ; Kanto hack (M10 13d): Yellow's ROUTE 22 GATE
 
 	def_bg_events
 
 	def_object_events
 	object_event  8, 11, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VictoryRoadGateOfficerScript, -1
 	object_event  7,  5, SPRITE_BLACK_BELT, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VictoryRoadGateLeftBlackBeltScript, EVENT_OPENED_MT_SILVER
-	object_event 12,  5, SPRITE_BLACK_BELT, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VictoryRoadGateRightBlackBeltScript, EVENT_FOUGHT_SNORLAX
+	object_event 16,  6, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VictoryRoadGateRoute22OfficerScript, -1 ; Kanto hack (M10 13d): was Crystal's right BLACK BELT (12,5)

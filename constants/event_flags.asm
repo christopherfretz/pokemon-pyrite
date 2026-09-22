@@ -293,7 +293,7 @@
 	const EVENT_JACK_ASKED_FOR_PHONE_NUMBER
 	const EVENT_GOT_EEVEE_CELADON ; Kanto hack: renamed in place (M6 9s), was an unused const_skip in Crystal's phone block; CELADON MANSION ROOF HOUSE's free EEVEE ball (4,3).  Yellow has no flag (it uses the toggleable-object hide list); GSC objects need one.  EVENT_GOT_EEVEE is taken by Johto's Bill's-family EEVEE
 	const EVENT_BEVERLY_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_BEAT_KANTO_ELITE_FOUR ; Kanto hack (M10 13d, D109): renamed in place, was an unused const_skip in Crystal's phone block; set ONLY by the Kanto Hall of Fame (13k).  Crystal's EVENT_BEAT_ELITE_FOUR stays clear for the Johto act (C-6).  Read by VICTORY ROAD GATE (south/west seal, D132); 13k re-points the Pewter gramps and the Cerulean Cave guard to it
 	const EVENT_HUEY_ASKED_FOR_PHONE_NUMBER
 	const_skip ; unused in Crystal
 	const EVENT_GOT_PROTEIN_FROM_HUEY
