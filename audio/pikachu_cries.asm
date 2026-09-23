@@ -70,3 +70,10 @@ SECTION "Pikachu Cry 1", ROMX, BANK[$43] ; "Title"
 
 PikachuPCM1::
 	pcm INCBIN "audio/pikachu_cries/pikachu_cry_1.pcm"
+
+; M12d (docs/M12-STRETCH.md): cry 16 (5272 B), the one Yellow's intro scene
+; plays (M12e wires the scene), in the title bank's free space.
+SECTION "Pikachu Cry 16", ROMX, BANK[$43] ; "Title"
+
+PikachuPCM16::
+	pcm INCBIN "audio/pikachu_cries/pikachu_cry_16.pcm"

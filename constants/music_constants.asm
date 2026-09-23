@@ -100,7 +100,7 @@
 	const MUSIC_MOBILE_ADAPTER               ; 5f
 	const MUSIC_BUENAS_PASSWORD              ; 60
 	const MUSIC_MYSTICALMAN_ENCOUNTER        ; 61
-	const MUSIC_CRYSTAL_OPENING              ; 62
+	const MUSIC_YELLOW_INTRO                 ; 62 (M12d: was MUSIC_CRYSTAL_OPENING)
 	const MUSIC_BATTLE_TOWER_THEME           ; 63
 	const MUSIC_SUICUNE_BATTLE               ; 64
 	const MUSIC_BATTLE_TOWER_LOBBY           ; 65

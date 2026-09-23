@@ -202,16 +202,18 @@ ROMX $3e
 	"bank3E"
 ROMX $3f
 	"bank3F"
+	"Music Yellow Intro" ; M12d
 ROMX $40
 	"mobile40"
 ROMX $41
 	"bank41"
 ROMX $42
 	"mobile42"
-	"Intro Logo"
 	"Credits"
 ROMX $43
 	"Title"
+	"Pikachu Cry 1"
+	"Pikachu Cry 16"
 ROMX $44
 	"Mobile Adapter SDK"
 ROMX $45

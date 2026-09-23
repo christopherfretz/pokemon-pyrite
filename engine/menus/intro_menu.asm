@@ -1006,8 +1006,10 @@ Intro_PlacePlayerSprite:
 DEF NUM_TITLESCREENOPTIONS EQU const_value
 
 IntroSequence:
-	callfar SplashScreen
-	jr c, StartTitleScreen
+; Kanto hack (M12d): Yellow's copyright page and shooting-star splash
+; (engine/movie/splash.asm).  As in Yellow, skipping the splash does not skip
+; the intro that follows it.
+	callfar PlayShootingStar
 	farcall CrystalIntro
 
 	; fallthrough
@@ -1123,20 +1125,6 @@ ENDM
 	trail_coords 11, 17, 11, 15
 	trail_coords  0,  0, 11, 15
 	trail_coords  0,  0, 11, 11
-
-Copyright:
-	call ClearTilemap
-	call LoadFontsExtra
-	ld de, CopyrightGFX
-	ld hl, vTiles2 tile $60
-	lb bc, BANK(CopyrightGFX), 29
-	call Request2bpp
-	hlcoord 2, 7
-	ld de, CopyrightString
-	jp PlaceString
-
-CopyrightString:
-INCLUDE "data/copyright.asm"
 
 GameInit::
 	farcall TryLoadSaveData

@@ -1,6 +1,6 @@
-; This file is INCLUDEd twice in different ROM banks:
-; once for CreditsStringsPointers.Copyright (see data/credits_strings.asm),
-; and once for CopyrightString (see engine/menus/intro_menu.asm).
+; Crystal's credits copyright line (CreditsStringsPointers.Copyright, see
+; data/credits_strings.asm).  The boot copyright page is Yellow's since M12d
+; (engine/movie/splash.asm).
 
 	db   $60                               ; ©
 	db   $61, $62, $63, $64, $65, $66      ; 1995-2001

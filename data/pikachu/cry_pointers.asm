@@ -33,7 +33,7 @@ PikachuCriesPointerTable::
 	no_pikachu_pcm ; PikachuCry13
 	no_pikachu_pcm ; PikachuCry14
 	no_pikachu_pcm ; PikachuCry15
-	no_pikachu_pcm ; PikachuCry16
+	dba PikachuPCM16 ; PikachuCry16 (M12d)
 	dba PikachuPCM17 ; PikachuCry17
 	no_pikachu_pcm ; PikachuCry18
 	no_pikachu_pcm ; PikachuCry19

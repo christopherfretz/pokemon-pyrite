@@ -216,4 +216,5 @@ SFX:
 	dba Sfx_GetItem2_4_2
 	dba Sfx_IntroCrash ; M12c
 	dba Sfx_IntroWhooshYellow ; M12c
+	dba Sfx_ShootingStar ; M12d
 	assert_table_length NUM_SFX

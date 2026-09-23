@@ -222,7 +222,8 @@ SpriteAnimFunc_MailCursor:
 	ret
 
 SpriteAnimFunc_GameFreakLogo:
-	callfar GameFreakLogoSpriteAnim
+; Kanto hack (M12d): Crystal's GAME FREAK/Ditto splash is gone (Yellow's
+; shooting-star splash uses plain OAM); nothing spawns this object any more.
 	ret
 
 SpriteAnimFunc_GSGameFreakLogoStar:
