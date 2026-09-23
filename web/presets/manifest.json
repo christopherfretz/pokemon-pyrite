@@ -226,5 +226,23 @@
   "title": "INDIGO PLATEAU \u2014 at the lobby door",
   "description": "Outside the INDIGO PLATEAU lobby door, walked through VICTORY ROAD from 'VICTORY ROAD 1F': all four boulder switches pushed, BOULDER4 dropped down 3F's hole, MOLTRES FOUGHT and knocked out (not caught), then out of 2F's exit and north up ROUTE 23. STRENGTH was faked throughout (the wBikeFlags field flag, not HM04) and the party is the level-100 one of the earlier presets; RAINBOW/SOUL badges as before.",
   "sav": "indigo.sav"
+ },
+ {
+  "id": "power_plant",
+  "title": "POWER PLANT \u2014 just walked in",
+  "description": "On the POWER PLANT's entrance mat, before the ELITE FOUR. Flown from 'at the lobby door' to ROCK TUNNEL, then SURFED down ROUTE 10's river into the plant's pocket; POKEMANIAC ORVILLE is fought if he sees you at the door. The eight fake POKe BALLs, ZAPDOS, TM25 THUNDER, TM72 REFLECT and every item are real and unplayed. Same fakes as 'at the lobby door' (RAINBOW/SOUL badges, the level-100 party with SURF).",
+  "sav": "power_plant.sav"
+ },
+ {
+  "id": "kanto_complete",
+  "title": "PALLET TOWN \u2014 KANTO COMPLETE",
+  "description": "PALLET TOWN after the HALL OF FAME: LORELEI, BRUNO, AGATHA, LANCE and the rival ACTUALLY FOUGHT in the harness from 'at the lobby door', OAK's scene, the HALL OF FAME registration and the credits played, then CONTINUE. The ELITE FOUR is beaten, the League is walkable again (L/B/A offer rematches), GIOVANNI's gym now belongs to the rival, and Cerulean Cave's guard is gone. FAKED: the level-100 party (one mon) that won every fight, and the RAINBOW/SOUL badges as before.",
+  "sav": "kanto_complete.sav"
+ },
+ {
+  "id": "viridian_rival",
+  "title": "VIRIDIAN CITY \u2014 the rival's gym (post-game)",
+  "description": "Outside the VIRIDIAN GYM door after the HALL OF FAME, flown in from 'KANTO COMPLETE'. The rival has taken over GIOVANNI's tile inside and offers a flagless, repeatable rematch. Same fakes as 'KANTO COMPLETE' (the level-100 party, RAINBOW/SOUL badges).",
+  "sav": "viridian_rival.sav"
  }
 ]
