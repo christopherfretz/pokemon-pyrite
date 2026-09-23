@@ -650,7 +650,11 @@ OakSpeech:
 	call RotateThreePalettesRight
 	call ClearTilemap
 
-	ld a, WOOPER
+; Kanto hack (F1, docs/AUDIT-FULL-GAME-LEFTOVERS.md): Yellow shows its starter
+; PIKACHU here, mirrored (LoadFlippedFrontSpriteByMonIndex), with the Pikachu cry
+; (vendor/pokeyellow/engine/movie/oak_speech/oak_speech.asm:83-87, :177-180).
+; PrepMonFrontpic sets wBoxAlignment 1 = the mirrored orientation.
+	ld a, PIKACHU
 	ld [wCurSpecies], a
 	ld [wCurPartySpecies], a
 	call GetBaseData
@@ -743,7 +747,7 @@ OakText1:
 OakText2:
 	text_far _OakText2
 	text_asm
-	ld a, WOOPER
+	ld a, PIKACHU ; Kanto hack (F1): Yellow's sound_cry_pikachu
 	call PlayMonCry
 	call WaitSFX
 	ld hl, OakText3
