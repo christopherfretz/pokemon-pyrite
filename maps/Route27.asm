@@ -319,15 +319,17 @@ Route27FisherHeyText:
 	done
 
 Route27FisherText:
+; Kanto hack (M11 14a): our text -- the player walks in from KANTO now, and
+; has no #GEAR until ELM hands one over.
 	text "Do you know what"
 	line "you just did?"
 
 	para "You've taken your"
 	line "first step into"
-	cont "KANTO."
+	cont "JOHTO."
 
-	para "Check your #-"
-	line "GEAR MAP and see."
+	para "NEW BARK TOWN is"
+	line "just to the west."
 	done
 
 CooltrainermBlakeSeenText:

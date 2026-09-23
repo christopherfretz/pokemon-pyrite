@@ -141,7 +141,7 @@ PokecenterNurseScript:
 ; it in full, because the thing that used to explain Pokerus was PROF.ELM
 ; ringing the player's #GEAR, and in the Kanto act there is no ELM, no phone
 ; and no #GEAR.  The specialphonecall is therefore gated, not deleted: the
-; Johto act sets ENGINE_POKEGEAR (hack/maps/PlayersHouse1F.asm) and gets
+; Johto act sets ENGINE_POKEGEAR (hack/maps/ElmsLab.asm, M11 14a) and gets
 ; Crystal's call back for free.  ENGINE_POKEGEAR clear == "Kanto act" is the
 ; hack's standing predicate (docs/PORTING.md).
 	farwritetext NursePokerusText

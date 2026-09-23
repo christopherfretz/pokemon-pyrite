@@ -86,13 +86,10 @@ MrPokemonsHouse_OakScript:
 	applymovement MRPOKEMONSHOUSE_OAK, MrPokemonsHouse_OakWalksToPlayer
 	turnobject PLAYER, RIGHT
 	opentext
+	; Kanto hack (M11 14a, D136/Q1): a cameo -- the Champion has carried OAK's
+	; #DEX since PALLET, so no second #DEX and no ENGINE_POKEDEX here.
 	writetext MrPokemonsHouse_OakText1
 	promptbutton
-	waitsfx
-	writetext MrPokemonsHouse_GetDexText
-	playsound SFX_ITEM
-	waitsfx
-	setflag ENGINE_POKEDEX
 	writetext MrPokemonsHouse_OakText2
 	waitbutton
 	closetext
@@ -239,22 +236,16 @@ MrPokemonText_AlwaysNewDiscoveries:
 	line "made!"
 	done
 
+; Kanto hack (M11 14a): our text -- OAK's cameo (Crystal's introduced him
+; and handed over a #DEX).
 MrPokemonsHouse_OakText1:
-	text "OAK: Aha! So"
-	line "you're <PLAY_G>!"
+	text "OAK: Aha! <PLAY_G>,"
+	line "there you are!"
 
-	para "I'm OAK! A #MON"
-	line "researcher."
-
-	para "I was just visit-"
-	line "ing my old friend"
-	cont "MR.#MON."
-
-	para "I heard you were"
-	line "running an errand"
-
-	para "for PROF.ELM, so I"
-	line "waited here."
+	para "I came to visit my"
+	line "old friend"
+	cont "MR.#MON, and to"
+	cont "see JOHTO myself."
 
 	para "Oh! What's this?"
 	line "A rare #MON!"
@@ -263,57 +254,24 @@ MrPokemonsHouse_OakText1:
 
 	para "Hm, I see!"
 
-	para "I understand why"
-	line "PROF.ELM gave you"
+	para "ELM gave you that"
+	line "#MON for his"
+	cont "research, did he?"
 
-	para "a #MON for this"
-	line "errand."
+	para "Raise it with the"
+	line "same love and care"
 
-	para "To researchers"
-	line "like PROF.ELM and"
-
-	para "I, #MON are our"
-	line "friends."
-
-	para "He saw that you"
-	line "would treat your"
-
-	para "#MON with love"
-	line "and care."
-
-	para "…Ah!"
-
-	para "You seem to be"
-	line "dependable."
-
-	para "How would you like"
-	line "to help me out?"
-
-	para "See? This is the"
-	line "latest version of"
-	cont "#DEX."
-
-	para "It automatically"
-	line "records data on"
-
-	para "#MON you've"
-	line "seen or caught."
-
-	para "It's a hi-tech"
-	line "encyclopedia!"
-	done
-
-MrPokemonsHouse_GetDexText:
-	text "<PLAYER> received"
-	line "#DEX!"
+	para "you gave the"
+	line "#MON that made"
+	cont "you CHAMPION!"
 	done
 
 MrPokemonsHouse_OakText2:
-	text "Go meet many kinds"
-	line "of #MON and"
+	text "And keep filling"
+	line "that #DEX!"
 
-	para "complete that"
-	line "#DEX!"
+	para "JOHTO has #MON"
+	line "I've never seen!"
 
 	para "But I've stayed"
 	line "too long."

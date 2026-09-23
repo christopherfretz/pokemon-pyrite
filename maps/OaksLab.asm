@@ -179,6 +179,12 @@ Oak:
 	; once the balls have been given -- but the two gates below it (2+ mons
 	; owned, or POKé BALLs already in the bag) cover every state we can
 	; actually reach, so that flag is not ported.
+	; Kanto hack (M11 14a): the post-E4 hand-off to JOHTO runs first.  Once
+	; the player holds the POKeGEAR (ELM's gift, the Johto act) OAK falls
+	; back to Yellow's branches below, dex rating included.
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .Champion
+.KantoAct:
 	readvar VAR_DEXCAUGHT
 	ifgreater 1, .DexRating
 	checkitem POKE_BALL
@@ -245,6 +251,38 @@ Oak:
 	writetext OakHowIsYourDexComingText
 	waitbutton
 	special ProfOaksPCBoot
+	closetext
+	end
+
+; Kanto hack (M11 14a): OAK sends the Champion to PROF.ELM in NEW BARK TOWN
+; with HM07 WATERFALL for TOHJO FALLS (docs/M11-JOHTO.md 14a, D136).  The HM
+; pocket cannot overflow, but a failed give keeps both flags clear so the
+; scene simply replays.
+.Champion:
+	checkflag ENGINE_POKEGEAR
+	iftrue .KantoAct
+	checkevent EVENT_OAK_SENT_PLAYER_TO_ELM
+	iftrue .GoSeeElm
+	writetext OakChampionText
+	promptbutton
+	verbosegiveitem HM_WATERFALL
+	iffalse .ChampionBagFull
+	setevent EVENT_GOT_HM07_WATERFALL
+	setevent EVENT_OAK_SENT_PLAYER_TO_ELM
+	writetext OakChampionWaterfallText
+	waitbutton
+	closetext
+	end
+
+.ChampionBagFull:
+	writetext OakChampionBagFullText
+	waitbutton
+	closetext
+	end
+
+.GoSeeElm:
+	writetext OakGoSeeElmText
+	waitbutton
 	closetext
 	end
 
@@ -708,6 +746,87 @@ OakHowIsYourDexComingText:
 	cont "#DEX coming?"
 	cont "Here, let me take"
 	cont "a look!"
+	done
+
+; Kanto hack (M11 14a): our text (OAK's post-E4 hand-off), Yellow register.
+OakChampionText:
+	text "OAK: <PLAYER>!"
+	line "You did it! You"
+	cont "are the CHAMPION!"
+
+	para "I'm proud of you,"
+	line "and of your"
+	cont "#MON too!"
+
+	para "Now, listen. I got"
+	line "a letter from my"
+	cont "friend PROF.ELM."
+
+	para "He studies #MON"
+	line "in JOHTO, the land"
+	cont "west of here."
+
+	para "He writes that"
+	line "TEAM ROCKET is"
+	cont "gathering there!"
+
+	para "With GIOVANNI"
+	line "gone, the rest of"
+	cont "them fled west."
+
+	para "ELM's radio picks"
+	line "up odd signals"
+	cont "at night, too."
+
+	para "<PLAYER>, will you"
+	line "go see ELM in NEW"
+	cont "BARK TOWN for me?"
+
+	para "TOHJO FALLS is in"
+	line "the way, so take"
+	cont "this with you!"
+	done
+
+; Kanto hack (M11 14a): our text.
+OakChampionWaterfallText:
+	text "OAK: That's HM07,"
+	line "WATERFALL!"
+
+	para "It lets #MON"
+	line "climb up rushing"
+	cont "waterfalls."
+
+	para "The LEAGUE lets"
+	line "its CHAMPION use"
+	cont "it without JOHTO"
+	cont "BADGES."
+
+	para "Go to the ROUTE 22"
+	line "GATE and take the"
+	cont "south door."
+
+	para "Say hello to ELM"
+	line "for me!"
+	done
+
+; Kanto hack (M11 14a): our text.
+OakChampionBagFullText:
+	text "OAK: Oh? You have"
+	line "no room for this!"
+
+	para "Make some room,"
+	line "then see me."
+	done
+
+; Kanto hack (M11 14a): our text (the repeat line).
+OakGoSeeElmText:
+	text "OAK: PROF.ELM is"
+	line "in NEW BARK TOWN."
+
+	para "Take the south"
+	line "door of the ROUTE"
+	cont "22 GATE, then go"
+	cont "over TOHJO FALLS."
 	done
 
 OakComeSeeMeSometimesText:

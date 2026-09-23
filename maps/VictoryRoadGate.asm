@@ -46,7 +46,7 @@ VictoryRoadGateNoop3Scene:
 VictoryRoadGateBadgeCheckScript:
 	turnobject PLAYER, LEFT
 	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
-	iftrue _VictoryRoadGateBadgeCheckScript
+	iftrue .Champion
 ; Kanto hack (M10 13d, D132): Kanto act -- the road south (ROUTE_26) is Johto's
 ; and stays shut until the Kanto HALL OF FAME.  The player can only reach this
 ; tile from the north here, so the step back is UP.
@@ -57,26 +57,35 @@ VictoryRoadGateBadgeCheckScript:
 	applymovement PLAYER, VictoryRoadGateStepUpMovement
 	end
 
+; Kanto hack (M11 14a): the Champion passes only once PROF.OAK has sent them
+; to ELM (EVENT_OAK_SENT_PLAYER_TO_ELM); Crystal's VAR_BADGES compare is gone
+; (with 8 Kanto badges it opened the door straight after the HALL OF FAME, C-1).
+.Champion:
+	checkevent EVENT_OAK_SENT_PLAYER_TO_ELM
+	iftrue _VictoryRoadGateOakSentScript
+	opentext
+	writetext VictoryRoadGateSeeOakFirstText
+	waitbutton
+	closetext
+	applymovement PLAYER, VictoryRoadGateStepUpMovement
+	end
+
 VictoryRoadGateOfficerScript:
 	faceplayer
 	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
-	iftrue _VictoryRoadGateBadgeCheckScript
+	iffalse .RoadClosed
+	checkevent EVENT_OAK_SENT_PLAYER_TO_ELM
+	iftrue _VictoryRoadGateOakSentScript
+	jumptext VictoryRoadGateSeeOakFirstText
+
+.RoadClosed:
 	jumptext VictoryRoadGateRoadClosedText
 
-_VictoryRoadGateBadgeCheckScript:
+_VictoryRoadGateOakSentScript:
 	opentext
 	writetext VictoryRoadGateOfficerText
 	promptbutton
-	readvar VAR_BADGES
-	ifgreater NUM_JOHTO_BADGES - 1, .AllEightBadges
-	writetext VictoryRoadGateNotEnoughBadgesText
-	waitbutton
-	closetext
-	applymovement PLAYER, VictoryRoadGateStepDownMovement
-	end
-
-.AllEightBadges:
-	writetext VictoryRoadGateEightBadgesText
+	writetext VictoryRoadGateOakSentText
 	waitbutton
 	closetext
 	setscene SCENE_VICTORYROADGATE_NOOP
@@ -148,10 +157,6 @@ VictoryRoadGateBoulderPassScript:
 .done
 	end
 
-VictoryRoadGateStepDownMovement:
-	step DOWN
-	step_end
-
 VictoryRoadGateStepUpMovement:
 	step UP
 	step_end
@@ -166,26 +171,28 @@ VictoryRoadGateOfficerText:
 	cont "selves may pass."
 	done
 
-; Kanto hack (N1c): region-neutral.  Kanto is played first, so "the GYM BADGES
-; of JOHTO" is wrong here; VAR_BADGES counts wJohtoBadges + wKantoBadges and
-; NUM_JOHTO_BADGES - 1 == NUM_KANTO_BADGES - 1 == 7, so the test itself is
-; already right for both acts.  Yellow's Route 23 guard is the wording model
-; (_Route23YouDontHaveTheBadgeYetText / _Route23GoRightAheadText).
-VictoryRoadGateNotEnoughBadgesText:
-	text "You don't have all"
-	line "eight GYM BADGES."
+; Kanto hack (M11 14a): our text -- the Champion before PROF.OAK's hand-off.
+; (Crystal's NotEnoughBadges/EightBadges pair went with the VAR_BADGES compare.)
+VictoryRoadGateSeeOakFirstText:
+	text "You're the new"
+	line "CHAMPION? Wow!"
 
-	para "I'm sorry, but I"
-	line "can't let you go"
-	cont "through."
+	para "But PROF.OAK asked"
+	line "to see you before"
+	cont "you go to JOHTO."
+
+	para "He's at his LAB in"
+	line "PALLET TOWN."
 	done
 
-VictoryRoadGateEightBadgesText:
-	text "Oh! All eight of"
-	line "the GYM BADGES!"
+; Kanto hack (M11 14a): our text -- after PROF.OAK's hand-off.
+VictoryRoadGateOakSentText:
+	text "PROF.OAK told us"
+	line "you'd be coming."
 
-	para "Please, go right"
-	line "on through!"
+	para "The road to JOHTO"
+	line "is south of here."
+	cont "Go right through!"
 	done
 
 ; Kanto hack (N1c): Yellow's _Route22GateGuardNoBoulderbadgeText, first

@@ -776,32 +776,32 @@ KantoGrassWildMons:
 	db 37, MUK
 	end_grass_wildmons
 
-	def_grass_wildmons TOHJO_FALLS
+	def_grass_wildmons TOHJO_FALLS ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 53, ZUBAT
+	db 53, RATICATE
+	db 54, GOLBAT
+	db 52, SLOWPOKE
+	db 52, RATTATA
+	db 53, SLOWPOKE
+	db 53, SLOWPOKE
 	; day
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 53, ZUBAT
+	db 53, RATICATE
+	db 54, GOLBAT
+	db 52, SLOWPOKE
+	db 52, RATTATA
+	db 53, SLOWPOKE
+	db 53, SLOWPOKE
 	; nite
-	db 22, ZUBAT
-	db 22, RATICATE
-	db 24, GOLBAT
-	db 21, SLOWPOKE
-	db 20, RATTATA
-	db 23, SLOWPOKE
-	db 23, SLOWPOKE
+	db 53, ZUBAT
+	db 53, RATICATE
+	db 54, GOLBAT
+	db 52, SLOWPOKE
+	db 52, RATTATA
+	db 53, SLOWPOKE
+	db 53, SLOWPOKE
 	end_grass_wildmons
 
 ; Kanto hack (L1, docs/AUDIT-KANTO-LEFTOVERS.md 2): Yellow's Route 1 table,
@@ -1631,60 +1631,60 @@ KantoGrassWildMons:
 	db 17, PIDGEOTTO
 	end_grass_wildmons
 
-	def_grass_wildmons ROUTE_26
+	def_grass_wildmons ROUTE_26 ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 28, DODUO
-	db 28, SANDSLASH
-	db 32, PONYTA
-	db 30, RATICATE
-	db 30, DODUO
-	db 30, ARBOK
-	db 30, ARBOK
+	db 56, DODUO
+	db 56, SANDSLASH
+	db 58, PONYTA
+	db 57, RATICATE
+	db 57, DODUO
+	db 57, ARBOK
+	db 57, ARBOK
 	; day
-	db 28, DODUO
-	db 28, SANDSLASH
-	db 32, PONYTA
-	db 30, RATICATE
-	db 30, DODUO
-	db 30, ARBOK
-	db 30, ARBOK
+	db 56, DODUO
+	db 56, SANDSLASH
+	db 58, PONYTA
+	db 57, RATICATE
+	db 57, DODUO
+	db 57, ARBOK
+	db 57, ARBOK
 	; nite
-	db 28, NOCTOWL
-	db 28, RATICATE
-	db 32, NOCTOWL
-	db 30, RATICATE
-	db 30, QUAGSIRE
-	db 30, QUAGSIRE
-	db 30, QUAGSIRE
+	db 56, NOCTOWL
+	db 56, RATICATE
+	db 58, NOCTOWL
+	db 57, RATICATE
+	db 57, QUAGSIRE
+	db 57, QUAGSIRE
+	db 57, QUAGSIRE
 	end_grass_wildmons
 
-	def_grass_wildmons ROUTE_27
+	def_grass_wildmons ROUTE_27 ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
 	; morn
-	db 28, DODUO
-	db 28, ARBOK
-	db 30, RATICATE
-	db 30, DODUO
-	db 32, PONYTA
-	db 30, DODRIO
-	db 30, DODRIO
+	db 56, DODUO
+	db 56, ARBOK
+	db 57, RATICATE
+	db 57, DODUO
+	db 58, PONYTA
+	db 57, DODRIO
+	db 57, DODRIO
 	; day
-	db 28, DODUO
-	db 28, ARBOK
-	db 30, RATICATE
-	db 30, DODUO
-	db 32, PONYTA
-	db 30, DODRIO
-	db 30, DODRIO
+	db 56, DODUO
+	db 56, ARBOK
+	db 57, RATICATE
+	db 57, DODUO
+	db 58, PONYTA
+	db 57, DODRIO
+	db 57, DODRIO
 	; nite
-	db 28, QUAGSIRE
-	db 28, NOCTOWL
-	db 30, RATICATE
-	db 30, QUAGSIRE
-	db 32, NOCTOWL
-	db 32, NOCTOWL
-	db 32, NOCTOWL
+	db 56, QUAGSIRE
+	db 56, NOCTOWL
+	db 57, RATICATE
+	db 57, QUAGSIRE
+	db 58, NOCTOWL
+	db 58, NOCTOWL
+	db 58, NOCTOWL
 	end_grass_wildmons
 
 	def_grass_wildmons ROUTE_28

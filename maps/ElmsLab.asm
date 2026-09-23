@@ -45,11 +45,41 @@ ElmsLabMoveElmCallback:
 .Skip:
 	endcallback
 
+; Kanto hack (M11 14a, D136/D138, Q1-Q3 defaults): no GSC intro.  ELM greets
+; the Kanto Champion whom OAK sent, gives the TEAM ROCKET briefing and hands
+; over the #GEAR + phone card (MOM's gift in Crystal, PlayersHouse1F) -- the
+; Johto-act flip, ENGINE_POKEGEAR -- with MOM's day-of-week/DST setup, since
+; the Kanto act never sets the day.  Then Crystal's favour, e-mail, MR.#MON
+; errand and the three balls (a Lv5 gift, D137) run as Crystal ships them;
+; ELM's number still comes with his directions.
 ElmsLabWalkUpToElmScript:
 	applymovement PLAYER, ElmsLab_WalkUpToElmMovement
 	showemote EMOTE_SHOCK, ELMSLAB_ELM, 15
 	turnobject ELMSLAB_ELM, RIGHT
 	opentext
+	writetext ElmText_ChampionWelcome
+	promptbutton
+	getstring STRING_BUFFER_4, ElmsLabPokegearName
+	scall ElmsLabReceiveItemStd
+	setflag ENGINE_POKEGEAR
+	setflag ENGINE_PHONE_CARD
+	writetext ElmText_GivesPokegear
+	promptbutton
+	special SetDayOfWeek
+.SetDayOfWeek:
+	writetext ElmText_IsItDST
+	yesorno
+	iffalse .WrongDay
+	special InitialSetDSTFlag
+	yesorno
+	iffalse .SetDayOfWeek
+	sjump .DayOfWeekDone
+
+.WrongDay:
+	special InitialClearDSTFlag
+	yesorno
+	iffalse .SetDayOfWeek
+.DayOfWeekDone:
 	writetext ElmText_Intro
 .MustSayYes:
 	yesorno
@@ -85,6 +115,13 @@ ElmsLabWalkUpToElmScript:
 	waitbutton
 	setscene SCENE_ELMSLAB_CANT_LEAVE
 	closetext
+	end
+
+ElmsLabPokegearName:
+	db "#GEAR@"
+
+ElmsLabReceiveItemStd:
+	jumpstd ReceiveItemScript
 	end
 
 ProfElmScript:
@@ -555,7 +592,8 @@ CopScript:
 	opentext
 	writetext ElmsLabOfficerText1
 	promptbutton
-	special NameRival
+	; Kanto hack (M11 14a): Crystal's `special NameRival` is gone -- wRivalName
+	; is GARY, Yellow's rival, and must survive into the Johto act (D141).
 	writetext ElmsLabOfficerText2
 	waitbutton
 	closetext
@@ -723,12 +761,73 @@ AfterChikoritaMovement:
 	turn_head UP
 	step_end
 
-ElmText_Intro:
-	text "ELM: <PLAY_G>!"
-	line "There you are!"
+; Kanto hack (M11 14a): our text -- the Champion's welcome and the TEAM
+; ROCKET briefing (docs/M11-JOHTO.md D136).
+ElmText_ChampionWelcome:
+	text "ELM: Oh! You must"
+	line "be <PLAY_G>!"
 
-	para "I needed to ask"
-	line "you a favor."
+	para "PROF.OAK told me"
+	line "all about you."
+
+	para "The new KANTO"
+	line "CHAMPION, here in"
+	cont "my LAB! Welcome!"
+
+	para "I'm PROF.ELM. I"
+	line "study #MON"
+	cont "evolution."
+
+	para "Did OAK tell you?"
+	line "TEAM ROCKET has"
+	cont "been seen in"
+	cont "JOHTO."
+
+	para "Since GIOVANNI"
+	line "vanished, they've"
+	cont "kept quiet…"
+
+	para "But my radio keeps"
+	line "picking up strange"
+	cont "signals."
+
+	para "Something is going"
+	line "on out there."
+
+	para "You'll be going"
+	line "all over JOHTO,"
+	cont "so take this!"
+	done
+
+; Kanto hack (M11 14a): MOM's #GEAR lines (PlayersHouse1F
+; MomGivesPokegearText), re-voiced for ELM; only the clock and PHONE cards
+; exist yet (the MAP card is CHERRYGROVE's, the RADIO card GOLDENROD's).
+ElmText_GivesPokegear:
+	text "#MON GEAR, or"
+	line "just #GEAR."
+
+	para "It's a clock and a"
+	line "PHONE. Add cards"
+	cont "to do even more!"
+
+	para "Oh, the day of the"
+	line "week isn't set."
+
+	para "You mustn't forget"
+	line "that!"
+	done
+
+; Kanto hack (M11 14a): Crystal's IsItDSTText (was MOM's).
+ElmText_IsItDST:
+	text "Is it Daylight"
+	line "Saving Time now?"
+	done
+
+; Kanto hack (M11 14a): Crystal's favour, minus "There you are!" (our first
+; two lines; the rest is Crystal's ElmText_Intro verbatim).
+ElmText_Intro:
+	text "ELM: Now, I need"
+	line "to ask a favor."
 
 	para "I'm conducting new"
 	line "#MON research"
@@ -989,50 +1088,42 @@ ElmAfterTheftText4:
 	line "great discovery!"
 	done
 
+; Kanto hack (M11 14a): our text -- OAK's cameo at MR.#MON's gives no
+; #DEX (the Champion has carried his since PALLET), and there is no MOM here.
 ElmAfterTheftText5:
 	text "ELM: What?!?"
 
-	para "PROF.OAK gave you"
-	line "a #DEX?"
+	para "PROF.OAK was at"
+	line "MR.#MON's too?"
 
-	para "<PLAY_G>, is that"
-	line "true? Th-that's"
-	cont "incredible!"
+	para "He must be just as"
+	line "curious about"
+	cont "JOHTO as I am!"
 
-	para "He is superb at"
-	line "seeing the poten-"
-	cont "tial of people as"
-	cont "trainers."
+	para "<PLAY_G>, JOHTO"
+	line "has eight #MON"
+	cont "GYMS of its own."
 
-	para "Wow, <PLAY_G>. You"
-	line "may have what it"
-
-	para "takes to become"
-	line "the CHAMPION."
-
-	para "You seem to be"
-	line "getting on great"
-	cont "with #MON too."
-
-	para "You should take"
-	line "the #MON GYM"
-	cont "challenge."
+	para "Take on the GYM"
+	line "challenge here"
+	cont "too!"
 
 	para "The closest GYM"
 	line "would be the one"
 	cont "in VIOLET CITY."
 	done
 
+; Kanto hack (M11 14a): our text (Crystal's ended "talk to your mom").
 ElmAfterTheftText6:
 	text "…<PLAY_G>. The"
-	line "road to the"
+	line "road across JOHTO"
 
-	para "championship will"
-	line "be a long one."
+	para "will be a long"
+	line "one."
 
-	para "Before you leave,"
-	line "make sure that you"
-	cont "talk to your mom."
+	para "Keep your #GEAR"
+	line "on. I'll call if I"
+	cont "learn anything."
 	done
 
 ElmStudyingEggText:
@@ -1290,8 +1381,10 @@ ElmsLabOfficerText1:
 	line "get his name?"
 	done
 
+; Kanto hack (M11 14a): the name is fixed now (no NameRival); 14c makes
+; SILVER literal everywhere else.
 ElmsLabOfficerText2:
-	text "OK! So <RIVAL>"
+	text "OK! So SILVER"
 	line "was his name."
 
 	para "Thanks for helping"

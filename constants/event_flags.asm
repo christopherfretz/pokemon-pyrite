@@ -2232,8 +2232,10 @@
 	const EVENT_BEAT_POWER_PLANT_VOLTORB_5 ; VOLTORB (26,28)
 	const EVENT_BEAT_POWER_PLANT_VOLTORB_6 ; ELECTRODE (21,14)
 	const EVENT_BEAT_POWER_PLANT_VOLTORB_7 ; VOLTORB (37,32)
+	const EVENT_OAK_SENT_PLAYER_TO_ELM ; Kanto hack (M11 14a, D135): OAK's post-E4 hand-off in OAK's LAB (HM07 + "go see ELM"); opens VICTORY ROAD GATE's south door
+	const EVENT_ICE_PATH_1F_TM_EARTHQUAKE ; Kanto hack (M11 14a, D135): ICE PATH 1F ball (31,7), was Crystal's HM07 (OAK gives HM07 now)
 
-; Unused: next 226 events
+; Unused: next 224 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -164,7 +164,7 @@ PCPC_CheckMetBill::
 PCPC_CheckKantoAct::
 ; Kanto hack (N1a): returns nz while the game is in the Kanto act, i.e. while
 ; the player has no #GEAR.  ENGINE_POKEGEAR is set on entering Johto
-; (hack/maps/PlayersHouse1F.asm).
+; (hack/maps/ElmsLab.asm, M11 14a).
 	ld de, ENGINE_POKEGEAR
 	ld b, CHECK_FLAG
 	farcall EngineFlagAction

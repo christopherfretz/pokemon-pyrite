@@ -661,10 +661,16 @@ WaterfallFunction:
 	ret
 
 .TryWaterfall:
+; Kanto hack (M11 14a): the Kanto Champion may WATERFALL without RISINGBADGE
+; (OAK hands over HM07 to reach TOHJO FALLS); test that first so the
+; "badge required" box never shows for them.
+	call CheckKantoChampion
+	jr nc, .champion
 	ld de, ENGINE_RISINGBADGE
 	farcall CheckBadge
 	ld a, JUMPTABLE_EXIT
 	ret c
+.champion
 	call CheckMapCanWaterfall
 	jr c, .failed
 	ld hl, Script_WaterfallFromMenu
@@ -675,6 +681,18 @@ WaterfallFunction:
 .failed
 	call FieldMoveFailed
 	ld a, JUMPTABLE_EXIT
+	ret
+
+CheckKantoChampion:
+; Kanto hack (M11 14a): return nc if EVENT_BEAT_KANTO_ELITE_FOUR is set,
+; carry if not (the same sense as CheckEngineFlag).
+	ld de, EVENT_BEAT_KANTO_ELITE_FOUR
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret nz
+	scf
 	ret
 
 CheckMapCanWaterfall:
@@ -731,9 +749,12 @@ TryWaterfallOW::
 	ld d, WATERFALL
 	call CheckPartyMove
 	jr c, .failed
+	call CheckKantoChampion ; Kanto hack (M11 14a): champion OR RISINGBADGE
+	jr nc, .champion
 	ld de, ENGINE_RISINGBADGE
 	call CheckEngineFlag
 	jr c, .failed
+.champion
 	call CheckMapCanWaterfall
 	jr c, .failed
 	ld a, BANK(Script_AskWaterfall)

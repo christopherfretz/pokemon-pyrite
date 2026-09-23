@@ -2,11 +2,11 @@
 
 KantoWaterWildMons:
 
-	def_water_wildmons TOHJO_FALLS
+	def_water_wildmons TOHJO_FALLS ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 4 percent ; encounter rate
-	db 20, GOLDEEN
-	db 20, SLOWPOKE
-	db 20, SEAKING
+	db 52, GOLDEEN
+	db 52, SLOWPOKE
+	db 52, SEAKING
 	end_water_wildmons
 
 	def_water_wildmons VERMILION_PORT
@@ -178,18 +178,18 @@ KantoWaterWildMons:
 	db 10, SEAKING
 	end_water_wildmons
 
-	def_water_wildmons ROUTE_26
+	def_water_wildmons ROUTE_26 ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 6 percent ; encounter rate
-	db 30, TENTACOOL
-	db 25, TENTACOOL
-	db 30, TENTACRUEL
+	db 57, TENTACOOL
+	db 54, TENTACOOL
+	db 57, TENTACRUEL
 	end_water_wildmons
 
-	def_water_wildmons ROUTE_27
+	def_water_wildmons ROUTE_27 ; Kanto hack (M11 14a, D145): entry band Lv52-58 (Crystal Lv15-32 -> 52 + (old-20)/2, clamped)
 	db 6 percent ; encounter rate
-	db 20, TENTACOOL
-	db 15, TENTACOOL
-	db 20, TENTACRUEL
+	db 52, TENTACOOL
+	db 52, TENTACOOL
+	db 52, TENTACRUEL
 	end_water_wildmons
 
 	def_water_wildmons ROUTE_28
