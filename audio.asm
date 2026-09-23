@@ -143,6 +143,13 @@ INCLUDE "audio/music/meetjessiejames.asm"
 ; Kanto hack: Yellow's Pewter #MON Center JIGGLYPUFF SONG (docs/JIGGLYPUFF.md J2)
 INCLUDE "audio/music/jigglypuffsong.asm"
 
+; Kanto hack (K6a, docs/K6-MUSIC.md): Yellow's rival theme (port + re-voicing),
+; POKEMON TOWER and S.S. ANNE
+INCLUDE "audio/music/meetrivalyellow.asm"
+INCLUDE "audio/music/meetrivalgsc.asm"
+INCLUDE "audio/music/pokemontower.asm"
+INCLUDE "audio/music/ssanne.asm"
+
 
 SECTION "Extra Songs 1", ROMX
 

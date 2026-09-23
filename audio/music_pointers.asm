@@ -112,4 +112,14 @@ Music:
 	dba Music_MeetJessieJames
 	dba Music_JigglypuffSong
 	dba Music_BugCatchingContest ; MUSIC_SAFARI_ZONE (M7 10a, D59: placeholder track)
+	dba Music_MeetRivalYellow                 ; K6a
+	dba Music_MeetRivalYellowAltStart
+	dba Music_MeetRivalYellowAltTempo
+	dba Music_MeetRivalYellowAltStartAndTempo
+	dba Music_MeetRivalGSC
+	dba Music_MeetRivalGSCAltStart
+	dba Music_MeetRivalGSCAltTempo
+	dba Music_MeetRivalGSCAltStartAndTempo
+	dba Music_PokemonTower
+	dba Music_SSAnne
 	assert_table_length NUM_MUSIC_SONGS

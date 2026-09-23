@@ -57,7 +57,7 @@ Route22RivalCallback:
 ; Player on (25,4): the rival walks to (25,5), below the player.
 Route22RivalSceneNorth:
 	showemote EMOTE_SHOCK, ROUTE22_RIVAL, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL_AB + RIVAL_THEME_INTRO ; A/B: GSC voicing, see music_constants.asm
 	applymovement ROUTE22_RIVAL, Route22_RivalApproachNorth
 	turnobject PLAYER, DOWN
 	turnobject ROUTE22_RIVAL, UP
@@ -68,7 +68,7 @@ Route22RivalSceneNorth:
 ; Player on (25,5): the rival walks to (24,5), left of the player.
 Route22RivalSceneSouth:
 	showemote EMOTE_SHOCK, ROUTE22_RIVAL, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL_AB + RIVAL_THEME_INTRO ; A/B: GSC voicing, see music_constants.asm
 	applymovement ROUTE22_RIVAL, Route22_RivalApproachSouth
 	turnobject PLAYER, LEFT
 	turnobject ROUTE22_RIVAL, RIGHT
@@ -77,6 +77,14 @@ Route22RivalSceneSouth:
 	sjump Route22RivalGone
 
 ; Losing is a normal white-out (Yellow: the rival stays and re-triggers).
+; K6a, Yellow order: TrainerBattleVictory only sets BIT_NO_MAP_MUSIC for the
+; champion, so the map music comes back after the fight and plays under the
+; after-battle text; only then does Yellow StopAllMusic + farcall the rival
+; theme's alternate entry as he walks off.  Hence no `dontrestartmapmusic`, the
+; rival theme after `closetext`, and `special RestartMapMusic` (not
+; `playmapmusic`, a no-op while wMapMusic still holds the map song) at the end.
+; Rival #1 is the K6 A/B slot: it plays MUSIC_KANTO_RIVAL_AB (the GSC
+; re-voicing) where every other Kanto rival scene plays MUSIC_KANTO_RIVAL.
 Route22RivalBattle:
 	opentext
 	writetext Route22RivalBeforeBattleText
@@ -86,21 +94,20 @@ Route22RivalBattle:
 	setlasttalked ROUTE22_RIVAL
 	loadtrainer KANTO_RIVAL, KANTO_RIVAL_2
 	startbattle
-	dontrestartmapmusic
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ROUTE22_RIVAL_1ST_BATTLE
-	playmusic MUSIC_RIVAL_AFTER
 	opentext
 	writetext Route22RivalAfterBattleText
 	waitbutton
 	closetext
+	playmusic MUSIC_KANTO_RIVAL_AB + RIVAL_THEME_ALT_START ; A/B: GSC voicing
 	return
 
 Route22RivalGone:
 	disappear ROUTE22_RIVAL
 	setevent EVENT_ROUTE22_RIVAL
 	setscene SCENE_ROUTE22_NOOP
-	playmapmusic
+	special RestartMapMusic
 	end
 
 ; Talking to him first (he faces the corridor, the player can reach him
@@ -167,13 +174,13 @@ Route22_RivalExitSouth:
 ; Rival2ExitMovementData walks him back LEFT the way he came -- four steps
 ; from the north trigger, three from the south -- before HideObject.
 ; Music: Yellow replays MUSIC_MEET_RIVAL at Music_RivalAlternateTempo on the
-; approach and at Music_RivalAlternateStartAndTempo after the fight; rival #1's
-; MUSIC_RIVAL_ENCOUNTER / MUSIC_RIVAL_AFTER pair stands in (K6 placeholder).
+; approach and at Music_RivalAlternateStartAndTempo after the fight -- ported
+; as RIVAL_THEME_ALT_TEMPO / RIVAL_THEME_ALT_START_TEMPO (K6a).
 
 ; Player on (25,4): the rival walks to (25,5), below the player.
 Route22Rival2SceneNorth:
 	showemote EMOTE_SHOCK, ROUTE22_RIVAL_2, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_TEMPO
 	applymovement ROUTE22_RIVAL_2, Route22_RivalApproachNorth
 	turnobject PLAYER, DOWN
 	turnobject ROUTE22_RIVAL_2, UP
@@ -184,7 +191,7 @@ Route22Rival2SceneNorth:
 ; Player on (25,5): the rival walks to (24,5), left of the player.
 Route22Rival2SceneSouth:
 	showemote EMOTE_SHOCK, ROUTE22_RIVAL_2, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_TEMPO
 	applymovement ROUTE22_RIVAL_2, Route22_RivalApproachSouth
 	turnobject PLAYER, LEFT
 	turnobject ROUTE22_RIVAL_2, RIGHT
@@ -219,21 +226,20 @@ Route22Rival2Battle:
 
 .Fight:
 	startbattle
-	dontrestartmapmusic
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ROUTE22_RIVAL_2ND_BATTLE
-	playmusic MUSIC_RIVAL_AFTER
 	opentext
 	writetext Route22Rival2AfterBattleText
 	waitbutton
 	closetext
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START_TEMPO
 	return
 
 Route22Rival2Gone:
 	disappear ROUTE22_RIVAL_2
 	setevent EVENT_ROUTE22_RIVAL_2
 	setscene SCENE_ROUTE22_NOOP
-	playmapmusic
+	special RestartMapMusic
 	end
 
 ; Yellow Route22PrintRival2Text: the before- or after-battle line by the beat

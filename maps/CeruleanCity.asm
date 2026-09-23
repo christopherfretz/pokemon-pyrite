@@ -260,7 +260,7 @@ CeruleanCityRivalSceneWest:
 	iftrue .Done
 	turnobject PLAYER, UP
 	showemote EMOTE_SHOCK, CERULEANCITY_RIVAL, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalApproachWest
 	turnobject CERULEANCITY_RIVAL, DOWN
 	scall CeruleanCityRivalBattle
@@ -275,7 +275,7 @@ CeruleanCityRivalSceneEast:
 	iftrue .Done
 	turnobject PLAYER, UP
 	showemote EMOTE_SHOCK, CERULEANCITY_RIVAL, 15
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	applymovement CERULEANCITY_RIVAL, CeruleanCity_RivalApproachEast
 	turnobject CERULEANCITY_RIVAL, DOWN
 	scall CeruleanCityRivalBattle
@@ -288,6 +288,12 @@ CeruleanCityRivalSceneEast:
 ; Losing is a plain GSC white-out, so nothing past `startbattle` runs, the beat
 ; flag stays clear and the OBJECTS callback re-arms the whole scene on the way
 ; back in -- exactly what Yellow's CeruleanCityClearScripts does by hand.
+; K6a, Yellow order: TrainerBattleVictory only sets BIT_NO_MAP_MUSIC for the
+; champion, so the map music comes back after the fight and plays under the
+; after-battle text; only then does Yellow StopAllMusic + farcall the rival
+; theme's alternate entry as he walks off.  Hence no `dontrestartmapmusic`, the
+; rival theme after `closetext`, and `special RestartMapMusic` (not
+; `playmapmusic`, a no-op while wMapMusic still holds the map song) at the end.
 CeruleanCityRivalBattle:
 	opentext
 	writetext CeruleanCityRivalPreBattleText
@@ -297,19 +303,18 @@ CeruleanCityRivalBattle:
 	setlasttalked CERULEANCITY_RIVAL
 	loadtrainer KANTO_RIVAL, KANTO_RIVAL_3
 	startbattle
-	dontrestartmapmusic
 	reloadmapafterbattle
 	setevent EVENT_BEAT_CERULEAN_RIVAL
-	playmusic MUSIC_RIVAL_AFTER
 	opentext
 	writetext CeruleanCityRivalIWentToBillsText
 	waitbutton
 	closetext
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	return
 
 CeruleanCityRivalGone:
 	disappear CERULEANCITY_RIVAL
-	playmapmusic
+	special RestartMapMusic
 	end
 
 ; Yellow's CeruleanCityRivalText is a text_asm that branches on

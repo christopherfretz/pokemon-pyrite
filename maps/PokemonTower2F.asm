@@ -47,7 +47,7 @@ PokemonTower2FObjectsCallback:
 PokemonTower2FRivalSceneEast:
 	checkevent EVENT_BEAT_POKEMON_TOWER_RIVAL
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	turnobject PLAYER, LEFT
 	turnobject POKEMONTOWER2F_RIVAL, RIGHT
 	scall PokemonTower2FRivalBattle
@@ -66,7 +66,7 @@ PokemonTower2FRivalSceneEast:
 PokemonTower2FRivalSceneSouth:
 	checkevent EVENT_BEAT_POKEMON_TOWER_RIVAL
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	turnobject PLAYER, UP
 	turnobject POKEMONTOWER2F_RIVAL, DOWN
 	scall PokemonTower2FRivalBattle
@@ -128,14 +128,13 @@ PokemonTower2FRivalBattle:
 ; Yellow re-displays TEXT_POKEMONTOWER2F_RIVAL once the beat flag is set, which
 ; takes the text_asm's other branch (.HowsYourDexText), and only then stops the
 ; music and restarts MUSIC_MEET_RIVAL at Music_RivalAlternateStart as he walks
-; off.  MUSIC_RIVAL_AFTER is Crystal's equivalent piece (the CERULEAN and
-; S.S. ANNE scenes use it the same way).
+; off -- ported as RIVAL_THEME_ALT_START (K6a).
 PokemonTower2FRivalHowsYourDex:
 	opentext
 	writetext PokemonTower2FRivalHowsYourDexText
 	waitbutton
 	closetext
-	playmusic MUSIC_RIVAL_AFTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	return
 
 ; `special RestartMapMusic`, not `playmapmusic`: PlayMapMusic is a no-op when

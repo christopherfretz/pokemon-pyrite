@@ -422,7 +422,7 @@ UpdateChannels:
 .load_wave_pattern
 	push hl
 	ld a, [wCurTrackVolumeEnvelope]
-	and $f ; only 0-9 are valid
+	and $f ; only 0-10 are valid (10 = Kanto hack, K6a)
 	ld l, a
 	ld h, 0
 	; hl << 4

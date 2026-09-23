@@ -40,7 +40,7 @@ SSAnne2FObjectsCallback:
 SSAnne2FRivalSceneLeft:
 	checkevent EVENT_BEAT_RIVAL_SS_ANNE
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	appear SSANNE2F_RIVAL
 	applymovement SSANNE2F_RIVAL, SSAnne2F_RivalApproachLeft
 	turnobject SSANNE2F_RIVAL, DOWN
@@ -60,7 +60,7 @@ SSAnne2FRivalSceneLeft:
 SSAnne2FRivalSceneRight:
 	checkevent EVENT_BEAT_RIVAL_SS_ANNE
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	appear SSANNE2F_RIVAL
 	applymovement SSANNE2F_RIVAL, SSAnne2F_RivalApproachRight
 	turnobject PLAYER, LEFT
@@ -92,20 +92,20 @@ SSAnne2FRivalBattle:
 	return
 
 ; Yellow stops the map music and restarts MUSIC_MEET_RIVAL at its alternate
-; entry point (Music_RivalAlternateStart) as he walks off; MUSIC_RIVAL_AFTER is
-; Crystal's equivalent piece (CeruleanCity uses it the same way).
+; entry point (Music_RivalAlternateStart) as he walks off -- ported as
+; RIVAL_THEME_ALT_START (K6a, constants/music_constants.asm).
 SSAnne2FRivalCutMaster:
 	opentext
 	writetext SSAnne2FRivalCutMasterText
 	waitbutton
 	closetext
-	playmusic MUSIC_RIVAL_AFTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	return
 
 ; `special RestartMapMusic`, not `playmapmusic`: PlayMapMusic is a no-op when
 ; wMapMusic already holds the map's song (home/audio.asm), and it does here --
 ; this script does not use `dontrestartmapmusic`, so the battle put MUSIC_SS_ANNE
-; back and left wMapMusic set, and MUSIC_RIVAL_AFTER would simply keep playing.
+; back and left wMapMusic set, and the rival theme would simply keep playing.
 ; (The Crystal scenes that end in `playmapmusic` all suppress the post-battle
 ; music first, which zeroes wMapMusic and is what makes their call fire.)
 SSAnne2FRivalGone:

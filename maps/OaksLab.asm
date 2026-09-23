@@ -76,7 +76,7 @@ OaksLabIntroScript:
 	closetext
 	applymovement OAKSLAB_RIVAL, OaksLab_RivalToPlayerMovement
 	turnobject PLAYER, RIGHT
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	opentext
 	writetext OaksLabRivalTakeYouOnText
 	waitbutton
@@ -101,19 +101,24 @@ OaksLabIntroScript:
 	setevent EVENT_BEAT_OAKS_LAB_RIVAL
 
 .LostToRival:
-	dontrestartmapmusic
+; K6a, Yellow order (OaksLabRivalStartsExitScript): the lab's map music comes
+; back after the fight and plays under "Smell you later"; only then does the
+; rival theme restart at Music_RivalAlternateStart as he walks out, and
+; PlayDefaultMusic brings the map song back once he is gone.  No
+; `dontrestartmapmusic`, so wMapMusic stays set and the end has to be
+; `special RestartMapMusic` (`playmapmusic` would be a no-op).
 	reloadmap
 	special HealParty
 	turnobject OAKSLAB_RIVAL, LEFT
-	playmusic MUSIC_RIVAL_AFTER
 	opentext
 	writetext OaksLabRivalSmellYouLaterText
 	waitbutton
 	closetext
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	applymovement OAKSLAB_RIVAL, OaksLab_RivalLeavesMovement
 	disappear OAKSLAB_RIVAL
 	setevent EVENT_OAKS_LAB_RIVAL
-	playmapmusic
+	special RestartMapMusic
 	turnobject PLAYER, UP
 	pause 20
 ; F2 (docs/FOLLOWER-FIXES.md section 2).  Yellow's
@@ -302,7 +307,9 @@ Oak:
 	writetext OakParcelThanksText
 	waitbutton
 	closetext
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	; Yellow OaksLabRivalArrivesAtOaksRequestScript: StopAllMusic +
+	; Music_RivalAlternateStart (the one-bar pickup), not the full intro.
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	opentext
 	writetext OaksLabRivalGrampsText
 	waitbutton
@@ -349,9 +356,14 @@ Oak:
 	writetext OaksLabRivalLeaveItToMeText
 	waitbutton
 	closetext
+	; Yellow OaksLabRivalWalksOutScript restarts the theme at
+	; Music_RivalAlternateStart as he walks out, then PlayDefaultMusic.
+	; RestartMapMusic, not playmapmusic: nothing zeroed wMapMusic here, so
+	; playmapmusic would leave the rival theme running.
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	applymovement OAKSLAB_RIVAL, OaksLab_RivalLeavesWithDexMovement
 	disappear OAKSLAB_RIVAL
-	playmapmusic
+	special RestartMapMusic
 	setevent EVENT_OAK_GOT_PARCEL
 	setmapscene VIRIDIAN_CITY, SCENE_VIRIDIANCITY_OLD_MAN_WAITING ; V1: Yellow sets SCRIPT_VIRIDIANCITY_AFTER_POKEDEX here
 	turnobject OAKSLAB_OAK, DOWN

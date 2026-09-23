@@ -112,7 +112,35 @@
 	; points at the BUG CATCHING CONTEST track for now -- Yellow's Music_SafariZone
 	; is a separate port (10n decides whether to bring it over).
 	const MUSIC_SAFARI_ZONE                  ; 69
+	; Kanto hack (K6a, docs/K6-MUSIC.md): Yellow's "rival appears" theme, twice
+	; -- a straight port (_YELLOW) and a Crystal-style re-voicing (_GSC) -- each
+	; with Yellow's three alternate entries (audio/alternate_tempo.asm): ALT_START
+	; skips the intro (after-battle walk-offs), ALT_TEMPO is ch1 `tempo 100` for
+	; ROUTE 22's second meeting, ALT_START_TEMPO is both.  Keep each block of
+	; four in this order: the RIVAL_THEME_* offsets below depend on it.
+	const MUSIC_MEET_RIVAL_YELLOW                 ; 70
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_START       ; 71
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_TEMPO       ; 72
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_START_TEMPO ; 73
+	const MUSIC_MEET_RIVAL_GSC                    ; 74
+	const MUSIC_MEET_RIVAL_GSC_ALT_START          ; 75
+	const MUSIC_MEET_RIVAL_GSC_ALT_TEMPO          ; 76
+	const MUSIC_MEET_RIVAL_GSC_ALT_START_TEMPO    ; 77
+	const MUSIC_POKEMON_TOWER                ; 78 (Yellow's POKEMON TOWER, K6a)
+	const MUSIC_SS_ANNE                      ; 79 (Yellow's S.S. ANNE, K6a)
 DEF NUM_MUSIC_SONGS EQU const_value
+
+; Kanto hack (K6a): the rival-theme A/B switch.  Every Kanto rival scene plays
+; MUSIC_KANTO_RIVAL + RIVAL_THEME_*; ROUTE 22's FIRST meeting (the 2nd time you
+; meet him) plays MUSIC_KANTO_RIVAL_AB + RIVAL_THEME_* so one normal playthrough
+; hears both arrangements.  Flip either line between MUSIC_MEET_RIVAL_YELLOW and
+; MUSIC_MEET_RIVAL_GSC to move the whole game (or just that encounter) over.
+DEF MUSIC_KANTO_RIVAL    EQU MUSIC_MEET_RIVAL_YELLOW
+DEF MUSIC_KANTO_RIVAL_AB EQU MUSIC_MEET_RIVAL_GSC
+DEF RIVAL_THEME_INTRO           EQU 0 ; Yellow: PlayMusic MUSIC_MEET_RIVAL
+DEF RIVAL_THEME_ALT_START       EQU 1 ; Yellow: Music_RivalAlternateStart
+DEF RIVAL_THEME_ALT_TEMPO       EQU 2 ; Yellow: Music_RivalAlternateTempo
+DEF RIVAL_THEME_ALT_START_TEMPO EQU 3 ; Yellow: Music_RivalAlternateStartAndTempo
 
 ; Kanto hack (M8 11a, docs/M8-SAFFRON.md D82): SILPH CO. gets a name of its own
 ; so the twelve Silph maps can be repointed in one line, but no id of its own --

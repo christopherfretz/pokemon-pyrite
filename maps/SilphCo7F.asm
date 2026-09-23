@@ -107,7 +107,7 @@ SilphCo7FObjectsCallback:
 SilphCo7FRivalSceneNorth:
 	checkevent EVENT_BEAT_SILPH_CO_RIVAL
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	turnobject PLAYER, DOWN
 	scall SilphCo7FRivalWhatKeptYou
 	applymovement SILPHCO7F_RIVAL, SilphCo7F_RivalApproachFour
@@ -125,7 +125,7 @@ SilphCo7FRivalSceneNorth:
 SilphCo7FRivalSceneSouth:
 	checkevent EVENT_BEAT_SILPH_CO_RIVAL
 	iftrue .Done
-	playmusic MUSIC_RIVAL_ENCOUNTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_INTRO
 	turnobject PLAYER, DOWN
 	scall SilphCo7FRivalWhatKeptYou
 	applymovement SILPHCO7F_RIVAL, SilphCo7F_RivalApproachThree
@@ -188,15 +188,13 @@ SilphCo7FRivalBattle:
 	return
 
 ; Yellow stops the music and restarts MUSIC_MEET_RIVAL at
-; Music_RivalAlternateStart as the goodbye speech ends; MUSIC_RIVAL_AFTER is
-; Crystal's equivalent piece (the CERULEAN, S.S. ANNE and TOWER scenes use it
-; the same way).
+; Music_RivalAlternateStart as the goodbye speech ends -- ported as RIVAL_THEME_ALT_START (K6a).
 SilphCo7FRivalGoodLuckToYou:
 	opentext
 	writetext SilphCo7FRivalGoodLuckToYouText
 	waitbutton
 	closetext
-	playmusic MUSIC_RIVAL_AFTER
+	playmusic MUSIC_KANTO_RIVAL + RIVAL_THEME_ALT_START
 	return
 
 ; `special RestartMapMusic`, not `playmapmusic`: PlayMapMusic is a no-op when
