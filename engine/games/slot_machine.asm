@@ -158,8 +158,15 @@ _SlotMachine:
 	ld [wJumptableIndex], a
 	ld a, SLOTS_NO_BIAS
 	ld [wSlotBias], a
+	; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's slots leave the map music
+	; alone, so in the Kanto act (no POKeGEAR yet) CELADON's Yellow GAME CORNER
+	; theme plays on; Johto's GOLDENROD keeps Crystal's restart of its own.
+	ld hl, wPokegearFlags
+	bit POKEGEAR_OBTAINED_F, [hl]
+	jr z, .keep_map_music
 	ld de, MUSIC_GAME_CORNER
 	call PlayMusic
+.keep_map_music
 	xor a
 	ld [wKeepSevenBiasChance], a ; 87.5% chance
 	call Random

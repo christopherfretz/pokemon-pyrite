@@ -73,7 +73,7 @@ VermilionPortSSAnneDepartsScene:
 	setmapscene VERMILION_CITY, SCENE_VERMILIONCITY_SS_ANNE_DEPARTED
 ; Yellow: StopAllMusic + MUSIC_SURFING, and the dock's own music never comes
 ; back -- the city's starts when the player warps out below.
-	playmusic MUSIC_SURF
+	playmusic MUSIC_SURFING ; K6c: Yellow's own track (was the MUSIC_SURF stand-in)
 	pause 60
 ; Invisible until the refreshmap after the animation: changeblock only writes
 ; wOverworldMapBlocks.  $01 is the quay strip over open sea, $0d open sea, $18
@@ -88,7 +88,7 @@ VermilionPortSSAnneDepartsScene:
 	changeblock 16,  4, $0d
 	special SSAnneDeparture
 	refreshmap
-	playsound SFX_BOAT
+	playsound SFX_SS_ANNE_HORN
 	pause 60
 	applymovement PLAYER, VermilionPortSSAnneWalkOutMovement
 ; 7n: `warp`, not `warpcheck` -- and the difference is a CRASH.

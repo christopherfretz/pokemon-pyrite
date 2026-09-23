@@ -23,7 +23,6 @@ INCLUDE "audio/music/goldenrodcity.asm"
 INCLUDE "audio/music/vermilioncity.asm"
 INCLUDE "audio/music/titlescreen.asm"
 INCLUDE "audio/music/ruinsofalphinterior.asm"
-INCLUDE "audio/music/lookpokemaniac.asm"
 INCLUDE "audio/music/trainervictory.asm"
 
 
@@ -124,6 +123,22 @@ INCLUDE "audio/music/mainmenu.asm"
 INCLUDE "audio/music/lookkimonogirl.asm"
 INCLUDE "audio/music/pokeflutechannel.asm"
 INCLUDE "audio/music/bugcatchingcontest.asm"
+
+
+SECTION "Songs 6", ROMX
+
+; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's Lavender, dungeon, Game Corner,
+; Safari Zone and surf themes (pinned beside "Phone Scripts 1" in layout.link).
+INCLUDE "audio/music/lavenderyellow.asm"
+INCLUDE "audio/music/dungeon1.asm"
+INCLUDE "audio/music/dungeon2.asm"
+INCLUDE "audio/music/dungeon3.asm"
+INCLUDE "audio/music/gamecorneryellow.asm"
+INCLUDE "audio/music/safarizone.asm"
+INCLUDE "audio/music/surfing.asm"
+; K6c: moved out of "Songs 1" (bank $3a, pinned behind "Audio"), which the
+; six new music_pointers entries (18 bytes) would have overflowed.
+INCLUDE "audio/music/lookpokemaniac.asm"
 
 
 SECTION "Songs 5", ROMX

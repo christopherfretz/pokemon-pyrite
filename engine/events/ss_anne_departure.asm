@@ -104,8 +104,8 @@ SSAnneDeparture::
 
 	call .InitLYOverrides
 
-; Yellow: SFX_SS_ANNE_HORN, which Gen 1 audio has not been ported yet (K6).
-	ld de, SFX_BOAT
+; Yellow: SFX_SS_ANNE_HORN (K6c: Crystal's SFX_BOAT is the same data).
+	ld de, SFX_SS_ANNE_HORN
 	call PlaySFX
 
 	ld d, 0 ; scroll offset, in pixels

@@ -442,7 +442,15 @@ SpecialMapMusic::
 	ret
 
 .surf
+; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's own surf theme in the Kanto act
+; (no POKeGEAR yet), Crystal's MUSIC_SURF once the Johto act begins.  Yellow's
+; PlayDefaultMusicCommon plays MUSIC_SURFING for a surfing player, Pikachu or not.
+	ld de, MUSIC_SURFING
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jr z, .surf_done
 	ld de, MUSIC_SURF
+.surf_done
 	scf
 	ret
 

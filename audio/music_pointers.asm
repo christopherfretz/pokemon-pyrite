@@ -111,7 +111,7 @@ Music:
 ; Kanto hack
 	dba Music_MeetJessieJames
 	dba Music_JigglypuffSong
-	dba Music_BugCatchingContest ; MUSIC_SAFARI_ZONE (M7 10a, D59: placeholder track)
+	dba Music_SafariZone          ; K6c (was Music_BugCatchingContest, D59)
 	dba Music_MeetRivalYellow                 ; K6a
 	dba Music_MeetRivalYellowAltStart
 	dba Music_MeetRivalYellowAltTempo
@@ -122,4 +122,10 @@ Music:
 	dba Music_MeetRivalGSCAltStartAndTempo
 	dba Music_PokemonTower
 	dba Music_SSAnne
+	dba Music_LavenderYellow                  ; K6c
+	dba Music_Dungeon1
+	dba Music_Dungeon2
+	dba Music_Dungeon3
+	dba Music_GameCornerYellow
+	dba Music_Surfing
 	assert_table_length NUM_MUSIC_SONGS

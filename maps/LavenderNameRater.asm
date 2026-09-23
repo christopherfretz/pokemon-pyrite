@@ -14,8 +14,9 @@
 ; The dead scene script and the unreferenced bookshelf are deleted.  Music: Yellow gives this one house MUSIC_CITIES2 and every
 ; other Lavender interior MUSIC_LAVENDER; since the project collapses CITIES1
 ; and CITIES2 onto MUSIC_VIRIDIAN_CITY, being "faithful" here would play
-; Viridian's theme inside Lavender, so the row keeps MUSIC_LAVENDER_TOWN
-; (decision D11, docs/M5-LAVENDER.md 3.11).
+; Viridian's theme inside Lavender, so the row keeps the town theme
+; (decision D11, docs/M5-LAVENDER.md 3.11) -- since K6c Yellow's own,
+; MUSIC_LAVENDER_YELLOW.
 	object_const_def
 	const LAVENDERNAMERATER_NAME_RATER
 

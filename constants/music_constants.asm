@@ -109,8 +109,8 @@
 	const MUSIC_MEET_JESSIE_JAMES            ; 67 (Yellow's Jessie & James theme)
 	const MUSIC_JIGGLYPUFF_SONG              ; 68 (Yellow's JIGGLYPUFF SONG)
 	; Kanto hack (M7 10a, docs/M7-FUCHSIA.md D59): the SAFARI ZONE's own id.  It
-	; points at the BUG CATCHING CONTEST track for now -- Yellow's Music_SafariZone
-	; is a separate port (10n decides whether to bring it over).
+	; pointed at the BUG CATCHING CONTEST track until K6c ported Yellow's
+	; Music_SafariZone (docs/K6-MUSIC.md).
 	const MUSIC_SAFARI_ZONE                  ; 69
 	; Kanto hack (K6a, docs/K6-MUSIC.md): Yellow's "rival appears" theme, twice
 	; -- a straight port (_YELLOW) and a Crystal-style re-voicing (_GSC) -- each
@@ -118,16 +118,24 @@
 	; skips the intro (after-battle walk-offs), ALT_TEMPO is ch1 `tempo 100` for
 	; ROUTE 22's second meeting, ALT_START_TEMPO is both.  Keep each block of
 	; four in this order: the RIVAL_THEME_* offsets below depend on it.
-	const MUSIC_MEET_RIVAL_YELLOW                 ; 70
-	const MUSIC_MEET_RIVAL_YELLOW_ALT_START       ; 71
-	const MUSIC_MEET_RIVAL_YELLOW_ALT_TEMPO       ; 72
-	const MUSIC_MEET_RIVAL_YELLOW_ALT_START_TEMPO ; 73
-	const MUSIC_MEET_RIVAL_GSC                    ; 74
-	const MUSIC_MEET_RIVAL_GSC_ALT_START          ; 75
-	const MUSIC_MEET_RIVAL_GSC_ALT_TEMPO          ; 76
-	const MUSIC_MEET_RIVAL_GSC_ALT_START_TEMPO    ; 77
-	const MUSIC_POKEMON_TOWER                ; 78 (Yellow's POKEMON TOWER, K6a)
-	const MUSIC_SS_ANNE                      ; 79 (Yellow's S.S. ANNE, K6a)
+	const MUSIC_MEET_RIVAL_YELLOW                 ; 6a
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_START       ; 6b
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_TEMPO       ; 6c
+	const MUSIC_MEET_RIVAL_YELLOW_ALT_START_TEMPO ; 6d
+	const MUSIC_MEET_RIVAL_GSC                    ; 6e
+	const MUSIC_MEET_RIVAL_GSC_ALT_START          ; 6f
+	const MUSIC_MEET_RIVAL_GSC_ALT_TEMPO          ; 70
+	const MUSIC_MEET_RIVAL_GSC_ALT_START_TEMPO    ; 71
+	const MUSIC_POKEMON_TOWER                ; 72 (Yellow's POKEMON TOWER, K6a)
+	const MUSIC_SS_ANNE                      ; 73 (Yellow's S.S. ANNE, K6a)
+	; Kanto hack (K6c, docs/K6-MUSIC.md): six more ids ($7a-$7f stay free).  _YELLOW where Crystal
+	; already has a song of that name (its Lavender / Game Corner stay for Johto).
+	const MUSIC_LAVENDER_YELLOW              ; 74 (Yellow's MUSIC_LAVENDER)
+	const MUSIC_DUNGEON1                     ; 75 (Hideout, Power Plant, Bruno, Cerulean Cave)
+	const MUSIC_DUNGEON2                     ; 76 (Viridian Forest, Diglett's Cave, Seafoam)
+	const MUSIC_DUNGEON3                     ; 77 (Mt. Moon, Rock Tunnel, Victory Road)
+	const MUSIC_GAME_CORNER_YELLOW           ; 78 (Yellow's MUSIC_GAME_CORNER)
+	const MUSIC_SURFING                      ; 79 (Yellow's surf theme; Kanto act only)
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; Kanto hack (K6a): the rival-theme A/B switch.  Every Kanto rival scene plays
@@ -143,8 +151,8 @@ DEF RIVAL_THEME_ALT_TEMPO       EQU 2 ; Yellow: Music_RivalAlternateTempo
 DEF RIVAL_THEME_ALT_START_TEMPO EQU 3 ; Yellow: Music_RivalAlternateStartAndTempo
 
 ; Kanto hack (M8 11a, docs/M8-SAFFRON.md D82): SILPH CO. gets a name of its own
-; so the twelve Silph maps can be repointed in one line, but no id of its own --
-; only 23 of the 128 song ids are left.  Yellow plays Music_SilphCo there; the
+; so the twelve Silph maps can be repointed in one line, but no id of its own
+; yet (after K6c, ids $7a-$7f are still free).  Yellow plays Music_SilphCo there; the
 ; ROCKET HIDEOUT theme is the closest Crystal track and is already the "team
 ; rocket has taken the place over" cue.  A real port would spend an id here.
 DEF MUSIC_SILPH_CO EQU MUSIC_ROCKET_HIDEOUT

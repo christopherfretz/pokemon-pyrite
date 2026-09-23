@@ -209,3 +209,10 @@
 	const SFX_4_NOTE_DITTY                ; cd
 	const SFX_TWINKLE                     ; ce
 DEF NUM_SFX EQU const_value
+
+; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's SFX_SS_ANNE_HORN is Crystal's
+; SFX_BOAT -- both games' sources give the same duty_cycle/square_note
+; arguments (the bytes differ only because each engine encodes a command its
+; own way: Gen 1 folds the length into the square_note byte).  A name, not a
+; port: the Kanto departure says what Yellow says.
+DEF SFX_SS_ANNE_HORN EQU SFX_BOAT
