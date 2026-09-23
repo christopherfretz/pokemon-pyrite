@@ -624,7 +624,9 @@ InitializeEventsScript:
 ; BLUE left VIRIDIAN GYM and the 7-badge door gates the gym on its own.
 	setevent EVENT_MT_MOON_SQUARE_CLEFAIRY
 	setevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
-	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
+; Kanto hack (M10 13m, F-1): no `setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL`
+; -- 13h deleted Crystal's lobby rival (C-8/D133), its only reader.  The
+; const stays defined (dead) so no flag id shifts.
 	setevent EVENT_INITIALIZED_EVENTS
 	endcallback
 
