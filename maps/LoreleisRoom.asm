@@ -1,49 +1,49 @@
 	object_const_def
-	const WILLSROOM_WILL
+	const LORELEISROOM_WILL
 
-WillsRoom_MapScripts:
+LoreleisRoom_MapScripts:
 	def_scene_scripts
-	scene_script WillsRoomLockDoorScene, SCENE_WILLSROOM_LOCK_DOOR
-	scene_script WillsRoomNoopScene,     SCENE_WILLSROOM_NOOP
+	scene_script LoreleisRoomLockDoorScene, SCENE_LORELEISROOM_LOCK_DOOR
+	scene_script LoreleisRoomNoopScene,     SCENE_LORELEISROOM_NOOP
 
 	def_callbacks
-	callback MAPCALLBACK_TILES, WillsRoomDoorsCallback
+	callback MAPCALLBACK_TILES, LoreleisRoomDoorsCallback
 
-WillsRoomLockDoorScene:
-	sdefer WillsRoomDoorLocksBehindYouScript
+LoreleisRoomLockDoorScene:
+	sdefer LoreleisRoomDoorLocksBehindYouScript
 	end
 
-WillsRoomNoopScene:
+LoreleisRoomNoopScene:
 	end
 
-WillsRoomDoorsCallback:
-	checkevent EVENT_WILLS_ROOM_ENTRANCE_CLOSED
+LoreleisRoomDoorsCallback:
+	checkevent EVENT_LORELEIS_ROOM_ENTRANCE_CLOSED
 	iffalse .KeepEntranceOpen
 	changeblock 4, 14, $2a ; wall
 .KeepEntranceOpen:
-	checkevent EVENT_WILLS_ROOM_EXIT_OPEN
+	checkevent EVENT_LORELEIS_ROOM_EXIT_OPEN
 	iffalse .KeepExitClosed
 	changeblock 4, 2, $16 ; open door
 .KeepExitClosed:
 	endcallback
 
-WillsRoomDoorLocksBehindYouScript:
-	applymovement PLAYER, WillsRoom_EnterMovement
+LoreleisRoomDoorLocksBehindYouScript:
+	applymovement PLAYER, LoreleisRoom_EnterMovement
 	reanchormap $86
 	playsound SFX_STRENGTH
 	earthquake 80
 	changeblock 4, 14, $2a ; wall
 	refreshmap
 	closetext
-	setscene SCENE_WILLSROOM_NOOP
-	setevent EVENT_WILLS_ROOM_ENTRANCE_CLOSED
+	setscene SCENE_LORELEISROOM_NOOP
+	setevent EVENT_LORELEIS_ROOM_ENTRANCE_CLOSED
 	waitsfx
 	end
 
 WillScript_Battle:
 	faceplayer
 	opentext
-	checkevent EVENT_BEAT_ELITE_4_WILL
+	checkevent EVENT_BEAT_ELITE_4_LORELEI
 	iftrue WillScript_AfterBattle
 	writetext WillScript_WillBeforeText
 	waitbutton
@@ -52,7 +52,7 @@ WillScript_Battle:
 	loadtrainer LORELEI, LORELEI1 ; Kanto hack (M10 13i): class renamed; room is 13j's
 	startbattle
 	reloadmapafterbattle
-	setevent EVENT_BEAT_ELITE_4_WILL
+	setevent EVENT_BEAT_ELITE_4_LORELEI
 	opentext
 	writetext WillScript_WillDefeatText
 	waitbutton
@@ -61,7 +61,7 @@ WillScript_Battle:
 	changeblock 4, 2, $16 ; open door
 	refreshmap
 	closetext
-	setevent EVENT_WILLS_ROOM_EXIT_OPEN
+	setevent EVENT_LORELEIS_ROOM_EXIT_OPEN
 	waitsfx
 	end
 
@@ -71,7 +71,7 @@ WillScript_AfterBattle:
 	closetext
 	end
 
-WillsRoom_EnterMovement:
+LoreleisRoom_EnterMovement:
 	step UP
 	step UP
 	step UP
@@ -126,13 +126,13 @@ WillScript_WillDefeatText:
 	line "of the ELITE FOUR."
 	done
 
-WillsRoom_MapEvents:
+LoreleisRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
 	warp_event  5, 17, INDIGO_PLATEAU_POKECENTER_1F, 4
-	warp_event  4,  2, KOGAS_ROOM, 1
-	warp_event  5,  2, KOGAS_ROOM, 2
+	warp_event  4,  2, BRUNOS_ROOM, 1
+	warp_event  5,  2, BRUNOS_ROOM, 2
 
 	def_coord_events
 

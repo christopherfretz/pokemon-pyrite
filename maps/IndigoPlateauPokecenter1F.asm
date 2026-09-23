@@ -12,7 +12,7 @@
 ;
 ; Warps: Yellow's (7,11)/(8,11) forecourt door and (8,0) E4 door.  (0,11) is
 ; the POKECENTER_2F staircase every Kanto centre keeps (PORTING 15).  The E4
-; door MUST stay warp 4: WillsRoom's back-warp targets lobby warp 4.
+; door MUST stay warp 4: LoreleisRoom's back-warp targets lobby warp 4.
 ;
 ; Crystal's leftovers are gone (C-8/D133): the Wednesday rival battle (scene
 ; script, both coord_events, the RIVAL object), the TELEPORT GUY + ABRA and
@@ -40,28 +40,28 @@ IndigoPlateauPokecenter1F_MapScripts:
 ; Route 23 load already resets VR, and clearing the E4 room state on every
 ; entry is equivalent for the player.
 IndigoPlateauPokecenter1FPrepareElite4Callback:
-	setmapscene WILLS_ROOM, SCENE_WILLSROOM_LOCK_DOOR
-	setmapscene KOGAS_ROOM, SCENE_KOGASROOM_LOCK_DOOR
+	setmapscene LORELEIS_ROOM, SCENE_LORELEISROOM_LOCK_DOOR
 	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_LOCK_DOOR
-	setmapscene KARENS_ROOM, SCENE_KARENSROOM_LOCK_DOOR
+	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_LOCK_DOOR
 	setmapscene LANCES_ROOM, SCENE_LANCESROOM_LOCK_DOOR
+	setmapscene CHAMPIONS_ROOM, SCENE_CHAMPIONSROOM_LOCK_DOOR
 	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_ENTER
-	clearevent EVENT_WILLS_ROOM_ENTRANCE_CLOSED
-	clearevent EVENT_WILLS_ROOM_EXIT_OPEN
-	clearevent EVENT_KOGAS_ROOM_ENTRANCE_CLOSED
-	clearevent EVENT_KOGAS_ROOM_EXIT_OPEN
+	clearevent EVENT_LORELEIS_ROOM_ENTRANCE_CLOSED
+	clearevent EVENT_LORELEIS_ROOM_EXIT_OPEN
 	clearevent EVENT_BRUNOS_ROOM_ENTRANCE_CLOSED
 	clearevent EVENT_BRUNOS_ROOM_EXIT_OPEN
-	clearevent EVENT_KARENS_ROOM_ENTRANCE_CLOSED
-	clearevent EVENT_KARENS_ROOM_EXIT_OPEN
+	clearevent EVENT_AGATHAS_ROOM_ENTRANCE_CLOSED
+	clearevent EVENT_AGATHAS_ROOM_EXIT_OPEN
 	clearevent EVENT_LANCES_ROOM_ENTRANCE_CLOSED
 	clearevent EVENT_LANCES_ROOM_EXIT_OPEN
-	clearevent EVENT_BEAT_ELITE_4_WILL
-	clearevent EVENT_BEAT_ELITE_4_KOGA
+	clearevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
+	clearevent EVENT_CHAMPIONS_ROOM_EXIT_OPEN
+	clearevent EVENT_BEAT_ELITE_4_LORELEI
 	clearevent EVENT_BEAT_ELITE_4_BRUNO
-	clearevent EVENT_BEAT_ELITE_4_KAREN
+	clearevent EVENT_BEAT_ELITE_4_AGATHA
+	clearevent EVENT_BEAT_ELITE_4_LANCE
 	clearevent EVENT_BEAT_CHAMPION_LANCE
-	setevent EVENT_LANCES_ROOM_OAK_AND_MARY
+	setevent EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
 	endcallback
 
 IndigoPlateauPokecenter1FNurseScript:
@@ -175,7 +175,7 @@ IndigoPlateauPokecenter1F_MapEvents:
 	warp_event  7, 11, INDIGO_PLATEAU, 1
 	warp_event  8, 11, INDIGO_PLATEAU, 2
 	warp_event  0, 11, POKECENTER_2F, 1
-	warp_event  8,  0, WILLS_ROOM, 1 ; Yellow: LORELEIS_ROOM 1 (13j)
+	warp_event  8,  0, LORELEIS_ROOM, 1 ; Yellow: LORELEIS_ROOM 1 (13j)
 
 	def_coord_events
 

@@ -675,17 +675,17 @@ TeamRocketBaseB3F_Blocks:
 BetaRoute23_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaRoute23.blk"
 
-WillsRoom_Blocks:
-	INCBIN "maps/WillsRoom.blk"
-
-KogasRoom_Blocks:
-	INCBIN "maps/KogasRoom.blk"
+LoreleisRoom_Blocks:
+	INCBIN "maps/LoreleisRoom.blk"
 
 BrunosRoom_Blocks:
 	INCBIN "maps/BrunosRoom.blk"
 
-KarensRoom_Blocks:
-	INCBIN "maps/KarensRoom.blk"
+AgathasRoom_Blocks:
+	INCBIN "maps/AgathasRoom.blk"
+
+LancesRoom_Blocks:
+	INCBIN "maps/LancesRoom.blk"
 
 AzaleaGym_Blocks:
 	INCBIN "maps/AzaleaGym.blk"
@@ -921,8 +921,8 @@ UndergroundPath_Blocks:
 Route39Barn_Blocks:
 	INCBIN "maps/Route39Barn.blk"
 
-LancesRoom_Blocks:
-	INCBIN "maps/LancesRoom.blk"
+ChampionsRoom_Blocks:
+	INCBIN "maps/ChampionsRoom.blk"
 
 HallOfFame_Blocks:
 	INCBIN "maps/HallOfFame.blk"

@@ -3218,11 +3218,11 @@ wSaffronMagnetTrainStationSceneID::               db
 wRoute16GateSceneID::                             db
 wRoute17Route18GateSceneID::                      db
 wIndigoPlateauPokecenter1FSceneID::               db
-wWillsRoomSceneID::                               db
-wKogasRoomSceneID::                               db
+wLoreleisRoomSceneID::                            db
 wBrunosRoomSceneID::                              db
-wKarensRoomSceneID::                              db
+wAgathasRoomSceneID::                             db
 wLancesRoomSceneID::                              db
+wChampionsRoomSceneID::                           db
 wHallOfFameSceneID::                              db
 wRoute27SceneID::                                 db
 wNewBarkTownSceneID::                             db

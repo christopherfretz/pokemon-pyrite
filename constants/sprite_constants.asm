@@ -149,7 +149,7 @@
 ; face M8 buys -- $7e and $7f are all that is left below SPRITE_POKEMON ($80).
 	const SPRITE_SILPH_PRESIDENT    ; 7d (Yellow's SILPH CO. PRESIDENT)
 ; D58 asked for a fifth id, SPRITE_KOGA -- but Crystal already has one at $21
-; (ELITE FOUR KOGA, maps/KogasRoom.asm), and FUCHSIA's gym leader is the same
+; (Crystal's ELITE FOUR KOGA, whose room is BRUNOS_ROOM since 13j), and FUCHSIA's gym leader is the same
 ; man.  FUCHSIA GYM reuses it in 10h; no new id is spent.
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 

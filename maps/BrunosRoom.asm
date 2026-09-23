@@ -1,5 +1,5 @@
 	object_const_def
-	const BRUNOSROOM_BRUNO
+	const BRUNOSROOM_KOGA
 
 BrunosRoom_MapScripts:
 	def_scene_scripts
@@ -40,21 +40,21 @@ BrunosRoomDoorLocksBehindYouScript:
 	waitsfx
 	end
 
-BrunoScript_Battle:
+KogaScript_Battle:
 	faceplayer
 	opentext
 	checkevent EVENT_BEAT_ELITE_4_BRUNO
-	iftrue BrunoScript_AfterBattle
-	writetext BrunoScript_BrunoBeforeText
+	iftrue KogaScript_AfterBattle
+	writetext KogaScript_KogaBeforeText
 	waitbutton
 	closetext
-	winlosstext BrunoScript_BrunoBeatenText, 0
-	loadtrainer BRUNO, BRUNO1
+	winlosstext KogaScript_KogaBeatenText, 0
+	loadtrainer LANCE_E4, LANCE_E4_1 ; Kanto hack (M10 13i): class renamed; room is 13j's
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ELITE_4_BRUNO
 	opentext
-	writetext BrunoScript_BrunoDefeatText
+	writetext KogaScript_KogaDefeatText
 	waitbutton
 	closetext
 	playsound SFX_ENTER_DOOR
@@ -65,8 +65,8 @@ BrunoScript_Battle:
 	waitsfx
 	end
 
-BrunoScript_AfterBattle:
-	writetext BrunoScript_BrunoDefeatText
+KogaScript_AfterBattle:
+	writetext KogaScript_KogaDefeatText
 	waitbutton
 	closetext
 	end
@@ -78,62 +78,67 @@ BrunosRoom_EnterMovement:
 	step UP
 	step_end
 
-BrunoScript_BrunoBeforeText:
-	text "I am BRUNO of the"
+KogaScript_KogaBeforeText:
+	text "Fwahahahaha!"
+
+	para "I am KOGA of the"
 	line "ELITE FOUR."
 
-	para "I always train to"
-	line "the extreme be-"
-	cont "cause I believe in"
-	cont "our potential."
+	para "I live in shadows,"
+	line "a ninja!"
 
-	para "That is how we"
-	line "became strong."
+	para "My intricate style"
+	line "will confound and"
+	cont "destroy you!"
 
-	para "Can you withstand"
-	line "our power?"
+	para "Confusion, sleep,"
+	line "poison…"
 
-	para "Hm? I see no fear"
-	line "in you. You look"
+	para "Prepare to be the"
+	line "victim of my sin-"
+	cont "ister technique!"
 
-	para "determined. Per-"
-	line "fect for battle!"
+	para "Fwahahahaha!"
 
-	para "Ready, <PLAYER>?"
-	line "You will bow down"
+	para "#MON is not"
+	line "merely about brute"
 
-	para "to our overwhelm-"
-	line "ing power!"
-
-	para "Hoo hah!"
+	para "force--you shall"
+	line "see soon enough!"
 	done
 
-BrunoScript_BrunoBeatenText:
-	text "Why? How could we"
-	line "lose?"
+KogaScript_KogaBeatenText:
+	text "Ah!"
+	line "You have proven"
+	cont "your worth!"
 	done
 
-BrunoScript_BrunoDefeatText:
-	text "Having lost, I"
-	line "have no right to"
-	cont "say anything…"
+KogaScript_KogaDefeatText:
+	text "I subjected you to"
+	line "everything I could"
+	cont "muster."
 
-	para "Go face your next"
-	line "challenge!"
+	para "But my efforts"
+	line "failed. I must"
+	cont "hone my skills."
+
+	para "Go on to the next"
+	line "room, and put your"
+	cont "abilities to test!"
 	done
 
 BrunosRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4, 17, KOGAS_ROOM, 3
-	warp_event  5, 17, KOGAS_ROOM, 4
-	warp_event  4,  2, KARENS_ROOM, 1
-	warp_event  5,  2, KARENS_ROOM, 2
+	warp_event  4, 17, LORELEIS_ROOM, 2
+	warp_event  5, 17, LORELEIS_ROOM, 3
+	warp_event  4,  2, AGATHAS_ROOM, 1
+	warp_event  5,  2, AGATHAS_ROOM, 2
 
 	def_coord_events
 
 	def_bg_events
 
 	def_object_events
-	object_event  5,  7, SPRITE_BRUNO, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, BrunoScript_Battle, -1
+	object_event  5,  7, SPRITE_KOGA, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, KogaScript_Battle, -1
