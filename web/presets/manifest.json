@@ -244,5 +244,95 @@
   "title": "VIRIDIAN CITY \u2014 the rival's gym (post-game)",
   "description": "Outside the VIRIDIAN GYM door after the HALL OF FAME, flown in from 'KANTO COMPLETE'. The rival has taken over GIOVANNI's tile inside and offers a flagless, repeatable rematch. Same fakes as 'KANTO COMPLETE' (the level-100 party, RAINBOW/SOUL badges).",
   "sav": "viridian_rival.sav"
+ },
+ {
+  "id": "newbark",
+  "title": "NEW BARK TOWN \u2014 just arrived from KANTO",
+  "description": "Walked from 'KANTO COMPLETE': OAK's hand-off and HM07, the ROUTE 22 GATE's south door, ROUTES 26/27 and TOHJO FALLS, into NEW BARK. ELM has not been met yet. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "newbark.sav"
+ },
+ {
+  "id": "elm_starter",
+  "title": "NEW BARK TOWN \u2014 ELM's starter in hand",
+  "description": "Outside ELM's LAB with the Johto starter really chosen and the errand to MR.POK\u00e9MON given. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "elm_starter.sav"
+ },
+ {
+  "id": "cherrygrove_rival",
+  "title": "CHERRYGROVE CITY \u2014 SILVER's first scene",
+  "description": "Back from MR.POK\u00e9MON with the MYSTERY EGG (OAK's cameo played), just past SILVER's CHERRYGROVE scene. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "cherrygrove_rival.sav"
+ },
+ {
+  "id": "falkner",
+  "title": "VIOLET CITY \u2014 ZEPHYRBADGE won for real",
+  "description": "SPROUT TOWER climbed (HM05 FLASH) and FALKNER fought. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "falkner.sav"
+ },
+ {
+  "id": "bugsy",
+  "title": "ILEX FOREST GATE \u2014 HIVEBADGE won for real",
+  "description": "UNION CAVE, the SLOWPOKE WELL, BUGSY and SILVER at the AZALEA gate all fought; standing in the ILEX FOREST gate. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "bugsy.sav"
+ },
+ {
+  "id": "whitney",
+  "title": "GOLDENROD CITY \u2014 PLAINBADGE won for real",
+  "description": "ILEX FOREST (the FARFETCH'D, HM01 CUT) and ROUTE 34 walked, WHITNEY fought. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "whitney.sav"
+ },
+ {
+  "id": "morty",
+  "title": "ECRUTEAK CITY \u2014 FOGBADGE won for real",
+  "description": "The SQUIRTBOTTLE, SUDOWOODO, the BURNED TOWER (SILVER, the three beasts released) and MORTY all played. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "morty.sav"
+ },
+ {
+  "id": "chuck",
+  "title": "CIANWOOD CITY \u2014 STORMBADGE won for real",
+  "description": "JASMINE met at the LIGHTHOUSE, HM04 STRENGTH from the CAFE, SURFED to CIANWOOD, the gym's boulders pushed and CHUCK fought. The SECRETPOTION is NOT fetched yet. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "chuck.sav"
+ },
+ {
+  "id": "jasmine",
+  "title": "OLIVINE CITY \u2014 MINERALBADGE won for real",
+  "description": "The SECRETPOTION taken to the LIGHTHOUSE and JASMINE fought: five Johto badges, power back in KANTO. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "jasmine.sav"
+ },
+ {
+  "id": "pryce",
+  "title": "MAHOGANY TOWN \u2014 GLACIERBADGE, the RADIO TOWER taken over",
+  "description": "After the S.S.AQUA both ways, the COPYCAT's PASS and the MAGNET TRAIN both ways: the RED GYARADOS, LANCE, the MART stairs, the ROCKET BASE (JESSIE & JAMES, the executive, three ELECTRODEs) and PRYCE, all fought. FAKED as well: the ROCKET BASE's floors (cameras, traps, passwords, LANCE's heal) were skipped by flag + warp to the office door, and the walk back out of the base; the S.S.AQUA's weekday; the POK\u00e9 DOLL. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "pryce.sav"
+ },
+ {
+  "id": "radio_tower",
+  "title": "GOLDENROD CITY \u2014 the RADIO TOWER freed, CLEAR BELL",
+  "description": "The fake DIRECTOR, the BASEMENT KEY, SILVER in the UNDERGROUND, JESSIE & JAMES on 4F and the executive on 5F all fought; the CLEAR BELL in the bag. FAKED as well: the UNDERGROUND shutter-switch puzzle and the WAREHOUSE DIRECTOR (the CARD KEY was written into the bag). FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "radio_tower.sav"
+ },
+ {
+  "id": "clair",
+  "title": "BLACKTHORN CITY \u2014 RISINGBADGE, TM24, MT.SILVER open",
+  "description": "The ICE PATH, CLAIR, SILVER in the DRAGON'S DEN and the SHRINE's test all played: eight Johto badges, TM24 from CLAIR. Also FAKED: the ICE PATH's and the BLACKTHORN GYM's STRENGTH boulders count as pushed down their holes (the slides and the GYM's trainers are played). FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "clair.sav"
+ },
+ {
+  "id": "mtsilver_foot",
+  "title": "MT.SILVER \u2014 SILVER waiting at the cave mouth",
+  "description": "Walked from BLACKTHORN back through NEW BARK, up TOHJO FALLS, the ROUTE 22 GATE's west door and ROUTE 28, up to SILVER's last fight (not fought yet). FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "mtsilver_foot.sav"
+ },
+ {
+  "id": "lance_room",
+  "title": "SILVER CAVE \u2014 the summit, LANCE ahead",
+  "description": "SILVER beaten at the foot; the cave climbed to the summit room with LANCE on Red's tile, not fought yet. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "lance_room.sav"
+ },
+ {
+  "id": "johto_complete",
+  "title": "NEW BARK TOWN \u2014 JOHTO COMPLETE",
+  "description": "LANCE fought on MT.SILVER, the credits played, then CONTINUE at NEW BARK: the post-game is open (ELM's MASTER BALL, the SUICUNE chase, TIN TOWER). FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
+  "sav": "johto_complete.sav"
  }
 ]
