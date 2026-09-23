@@ -551,7 +551,7 @@ ENDM
 	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $2e
 	map_attributes SafariZoneFuchsiaGateBeta, SAFARI_ZONE_FUCHSIA_GATE_BETA, $00
 	map_attributes SafariZoneBeta, SAFARI_ZONE_BETA, $13
-	map_attributes VictoryRoad, VICTORY_ROAD, $1d
+	map_attributes VictoryRoad1F, VICTORY_ROAD_1F, $1d
 	map_attributes MtMoon1F, MT_MOON_1F, $01
 	map_attributes MtMoonB1F, MT_MOON_B1F, $01
 	map_attributes MtMoonB2F, MT_MOON_B2F, $01
@@ -585,6 +585,10 @@ ENDM
 	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $1d
 	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $1d
 	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $1d
+; M10 13f: Yellow's VICTORY ROAD 2F/3F take the same cavern $7d border -> $1d
+; (1F keeps Crystal's VictoryRoad row, renamed).
+	map_attributes VictoryRoad2F, VICTORY_ROAD_2F, $1d
+	map_attributes VictoryRoad3F, VICTORY_ROAD_3F, $1d
 	map_attributes CinnabarMart, CINNABAR_MART, $00
 ; 12i: the four LAB maps take Yellow's own border, block $17 (`db $17 ; border
 ; block` in all four of vendor/pokeyellow/data/maps/objects/CinnabarLab*.asm) --

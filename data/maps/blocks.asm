@@ -924,9 +924,6 @@ UndergroundPath_Blocks:
 Route39Barn_Blocks:
 	INCBIN "maps/Route39Barn.blk"
 
-VictoryRoad_Blocks:
-	INCBIN "maps/VictoryRoad.blk"
-
 LancesRoom_Blocks:
 	INCBIN "maps/LancesRoom.blk"
 
@@ -1441,5 +1438,17 @@ Route23_Blocks:
 ; TILESET_KANTO_PLATEAU (moved here from "Map Blocks 3"); scripts/kanto_plateau_blk.py.
 IndigoPlateau_Blocks:
 	INCBIN "maps/IndigoPlateau.blk"
+
+; M10 13f: Yellow's three VICTORY ROAD floors on TILESET_CAVE (1F 90 B, 2F/3F
+; 135 B each); scripts/vr_blk.py.  1F moved here from "Map Blocks 2" ($2b),
+; where Crystal's 10x36 VictoryRoad.blk (360 B) is gone.
+VictoryRoad1F_Blocks:
+	INCBIN "maps/VictoryRoad1F.blk"
+
+VictoryRoad2F_Blocks:
+	INCBIN "maps/VictoryRoad2F.blk"
+
+VictoryRoad3F_Blocks:
+	INCBIN "maps/VictoryRoad3F.blk"
 
 ENDSECTION

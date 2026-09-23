@@ -654,32 +654,97 @@ KantoGrassWildMons:
 	db 30, DEWGONG
 	end_grass_wildmons
 
-	def_grass_wildmons VICTORY_ROAD
+; M10 13f: VICTORY ROAD (vendor/pokeyellow/data/wild/maps/VictoryRoad*.asm).
+; Yellow's rates: 1F/3F 15 -> 6 percent, 2F 10 -> 4 percent (both exact).  No
+; water on any floor (FISHGROUP_NONE).  Ten Yellow slots fold into Crystal's
+; seven (30/30/20/10/5/4/1) keeping Yellow's order and every species; the
+; dropped slots minimise each species' share error against Yellow's (ties:
+; squared error, then mean level) -- docs/M10-INDIGO.md "13f findings".
+; VICTORY_ROAD_1F: dropped slots 2 (31 GEODUDE), 4 (39 ZUBAT) and 10 (47 GRAVELER).
+	def_grass_wildmons VICTORY_ROAD_1F
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn
-	db 34, GRAVELER
-	db 32, RHYHORN
-	db 33, ONIX
-	db 34, GOLBAT
-	db 35, SANDSLASH
-	db 35, RHYDON
-	db 35, RHYDON
+	db 26, GEODUDE
+	db 36, GEODUDE
+	db 44, ZUBAT
+	db 41, GEODUDE
+	db 43, ONIX
+	db 45, ONIX
+	db 41, GRAVELER
 	; day
-	db 34, GRAVELER
-	db 32, RHYHORN
-	db 33, ONIX
-	db 34, GOLBAT
-	db 35, SANDSLASH
-	db 35, RHYDON
-	db 35, RHYDON
+	db 26, GEODUDE
+	db 36, GEODUDE
+	db 44, ZUBAT
+	db 41, GEODUDE
+	db 43, ONIX
+	db 45, ONIX
+	db 41, GRAVELER
 	; nite
-	db 34, GOLBAT
-	db 34, GRAVELER
-	db 32, ONIX
-	db 36, GRAVELER
-	db 38, GRAVELER
-	db 40, GRAVELER
-	db 40, GRAVELER
+	db 26, GEODUDE
+	db 36, GEODUDE
+	db 44, ZUBAT
+	db 41, GEODUDE
+	db 43, ONIX
+	db 45, ONIX
+	db 41, GRAVELER
+	end_grass_wildmons
+
+; VICTORY_ROAD_2F: dropped slots 2 (36 GEODUDE), 7 (45 ONIX) and 9 (39 MACHOKE).
+	def_grass_wildmons VICTORY_ROAD_2F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 31, GEODUDE
+	db 41, GEODUDE
+	db 44, ZUBAT
+	db 39, GOLBAT
+	db 44, GRAVELER
+	db 47, ONIX
+	db 42, MACHOKE
+	; day
+	db 31, GEODUDE
+	db 41, GEODUDE
+	db 44, ZUBAT
+	db 39, GOLBAT
+	db 44, GRAVELER
+	db 47, ONIX
+	db 42, MACHOKE
+	; nite
+	db 31, GEODUDE
+	db 41, GEODUDE
+	db 44, ZUBAT
+	db 39, GOLBAT
+	db 44, GRAVELER
+	db 47, ONIX
+	db 42, MACHOKE
+	end_grass_wildmons
+
+; VICTORY_ROAD_3F: dropped slots 5 (46 GEODUDE), 7 (42 MACHOKE) and 10 (47 GRAVELER).
+	def_grass_wildmons VICTORY_ROAD_3F
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 36, GEODUDE
+	db 44, GOLBAT
+	db 41, GEODUDE
+	db 49, ONIX
+	db 41, GRAVELER
+	db 45, MACHOKE
+	db 47, GRAVELER
+	; day
+	db 36, GEODUDE
+	db 44, GOLBAT
+	db 41, GEODUDE
+	db 49, ONIX
+	db 41, GRAVELER
+	db 45, MACHOKE
+	db 47, GRAVELER
+	; nite
+	db 36, GEODUDE
+	db 44, GOLBAT
+	db 41, GEODUDE
+	db 49, ONIX
+	db 41, GRAVELER
+	db 45, MACHOKE
+	db 47, GRAVELER
 	end_grass_wildmons
 
 	def_grass_wildmons TOHJO_FALLS

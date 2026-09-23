@@ -24,7 +24,7 @@
 ;    corridor.  With the flag set, both behave exactly as in Crystal (M11).
 ;  * NORTH door (9,0)/(10,0): ROUTE_23's south mouth (M10 13e-1), Yellow's
 ;    ROUTE 22 GATE north exit.  (13d parked it on itself, because Crystal's
-;    VICTORY_ROAD behind it leads to Crystal's Silver fight and the Indigo
+;    VICTORY_ROAD behind it led to Crystal's Silver fight and the Indigo
 ;    lobby's TELEPORT GUY -> NEW BARK, C-8/C-12.)
 VictoryRoadGate_MapScripts:
 	def_scene_scripts

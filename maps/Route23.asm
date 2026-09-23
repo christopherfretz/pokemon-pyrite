@@ -288,13 +288,11 @@ Route23_MapEvents:
 	def_warp_events
 	warp_event  7, 139, VICTORY_ROAD_GATE, 5 ; Yellow: ROUTE_22_GATE, 3
 	warp_event  8, 139, VICTORY_ROAD_GATE, 6 ; Yellow: ROUTE_22_GATE, 4
-	; Yellow: VICTORY_ROAD_1F, 1.  13f: Crystal's VICTORY_ROAD warp 1 is the
-	; gate-side mouth; its own exit back leads to VICTORY_ROAD_GATE 5.
-	warp_event  4,  31, VICTORY_ROAD, 1
-	; Yellow: VICTORY_ROAD_2F, 2.  Interim (13e-2): paired with Crystal's
-	; VICTORY_ROAD top exit (13,5), which used to open onto the old forecourt's
-	; VR mouth; 13f re-points both to Yellow's VICTORY ROAD 2F.
-	warp_event 14,  31, VICTORY_ROAD, 10
+	; Yellow: VICTORY_ROAD_1F, 1 (M10 13f: Crystal's VICTORY_ROAD re-cut to it).
+	warp_event  4,  31, VICTORY_ROAD_1F, 1
+	; Yellow: VICTORY_ROAD_2F, 2 -- 2F's east map-edge exit (29,7)/(29,8), a
+	; WARP_CARPET_RIGHT pair; this door steps the player down to (14,32).
+	warp_event 14,  31, VICTORY_ROAD_2F, 2
 	; North edge: Yellow's connection to INDIGO PLATEAU (data/maps/attributes.asm).
 
 	def_coord_events

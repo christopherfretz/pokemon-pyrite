@@ -156,11 +156,13 @@ ENDM
 	; Rock Tunnel savestate fixtures.  10o decides whether to retire them.
 	map_const SAFARI_ZONE_FUCHSIA_GATE_BETA,                5,  4 ; 88 ; unused
 	map_const SAFARI_ZONE_BETA,                            10, 18 ; 89 ; unused
-	map_const VICTORY_ROAD,                                10, 36 ; 90
+	map_const VICTORY_ROAD_1F,                             10,  9 ; 90 ; M10 13f: Crystal's VICTORY_ROAD re-cut to Yellow's 1F
 	map_const MT_MOON_1F,                                  20, 18 ; 91
 	map_const MT_MOON_B1F,                                 14, 14 ; 92
 	map_const MT_MOON_B2F,                                 20, 18 ; 93
 	map_const UNDERGROUND_PATH_WEST_EAST,                  25,  4 ; 94
+	map_const VICTORY_ROAD_2F,                             15,  9 ; 95 ; M10 13f
+	map_const VICTORY_ROAD_3F,                             15,  9 ; 96 ; M10 13f
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4

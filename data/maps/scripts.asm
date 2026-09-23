@@ -122,7 +122,7 @@ INCLUDE "maps/Route7UndergroundPathEntrance.asm"
 INCLUDE "maps/Route8UndergroundPathEntrance.asm"
 INCLUDE "maps/SafariZoneFuchsiaGateBeta.asm"
 INCLUDE "maps/SafariZoneBeta.asm"
-INCLUDE "maps/VictoryRoad.asm"
+INCLUDE "maps/VictoryRoad1F.asm" ; M10 13f: Crystal's VictoryRoad re-cut to Yellow's 1F
 INCLUDE "maps/OlivinePort.asm"
 INCLUDE "maps/VermilionPort.asm"
 INCLUDE "maps/FastShip1F.asm"
@@ -639,6 +639,10 @@ INCLUDE "maps/PokemonMansion1F.asm"
 INCLUDE "maps/PokemonMansion2F.asm"
 INCLUDE "maps/PokemonMansion3F.asm"
 INCLUDE "maps/PokemonMansionB1F.asm"
+; M10 13f: Yellow's VICTORY ROAD 2F/3F ($76 has the slack; 1F stays in
+; "Map Scripts 8", where Crystal's VictoryRoad lived).
+INCLUDE "maps/VictoryRoad2F.asm"
+INCLUDE "maps/VictoryRoad3F.asm"
 
 ENDSECTION
 
