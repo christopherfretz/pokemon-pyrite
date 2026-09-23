@@ -156,9 +156,14 @@ BikeShopYoungsterCoolBikeText:
 	line "really cool!"
 	done
 
-; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow's hidden PrintNewBikeText
-; (engine/events/hidden_events/new_bike.asm, any facing) on (2,1), the one of
-; its six BICYCLE squares that is a std-script TV tile in our room.
+; BG1Q1 + BG2 (docs/BG1-BENCH-AND-SHELVES.md): Yellow's hidden PrintNewBikeText
+; (engine/events/hidden_events/new_bike.asm, any facing) on all six of its
+; BICYCLE squares (vendor/pokeyellow/data/events/hidden_events.asm BIKE_SHOP).
+; BG1 did (2,1), the one that is a std-script TV tile in our room; BG2 adds the
+; other five.  Text follows Yellow's square, not our House1 art: (1,2), (3,2),
+; (0,4) and (1,5) are plain floor here (bikes, so solid, in Yellow) and read
+; when faced from a neighbour; (1,0) is back wall behind the (1,1) bookshelf,
+; so no square faces it -- kept for parity, unreachable.
 BikeShopBG1Q1NewBicycle:
 	jumptext BikeShopBG1Q1NewBicycleText
 
@@ -177,7 +182,12 @@ BikeShop_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  1,  0, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG2 (unreachable: back wall)
 	bg_event  2,  1, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG1Q1
+	bg_event  1,  2, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG2
+	bg_event  3,  2, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG2
+	bg_event  0,  4, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG2
+	bg_event  1,  5, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG2
 
 	def_object_events
 	object_event  6,  2, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BikeShopClerkScript, -1
