@@ -69,7 +69,7 @@ Route16AlwaysOnBikeCallback:
 ; `reloadmapafterbattle` because that command jp's to the whiteout on LOSE.
 ; Only the two wake texts differ from ROUTE 12's: Yellow gives ROUTE 16 its own
 ; _Route16SnorlaxReturnedToMountainsText.
-Route16Snorlax:
+Route16Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	opentext
 	checkitem POKE_FLUTE
 	iffalse .Asleep

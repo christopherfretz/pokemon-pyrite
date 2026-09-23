@@ -927,14 +927,17 @@ DEF PIKAPIC_BG_PAL EQU PAL_BG_TEXT
 _CGB_Pikapic:
 	call _CGB_MapPals
 IF PIKAPIC_TRUE_PALETTE
-	ld a, [wCurPartySpecies]
-	push af
-	ld a, PIKACHU
-	ld [wCurPartySpecies], a
-	ld e, PIKAPIC_BG_PAL
-	call LoadMonPaletteAsNthBGPal
-	pop af
-	ld [wCurPartySpecies], a
+; PE1 / E8c: Yellow colours this box with its own PAL_PIKACHU_PORTRAIT
+; (LoadOverworldPikachuFrontpicPalettes, vendor/pokeyellow/engine/gfx/
+; palettes.asm), not the Pikachu *mon* palette -- orange / brown, where
+; Crystal's PIKACHU palette is yellow / red.  Measured in both harnesses:
+; Yellow's box reads (248,144,0) / (152,56,8), ours read (232,208,40) /
+; (208,48,0).  All four colours are Yellow's CGB values, black included.
+	ld hl, PikapicPortraitPalette
+	ld de, wBGPals1 palette PIKAPIC_BG_PAL
+	ld bc, 1 palettes
+	ld a, BANK(wBGPals1)
+	call FarCopyWRAM
 ENDC
 	hlcoord PIKAPIC_BOX_X, PIKAPIC_BOX_Y, wAttrmap
 	lb bc, PIKAPIC_BOX_H, PIKAPIC_BOX_W
@@ -946,6 +949,10 @@ ENDC
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
+
+PikapicPortraitPalette:
+; Yellow's CGB PAL_PIKACHU_PORTRAIT (vendor/pokeyellow/data/sgb/sgb_palettes.asm).
+	RGB 31,31,31, 31,18,00, 19,07,01, 03,03,03
 
 RestorePikapicMapPals::
 ; ClosePikapicBox's counterpart to _CGB_Pikapic.  GetMemSGBLayout -> SCGB_MAPPALS

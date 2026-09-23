@@ -197,6 +197,9 @@ SpecialsPointers::
 	add_special FanClubPhoto
 	add_special FanClubPikachuScene
 	add_special FanClubPikachuFace
+	add_special BillsHousePikachuConfused
+	add_special BillsHousePikachuIntoPod
+	add_special BillsHousePikachuSurprised
 	add_special SSAnneDeparture
 	add_special InitVermilionGymTrashCans
 	add_special VermilionGymTrashCan

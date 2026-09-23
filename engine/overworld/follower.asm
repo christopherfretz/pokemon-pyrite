@@ -908,6 +908,60 @@ FanClubPikachuStep:
 	ret
 
 
+; --- PE1: Bill's Sea Cottage (A3 row 3), called from engine/pikachu/emotions.asm.
+DEF BILLSHOUSE_PIKACHU_X EQU 6 + 4 ; Yellow's (6,6): below BILL-as-a-#MON
+DEF BILLSHOUSE_PIKACHU_Y EQU 6 + 4
+
+BillsHousePikachuWalkIn::
+; Yellow's PikachuMovement_Confused is RIGHT x3, UP from Yellow's door tile
+; (3,7).  Ours walks to the same landing tile a step at a time, so either of
+; our two door tiles works: right along the door row to x=6, then up to y=6.
+	ld bc, wFollowerStruct
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	res INVISIBLE_F, [hl]
+.rightward
+	ld a, [wFollowerMapX]
+	cp BILLSHOUSE_PIKACHU_X
+	jr nc, .upward
+	ld d, RIGHT
+	call FanClubPikachuStep
+	jr c, .rightward
+	ret
+.upward
+	ld a, [wFollowerMapY]
+	cp BILLSHOUSE_PIKACHU_Y + 1
+	ret c
+	ld d, UP
+	call FanClubPikachuStep
+	jr c, .upward
+	ret
+
+BillsHousePikachuWalkToPod::
+; Yellow's BillsHouseScript3 pair of blobs, from (6,6) to (6,3).  Player facing
+; DOWN stands on (6,4), so Pikachu goes round them.
+	ld a, [wPlayerDirection]
+	and %00001100
+	cp DOWN << 2
+	ld hl, .Straight
+	jr nz, .loop
+	ld hl, .AroundPlayer
+.loop
+	ld a, [hli]
+	cp -1
+	ret z
+	ld d, a
+	push hl
+	call FanClubPikachuStep
+	pop hl
+	jr .loop
+
+.Straight:
+	db UP, UP, UP, -1
+.AroundPlayer:
+	db UP, LEFT, UP, UP, RIGHT, -1
+
+
 ; --- 12n: CINNABAR GYM, a wrong quiz answer (docs/M9-CINNABAR.md 12n).
 CinnabarGymPikachuStepAside::
 ; Special.  Yellow's CinnabarGymScript_74fa3 (vendor/pokeyellow/scripts/

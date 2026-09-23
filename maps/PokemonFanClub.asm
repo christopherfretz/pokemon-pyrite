@@ -396,6 +396,8 @@ PokemonFanClubReceptionistText:
 ; the picture comes first and the line follows on A, the same order ELM's lab
 ; uses for the starter Poke Balls (hack/maps/ElmsLab.asm:164-169).
 PokemonFanClubRapidashPicture:
+	reanchormap ; PE1 / E8e: pokepic needs the BG map anchored (ElmsLab.asm idiom);
+	            ; without it the box landed off-centre, clipped at the screen edge
 	pokepic RAPIDASH
 	waitbutton
 	closepokepic
@@ -406,6 +408,8 @@ PokemonFanClubRapidashPicture:
 	end
 
 PokemonFanClubFearowPicture:
+	reanchormap ; PE1 / E8e: pokepic needs the BG map anchored (ElmsLab.asm idiom);
+	            ; without it the box landed off-centre, clipped at the screen edge
 	pokepic FEAROW
 	waitbutton
 	closepokepic

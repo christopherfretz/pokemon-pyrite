@@ -66,11 +66,20 @@ BillsHouse_MapScripts:
 BillsHouseNoopScene:
 	end
 
-; Both scenes are no-ops - nothing here is triggered by walking, the beat
-; starts when you talk to BILL.  The scene is still the map's stored state
-; (and what a future sub-step would hang a coord_event off), and it is
-; recomputed here so a white-out or a save/reload can never desync it from
-; the objects.
+; Both scenes are no-ops.  The stored scene is recomputed below on every load
+; so a white-out or a save/reload can never desync it from the objects, and
+; SCENE_BILLSHOUSE_BILL_IS_A_POKEMON arms the Pikachu coord_event (PE1).
+BillsHousePikachuSceneScript:
+; PE1 / A3 row 3: Yellow's BillsHouseScript0 (vendor/pokeyellow/scripts/
+; BillsHouse.asm:41) runs BillsHousePikachuConfused on the frame the map comes
+; up.  GSC has no per-frame map script, so -- exactly like the Fan Club's
+; scene (maps/PokemonFanClub.asm) -- it is a coord_event on the two tiles in
+; front of the doors, the player's first step in; Pikachu is on the door tile
+; behind them.  The special does all of Yellow's gating (once per visit,
+; starter out, no status) and plays emotion 23 itself.
+	special BillsHousePikachuConfused
+	end
+
 BillsHouseObjectsCallback:
 	checkevent EVENT_GOT_SS_TICKET
 	iftrue .Helped
@@ -123,6 +132,9 @@ BillsHouseBillPokemonScript:
 	applymovement BILLSHOUSE_BILL_POKEMON, BillsHouseBillAroundPlayer
 .InThePod:
 	disappear BILLSHOUSE_BILL_POKEMON
+; PE1: Yellow's BillsHouseScript3 -- a parked Pikachu follows BILL to the
+; machine and plays emotion 32.  No-op while Pikachu follows the player.
+	special BillsHousePikachuIntoPod
 	setevent EVENT_BILL_SAID_USE_CELL_SEPARATOR
 	end
 
@@ -203,11 +215,10 @@ BillsHousePCScript:
 ; (SPRITEMOVEDATA_STANDING_LEFT), and the player is shoved three tiles east to
 ; (5,2) so the two of them end up nose to nose, as in Yellow.
 	appear BILLSHOUSE_BILL_1
-; Yellow puts the "!" over PIKACHU (EXCLAMATION_BUBBLE on sprite $f).  GSC's
-; showemote takes a MAP object index and the follower is an object STRUCT
-; (FOLLOWER_OBJECT = 13, docs/PORTING.md 12) with no map object behind it, so
-; there is nothing for showemote to resolve; the bubble goes over the player.
-	showemote EMOTE_SHOCK, PLAYER, 15
+; PE1: Yellow's BillsHouseScript5 -- a parked Pikachu looks LEFT, gets the
+; EXCLAMATION_BUBBLE and plays emotion 27.  With Pikachu following, Yellow shows
+; no bubble at all (the old stand-in "!" over the player is gone).
+	special BillsHousePikachuSurprised
 	applymovement PLAYER, BillsHousePlayerStepAside
 	setevent EVENT_USED_CELL_SEPARATOR_ON_BILL
 	sjump BillsHouseBillThanks
@@ -373,6 +384,8 @@ BillsHouse_MapEvents:
 	warp_event  3,  7, ROUTE_25, 1
 
 	def_coord_events
+	coord_event  2,  6, SCENE_BILLSHOUSE_BILL_IS_A_POKEMON, BillsHousePikachuSceneScript
+	coord_event  3,  6, SCENE_BILLSHOUSE_BILL_IS_A_POKEMON, BillsHousePikachuSceneScript
 
 	def_bg_events
 	bg_event  2,  1, BGEVENT_UP, BillsHousePCScript

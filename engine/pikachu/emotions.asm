@@ -179,16 +179,13 @@ MapSpecificPikachuExpression:
 	and a
 	ldpikaemotion a, PikachuEmotion28
 	jr nz, .play_emotion
-; Yellow follows with POKEMON_TOWER_1F..POKEMON_TOWER_7F -> emotion 22.
-; TODO A3 row 2: Lavender Town is not ported yet, so there is no map constant
-; to compare against.  Reinstate this when POKEMON_TOWER_* exists:
-;	ld a, [wMapNumber]
-;	cp MAP_POKEMON_TOWER_1F
-;	jr c, .not_in_lavender_tower
-;	cp POKEMON_TOWER_7F + 1
-;	ldpikaemotion a, PikachuEmotion22
-;	jr c, .play_emotion
-;.not_in_lavender_tower
+; A3 row 11 (PE1): Yellow's `cp POKEMON_TOWER_1F / cp POKEMON_TOWER_7F + 1`
+; range -> emotion 22, after the status checks and before the modifier table.
+; Our Tower floors are not contiguous map ids (D24), so ask ghost.asm.
+; farcall keeps the flags; ld does not touch them.
+	farcall IsInPokemonTower
+	ldpikaemotion a, PikachuEmotion22
+	jr c, .play_emotion
 	call GetPikachuEmotionModifier
 	and a
 	jr z, .mood_based_emotion
@@ -226,18 +223,25 @@ PikachuCheckCurMap:
 	ret
 
 BillsHouse_CheckPikachuEmotion:
-; A3 row 3, ported from vendor/pokeyellow/scripts/BillsHouse_2.asm.  Yellow's
-; SCRIPT_BILLSHOUSE_SCRIPT0/5 arms belong to its map-script state machine, which
-; Crystal's scene system does not mirror; those two only fire mid-scene, so the
-; two event-driven arms are what a player can actually reach.
+; A3 row 3 (PE1), ported from vendor/pokeyellow/scripts/BillsHouse_2.asm.
+; Yellow gates this on CheckPikachuFollowingPlayer returning NZ, i.e. Pikachu
+; PARKED by BillsHousePikachuConfused (our wPikaAsleep, the same bit the Fan
+; Club and the Pewter JIGGLYPUFF use).  A following Pikachu gets the ordinary
+; mood face here, as it does on every later visit (measured in the Yellow
+; harness, docs/PIKACHU-EMOTIONS.md "PE1 findings").  Yellow's SCRIPT0 -> 23
+; and SCRIPT5 -> 27 arms are only ever reached by the scene's own automatic
+; plays, which our BillsHousePikachu* specials name directly; what a TALK can
+; reach is these two.
 	ld e, $ff
 	ld bc, GROUP_BILLS_HOUSE << 8 | MAP_BILLS_HOUSE
 	call PikachuCheckCurMap
 	ret nz
-	call CheckPikachuFollowingPlayer
-	ret nc
-; Yellow: EVENT_MET_BILL_2, set at the end of the cell-separator scene, which is
-; our EVENT_USED_CELL_SEPARATOR_ON_BILL (docs/M3-CERULEAN.md 6j).
+	ld a, [wPikaAsleep]
+	and a
+	ret z
+; Yellow: EVENT_MET_BILL_2, set as BILL walks out of the machine.  Ours is
+; EVENT_USED_CELL_SEPARATOR_ON_BILL, set at the same beat by the PC script
+; (docs/M3-CERULEAN.md 6j); both come before the ticket.
 	ld de, EVENT_USED_CELL_SEPARATOR_ON_BILL
 	ld b, CHECK_FLAG
 	call EventFlagAction
@@ -566,9 +570,15 @@ StarterPikachuEmotionCommand_subcmd:
 	jp StarterPikachuEmotionCommand_9
 
 .CheckBillsHouse:
-; TODO A3 row 3 (scene half): Yellow's PikachuBillsHouseCheck runs
-; BillsHousePikachuConfused, which walks Pikachu around the player with the
-; diagonal step opcodes we did not port.  The emotion itself still plays.
+; Yellow's PikachuBillsHouseCheck (vendor/pokeyellow/engine/pikachu/
+; pikachu_movement.asm:989): emotion 31 (the parked Pikachu, talked to after the
+; ticket) sends it back to following -- and, unlike the Pewter and Fan Club
+; checks, WITHOUT turning away from the player.
+	ld bc, GROUP_BILLS_HOUSE << 8 | MAP_BILLS_HOUSE
+	call PikachuCheckCurMap
+	ret nz
+	xor a
+	ld [wPikaAsleep], a
 	ret
 
 StarterPikachuEmotionCommand_9:
@@ -886,6 +896,98 @@ FanClubPikachuFace::
 ; Pikachu.  MapSpecificPikachuExpression would pick emotion 29 here anyway, but
 ; Yellow names the script, so name it.
 	ldpikaemotion e, PikachuEmotion29
+	jp PlaySpecificPikachuEmotion
+
+; === Bill's Sea Cottage (A3 row 3, PE1) ====================================
+; Yellow's three automatic Pikachu beats in scripts/BillsHouse.asm, as specials
+; called from maps/BillsHouse.asm.  All three are Yellow's, measured in the
+; Yellow harness: 23 on the way in, 32 as BILL goes into the machine, 27 when he
+; comes out -- the last two only while Pikachu is still parked.
+
+BillsHousePikachuConfused::
+; Special.  Yellow's BillsHouseScript0 -> BillsHousePikachuConfused
+; (scripts/BillsHouse_2.asm:107): once per visit, before MET_BILL_2, Pikachu
+; walks RIGHT x3, UP (to Yellow's (6,6), just below BILL-as-a-#MON), shows a
+; "?" bubble, is parked (DisablePikachuFollowingPlayer) and plays emotion 23.
+; The coord_event's scene already stops it after the ticket.
+	ld a, FALSE
+	ld [wScriptVar], a
+; Yellow's BillsHouse_CheckMetBill sets BIT_PIKACHU_MAP_SCRIPT_ACTIVE on the
+; first frame whether or not the scene can play, and the Fan Club shares the
+; bit; wPikaFanClubSceneDone is that bit (SpawnFollower clears it per visit).
+	ld a, [wPikaFanClubSceneDone]
+	and a
+	ret nz
+	ld a, TRUE
+	ld [wPikaFanClubSceneDone], a
+; Yellow: BIT_PIKACHU_SPAWN_STARTER, then CheckPikachuStatusCondition.
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	farcall IsStarterPikachuAliveInParty
+	ret nc
+	ld a, [wPikaAsleep]
+	and a
+	ret nz
+	call GetStarterPikachuStatus
+	and a
+	ret nz
+
+	farcall BillsHousePikachuWalkIn
+	ld c, QUESTION_BUBBLE
+	call FollowerBubble
+	ld a, TRUE
+	ld [wPikaAsleep], a
+	ld [wScriptVar], a
+	ldpikaemotion e, PikachuEmotion23
+	jp PlaySpecificPikachuEmotion
+
+BillsHousePikachuIntoPod::
+; Special.  Yellow's BillsHouseScript3: once BILL is in the machine, a parked
+; Pikachu follows him to it and plays emotion 32 (the MET_BILL_2-clear arm).
+; Player facing DOWN means they stand on (6,4), in the way, so Pikachu goes
+; round them: Yellow's PikachuMovement_EnterCellSeparatorNotDown (sic) is
+; UP, LEFT, UP, UP, RIGHT, look UP; otherwise it is UP x3.  Both end on (6,3).
+	ld a, [wPikaAsleep]
+	and a
+	ret z
+	farcall BillsHousePikachuWalkToPod
+	ld a, UP << 2
+	ld [wFollowerDirection], a
+	call FollowerEmotionStepFrame
+	ldpikaemotion e, PikachuEmotion32
+	jp PlaySpecificPikachuEmotion
+
+BillsHousePikachuSurprised::
+; Special.  Yellow's BillsHouseScript5: BILL pops out of the machine and a
+; parked Pikachu looks LEFT, gets an EXCLAMATION_BUBBLE and plays emotion 27.
+; A following Pikachu does nothing (Yellow shows no bubble at all then).
+	ld a, [wPikaAsleep]
+	and a
+	ret z
+	ld a, LEFT << 2
+	ld [wFollowerDirection], a
+	call FollowerEmotionStepFrame
+	ld c, EXCLAMATION_BUBBLE
+	call FollowerBubble
+	ldpikaemotion e, PikachuEmotion27
+	jp PlaySpecificPikachuEmotion
+
+FollowerBubble:
+; c = emote id.  Yellow's predef EmotionBubble on sprite $f: 60 frames, then
+; gone.  Same body as StarterPikachuEmotionCommand_emote.
+	farcall LoadEmote
+	farcall FollowerSpawnEmote
+	ld c, PIKAEMOTION_BUBBLE_FRAMES
+	call DelayFrames
+	farcall FollowerDespawnEmote
+	ret
+
+PokeFluteWakePikachu::
+; callasm from PokeFluteEffect's .WakePikachuScript (engine/items/
+; item_effects.asm), PE1 / A3 row 2: Yellow's `ldpikaemotion e,
+; PikachuEmotion26 / callfar PlaySpecificPikachuEmotion` after the flute.
+	ldpikaemotion e, PikachuEmotion26
 	jp PlaySpecificPikachuEmotion
 
 CheckPikachuAsleep::

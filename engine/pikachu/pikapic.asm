@@ -87,6 +87,16 @@ OpenPikapicBox:
 	hlcoord PIKAPIC_BOX_X, PIKAPIC_BOX_Y
 	lb bc, PIKAPIC_BOX_H - 2, PIKAPIC_BOX_W - 2
 	call TextboxBorder
+; PE1 / E8a: Yellow draws this box with its own TextBoxBorder, i.e. Yellow's
+; text-box frame (gfx/font/font_extra.png tiles $79-$7e: the double rule with
+; a knob on each corner), not whichever of Crystal's eight frames the player
+; picked in OPTION.  The tile ids are the same in both games ('┌'..'┘' =
+; $79-$7e), so swap Yellow's frame into those six vTiles2 slots for the life
+; of the box; ClosePikapicBox puts the player's frame back with LoadFrame.
+	ld de, PikapicBorderGFX
+	ld hl, vTiles2 tile '┌'
+	lb bc, BANK(PikapicBorderGFX), TEXTBOX_FRAME_TILES
+	call Get2bpp
 
 ; DEVIATION: Crystal's blank tile ' ' ($7f, in vTiles2) is plane0 = $ff /
 ; plane1 = $00 -- every pixel is colour 1.  Under PAL_BG_TEXT that reads white,
@@ -141,6 +151,7 @@ ClosePikapicBox:
 	call ApplyTilemap
 	call UpdateSprites
 	call LoadStandardFont
+	farcall LoadFrame ; PE1 / E8a: the player's OPTION frame back over Yellow's
 	ret
 
 
@@ -783,3 +794,9 @@ PikaPicAnimCommand_thunderbolt:
 PikapicBlankTileGFX:
 ; One all-zero tile: every pixel colour 0, the way Yellow's blank reads.
 	ds LEN_2BPP_TILE, 0
+
+PikapicBorderGFX:
+; PE1 / E8a: Yellow's text-box frame, '┌' '─' '┐' '│' '└' '┘' (tiles $79-$7e of
+; vendor/pokeyellow/gfx/font/font_extra.png), cropped verbatim.
+INCBIN "gfx/pikachu/pikapic_border.2bpp"
+

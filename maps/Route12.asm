@@ -69,7 +69,7 @@ Route12_MapScripts:
 ; SNORLAX is CAUGHT (wBattleResult $2).  GSC has no "caught" result -- a catch
 ; ends the battle as WIN and the only catch bit in wBattleResult is the Celebi
 ; event's -- so catching it prints the calmed-down line too.
-Route12Snorlax:
+Route12Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	opentext
 	checkitem POKE_FLUTE
 	iffalse .Asleep

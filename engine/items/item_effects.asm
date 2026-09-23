@@ -2247,8 +2247,178 @@ INCLUDE "data/items/x_stats.asm"
 PokeFluteEffect:
 	ld a, [wBattleMode]
 	and a
-	jr nz, .in_battle
-	; overworld flute code was dummied out here
+	jp nz, .in_battle
+; PE1 / A3 row 2: Yellow's overworld half of ItemUsePokeFlute
+; (vendor/pokeyellow/engine/items/item_effects.asm:1848), which Crystal had
+; dummied out.  Every field use closes the pack and queues a script; which one
+; follows Yellow's branches.
+	ld a, 1
+	ld [wItemEffectSucceeded], a
+; ROUTE 12 / ROUTE 16: Yellow wakes a SNORLAX when the player stands on one of
+; the four tiles next to it (Route12/16SnorlaxFluteCoords).  D20 put the wake
+; on the object script (talk to it with the flute in the bag), so the bag use
+; simply runs that same script -- "played the # FLUTE", the tune, the battle.
+	ld a, [wMapGroup]
+	cp GROUP_ROUTE_12
+	jr nz, .not_route_12
+	ld a, [wMapNumber]
+	cp MAP_ROUTE_12
+	jr nz, .not_route_12
+	ld de, EVENT_BEAT_ROUTE_12_SNORLAX
+	ld hl, .Route12SnorlaxFluteCoords
+	ld bc, .Route12SnorlaxScript
+	jr .snorlax
+.not_route_12
+	ld a, [wMapGroup]
+	cp GROUP_ROUTE_16
+	jr nz, .not_route_16
+	ld a, [wMapNumber]
+	cp MAP_ROUTE_16
+	jr nz, .not_route_16
+	ld de, EVENT_BEAT_ROUTE_16_SNORLAX
+	ld hl, .Route16SnorlaxFluteCoords
+	ld bc, .Route16SnorlaxScript
+.snorlax
+	push bc
+	push hl
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	pop hl
+	pop bc
+	jr nz, .no_effect
+	call .PlayerCoordsInArray
+	jr nc, .no_effect
+	ld h, b
+	ld l, c
+	jp QueueScript
+
+.not_route_16
+; Pewter #MON Center: Yellow's `CheckPikachuFollowingPlayer / jr z` (Pikachu
+; parked -- here, asleep from the JIGGLYPUFF SONG, our wPikaAsleep) plus
+; IsPikachuRightNextToPlayer.
+	ld a, [wMapGroup]
+	cp GROUP_PEWTER_POKECENTER_1F
+	jr nz, .no_effect
+	ld a, [wMapNumber]
+	cp MAP_PEWTER_POKECENTER_1F
+	jr nz, .no_effect
+	ld a, [wPikaAsleep]
+	and a
+	jr z, .no_effect
+	call .IsPikachuRightNextToPlayer
+	jr nc, .no_effect
+	ld hl, .WakePikachuScript
+	jp QueueScript
+
+.no_effect
+	ld hl, .NoEffectScript
+	jp QueueScript
+
+.IsPikachuRightNextToPlayer:
+; Yellow's IsPikachuRightNextToPlayer (engine/pikachu/pikachu_follow.asm:1052):
+; carry if the follower shares a column with the player and is at most one row
+; away, or shares a row and is at most one column away.  Its own tile counts.
+	ld a, [wFollowerMapX]
+	ld hl, wPlayerMapX
+	cp [hl]
+	jr nz, .check_row
+	ld a, [wFollowerMapY]
+	ld hl, wPlayerMapY
+	jr .within_one
+.check_row
+	ld a, [wFollowerMapY]
+	ld hl, wPlayerMapY
+	cp [hl]
+	jr nz, .not_next
+	ld a, [wFollowerMapX]
+	ld hl, wPlayerMapX
+.within_one
+	sub [hl]
+	inc a ; -1/0/1 -> 0/1/2
+	cp 3
+	ret ; carry if it was within one
+.not_next
+	and a
+	ret
+
+.PlayerCoordsInArray:
+; hl = list of (x, y) map coords, -1-terminated.  Carry if the player is on one.
+	ld a, [wPlayerMapX]
+	sub 4
+	ld d, a
+	ld a, [wPlayerMapY]
+	sub 4
+	ld e, a
+.coords_loop
+	ld a, [hli]
+	cp -1
+	jr z, .coords_no
+	cp d
+	ld a, [hli]
+	jr nz, .coords_loop
+	cp e
+	jr nz, .coords_loop
+	scf
+	ret
+.coords_no
+	and a
+	ret
+
+.Route12SnorlaxFluteCoords:
+; Yellow's, verbatim; our SNORLAX is on Yellow's (10,62) too.
+	db  9, 62 ; west
+	db 10, 61 ; north
+	db 10, 63 ; south
+	db 11, 62 ; east
+	db -1
+
+.Route16SnorlaxFluteCoords:
+; Yellow's, verbatim: only the two tiles either side of it.
+	db 27, 10 ; east
+	db 25, 10 ; west
+	db -1
+
+.Route12SnorlaxScript:
+	refreshmap
+	special UpdateTimePals
+	farsjump Route12Snorlax
+
+.Route16SnorlaxScript:
+	refreshmap
+	special UpdateTimePals
+	farsjump Route16Snorlax
+
+.WakePikachuScript:
+; Yellow: PlayedFluteHadEffectText (text, button, then the tune with the text
+; still up and the map music stopped, then PlayDefaultMusic), close, then
+; PlaySpecificPikachuEmotion 26 -- whose CHECKPEWTERCENTER subcommand clears the
+; sleep and turns Pikachu away from the player.
+	refreshmap
+	special UpdateTimePals
+	opentext
+	writetext .PlayedTheFluteOverworld
+	playmusic MUSIC_NONE
+	playsound SFX_POKEFLUTE
+	waitsfx
+	special RestartMapMusic
+	closetext
+	callasm PokeFluteWakePikachu
+	end
+
+.NoEffectScript:
+; Yellow's PlayedFluteNoEffectText: "Played the # FLUTE. / Now, that's a
+; catchy tune!" -- the same string Crystal already has as _PlayedFluteText.
+	refreshmap
+	special UpdateTimePals
+	opentext
+	writetext .PlayedFluteText
+	closetext
+	end
+
+.PlayedTheFluteOverworld:
+; "<PLAYER> played the / # FLUTE." + button, = Yellow's _PlayedFluteHadEffectText.
+	text_far Text_PlayedPokeFlute
+	text_end
 
 .in_battle
 	xor a
