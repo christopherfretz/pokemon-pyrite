@@ -13,13 +13,15 @@ Route31_MapScripts:
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, Route31CheckMomCallCallback
 
+; Kanto hack (M11 14b): there is no MOM in the JOHTO act (D138), so her
+; "worried" call (the lecture that also opened the BANK OF MOM) is gone.  The
+; flag it set is kept as the "has set out past ROUTE 30 since the egg" marker
+; the NEW BARK teacher reads (her "call PROF.ELM" line).
 Route31CheckMomCallCallback:
-	checkevent EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST
-	iffalse .DoMomCall
-	endcallback
-
-.DoMomCall:
-	specialphonecall SPECIALCALL_WORRIED
+	checkevent EVENT_GAVE_MYSTERY_EGG_TO_ELM
+	iffalse .NoEggYet
+	setevent EVENT_TALKED_TO_MOM_AFTER_MYSTERY_EGG_QUEST
+.NoEggYet:
 	endcallback
 
 TrainerBugCatcherWade1:

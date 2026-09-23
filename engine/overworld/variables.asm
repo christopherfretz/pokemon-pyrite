@@ -65,6 +65,7 @@ _GetVarAction::
 	dwb wBlueCardBalance,               RETVAR_ADDR_DE
 	dwb wBuenasPassword,                RETVAR_ADDR_DE
 	dwb wKenjiBreakTimer,               RETVAR_STRBUF2
+	dwb .CountJohtoBadges,              RETVAR_EXECUTE ; Kanto hack (M11 14b)
 	dwb NULL,                           RETVAR_STRBUF2
 
 .CountCaughtMons:
@@ -84,9 +85,18 @@ _GetVarAction::
 	jp .loadstringbuffer2
 
 .CountBadges:
-; Number of owned badges.
+; Number of owned badges (JOHTO + KANTO).
 	ld hl, wBadges
 	ld b, 2
+	jr .count_badges
+
+.CountJohtoBadges:
+; Kanto hack (M11 14b, docs/M11-JOHTO.md C-2): JOHTO badges only.  The Kanto
+; act comes first, so VAR_BADGES is already 8 when the Johto act starts and
+; Crystal's `ifequal 6/7` Rocket triggers after each Johto gym would never fire.
+	ld hl, wJohtoBadges
+	ld b, 1
+.count_badges
 	call CountSetBits
 	ld a, [wNumSetBits]
 	jp .loadstringbuffer2

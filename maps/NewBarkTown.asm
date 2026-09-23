@@ -69,6 +69,9 @@ NewBarkTown_TeacherStopsYouScene2:
 	special RestartMapMusic
 	end
 
+; Kanto hack (M11 14b, 14a gotcha 3): with no MOM, the first branch's flag is
+; set by ROUTE 31's callback (the player set out again after the egg), so all
+; four lines are reachable: #GEAR -> starter -> egg -> ROUTE 31.
 NewBarkTownTeacherScript:
 	faceplayer
 	opentext

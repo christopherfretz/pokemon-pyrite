@@ -47,7 +47,7 @@ CianwoodGymChuckScript:
 	playsound SFX_GET_BADGE
 	waitsfx
 	setflag ENGINE_STORMBADGE
-	readvar VAR_BADGES
+	readvar VAR_JOHTO_BADGES ; Kanto hack (M11 14b, C-2): was VAR_BADGES (Johto + Kanto)
 	scall CianwoodGymActivateRockets
 .FightDone:
 	checkevent EVENT_GOT_TM01_DYNAMICPUNCH

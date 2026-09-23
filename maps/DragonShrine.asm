@@ -159,6 +159,12 @@ DragonShrineTakeTestScript:
 	writetext DragonShrineHereRisingBadgeText
 	waitbutton
 	setflag ENGINE_RISINGBADGE
+; Kanto hack (M11 14b, D139): the RISINGBADGE is always the 8th JOHTO badge (the
+; BLACKTHORN gym is shut until the RADIO TOWER, which needs 7), so it opens
+; MT.SILVER: the ROUTE 22 GATE's west BLACK BELT (hidden by this flag) steps
+; aside for ROUTE 28.  Crystal set it in OAK's lab at 16 badges; that lab is
+; Yellow's now, and nothing else sets it.
+	setevent EVENT_OPENED_MT_SILVER
 	playsound SFX_GET_BADGE
 	waitsfx
 	special RestartMapMusic

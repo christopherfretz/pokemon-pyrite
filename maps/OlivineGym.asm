@@ -25,7 +25,7 @@ OlivineGymJasmineScript:
 	playsound SFX_GET_BADGE
 	waitsfx
 	setflag ENGINE_MINERALBADGE
-	readvar VAR_BADGES
+	readvar VAR_JOHTO_BADGES ; Kanto hack (M11 14b, C-2): was VAR_BADGES (Johto + Kanto)
 	scall OlivineGymActivateRockets
 .FightDone:
 	checkevent EVENT_GOT_TM23_IRON_TAIL

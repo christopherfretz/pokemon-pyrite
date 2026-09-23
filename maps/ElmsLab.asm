@@ -591,10 +591,22 @@ CopScript:
 	turnobject ELMSLAB_OFFICER, LEFT
 	opentext
 	writetext ElmsLabOfficerText1
+	; Kanto hack (M11 14b): the Champion can FLY home from MR.#MON's past
+	; CHERRYGROVE, where the thief waits.  Not met yet: no name to give.
+	checkmapscene CHERRYGROVE_CITY
+	ifequal SCENE_CHERRYGROVECITY_MEET_RIVAL, .NotMetHim
+	promptbutton
+	writetext ElmsLabOfficerText1b
 	promptbutton
 	; Kanto hack (M11 14a): Crystal's `special NameRival` is gone -- wRivalName
 	; is GARY, Yellow's rival, and must survive into the Johto act (D141).
 	writetext ElmsLabOfficerText2
+	sjump .OfficerLeaves
+
+.NotMetHim:
+	promptbutton
+	writetext ElmsLabOfficerNotMetText
+.OfficerLeaves:
 	waitbutton
 	closetext
 	applymovement ELMSLAB_OFFICER, OfficerLeavesMovement
@@ -1371,8 +1383,11 @@ ElmsLabOfficerText1:
 	para "Apparently, it was"
 	line "a young male with"
 	cont "long, red hair…"
+	done
 
-	para "What?"
+; Kanto hack (M11 14b): split off ElmsLabOfficerText1 (Crystal's words).
+ElmsLabOfficerText1b:
+	text "What?"
 
 	para "You battled a"
 	line "trainer like that?"
@@ -1389,6 +1404,16 @@ ElmsLabOfficerText2:
 
 	para "Thanks for helping"
 	line "my investigation!"
+	done
+
+; Kanto hack (M11 14b): our text (the player has not met the thief yet).
+ElmsLabOfficerNotMetText:
+	text "If you run into a"
+	line "trainer like that,"
+	cont "please be careful."
+
+	para "Thanks for your"
+	line "time!"
 	done
 
 ElmsLabWindowText1:

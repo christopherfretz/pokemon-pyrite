@@ -41,7 +41,11 @@ DragonsDenB1FCheckRivalCallback:
 	endcallback
 
 DragonsDenB1F_ClairScene:
-; BUG: Clair can give TM24 Dragonbreath twice (see docs/bugs_and_glitches.md)
+; Kanto hack (M11 14b, C-12/D158): Crystal's "Clair can give TM24 twice" bug.
+; The DRAGON SHRINE arms this scene; talking to CLAIR in her GYM first also gives
+; TM24.  If she already has, the scene retires unseen instead of giving another.
+	checkevent EVENT_GOT_TM24_DRAGONBREATH
+	iftrue .AlreadyGotTM24
 	appear DRAGONSDENB1F_CLAIR
 	opentext
 	writetext ClairText_Wait
@@ -79,6 +83,7 @@ DragonsDenB1F_ClairScene:
 	pause 30
 	special RestartMapMusic
 	disappear DRAGONSDENB1F_CLAIR
+.AlreadyGotTM24:
 	setscene SCENE_DRAGONSDENB1F_NOOP
 	end
 

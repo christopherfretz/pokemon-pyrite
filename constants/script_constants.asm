@@ -72,6 +72,7 @@ DEF STRING_BUFFER_LENGTH EQU 19
 	const VAR_BLUECARDBALANCE  ; 18
 	const VAR_BUENASPASSWORD   ; 19
 	const VAR_KENJI_BREAK      ; 1a
+	const VAR_JOHTO_BADGES     ; 1b ; Kanto hack (M11 14b): wJohtoBadges only
 DEF NUM_VARS EQU const_value
 
 ; variable action types

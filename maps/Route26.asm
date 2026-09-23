@@ -37,11 +37,21 @@ TrainerCooltrainermGaven3:
 	iftrue .NumberAccepted
 	checkevent EVENT_GAVEN_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskedAlready
+; Kanto hack (M11 14b, 14a gotcha 2): the walk in from KANTO comes before
+; PROF.ELM's #GEAR, so no number is offered until the player has one.
+	checkflag ENGINE_POKEGEAR
+	iffalse .NoPokegear
 	writetext CooltrainermGavenAfterText
 	promptbutton
 	setevent EVENT_GAVEN_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
+
+.NoPokegear:
+	writetext CooltrainermGavenAfterText
+	waitbutton
+	closetext
+	end
 
 .AskedAlready:
 	scall .AskNumber2
@@ -141,11 +151,21 @@ TrainerCooltrainerfBeth1:
 	iftrue .NumberAccepted
 	checkevent EVENT_BETH_ASKED_FOR_PHONE_NUMBER
 	iftrue .AskedAlready
+; Kanto hack (M11 14b, 14a gotcha 2): the walk in from KANTO comes before
+; PROF.ELM's #GEAR, so no number is offered until the player has one.
+	checkflag ENGINE_POKEGEAR
+	iffalse .NoPokegear
 	writetext CooltrainerfBethAfterText
 	promptbutton
 	setevent EVENT_BETH_ASKED_FOR_PHONE_NUMBER
 	scall .AskNumber1
 	sjump .AskForNumber
+
+.NoPokegear:
+	writetext CooltrainerfBethAfterText
+	waitbutton
+	closetext
+	end
 
 .AskedAlready:
 	scall .AskNumber2
