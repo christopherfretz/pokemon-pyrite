@@ -272,7 +272,51 @@ WillObjectBumpIntoSomeoneElse:
 	ld hl, OBJECT_MAP_Y
 	add hl, bc
 	ld e, [hl]
-	jr IsNPCAtCoord
+	call IsNPCAtCoord
+	ret c
+	; fallthrough
+
+IsFollowerAtCoord:
+; G15: an NPC's own step treats the visible Pikachu follower as an occupant.
+; IsNPCAtCoord skips the follower for everyone (the player walks through it,
+; FollowerCanStandAt and CheckFacingObject must not see it), but Yellow's
+; DetectCollisionBetweenSprites only exempts the PLAYER (slot 0) from
+; colliding with Pikachu (slot 15): every other sprite's CanWalkOntoTile is
+; blocked by it.  Without this a wanderer could step onto Pikachu's tile and
+; A would talk to Pikachu instead (TryObjectEvent checks CheckFacingFollower
+; first).  d, e = map coords.  Carry if the follower's destination or current
+; tile is (d, e).  Keeps bc, de.
+	ldh a, [hMapObjectIndex]
+	cp FOLLOWER_OBJECT
+	jr z, .no
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	jr z, .no
+	ld a, [wFollowerSprite]
+	and a
+	jr z, .no
+	ld a, [wFollowerFlags] ; OBJECT_FLAGS1
+	bit INVISIBLE_F, a
+	jr nz, .no
+	ld a, [wFollowerMapX]
+	cp d
+	jr nz, .check_last
+	ld a, [wFollowerMapY]
+	cp e
+	jr z, .yes
+.check_last
+	ld a, [wFollowerLastMapX]
+	cp d
+	jr nz, .no
+	ld a, [wFollowerLastMapY]
+	cp e
+	jr z, .yes
+.no
+	and a
+	ret
+.yes
+	scf
+	ret
 
 IsObjectFacingSomeoneElse: ; unreferenced
 	ldh a, [hMapObjectIndex]
@@ -319,8 +363,10 @@ IsNPCAtCoord:
 	call DoesObjectHaveASprite
 	jr z, .next
 
-; The Pikachu follower never blocks anyone (Yellow: you walk through it and it
-; falls in behind you). Talking to it is special-cased in TryObjectEvent.
+; The Pikachu follower is skipped here for every caller: the player walks
+; through it (Yellow), FollowerCanStandAt places it, and talking to it is
+; special-cased in TryObjectEvent.  NPC steps DO see it, via IsFollowerAtCoord
+; in WillObjectBumpIntoSomeoneElse (G15, Yellow's sprite collision).
 	ldh a, [hObjectStructIndex]
 	cp FOLLOWER_OBJECT
 	jr z, .next
