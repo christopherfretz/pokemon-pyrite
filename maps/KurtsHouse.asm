@@ -458,17 +458,11 @@ KurtsHouseKurtMakingBallsMustWaitText:
 	para "Sorry, but that'll"
 	line "have to wait."
 
-	para "Do you know TEAM"
-	line "ROCKET? Ah, don't"
+	para "You know TEAM"
+	line "ROCKET? Being from"
 
-	para "worry. I'll tell"
-	line "you anyhow."
-
-	para "TEAM ROCKET's an"
-	line "evil gang that"
-
-	para "uses #MON for"
-	line "their dirty work."
+	para "KANTO, you must"
+	line "know 'em too well."
 
 	para "They're supposed"
 	line "to have disbanded"

@@ -256,7 +256,7 @@ BirdKeeperAbeBeatenText:
 BirdKeeperAbeAfterBattleText:
 	text "This is pathetic,"
 	line "losing to some"
-	cont "rookie trainer…"
+	cont "KANTO trainer…"
 	done
 
 VioletGymGuideText:
@@ -264,11 +264,11 @@ VioletGymGuideText:
 	line "er but I can give"
 	cont "some advice!"
 
-	para "Believe me!"
-	line "If you believe, a"
+	para "Believe me! Even"
+	line "a KANTO CHAMP can"
 
-	para "championship dream"
-	line "can come true."
+	para "use a tip or two"
+	line "in JOHTO."
 
 	para "You believe?"
 	line "Then listen."

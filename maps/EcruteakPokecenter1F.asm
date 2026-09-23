@@ -98,10 +98,10 @@ EcruteakPokecenter1FPlayerMovement1:
 	step_end
 
 EcruteakPokecenter1F_BillText1:
-	text "Hi, I'm BILL. And"
-	line "who are you?"
+	text "Hey, <PLAYER>!"
+	line "It's me, BILL!"
 
-	para "Hmm, <PLAYER>, huh?"
+	para "Small world, huh?"
 	line "You've come at the"
 	cont "right time."
 	done

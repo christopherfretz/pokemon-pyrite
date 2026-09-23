@@ -175,11 +175,11 @@ ElmPhoneRadioTowerRocketTakeoverText:
 	line "know anything"
 	cont "about it?"
 
-	para "Maybe TEAM ROCKET"
-	line "has returned. No,"
+	para "So it IS TEAM"
+	line "ROCKET. Just as I"
 
-	para "that just can't"
-	line "be true."
+	para "feared. Please be"
+	line "careful out there."
 
 	para "Sorry to bug you."
 	line "Take care!"

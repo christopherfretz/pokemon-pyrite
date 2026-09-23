@@ -334,12 +334,12 @@ CherrygroveCity_RivalExitsStageLeft:
 	step_end
 
 GuideGentIntroText:
-	text "You're a rookie"
-	line "trainer, aren't"
+	text "You're new to"
+	line "JOHTO, aren't"
 	cont "you? I can tell!"
 
 	para "That's OK! Every-"
-	line "one is a rookie"
+	line "one is new here"
 	cont "at some point!"
 
 	para "If you'd like, I"

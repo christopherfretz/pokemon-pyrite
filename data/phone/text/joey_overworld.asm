@@ -5,8 +5,8 @@ JoeyAskNumber1Text:
 	para "I'll ring you for"
 	line "some battles."
 
-	para "I'm a rookie too, "
-	line "so I think it'd be"
+	para "I'm a rookie, so"
+	line "I think it'd be"
 	cont "a good motivator."
 	done
 
