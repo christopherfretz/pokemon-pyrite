@@ -2,15 +2,18 @@
 ; pokeyellow engine/gfx/animated_objects.asm for the Surfing Pikachu minigame.
 ; Glue: FillMemory -> ByteFill (same a/hl/bc contract).  The struct offsets
 ; (ANIM_OBJ_*) and OAM_HIGH_PALS live in engine/games/surfing_pikachu.asm.
+; M12e: included twice -- once for the minigame (AO = "") and once for the
+; Yellow intro movie in bank $39 (AO = "YIntro_"); the {AO} prefix keeps the
+; two copies' labels apart.  Set AO before each INCLUDE.
 
-ClearObjectAnimationBuffers:
+{AO}ClearObjectAnimationBuffers:
 	ld hl, wAnimatedObjectsData
 	ld bc, wAnimatedObjectsDataEnd - wAnimatedObjectsData
 	xor a
 	call ByteFill
 	ret
 
-RunObjectAnimations:
+{AO}RunObjectAnimations:
 	ld hl, wAnimatedObjectDataStructs
 	ld e, 10
 .loop
@@ -21,8 +24,8 @@ RunObjectAnimations:
 	ld b, h
 	push hl
 	push de
-	call ExecuteCurrentAnimatedObjectCallback
-	call UpdateCurrentAnimatedObjectFrame
+	call {AO}ExecuteCurrentAnimatedObjectCallback
+	call {AO}UpdateCurrentAnimatedObjectFrame
 	pop de
 	pop hl
 	jr c, .quit
@@ -45,7 +48,7 @@ RunObjectAnimations:
 .quit
 	ret
 
-SpawnAnimatedObject:
+{AO}SpawnAnimatedObject:
 	push de
 	push af
 	ld hl, wAnimatedObjectDataStructs
@@ -115,13 +118,13 @@ SpawnAnimatedObject:
 	ld [hl], a
 	ret
 
-MaskCurrentAnimatedObjectStruct:
+{AO}MaskCurrentAnimatedObjectStruct:
 	ld hl, $0
 	add hl, bc
 	ld [hl], $0
 	ret
 
-MaskAllAnimatedObjectStructs:
+{AO}MaskAllAnimatedObjectStructs:
 	ld hl, wAnimatedObjectDataStructs
 	ld e, 10
 .loop
@@ -132,7 +135,7 @@ MaskAllAnimatedObjectStructs:
 	jr nz, .loop
 	ret
 
-UpdateCurrentAnimatedObjectFrame:
+{AO}UpdateCurrentAnimatedObjectFrame:
 	xor a
 	ld [wCurAnimatedObjectOAMAttributes], a
 	ld hl, $3
@@ -147,12 +150,12 @@ UpdateCurrentAnimatedObjectFrame:
 	ld [wCurrentAnimatedObjectXOffset], a
 	ld a, [hl]
 	ld [wCurrentAnimatedObjectYOffset], a
-	call UpdateDurationTimerAndFrameStateForCurrentAnimatedObject
+	call {AO}UpdateDurationTimerAndFrameStateForCurrentAnimatedObject
 	cp $fd
 	jr z, .finish
 	cp $fc
 	jr z, .delete_animation
-	call GetCurrentAnimatedObjectOAMDataPointer
+	call {AO}GetCurrentAnimatedObjectOAMDataPointer
 	ld a, [wCurrentAnimatedObjectVTileOffset]
 	add [hl]
 	ld [wCurrentAnimatedObjectVTileOffset], a
@@ -175,7 +178,7 @@ UpdateCurrentAnimatedObjectFrame:
 	ld a, [wAnimatedObjectGlobalYOffset]
 	add b
 	ld b, a
-	call GetCurrentAnimatedObjectTileYCoordinate
+	call {AO}GetCurrentAnimatedObjectTileYCoordinate
 	add b
 	ld [de], a
 	inc hl
@@ -188,7 +191,7 @@ UpdateCurrentAnimatedObjectFrame:
 	ld a, [wAnimatedObjectGlobalXOffset]
 	add b
 	ld b, a
-	call GetCurrentAnimatedObjectTileXCoordinate
+	call {AO}GetCurrentAnimatedObjectTileXCoordinate
 	add b
 	ld [de], a
 	inc hl
@@ -198,7 +201,7 @@ UpdateCurrentAnimatedObjectFrame:
 	ld [de], a
 	inc hl
 	inc de
-	call SetCurrentAnimatedObjectOAMAttributes
+	call {AO}SetCurrentAnimatedObjectOAMAttributes
 	ld b, a
 	ld a, [wYellowIntroCurrentScene]
 	cp $7
@@ -218,7 +221,7 @@ UpdateCurrentAnimatedObjectFrame:
 	jr .finish
 
 .delete_animation
-	call MaskCurrentAnimatedObjectStruct
+	call {AO}MaskCurrentAnimatedObjectStruct
 .finish
 	and a
 	ret
@@ -228,7 +231,7 @@ UpdateCurrentAnimatedObjectFrame:
 	scf
 	ret
 
-GetCurrentAnimatedObjectTileYCoordinate:
+{AO}GetCurrentAnimatedObjectTileYCoordinate:
 	push hl
 	ld a, [hl]
 	ld hl, wCurAnimatedObjectOAMAttributes
@@ -241,7 +244,7 @@ GetCurrentAnimatedObjectTileYCoordinate:
 	pop hl
 	ret
 
-GetCurrentAnimatedObjectTileXCoordinate:
+{AO}GetCurrentAnimatedObjectTileXCoordinate:
 	push hl
 	ld a, [hl]
 	ld hl, wCurAnimatedObjectOAMAttributes
@@ -254,7 +257,7 @@ GetCurrentAnimatedObjectTileXCoordinate:
 	pop hl
 	ret
 
-SetCurrentAnimatedObjectOAMAttributes:
+{AO}SetCurrentAnimatedObjectOAMAttributes:
 	ld a, [wCurAnimatedObjectOAMAttributes]
 	ld b, a
 	ld a, [hl]
@@ -269,7 +272,7 @@ SetCurrentAnimatedObjectOAMAttributes:
 	or OAM_HIGH_PALS
 	ret
 
-GetCurrentAnimatedObjectOAMDataPointer:
+{AO}GetCurrentAnimatedObjectOAMDataPointer:
 	ld e, a
 	ld d, $0
 	ld a, [wAnimatedObjectOAMDataPointer]
@@ -281,7 +284,7 @@ GetCurrentAnimatedObjectOAMDataPointer:
 	add hl, de
 	ret
 
-SetCurrentAnimatedObjectCallbackAndResetFrameStateRegisters:
+{AO}SetCurrentAnimatedObjectCallbackAndResetFrameStateRegisters:
 	ld hl, $1
 	add hl, bc
 	ld [hl], a
@@ -296,7 +299,7 @@ SetCurrentAnimatedObjectCallbackAndResetFrameStateRegisters:
 	ld [hl], $ff
 	ret
 
-UpdateDurationTimerAndFrameStateForCurrentAnimatedObject:
+{AO}UpdateDurationTimerAndFrameStateForCurrentAnimatedObject:
 .loop
 	ld hl, $8
 	add hl, bc
@@ -304,7 +307,7 @@ UpdateDurationTimerAndFrameStateForCurrentAnimatedObject:
 	and a
 	jr z, .next_frame
 	dec [hl]
-	call GetPointerToCurrentAnimatedObjectFrameScript
+	call {AO}GetPointerToCurrentAnimatedObjectFrameScript
 	ld a, [hli]
 	push af
 	jr .finish
@@ -313,7 +316,7 @@ UpdateDurationTimerAndFrameStateForCurrentAnimatedObject:
 	ld hl, $a
 	add hl, bc
 	inc [hl]
-	call GetPointerToCurrentAnimatedObjectFrameScript
+	call {AO}GetPointerToCurrentAnimatedObjectFrameScript
 	ld a, [hli]
 	cp $fe
 	jr z, .restart_anim
@@ -360,7 +363,7 @@ UpdateDurationTimerAndFrameStateForCurrentAnimatedObject:
 	ld [hl], a
 	jr .loop
 
-GetPointerToCurrentAnimatedObjectFrameScript:
+{AO}GetPointerToCurrentAnimatedObjectFrameScript:
 	ld hl, $1
 	add hl, bc
 	ld e, [hl]
@@ -382,7 +385,7 @@ GetPointerToCurrentAnimatedObjectFrameScript:
 	add hl, de
 	ret
 
-ExecuteCurrentAnimatedObjectCallback:
+{AO}ExecuteCurrentAnimatedObjectCallback:
 	ld hl, $2
 	add hl, bc
 	ld e, [hl]

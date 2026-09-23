@@ -718,6 +718,17 @@ wSurfVBlankCopySource:: dw
 wSurfVBlankCopyDest:: dw
 wSurfFrameCounter:: db ; Yellow's hFrameCounter: VBlank decrements it
 wSurfJoy5:: db ; Yellow's hJoy5: held buttons, sampled every 2nd frame
+;
+; Kanto hack (M12e): Yellow intro movie palette state (engine/movie/intro_yellow.asm).
+; Yellow's wCGBBasePalPointers / wLast{BGP,OBP0,OBP1} equivalents; the movie
+; shares wAnimatedObjectsData and wYellowIntro* above with the minigame.
+wYIntroBasePals:: ds 4 * 2
+wYIntroLastBGP:: db
+wYIntroLastOBP0:: db
+wYIntroLastOBP1:: db
+wYIntroCGBPal:: ds 4 * 2
+wYIntroBGPBuffer:: ds 4 * 4 * 2
+wYIntroSinePhase:: db
 ; (M12b-4: wSurfingMinigameHiScore now lives in the WRAM1 save block.)
 
 

@@ -1009,8 +1009,14 @@ IntroSequence:
 ; Kanto hack (M12d): Yellow's copyright page and shooting-star splash
 ; (engine/movie/splash.asm).  As in Yellow, skipping the splash does not skip
 ; the intro that follows it.
+; Kanto hack (M12e): Yellow's Init spends 51 frames from power-on before its
+; splash starts (pyrite's: 13); hold the blank screen the difference so the
+; whole boot runs on Yellow's frames.
+	ld c, 51 - 13
+	call DelayFrames
 	callfar PlayShootingStar
-	farcall CrystalIntro
+; Kanto hack (M12e): Yellow's Pikachu intro movie (engine/movie/intro_yellow.asm)
+	farcall YellowIntro
 
 	; fallthrough
 

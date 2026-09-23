@@ -187,6 +187,8 @@ ROMX $38
 ROMX $39
 	"Copyright"
 	"bank39"
+	; Kanto hack (M12e): Yellow's Pikachu intro movie (replaces CrystalIntro, was in "bank39")
+	"Yellow Intro"
 ROMX $3a
 	"Audio"
 	"Songs 1"

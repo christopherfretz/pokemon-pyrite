@@ -502,7 +502,6 @@ SECTION "bank39", ROMX
 
 INCLUDE "engine/menus/options_menu.asm"
 INCLUDE "engine/movie/splash.asm"
-INCLUDE "engine/movie/intro.asm"
 
 
 SECTION "bank3E", ROMX
@@ -786,11 +785,23 @@ SECTION "Surfing Pikachu", ROMX
 
 ; Kanto hack (M12b-2): Yellow's Surfing Pikachu minigame (docs/M12-STRETCH.md)
 INCLUDE "engine/games/surfing_pikachu.asm"
+DEF AO EQUS ""
 INCLUDE "engine/games/animated_objects.asm"
 
 
 INCLUDE "gfx/surfing_pikachu.asm"
 INCLUDE "engine/games/surfing_hiscore_card.asm" ; Kanto hack (M12b-4)
+
+
+SECTION "Yellow Intro", ROMX
+
+; Kanto hack (M12e): Yellow's Pikachu intro movie (docs/M12-STRETCH.md).
+; After the Surfing Pikachu includes: it reuses their ANIM_OBJ_* constants and
+; surf_* frame macros, and a second, YIntro_-prefixed copy of the
+; animated-object engine.
+INCLUDE "engine/movie/intro_yellow.asm"
+REDEF AO EQUS "YIntro_"
+INCLUDE "engine/games/animated_objects.asm"
 
 
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]

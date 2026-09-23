@@ -20,8 +20,8 @@
 ; - CheckForUserInterruption -> ShootingStar_CheckForUserInterruption (same
 ;   rule: A/START newly pressed, or UP+SELECT+B held; the joypad is sampled
 ;   after DelayFrame, as in Yellow).
-; - wMoveDownSmallStarsOAMCount -> wIntroSceneFrameCounter (Crystal intro's
-;   UNION, free until CrystalIntro starts).
+; - wMoveDownSmallStarsOAMCount -> wIntroSceneFrameCounter (the intro WRAM
+;   UNION, free until the Pikachu intro starts).
 ;
 ; PlayShootingStar returns carry if the player skipped the splash.
 
@@ -49,6 +49,11 @@ PlayShootingStar:
 	hlcoord 2, 7
 	ld de, ShootingStarCopyrightString
 	call PlaceString
+; Kanto hack (M12e): Yellow copies these tiles with the LCD on, over 15 more
+; frames than pyrite's LCD-off copy; wait them out so the copyright page
+; appears on Yellow's frame (69 from power-on).
+	ld c, 15
+	call DelayFrames
 	call DisableLCD
 	ld hl, ShootingStarCopyrightGFX
 	ld de, vTiles2 tile $60
