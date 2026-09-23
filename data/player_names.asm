@@ -1,3 +1,8 @@
+; Kanto hack (F4, docs/AUDIT-FULL-GAME-LEFTOVERS.md): Yellow's default player
+; names NEW NAME / YELLOW / ASH / JACK (vendor/pokeyellow/constants/
+; player_constants.asm PLAYERNAME1..3).  Yellow has no gender select; the girl
+; keeps it (Q1 default) and gets the same list.
+
 ChrisNameMenuHeader:
 	db MENU_BACKUP_TILES ; flags
 	menu_coords 0, 0, 10, TEXTBOX_Y - 1
@@ -7,13 +12,12 @@ ChrisNameMenuHeader:
 
 .MaleNames:
 	db STATICMENU_CURSOR | STATICMENU_PLACE_TITLE | STATICMENU_DISABLE_B ; flags
-	db 5 ; items
+	db 4 ; items
 	db "NEW NAME@"
 MalePlayerNameArray:
-	db "CHRIS@"
-	db "MAT@"
-	db "ALLAN@"
-	db "JON@"
+	db "YELLOW@"
+	db "ASH@"
+	db "JACK@"
 	db 2 ; title indent
 	db " NAME @" ; title
 
@@ -26,12 +30,11 @@ KrisNameMenuHeader:
 
 .FemaleNames:
 	db STATICMENU_CURSOR | STATICMENU_PLACE_TITLE | STATICMENU_DISABLE_B ; flags
-	db 5 ; items
+	db 4 ; items
 	db "NEW NAME@"
 FemalePlayerNameArray:
-	db "KRIS@"
-	db "AMANDA@"
-	db "JUANA@"
-	db "JODI@"
+	db "YELLOW@"
+	db "ASH@"
+	db "JACK@"
 	db 2 ; title indent
 	db " NAME @" ; title
