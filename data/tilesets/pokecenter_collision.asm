@@ -25,7 +25,7 @@
 	tilecoll WALL, WALL, WALL, WALL ; 18
 	tilecoll WALL, WALL, WALL, WALL ; 19
 	tilecoll COUNTER, COUNTER, WALL, FLOOR ; 1a  Kanto hack BG1 counter over Yellow's bench top (0,3) (scripts/bg1_bench_blk.py)
-	tilecoll WALL, FLOOR, WALL, FLOOR ; 1b  Kanto hack BG1 Yellow's bench guy (0,4) + bench foot (0,5) (scripts/bg1_bench_blk.py)
+	tilecoll WALL, FLOOR, WALL, FLOOR ; 1b  Kanto hack BG1 Yellow's bench guy (0,4) + bench foot (0,5), BG2 face spill (1,4) (scripts/bg1_bench_blk.py)
 	tilecoll WALL, WALL, WALL, WALL ; 1c
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 1d
 	tilecoll WALL, WALL, FLOOR, FLOOR ; 1e
