@@ -188,6 +188,13 @@ ViridianBlackboardFrozenText:
 	line "thaw out #MON!"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+ViridianSchoolHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 ViridianSchoolHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -198,6 +205,7 @@ ViridianSchoolHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  7,  1, BGEVENT_UP, ViridianSchoolHouseBG1Q1Bookshelf ; BG1Q1
 	bg_event  3,  0, BGEVENT_READ, ViridianSchoolHouseBlackboard
 
 	def_object_events

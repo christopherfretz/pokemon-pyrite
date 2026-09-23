@@ -112,6 +112,23 @@ PewterPokecenter1FChanseyText:
 	line "sey!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _PewterCityPokecenterGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+PewterPokecenter1FBenchGuyScript:
+	jumptext PewterPokecenter1FBenchGuyText
+
+PewterPokecenter1FBenchGuyText:
+	text "Yawn!"
+
+	para "When JIGGLYPUFF"
+	line "sings, #MON"
+	cont "get drowsy..."
+
+	para "...Me too..."
+	line "Snore..."
+	done
+
 PewterPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -123,6 +140,7 @@ PewterPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, PewterPokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, PewterPokecenter1FNurseScript, -1

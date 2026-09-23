@@ -175,6 +175,13 @@ CeladonMansionManagersSuiteSignText:
 	line "Manager's Suite"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (2,3)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+CeladonMansion1FBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 CeladonMansion1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -188,6 +195,7 @@ CeladonMansion1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  2,  3, BGEVENT_UP, CeladonMansion1FBG1Q1Bookshelf ; BG1Q1
 	bg_event  5,  8, BGEVENT_UP, CeladonMansionManagersSuiteSign
 
 	def_object_events

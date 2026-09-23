@@ -7,6 +7,9 @@
 ; Crystal does ship SPRITE_CHANSEY, and (4,1) is reachable across the counter
 ; from (4,3), the same pattern N1c/N1d used at Viridian and Pewter.
 ; The PC needs no object: Crystal drives it from the tile collision.
+; BG1: the YOUNGSTER moved off (1,4) -- the square the player reads Yellow's
+; bench guy from -- to (5,3) facing UP, Yellow's own (4,3)/UP one step right so
+; CHANSEY stays reachable across the counter (Pewter's COOLTRAINER F precedent).
 
 	object_const_def
 	const MTMOONPOKECENTER_NURSE
@@ -160,6 +163,19 @@ MtMoonPokecenterChanseyText:
 	line "sey!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _MtMoonPokecenterBenchGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+MtMoonPokecenterBenchGuyScript:
+	jumptext MtMoonPokecenterBenchGuyText
+
+MtMoonPokecenterBenchGuyText:
+	text "If you have too"
+	line "many #MON, you"
+	cont "should store them"
+	cont "via PC!"
+	done
+
 MtMoonPokecenter_MapEvents:
 	db 0, 0 ; filler
 
@@ -171,10 +187,11 @@ MtMoonPokecenter_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, MtMoonPokecenterBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterNurseScript, -1
-	object_event  1,  4, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterYoungsterScript, -1
+	object_event  5,  3, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterYoungsterScript, -1
 	object_event  6,  2, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterGentlemanScript, -1
 	object_event  7,  6, SPRITE_POKEFAN_M, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterMagikarpSalesmanScript, -1
 	object_event  4,  1, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, MtMoonPokecenterChanseyScript, -1

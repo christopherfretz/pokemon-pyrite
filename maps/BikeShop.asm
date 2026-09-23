@@ -156,6 +156,17 @@ BikeShopYoungsterCoolBikeText:
 	line "really cool!"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow's hidden PrintNewBikeText
+; (engine/events/hidden_events/new_bike.asm, any facing) on (2,1), the one of
+; its six BICYCLE squares that is a std-script TV tile in our room.
+BikeShopBG1Q1NewBicycle:
+	jumptext BikeShopBG1Q1NewBicycleText
+
+BikeShopBG1Q1NewBicycleText:
+	text "A shiny new"
+	line "BICYCLE!"
+	done
+
 BikeShop_MapEvents:
 	db 0, 0 ; filler
 
@@ -166,6 +177,7 @@ BikeShop_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  2,  1, BGEVENT_READ, BikeShopBG1Q1NewBicycle ; BG1Q1
 
 	def_object_events
 	object_event  6,  2, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BikeShopClerkScript, -1

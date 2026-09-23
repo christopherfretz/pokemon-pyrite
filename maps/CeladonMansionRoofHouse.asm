@@ -200,6 +200,13 @@ CeladonMansionRoofHouseTMNotebookText:
 	para "SILPH CO."
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+CeladonMansionRoofHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 CeladonMansionRoofHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -210,6 +217,7 @@ CeladonMansionRoofHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  7,  1, BGEVENT_UP, CeladonMansionRoofHouseBG1Q1Bookshelf ; BG1Q1
 	bg_event  3,  0, BGEVENT_UP, CeladonMansionRoofHouseBlackboard
 	bg_event  4,  0, BGEVENT_UP, CeladonMansionRoofHouseBlackboard
 	bg_event  3,  4, BGEVENT_UP, CeladonMansionRoofHouseTMNotebook

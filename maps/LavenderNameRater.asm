@@ -32,6 +32,13 @@ LavenderNameRater:
 	closetext
 	end
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (0,1), (1,1), (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+LavenderNameRaterBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 LavenderNameRater_MapEvents:
 	db 0, 0 ; filler
 
@@ -42,6 +49,9 @@ LavenderNameRater_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_UP, LavenderNameRaterBG1Q1Bookshelf ; BG1Q1
+	bg_event  1,  1, BGEVENT_UP, LavenderNameRaterBG1Q1Bookshelf ; BG1Q1
+	bg_event  7,  1, BGEVENT_UP, LavenderNameRaterBG1Q1Bookshelf ; BG1Q1
 
 	def_object_events
 	object_event  5,  3, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, LavenderNameRater, -1

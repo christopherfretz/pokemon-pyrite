@@ -54,6 +54,32 @@ SaffronPokecenter1FChanseyText:
 	line "sey!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _SaffronCityPokecenterGuyText1 in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+SaffronPokecenter1FBenchGuyScript:
+; Yellow switches on EVENT_BEAT_SILPH_CO_GIOVANNI (_SaffronCityPokecenterGuyText2).
+	checkevent EVENT_BEAT_SILPH_CO_GIOVANNI
+	iftrue .RocketGone
+	jumptext SaffronPokecenter1FBenchGuyText
+
+.RocketGone:
+	jumptext SaffronPokecenter1FBenchGuyAfterText
+
+SaffronPokecenter1FBenchGuyText:
+	text "It would be great"
+	line "if the ELITE FOUR"
+	cont "came and stomped"
+	cont "TEAM ROCKET!"
+	done
+
+SaffronPokecenter1FBenchGuyAfterText:
+	text "TEAM ROCKET took"
+	line "off! We can go"
+	cont "out safely again!"
+	cont "That's great!"
+	done
+
 SaffronPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -65,6 +91,7 @@ SaffronPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, SaffronPokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SaffronPokecenter1FNurseScript, -1

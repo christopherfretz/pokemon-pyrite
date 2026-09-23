@@ -46,6 +46,13 @@ PewterSnoozeSpeechHouseYoungsterText:
 	line "sure thing!"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+PewterSnoozeSpeechHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 PewterSnoozeSpeechHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -56,6 +63,7 @@ PewterSnoozeSpeechHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  7,  1, BGEVENT_UP, PewterSnoozeSpeechHouseBG1Q1Bookshelf ; BG1Q1
 	bg_event  0,  1, BGEVENT_READ, PewterSnoozeSpeechHouseBookshelf
 	bg_event  1,  1, BGEVENT_READ, PewterSnoozeSpeechHouseBookshelf
 

@@ -301,22 +301,26 @@ OlivinePokecenter1F_Blocks:
 MahoganyPokecenter1F_Blocks:
 EcruteakPokecenter1F_Blocks:
 BlackthornPokecenter1F_Blocks:
-CeruleanPokecenter1F_Blocks:
-Route10Pokecenter1F_Blocks:
 AzaleaPokecenter1F_Blocks:
 VioletPokecenter1F_Blocks:
 Route32Pokecenter1F_Blocks:
 GoldenrodPokecenter1F_Blocks:
-VermilionPokecenter1F_Blocks:
-PewterPokecenter1F_Blocks:
-LavenderPokecenter1F_Blocks:
 SilverCavePokecenter1F_Blocks:
-CeladonPokecenter1F_Blocks:
 CianwoodPokecenter1F_Blocks:
-ViridianPokecenter1F_Blocks:
 CherrygrovePokecenter1F_Blocks:
-MtMoonPokecenter_Blocks:
 	INCBIN "maps/Pokecenter1F.blk"
+
+; Kanto hack BG1 (scripts/bg1_bench_blk.py): the Kanto Centres get Yellow's
+; left-wall bench with its seated bench guy (blocks $1a/$1b).
+ViridianPokecenter1F_Blocks:
+PewterPokecenter1F_Blocks:
+CeruleanPokecenter1F_Blocks:
+MtMoonPokecenter_Blocks:
+Route10Pokecenter1F_Blocks:
+VermilionPokecenter1F_Blocks:
+CeladonPokecenter1F_Blocks:
+LavenderPokecenter1F_Blocks:
+	INCBIN "maps/KantoPokecenter1F.blk"
 
 BetaPewterMuseumOfScience1F_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaPewterMuseumOfScience1F.blk"

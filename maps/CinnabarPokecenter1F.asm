@@ -70,6 +70,23 @@ CinnabarPokecenter1FChanseyText:
 	line "sey!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _CinnabarPokecenterGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+CinnabarPokecenter1FBenchGuyScript:
+	jumptext CinnabarPokecenter1FBenchGuyText
+
+CinnabarPokecenter1FBenchGuyText:
+	text "#MON can still"
+	line "learn techniques"
+	cont "after canceling"
+	cont "evolution."
+
+	para "Evolution can wait"
+	line "until new moves"
+	cont "have been learned."
+	done
+
 CinnabarPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -83,6 +100,7 @@ CinnabarPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, CinnabarPokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CinnabarPokecenter1FNurseScript, -1

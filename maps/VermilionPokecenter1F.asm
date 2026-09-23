@@ -64,6 +64,28 @@ VermilionPokecenter1FSailorText:
 	cont "were walking!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _VermilionPokecenterGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+VermilionPokecenter1FBenchGuyScript:
+	jumptext VermilionPokecenter1FBenchGuyText
+
+VermilionPokecenter1FBenchGuyText:
+	text "It is true that a"
+	line "higher level"
+	cont "#MON will be"
+	cont "more powerful..."
+
+	para "But, all #MON"
+	line "will have weak"
+	cont "points against"
+	cont "specific types."
+
+	para "So, there is no"
+	line "universally"
+	cont "strong #MON."
+	done
+
 VermilionPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -75,6 +97,7 @@ VermilionPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, VermilionPokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, VermilionPokecenter1FNurseScript, -1

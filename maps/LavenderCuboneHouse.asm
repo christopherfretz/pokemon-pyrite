@@ -68,6 +68,13 @@ LavenderCuboneHouseLassGhostIsGoneText:
 	cont "restless soul!"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (0,1), (1,1), (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+LavenderCuboneHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 LavenderCuboneHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -78,6 +85,9 @@ LavenderCuboneHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_UP, LavenderCuboneHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  1,  1, BGEVENT_UP, LavenderCuboneHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  7,  1, BGEVENT_UP, LavenderCuboneHouseBG1Q1Bookshelf ; BG1Q1
 
 	def_object_events
 	object_event  3,  5, SPRITE_MONSTER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, LavenderCuboneHouseCuboneScript, -1

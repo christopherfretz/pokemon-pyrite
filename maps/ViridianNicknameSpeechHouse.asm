@@ -53,6 +53,13 @@ ViridianNicknameSpeechHouseSpearySignText:
 	line "Name: SPEARY"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (0,1), (1,1), (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+ViridianNicknameSpeechHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 ViridianNicknameSpeechHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -63,6 +70,9 @@ ViridianNicknameSpeechHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_UP, ViridianNicknameSpeechHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  1,  1, BGEVENT_UP, ViridianNicknameSpeechHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  7,  1, BGEVENT_UP, ViridianNicknameSpeechHouseBG1Q1Bookshelf ; BG1Q1
 	bg_event  4,  0, BGEVENT_READ, ViridianNicknameSpeechHouseSpearySign
 
 	def_object_events

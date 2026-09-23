@@ -68,6 +68,21 @@ FuchsiaPokecenter1FChanseyText:
 	line "sey!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _FuchsiaCityPokecenterGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+FuchsiaPokecenter1FBenchGuyScript:
+	jumptext FuchsiaPokecenter1FBenchGuyText
+
+FuchsiaPokecenter1FBenchGuyText:
+	text "If you're studying"
+	line "#MON, visit"
+	cont "the SAFARI ZONE."
+
+	para "It has all sorts"
+	line "of rare #MON."
+	done
+
 FuchsiaPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -79,6 +94,7 @@ FuchsiaPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, FuchsiaPokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, FuchsiaPokecenter1FNurseScript, -1

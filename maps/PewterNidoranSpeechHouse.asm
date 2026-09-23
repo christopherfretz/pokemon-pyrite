@@ -55,6 +55,13 @@ PewterNidoranSpeechHouseMiddleAgedManText:
 	line "some BADGEs…"
 	done
 
+; BG1Q1 (docs/BG1-BENCH-AND-SHELVES.md): Yellow prints BookOrSculptureText
+; ("Crammed full of / #MON books!") facing UP on (0,1), (1,1), (7,1)
+; (engine/events/hidden_events/bookshelves.asm).  Every other bookshelf/TV/
+; radio square here is silent, as in Yellow (engine/events/std_collision.asm).
+PewterNidoranSpeechHouseBG1Q1Bookshelf:
+	jumpstd PictureBookshelfScript
+
 PewterNidoranSpeechHouse_MapEvents:
 	db 0, 0 ; filler
 
@@ -65,6 +72,9 @@ PewterNidoranSpeechHouse_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  1, BGEVENT_UP, PewterNidoranSpeechHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  1,  1, BGEVENT_UP, PewterNidoranSpeechHouseBG1Q1Bookshelf ; BG1Q1
+	bg_event  7,  1, BGEVENT_UP, PewterNidoranSpeechHouseBG1Q1Bookshelf ; BG1Q1
 
 	def_object_events
 	object_event  3,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, PewterNidoranSpeechHouseLittleBoyScript, -1

@@ -58,6 +58,18 @@ Route10Pokecenter1FFisherText:
 	line "NUGGET for ¥5000!"
 	done
 
+; BG1: Yellow's bench guy, drawn in the bench art at (0,4) and read only
+; from (1,4) facing LEFT (vendor/pokeyellow/data/events/bench_guys.asm,
+; _RockTunnelPokecenterGuyText in data/text/text_2.asm; docs/BG1-BENCH-AND-SHELVES.md).
+Route10Pokecenter1FBenchGuyScript:
+	jumptext Route10Pokecenter1FBenchGuyText
+
+Route10Pokecenter1FBenchGuyText:
+	text "I heard that"
+	line "GHOSTs haunt"
+	cont "LAVENDER TOWN!"
+	done
+
 Route10Pokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -69,6 +81,7 @@ Route10Pokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+	bg_event  0,  4, BGEVENT_LEFT, Route10Pokecenter1FBenchGuyScript ; BG1 Yellow bench guy
 
 	def_object_events
 	object_event  3,  1, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route10Pokecenter1FNurseScript, -1
