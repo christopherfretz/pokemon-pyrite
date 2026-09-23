@@ -77,5 +77,3 @@
 ; warp clones: Yellow's art, ROUTE 23's edge warps
 	tilecoll FLOOR, FLOOR, FLOOR, WARP_CARPET_DOWN ; 49 = $41, ROUTE 23 (7,139)
 	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, FLOOR ; 4a = $41, ROUTE 23 (8,139)
-	tilecoll WALL, WARP_CARPET_UP, WALL, FLOOR ; 4b = $43, ROUTE 23 (9,0)
-	tilecoll WARP_CARPET_UP, WALL, FLOOR, WALL ; 4c = $42, ROUTE 23 (10,0)

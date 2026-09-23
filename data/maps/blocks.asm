@@ -927,9 +927,6 @@ Route39Barn_Blocks:
 VictoryRoad_Blocks:
 	INCBIN "maps/VictoryRoad.blk"
 
-IndigoPlateau_Blocks:
-	INCBIN "maps/IndigoPlateau.blk"
-
 LancesRoom_Blocks:
 	INCBIN "maps/LancesRoom.blk"
 
@@ -1436,8 +1433,13 @@ ViridianGym_Blocks:
 	INCBIN "maps/ViridianGym.blk"
 
 ; M10 13e-1: Yellow's ROUTE 23 (10x72, 720 B) on TILESET_KANTO_PLATEAU, with the
-; four warp tiles swapped for their clones; scripts/kanto_plateau_blk.py.
+; two south-mouth warp tiles swapped for their clones; scripts/kanto_plateau_blk.py.
 Route23_Blocks:
 	INCBIN "maps/Route23.blk"
+
+; M10 13e-2: Yellow's INDIGO PLATEAU forecourt (10x9, 90 B) verbatim on
+; TILESET_KANTO_PLATEAU (moved here from "Map Blocks 3"); scripts/kanto_plateau_blk.py.
+IndigoPlateau_Blocks:
+	INCBIN "maps/IndigoPlateau.blk"
 
 ENDSECTION

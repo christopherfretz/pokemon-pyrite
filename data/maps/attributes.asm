@@ -434,13 +434,17 @@ ENDM
 	connection south, LavenderTown, LAVENDER_TOWN, 0
 	connection west, Route9, ROUTE_9, 0
 
-	map_attributes IndigoPlateau, INDIGO_PLATEAU, $0f
+; Kanto hack (M10 13e-2): Yellow's INDIGO PLATEAU forecourt (border block $0e,
+; `connection south, Route23, ROUTE_23, 0`) and ROUTE 23 (border $0f, north to
+; INDIGO PLATEAU).  Both are on TILESET_KANTO_PLATEAU, so each connection strip
+; reads correctly through the other map's collision.  Yellow's ROUTE 23 also
+; lists `connection south, Route22, ROUTE_22, 0 ; unnecessary` -- not ported:
+; the gate sits between them here and ROUTE 22 is Crystal's geometry.
+	map_attributes IndigoPlateau, INDIGO_PLATEAU, $0e
+	connection south, Route23, ROUTE_23, 0
 
-; Kanto hack (M10 13e-1): Yellow's ROUTE 23.  No connections yet: Yellow's
-; north connection to INDIGO PLATEAU waits for 13e-2 (a GSC connection strip is
-; read through the current map's tileset collision, and the plateau is still on
-; TILESET_KANTO); (9,0)/(10,0) are carpet warps in the meantime.
 	map_attributes Route23, ROUTE_23, $0f
+	connection north, IndigoPlateau, INDIGO_PLATEAU, 0
 	map_attributes SproutTower1F, SPROUT_TOWER_1F, $00
 	map_attributes SproutTower2F, SPROUT_TOWER_2F, $00
 	map_attributes SproutTower3F, SPROUT_TOWER_3F, $00

@@ -249,7 +249,7 @@ VictoryRoad_MapEvents:
 	warp_event 17, 19, VICTORY_ROAD, 6
 	warp_event  0, 11, VICTORY_ROAD, 9
 	warp_event  0, 27, VICTORY_ROAD, 8
-	warp_event 13,  5, INDIGO_PLATEAU, 3
+	warp_event 13,  5, ROUTE_23, 4 ; Kanto hack (M10 13e-2): Yellow's VR 2F exit spot (14,31); was the old forecourt's VR mouth, gone in the re-cut
 
 	def_coord_events
 	coord_event 12,  8, SCENE_VICTORYROAD_RIVAL_BATTLE, VictoryRoadRivalLeft
