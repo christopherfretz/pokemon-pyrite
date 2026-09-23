@@ -723,7 +723,7 @@ ENDM
 	map_attributes SSAnne1FRooms, SS_ANNE_1F_ROOMS, $0c
 	map_attributes SSAnne2FRooms, SS_ANNE_2F_ROOMS, $0c
 	map_attributes SSAnneB1FRooms, SS_ANNE_B1F_ROOMS, $0c
-	map_attributes IndigoPlateauPokecenter1F, INDIGO_PLATEAU_POKECENTER_1F, $00
+	map_attributes IndigoPlateauPokecenter1F, INDIGO_PLATEAU_POKECENTER_1F, $17 ; Kanto hack (M10 13h): black void border
 	map_attributes WillsRoom, WILLS_ROOM, $00
 	map_attributes KogasRoom, KOGAS_ROOM, $00
 	map_attributes BrunosRoom, BRUNOS_ROOM, $00

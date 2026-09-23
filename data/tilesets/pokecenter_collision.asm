@@ -49,16 +49,16 @@
 	tilecoll COUNTER, COUNTER, FLOOR, FLOOR ; 30
 	tilecoll WALL, WALL, FLOOR, WALL ; 31
 	tilecoll PC, WALL, FLOOR, WALL ; 32
-	tilecoll FLOOR, WARP_PANEL, FLOOR, FLOOR ; 33
+	tilecoll WALL, WALL, WALL, WALL ; 33  Kanto hack 13h solid striped wall (frames the E4 door against the void) (scripts/indigo_lobby_blk.py)
 	tilecoll DOOR, WALL, FLOOR, FLOOR ; 34
 	tilecoll DOOR, WALL, FLOOR, WALL ; 35
 	tilecoll DOOR, WALL, FLOOR, FLOOR ; 36
 	tilecoll DOOR, WALL, FLOOR, WALL ; 37
 	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 38
 	tilecoll WALL, WALL, FLOOR, WALL ; 39
-	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 3a
+	tilecoll DOOR, WALL, FLOOR, FLOOR ; 3a  Kanto hack 13h E4 door: black doorway in the striped wall, floor below (scripts/indigo_lobby_blk.py)
 	tilecoll WALL, WALL, FLOOR, WALL ; 3b
-	tilecoll WARP_PANEL, FLOOR, FLOOR, FLOOR ; 3c
-	tilecoll WARP_PANEL, FLOOR, FLOOR, FLOOR ; 3d
-	tilecoll WARP_PANEL, WARP_PANEL, FLOOR, FLOOR ; 3e
-	tilecoll FLOOR, WARP_PANEL, FLOOR, FLOOR ; 3f
+	tilecoll FLOOR, FLOOR, WALL, WALL ; 3c  Kanto hack 13h floor over the top of a striped wall (scripts/indigo_lobby_blk.py)
+	tilecoll WALL, WALL, FLOOR, COUNTER ; 3d  Kanto hack 13h mart clerk: wall, clerk's floor + upright counter (scripts/indigo_lobby_blk.py)
+	tilecoll COUNTER, COUNTER, FLOOR, PC ; 3e  Kanto hack 13h counter over floor + Yellow's PC at (15,7) (scripts/indigo_lobby_blk.py)
+	tilecoll WALL, WALL, WALL, WALL ; 3f  Kanto hack 13h four couches for Yellow's potted plants (scripts/indigo_lobby_blk.py)

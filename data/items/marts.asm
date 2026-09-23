@@ -401,14 +401,16 @@ MartMtMoon:
 	db -1 ; end
 
 MartIndigoPlateau:
+; Kanto hack (M10 13h): Yellow's INDIGO_PLATEAU_LOBBY script_mart, in Yellow's
+; order (GREAT_BALL replaces Crystal's HYPER_POTION).
 	db 7 ; # items
 	db ULTRA_BALL
-	db MAX_REPEL
-	db HYPER_POTION
-	db MAX_POTION
+	db GREAT_BALL
 	db FULL_RESTORE
-	db REVIVE
+	db MAX_POTION
 	db FULL_HEAL
+	db REVIVE
+	db MAX_REPEL
 	db -1 ; end
 
 MartUnderground:

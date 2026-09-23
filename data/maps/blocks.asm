@@ -675,9 +675,6 @@ TeamRocketBaseB3F_Blocks:
 BetaRoute23_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaRoute23.blk"
 
-IndigoPlateauPokecenter1F_Blocks:
-	INCBIN "maps/IndigoPlateauPokecenter1F.blk"
-
 WillsRoom_Blocks:
 	INCBIN "maps/WillsRoom.blk"
 
@@ -1450,5 +1447,11 @@ VictoryRoad2F_Blocks:
 
 VictoryRoad3F_Blocks:
 	INCBIN "maps/VictoryRoad3F.blk"
+
+; M10 13h: Yellow's 8x6 INDIGO_PLATEAU_LOBBY on TILESET_POKECENTER (48 B);
+; scripts/indigo_lobby_blk.py.  Moved here from "Map Blocks 2" (Crystal's
+; 9x7, 63 B).
+IndigoPlateauPokecenter1F_Blocks:
+	INCBIN "maps/IndigoPlateauPokecenter1F.blk"
 
 ENDSECTION

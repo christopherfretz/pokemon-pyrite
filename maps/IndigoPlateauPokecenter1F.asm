@@ -1,21 +1,44 @@
+; Kanto hack (M10 13h): Yellow's INDIGO_PLATEAU_LOBBY
+; (vendor/pokeyellow/data/maps/objects/IndigoPlateauLobby.asm,
+; vendor/pokeyellow/scripts/IndigoPlateauLobby.asm,
+; vendor/pokeyellow/text/IndigoPlateauLobby.asm), regrown to Yellow's 8x6
+; blocks (16x12 tiles) on TILESET_POKECENTER (D128).  The layout is a hand cut
+; (scripts/indigo_lobby_blk.py) whose walkable set matches Yellow's reachable
+; tiles; see docs/M10-INDIGO.md "13h findings".
+;
+; Every object is Yellow's, at Yellow's coords: NURSE (7,5), CHANSEY (8,5),
+; GYM GUIDE (4,9), COOLTRAINER_F (5,1), CLERK (0,5) and LINK RECEPTIONIST
+; (13,6).  Yellow's hidden PC at (15,7) is a real PC tile here.
+;
+; Warps: Yellow's (7,11)/(8,11) forecourt door and (8,0) E4 door.  (0,11) is
+; the POKECENTER_2F staircase every Kanto centre keeps (PORTING 15).  The E4
+; door MUST stay warp 4: WillsRoom's back-warp targets lobby warp 4.
+;
+; Crystal's leftovers are gone (C-8/D133): the Wednesday rival battle (scene
+; script, both coord_events, the RIVAL object), the TELEPORT GUY + ABRA and
+; their live warp to NEW BARK TOWN, and Crystal's COOLTRAINER_M.  The scene
+; var / wIndigoPlateauPokecenter1FSceneID and the EVENT_TELEPORT_GUY /
+; EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL flags stay defined (dead) so no WRAM or
+; flag numbering moves.
 	object_const_def
 	const INDIGOPLATEAUPOKECENTER1F_NURSE
+	const INDIGOPLATEAUPOKECENTER1F_GYM_GUIDE
+	const INDIGOPLATEAUPOKECENTER1F_COOLTRAINER_F
 	const INDIGOPLATEAUPOKECENTER1F_CLERK
-	const INDIGOPLATEAUPOKECENTER1F_COOLTRAINER_M
-	const INDIGOPLATEAUPOKECENTER1F_RIVAL
-	const INDIGOPLATEAUPOKECENTER1F_GRAMPS
-	const INDIGOPLATEAUPOKECENTER1F_ABRA
+	const INDIGOPLATEAUPOKECENTER1F_LINK_RECEPTIONIST
+	const INDIGOPLATEAUPOKECENTER1F_CHANSEY
+	const INDIGOPLATEAUPOKECENTER1F_E4_GUARD ; INTERIM 13h — remove in 13j
 
 IndigoPlateauPokecenter1F_MapScripts:
 	def_scene_scripts
-	scene_script IndigoPlateauPokecenter1FNoopScene, SCENE_INDIGOPLATEAUPOKECENTER1F_RIVAL_BATTLE
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, IndigoPlateauPokecenter1FPrepareElite4Callback
 
-IndigoPlateauPokecenter1FNoopScene:
-	end
-
+; Crystal's, kept verbatim.  Yellow's lobby script resets the E4 range only
+; once BIT_STARTED_ELITE_4 is set, and resets the VR switch boulder; 13g's
+; Route 23 load already resets VR, and clearing the E4 room state on every
+; entry is equivalent for the player.
 IndigoPlateauPokecenter1FPrepareElite4Callback:
 	setmapscene WILLS_ROOM, SCENE_WILLSROOM_LOCK_DOOR
 	setmapscene KOGAS_ROOM, SCENE_KOGASROOM_LOCK_DOOR
@@ -41,284 +64,128 @@ IndigoPlateauPokecenter1FPrepareElite4Callback:
 	setevent EVENT_LANCES_ROOM_OAK_AND_MARY
 	endcallback
 
-PlateauRivalBattle1:
-	checkevent EVENT_BEAT_RIVAL_IN_MT_MOON
-	iffalse PlateauRivalScriptDone
-	checkflag ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT
-	iftrue PlateauRivalScriptDone
-	readvar VAR_WEEKDAY
-	ifequal SUNDAY, PlateauRivalScriptDone
-	ifequal TUESDAY, PlateauRivalScriptDone
-	ifequal THURSDAY, PlateauRivalScriptDone
-	ifequal FRIDAY, PlateauRivalScriptDone
-	ifequal SATURDAY, PlateauRivalScriptDone
-	moveobject INDIGOPLATEAUPOKECENTER1F_RIVAL, 17, 9
-	appear INDIGOPLATEAUPOKECENTER1F_RIVAL
-	turnobject PLAYER, DOWN
-	showemote EMOTE_SHOCK, PLAYER, 15
-	special FadeOutMusic
-	pause 15
-	applymovement INDIGOPLATEAUPOKECENTER1F_RIVAL, PlateauRivalMovement1
-	playmusic MUSIC_RIVAL_ENCOUNTER
-	turnobject PLAYER, RIGHT
-	sjump PlateauRivalBattleCommon
-
-PlateauRivalBattle2:
-	checkevent EVENT_BEAT_RIVAL_IN_MT_MOON
-	iffalse PlateauRivalScriptDone
-	checkflag ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT
-	iftrue PlateauRivalScriptDone
-	readvar VAR_WEEKDAY
-	ifequal SUNDAY, PlateauRivalScriptDone
-	ifequal TUESDAY, PlateauRivalScriptDone
-	ifequal THURSDAY, PlateauRivalScriptDone
-	ifequal FRIDAY, PlateauRivalScriptDone
-	ifequal SATURDAY, PlateauRivalScriptDone
-	appear INDIGOPLATEAUPOKECENTER1F_RIVAL
-	turnobject PLAYER, DOWN
-	showemote EMOTE_SHOCK, PLAYER, 15
-	special FadeOutMusic
-	pause 15
-	applymovement INDIGOPLATEAUPOKECENTER1F_RIVAL, PlateauRivalMovement2
-	playmusic MUSIC_RIVAL_ENCOUNTER
-	turnobject PLAYER, LEFT
-PlateauRivalBattleCommon:
-	opentext
-	writetext PlateauRivalText1
-	waitbutton
-	closetext
-	setevent EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
-	checkevent EVENT_GOT_TOTODILE_FROM_ELM
-	iftrue .Totodile
-	checkevent EVENT_GOT_CHIKORITA_FROM_ELM
-	iftrue .Chikorita
-	; Cyndaquil
-	winlosstext PlateauRivalWinText, PlateauRivalLoseText
-	setlasttalked INDIGOPLATEAUPOKECENTER1F_RIVAL
-	loadtrainer RIVAL2, RIVAL2_2_TOTODILE
-	startbattle
-	dontrestartmapmusic
-	reloadmapafterbattle
-	sjump PlateauRivalPostBattle
-
-.Totodile:
-	winlosstext PlateauRivalWinText, PlateauRivalLoseText
-	setlasttalked INDIGOPLATEAUPOKECENTER1F_RIVAL
-	loadtrainer RIVAL2, RIVAL2_2_CHIKORITA
-	startbattle
-	dontrestartmapmusic
-	reloadmapafterbattle
-	sjump PlateauRivalPostBattle
-
-.Chikorita:
-	winlosstext PlateauRivalWinText, PlateauRivalLoseText
-	setlasttalked INDIGOPLATEAUPOKECENTER1F_RIVAL
-	loadtrainer RIVAL2, RIVAL2_2_CYNDAQUIL
-	startbattle
-	dontrestartmapmusic
-	reloadmapafterbattle
-	sjump PlateauRivalPostBattle
-
-PlateauRivalPostBattle:
-	playmusic MUSIC_RIVAL_AFTER
-	opentext
-	writetext PlateauRivalText2
-	waitbutton
-	closetext
-	turnobject PLAYER, DOWN
-	applymovement INDIGOPLATEAUPOKECENTER1F_RIVAL, PlateauRivalLeavesMovement
-	disappear INDIGOPLATEAUPOKECENTER1F_RIVAL
-	setscene SCENE_INDIGOPLATEAUPOKECENTER1F_RIVAL_BATTLE
-	playmapmusic
-	setflag ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT
-PlateauRivalScriptDone:
-	end
-
 IndigoPlateauPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
+; Yellow: PokecenterChanseyText (engine/events/pokecenter_chansey.asm).
+IndigoPlateauPokecenter1FChanseyScript:
+	opentext
+	writetext IndigoPlateauPokecenter1FChanseyText
+	cry CHANSEY
+	waitbutton
+	closetext
+	end
+
+IndigoPlateauPokecenter1FGymGuideScript:
+	jumptextfaceplayer IndigoPlateauPokecenter1FGymGuideText
+
+IndigoPlateauPokecenter1FCooltrainerFScript:
+	jumptextfaceplayer IndigoPlateauPokecenter1FCooltrainerFText
+
+; Yellow: script_mart ULTRA_BALL, GREAT_BALL, FULL_RESTORE, MAX_POTION,
+; FULL_HEAL, REVIVE, MAX_REPEL (MART_INDIGO_PLATEAU, reordered to Yellow's).
 IndigoPlateauPokecenter1FClerkScript:
 	opentext
 	pokemart MARTTYPE_STANDARD, MART_INDIGO_PLATEAU
 	closetext
 	end
 
-IndigoPlateauPokecenter1FCooltrainerMScript:
-	jumptextfaceplayer IndigoPlateauPokecenter1FCooltrainerMText
-
-TeleportGuyScript:
+; Yellow: script_cable_club_receptionist -> CableClubNPC
+; (engine/link/cable_club_npc.asm).  With a POKEDEX and Pikachu awake (always,
+; this far into the game) Yellow prints the welcome, polls the link port for
+; 90 frames and, with no cable, prints the "reserved" line.  That no-link path
+; is ported as text; the real Cable Club stays upstairs on POKECENTER_2F.
+IndigoPlateauPokecenter1FLinkReceptionistScript:
 	faceplayer
 	opentext
-	writetext TeleportGuyText1
-	yesorno
-	iffalse .No
-	writetext TeleportGuyYesText
-	waitbutton
-	closetext
-	playsound SFX_WARP_TO
-	special FadeOutToWhite
-	waitsfx
-	warp NEW_BARK_TOWN, 13, 6
-	end
-
-.No:
-	writetext TeleportGuyNoText
+	writetext IndigoPlateauPokecenter1FCableClubWelcomeText
+	pause 90
+	writetext IndigoPlateauPokecenter1FCableClubReservedText
 	waitbutton
 	closetext
 	end
 
-AbraScript:
-	opentext
-	writetext AbraText
-	cry ABRA
-	waitbutton
-	closetext
-	end
+; INTERIM 13h — remove in 13j: bars the (8,0) E4 door until the
+; LORELEI's-room rebuild lands.
+IndigoPlateauPokecenter1FE4GuardScript:
+	jumptextfaceplayer IndigoPlateauPokecenter1FE4GuardText
 
-PlateauRivalMovement1:
-	step UP
-	step UP
-	step UP
-	step UP
-	step UP
-	turn_head LEFT
-	step_end
-
-PlateauRivalMovement2:
-	step UP
-	step UP
-	step UP
-	step UP
-	step UP
-	turn_head RIGHT
-	step_end
-
-PlateauRivalLeavesMovement:
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step DOWN
-	step_end
-
-IndigoPlateauPokecenter1FCooltrainerMText:
-	text "At the #MON"
-	line "LEAGUE, you'll get"
-
-	para "tested by the"
-	line "ELITE FOUR."
-
-	para "You have to beat"
-	line "them all. If you"
-
-	para "lose, you have to"
-	line "start all over!"
+IndigoPlateauPokecenter1FChanseyText:
+	text "CHANSEY: Chaaan"
+	line "sey!"
 	done
 
-PlateauRivalText1:
-	text "Hold it."
+; Yellow: _IndigoPlateauLobbyGymGuideText.
+IndigoPlateauPokecenter1FGymGuideText:
+	text "Yo! Champ in"
+	line "making!"
 
-	para "You're going to"
-	line "take the #MON"
+	para "At #MON LEAGUE,"
+	line "you have to face"
+	cont "the ELITE FOUR in"
+	cont "succession."
 
-	para "LEAGUE challenge"
-	line "now?"
-
-	para "That's not going"
-	line "to happen."
-
-	para "My super-well-"
-	line "trained #MON"
-
-	para "are going to pound"
-	line "you."
-
-	para "<PLAYER>!"
-	line "I challenge you!"
+	para "If you lose, you"
+	line "have to start all"
+	cont "over again! This"
+	cont "is it! Go for it!"
 	done
 
-PlateauRivalWinText:
-	text "…"
+; Yellow: _IndigoPlateauLobbyCooltrainerFText.
+IndigoPlateauPokecenter1FCooltrainerFText:
+	text "From here on, you"
+	line "face the ELITE"
+	cont "FOUR one by one!"
 
-	para "OK--I lost…"
+	para "If you win, a"
+	line "door opens to the"
+	cont "next trainer!"
+	cont "Good luck!"
 	done
 
-PlateauRivalText2:
-	text "…Darn… I still"
-	line "can't win…"
-
-	para "I… I have to think"
-	line "more about my"
-	cont "#MON…"
-
-	para "Humph! Try not to"
-	line "lose!"
+; Yellow: _CableClubNPCWelcomeText.
+IndigoPlateauPokecenter1FCableClubWelcomeText:
+	text "Welcome to the"
+	line "Cable Club!"
 	done
 
-PlateauRivalLoseText:
-	text "…"
-
-	para "Whew…"
-	line "With my partners,"
-
-	para "I'm going to be"
-	line "the CHAMPION!"
+; Yellow: _CableClubNPCAreaReservedFor2FriendsLinkedByCableText (a copy of
+; Pokecenter2F's Text_CableClubAreaReserved, which lives in another bank).
+IndigoPlateauPokecenter1FCableClubReservedText:
+	text "This area is"
+	line "reserved for 2"
+	cont "friends who are"
+	cont "linked by cable."
 	done
 
-TeleportGuyText1:
-	text "Ah! You're chal-"
-	line "lenging the ELITE"
+; INTERIM 13h — remove in 13j.
+IndigoPlateauPokecenter1FE4GuardText:
+	text "The ELITE FOUR"
+	line "are preparing for"
+	cont "challengers."
 
-	para "FOUR? Are you sure"
-	line "you're ready?"
-
-	para "If you need to"
-	line "train some more,"
-
-	para "my ABRA can help"
-	line "you."
-
-	para "It can TELEPORT"
-	line "you home."
-
-	para "Would you like to"
-	line "go home now?"
-	done
-
-TeleportGuyYesText:
-	text "OK, OK. Picture"
-	line "your house in your"
-	cont "mind…"
-	done
-
-TeleportGuyNoText:
-	text "OK, OK. The best"
-	line "of luck to you!"
-	done
-
-AbraText:
-	text "ABRA: Aabra…"
+	para "Please come back"
+	line "a little later!"
 	done
 
 IndigoPlateauPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  5, 13, INDIGO_PLATEAU, 1
-	warp_event  6, 13, INDIGO_PLATEAU, 2
-	warp_event  0, 13, POKECENTER_2F, 1
-	warp_event 14,  3, WILLS_ROOM, 1
+	warp_event  7, 11, INDIGO_PLATEAU, 1
+	warp_event  8, 11, INDIGO_PLATEAU, 2
+	warp_event  0, 11, POKECENTER_2F, 1
+	warp_event  8,  0, WILLS_ROOM, 1 ; Yellow: LORELEIS_ROOM 1 (13j)
 
 	def_coord_events
-	coord_event 16,  4, SCENE_INDIGOPLATEAUPOKECENTER1F_RIVAL_BATTLE, PlateauRivalBattle1
-	coord_event 17,  4, SCENE_INDIGOPLATEAUPOKECENTER1F_RIVAL_BATTLE, PlateauRivalBattle2
 
 	def_bg_events
 
 	def_object_events
-	object_event  3,  7, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FNurseScript, -1
-	object_event 11,  7, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FClerkScript, -1
-	object_event 11, 11, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FCooltrainerMScript, -1
-	object_event 16,  9, SPRITE_RIVAL, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_INDIGO_PLATEAU_POKECENTER_RIVAL
-	object_event  1,  9, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, TeleportGuyScript, EVENT_TELEPORT_GUY
-	object_event  0,  9, SPRITE_JYNX, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, AbraScript, EVENT_TELEPORT_GUY
+	object_event  7,  5, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FNurseScript, -1
+	object_event  4,  9, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FGymGuideScript, -1
+	object_event  5,  1, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FCooltrainerFScript, -1
+	object_event  0,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FClerkScript, -1
+	object_event 13,  6, SPRITE_LINK_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FLinkReceptionistScript, -1
+	object_event  8,  5, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FChanseyScript, -1
+	object_event  8,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FE4GuardScript, -1 ; INTERIM 13h — remove in 13j
