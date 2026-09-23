@@ -630,6 +630,100 @@ wMobileTransferData:: ds 480
 
 SECTION UNION "Miscellaneous", WRAM0
 
+; Kanto hack (M12b-2): Yellow's Surfing Pikachu minigame scratch
+; (vendor/pokeyellow/ram/wram.asm, the wAnimatedObjectsData /
+; wSurfingMinigameData NEXTU), field for field in Yellow's order, plus the
+; Gen 1 VBlank-copy state Crystal lacks (Yellow keeps it in HRAM).  Scratch
+; only: nothing here outlives the minigame (engine/games/surfing_pikachu.asm).
+wAnimatedObjectsData::
+
+wAnimatedObjectStartTileOffsets:: ds 10 * 2
+
+wAnimatedObjectDataStructs::
+; wAnimatedObject0 - wAnimatedObject9
+for n, 10
+wAnimatedObject{d:n}:: animated_object wAnimatedObject{d:n}
+endr
+
+wNumLoadedAnimatedObjects:: db
+wCurrentAnimatedObjectOAMBufferOffset::
+	ds 3
+wAnimatedObjectSpawnStateDataPointer:: dw
+wAnimatedObjectFramesDataPointer:: dw
+wAnimatedObjectJumptablePointer:: dw
+wAnimatedObjectOAMDataPointer:: dw
+
+wCurAnimatedObjectOAMAttributes:: db
+wCurrentAnimatedObjectVTileOffset:: db
+wCurrentAnimatedObjectXCoord:: db
+wCurrentAnimatedObjectYCoord:: db
+wCurrentAnimatedObjectXOffset:: db
+wCurrentAnimatedObjectYOffset:: db
+wAnimatedObjectGlobalYOffset:: db
+wAnimatedObjectGlobalXOffset:: db
+
+wAnimatedObjectsDataEnd::
+
+wSurfingMinigameData:: db
+wSurfingMinigameRoutineNumber:: db
+wSurfingMinigamePikachuState:: db
+wSurfingMinigameWaveFunctionNumber:: dw
+wSurfingMinigameWaveRandomValue:: db
+wSurfingMinigamePikachuHP:: dw ; little-endian BCD
+	ds 1
+wSurfingMinigameRadnessMeter:: db ; number of consecutive tricks
+wSurfingMinigameRadnessScore:: dw ; little-endian BCD
+wSurfingMinigameTotalScore:: dw ; little-endian BCD
+wSurfingMinigameBoardAngleOffset:: db
+wSurfingMinigameBoardAngleDecreasing:: db
+wSurfingMinigameBoardAngleTimer:: db
+wSurfingMinigameCrashTimer:: db
+wSurfingMinigameUnusedToggle:: db ; only used in unused function
+wSurfingMinigamePikachuSpeed:: dw ; little-endian
+wSurfingMinigameDistance:: ds 3 ; big-endian
+wSurfingMinigameWaveHeightBuffer:: dw
+wSurfingMinigamePikachuObjectHeight:: db
+wSurfingMinigameWaterSprayCounter:: db
+wSurfingMinigameJumpArcMagnitude:: db
+wSurfingMinigameJumpDescending:: db
+wSurfingMinigameJumpArcFraction:: db
+wSurfingMinigameBGMapReadBuffer:: ds 1 tiles
+	ds 24
+wSurfingMinigameSCX:: db
+wSurfingMinigameSCX2:: db
+wSurfingMinigameSCXHi:: db
+wSurfingMinigameWaveHeight:: ds SCREEN_WIDTH
+wSurfingMinigameXOffset:: db
+wSurfingMinigameTrickFlags:: db
+wSurfingMinigameGameOver:: db
+wSurfingMinigameGameOverDelay:: db
+wSurfingMinigameRoutineDelay:: db
+wSurfingMinigameIntroAnimationFinished:: db
+; Yellow shares these three with its intro movie; the animated-object engine
+; still reads wYellowIntroCurrentScene (never 7 here).
+wSurfingMinigameMusicTempoEnabled::
+wYellowIntroCurrentScene:: db
+wSurfingMinigameCloudScrollFraction::
+wYellowIntroSceneTimer:: db
+wYellowIntroAnimatedObjectStructPointer:: db
+wSurfingMinigameDataEnd::
+
+; Yellow's HRAM VBlank-copy state (hRedrawRowOrColumn*, hVBlankCopy*,
+; hFrameCounter, hJoy5), moved to WRAM for SurfingPikachu_VBlank.
+wRedrawRowOrColumnSrcTiles:: ds SCREEN_WIDTH * 2
+wSurfRedrawRowOrColumnMode:: db
+wSurfRedrawRowOrColumnDest:: dw
+wSurfVBlankCopySize:: db
+wSurfVBlankCopySource:: dw
+wSurfVBlankCopyDest:: dw
+wSurfFrameCounter:: db ; Yellow's hFrameCounter: VBlank decrements it
+wSurfJoy5:: db ; Yellow's hJoy5: held buttons, sampled every 2nd frame
+; TEMPORARY (M12b-4 moves it into the save block): zeroed on entry.
+wSurfingMinigameHiScore:: dw ; little-endian BCD
+
+
+SECTION UNION "Miscellaneous", WRAM0
+
 ; This union spans 200 bytes.
 UNION
 ; timeset temp storage

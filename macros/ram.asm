@@ -410,3 +410,26 @@ MACRO battle_bg_effect
 \1BattleTurn::     db
 \1Param::          db
 ENDM
+
+MACRO animated_object
+; Kanto hack (M12b-2): Yellow's animated-object struct (vendor/pokeyellow/
+; macros/ram.asm), used only by the Surfing Pikachu minigame
+; (engine/games/animated_objects.asm).  16 bytes.
+\1Index::          db
+\1FramesetID::     db
+\1AnimSeqID::      db
+\1TileID::         db
+\1XCoord::         db
+\1YCoord::         db
+\1XOffset::        db
+\1YOffset::        db
+\1Duration::       db
+\1DurationOffset:: db
+\1FrameIndex::     db
+\1FieldB::         db
+\1FieldC::         db
+\1FieldD::         db
+\1FieldE::         db
+\1FieldF::         db
+\1End::
+ENDM

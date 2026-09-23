@@ -210,3 +210,4 @@ SpecialsPointers::
 	add_special SafariZoneEnd
 	add_special CinnabarGymPikachuStepAside
 	add_special FollowerRejoin ; G14
+	add_special SurfingPikachuMinigame ; M12b-2

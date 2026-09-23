@@ -18,6 +18,10 @@
 ; Yellow's gates, for M12b: the dude and the PRINTER test
 ; BIT_PIKACHU_SPAWN_SURFING (patched to BIT_PIKACHU_SPAWN_STARTER on the
 ; Virtual Console), the three posters test BIT_PIKACHU_SPAWN_SURFING only.
+; M12b-2: TEMPORARY -- the dude launches the minigame unconditionally.
+; M12b-4 removes this switch along with the hook it guards.
+DEF SURFING_DEBUG EQU 1
+
 	object_const_def
 	const SUMMERBEACHHOUSE_SURFIN_DUDE
 	const SUMMERBEACHHOUSE_PIKACHU
@@ -33,6 +37,13 @@ SummerBeachHouseSurfinDudeScript:
 	; M12b: minigame offer goes here.  Yellow: if qualified, "Whoa! Your
 	; PIKACHU knows how to SURF!..." (first time) or "Wanna go SURF?" (later),
 	; YES -> SurfingPikachuMinigame, NO -> "Come SURF anytime, my friend!".
+	if SURFING_DEBUG
+	; M12b-2 TEMPORARY debug entry: always play.  M12b-4 replaces this with
+	; Yellow's qualified offer and deletes SURFING_DEBUG.
+	special SurfingPikachuMinigame
+	closetext
+	end
+	endc
 	; Unqualified falls through to Yellow's SurfinDudeText4:
 	writetext SummerBeachHouseSurfinDudeText
 	waitbutton

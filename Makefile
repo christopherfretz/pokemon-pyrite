@@ -330,6 +330,9 @@ gfx/mail/surf_mail_border.1bpp: tools/gfx += --remove-whitespace
 gfx/mail/flower_mail_border.1bpp: tools/gfx += --remove-whitespace
 gfx/mail/litebluemail_border.1bpp: tools/gfx += --remove-whitespace
 
+### Kanto hack (M12b-2): Yellow trims the Surfing Pikachu intro sheet too
+gfx/surfing_pikachu/surfing_pikachu_1c.2bpp: tools/gfx += --trim-whitespace
+
 gfx/pokedex/pokedex.2bpp: tools/gfx += --trim-whitespace
 gfx/pokedex/pokedex_sgb.2bpp: tools/gfx += --trim-whitespace
 gfx/pokedex/question_mark.2bpp: RGBGFXFLAGS += --columns

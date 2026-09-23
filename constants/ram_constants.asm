@@ -378,7 +378,7 @@ DEF NUM_UNLOCKED_UNOWN_SETS EQU const_value
 	const VBLANK_SERIAL       ; 4
 	const VBLANK_CREDITS      ; 5
 	const VBLANK_DMA_TRANSFER ; 6
-	const VBLANK_UNUSED       ; 7
+	const VBLANK_SURFING      ; 7 ; Kanto hack (M12b-2): was VBLANK_UNUSED
 DEF NUM_VBLANK_HANDLERS EQU const_value
 
 ; rRAMB::

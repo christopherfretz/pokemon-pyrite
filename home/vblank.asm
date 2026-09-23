@@ -44,7 +44,7 @@ VBlankHandlers:
 	dw VBlank_Serial
 	dw VBlank_Credits
 	dw VBlank_DMATransfer
-	dw VBlank_Normal ; unused
+	dw VBlank_Surfing ; Kanto hack (M12b-2): was VBlank_Normal (unused)
 	assert_table_length NUM_VBLANK_HANDLERS
 
 VBlank_Normal::
@@ -136,6 +136,7 @@ VBlank_Normal::
 
 	call UpdateJoypad
 
+.sound ; Kanto hack (M12b-2): VBlank_Surfing shares this tail
 	ld a, BANK(_UpdateSound)
 	rst Bankswitch
 	call _UpdateSound
@@ -146,6 +147,17 @@ VBlank_Normal::
 	ldh [hUnusedBackup], a
 
 	ret
+
+VBlank_Surfing::
+; Kanto hack (M12b-2): the Surfing Pikachu minigame's VBlank, Yellow's order
+; (engine/games/surfing_pikachu.asm SurfingPikachu_VBlank), then sound via
+; VBlank_Normal's tail (12 bytes: ROM0 is full).
+	ldh a, [hROMBank]
+	ldh [hROMBankBackup], a
+	ld a, BANK(SurfingPikachu_VBlank)
+	rst Bankswitch
+	call SurfingPikachu_VBlank
+	jr VBlank_Normal.sound
 
 VBlank_SoundOnly::
 ; sound only

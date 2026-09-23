@@ -781,6 +781,16 @@ INCLUDE "data/pikachu/pikapic_tilemaps.asm"
 INCLUDE "gfx/pikachu.asm"
 
 
+SECTION "Surfing Pikachu", ROMX
+
+; Kanto hack (M12b-2): Yellow's Surfing Pikachu minigame (docs/M12-STRETCH.md)
+INCLUDE "engine/games/surfing_pikachu.asm"
+INCLUDE "engine/games/animated_objects.asm"
+
+
+INCLUDE "gfx/surfing_pikachu.asm"
+
+
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]
 
 ; The end of the ROM is taken up by checksums of the content, apparently used

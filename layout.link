@@ -329,10 +329,16 @@ ROMX $6e
 	"Sprites 5"
 ROMX $6f
 	"Text 1"
+	; Kanto hack (M12b-2): Surfing Pikachu minigame art, 1b (256 tiles)
+	"Surfing Pikachu Graphics 2"
 ROMX $70
 	"Text 2"
+	; Kanto hack (M12b-2): Yellow's Surfing Pikachu minigame engine + data
+	"Surfing Pikachu"
 ROMX $71
 	"Text 3"
+	; Kanto hack (M12b-2): Surfing Pikachu minigame art, 1a (80 tiles)
+	"Surfing Pikachu Graphics 1"
 ROMX $72
 	"Miscellaneous Text"
 ROMX $73
@@ -399,6 +405,8 @@ ROMX $7c
 	; Kanto hack: the two Pewter Museum maps pushed "Maps" past the end of
 	; bank $25, so the overworld event loop moved here (docs/M2-PEWTER.md, 4d).
 	"Events"
+	; Kanto hack (M12b-2): Surfing Pikachu intro art, 1c (144 tiles)
+	"Surfing Pikachu Graphics 3"
 ROMX $7d
 	"Mobile News Data"
 ROMX $7e
