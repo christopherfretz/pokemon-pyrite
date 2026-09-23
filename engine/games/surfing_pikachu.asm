@@ -178,7 +178,7 @@ SurfingPikachu_VBlank::
 DEF SURFING_MINIGAME_FLAT_WATER_Y EQU $74
 DEF SURFING_MINIGAME_CENTER_X     EQU SCREEN_WIDTH_PX / 2 + OAM_X_OFS
 
-DEF SURFING_EXIT_PAD EQU 26 ; M12b-4: calibrated so routine bit 7 -> map music == Yellow idle (50 frames)
+DEF SURFING_EXIT_PAD EQU 11 ; M12b-5: WaitSFX at routine bit 7 + ~34 = Yellow's PlayDefaultMusic; the jingle's end then governs
 
 	const_def
 	const SURFING_MINIGAME_PIKACHU_STATE_RIDING       ; 0
@@ -202,6 +202,7 @@ _SurfingPikachuMinigame::
 	ld a, BANK(wLYOverrides)
 	ldh [rWBK], a
 	call SurfingPikachuMinigame_BlankPals
+	call DelayFrame ; M12b-5: Yellow's BlankPals spends a frame on CGB transfers
 	call DelayFrame
 	call DelayFrame
 	call DelayFrame
@@ -285,10 +286,10 @@ SurfingPikachuMinigame_ReloadMap:
 ; PlayDefaultMusic + GBPalNormal do (no fade).  Call_ExitMenu pops the menu
 ; header the special's FadeToMenu pushed.  Yellow's reload spends most of its
 ; frames in ReloadMapSpriteTilePatterns' VBlank tile copies; Crystal's is
-; quicker, so SURFING_EXIT_PAD frames of the same white screen put the map
-; music on Yellow's frame (idle: 50 frames after routine bit 7; rad: 50 vs
-; Yellow's 52, whose PlayDefaultMusic also waits out the last SFX -- WaitSFX
-; here; docs/M12-STRETCH.md "## M12b-4 findings").
+; quicker, so SURFING_EXIT_PAD frames of the same white screen reach WaitSFX
+; where Yellow reaches PlayDefaultMusic (routine bit 7 + 34).  Both then wait
+; out the GET_ITEM2_4_2 jingle, whose end sets the map music's frame in Yellow
+; (jingle start + 185; docs/M12-STRETCH.md "## M12b-5 findings").
 	call ClearBGPalettes
 	call Call_ExitMenu
 	call ReloadTilesetAndPalettes
@@ -311,6 +312,13 @@ SurfingPikachuLoop:
 	call DelayFrame
 	; Yellow: SET_PAL_SURFING_PIKACHU_TITLE (whole-screen BEACH, its names are
 	; swapped).  Crystal: attribute map already all palette 0 (LoadGFXAndLayout).
+	; M12b-5: Yellow's LoadGFXAndLayout tail (UpdateCGBPal_OBP0/1) plus that
+	; RunPaletteCommand cost it 5 more frames than Crystal's wBGPals2 writes;
+	; the same white/title screen holds them (entry -> first course iteration:
+	; Yellow 236, hack 237 -- the hack's first intro iteration overruns one
+	; VBlank after its two PlayMusic calls; docs/M12-STRETCH.md M12b-5).
+	ld c, 5
+	call DelayFrames
 .loop
 	ld a, [wSurfingMinigameRoutineNumber]
 	bit 7, a
@@ -2793,6 +2801,7 @@ SurfingPikachuMinigameIntro:
 	call DelayFrame
 	call DelayFrame
 	call SurfingPikachuMinigame_SetBGPals ; Crystal: BG and OBJ together
+	call DelayFrame ; M12b-5: Yellow's UpdateCGBPal_OBP0/OBP1 (HBlank-paced) frame
 	call DelayFrame
 	call SurfingMinigame_PlayMusic ; M12b-3 stub (MUSIC_SURFING_PIKACHU)
 	xor a
