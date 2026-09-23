@@ -96,12 +96,42 @@ InitPokedex:
 
 	ld a, [wLastDexMode]
 	ld [wCurDexMode], a
+	call Pokedex_KantoActForceOldMode
 
 	call Pokedex_OrderMonsByMode
 	call Pokedex_InitCursorPosition
 	call Pokedex_GetLandmark
 	farcall DrawDexEntryScreenRightEdge
 	call Pokedex_ResetBGMapMode
+	ret
+
+Pokedex_KantoActForceOldMode:
+; Kanto hack (F6): Yellow's #DEX is national 001-151 with no mode choice
+; (pokeyellow engine/menus/pokedex.asm).  While the game is in the Kanto act
+; (no #GEAR), Crystal's NEW (Johto regional) order is unavailable, so a save
+; left in DEXMODE_NEW (a fresh game's default) opens in OLD (national) order.
+	ld a, [wCurDexMode]
+	and a ; DEXMODE_NEW?
+	ret nz
+	call Pokedex_KantoModeOffset
+	ret z
+	ld [wCurDexMode], a ; a = 1 = DEXMODE_OLD
+	ret
+
+Pokedex_KantoModeOffset:
+; Kanto hack (F6): a = 1 (nz) in the Kanto act, where the option menu drops
+; the NEW row and menu index = dex mode - 1; a = 0 (z) in the Johto act, where
+; Crystal's menu (menu index = dex mode) is untouched.  Preserves bc/de/hl.
+	push bc
+	push de
+	push hl
+	farcall PCPC_CheckKantoAct
+	pop hl
+	pop de
+	pop bc
+	ld a, 0
+	ret z
+	inc a
 	ret
 
 Pokedex_CheckUnlockedUnownMode:
@@ -514,8 +544,12 @@ Pokedex_InitOptionScreen:
 	call ClearSprites
 	call Pokedex_DrawOptionScreenBG
 	call Pokedex_InitArrowCursor
-	; point cursor to the current dex mode (modes == menu item indexes)
+	; point cursor to the current dex mode (modes == menu item indexes,
+	; minus 1 in the Kanto act, which has no NEW row -- Kanto hack F6)
+	call Pokedex_KantoModeOffset
+	ld b, a
 	ld a, [wCurDexMode]
+	sub b
 	ld [wDexArrowCursorPosIndex], a
 	call Pokedex_DisplayModeDescription
 	call WaitBGMap
@@ -525,6 +559,16 @@ Pokedex_InitOptionScreen:
 	ret
 
 Pokedex_UpdateOptionScreen:
+	call Pokedex_KantoModeOffset
+	jr z, .johto_act
+	; Kanto hack (F6): OLD/ABC(/UNOWN) on rows 4/6(/8)
+	ld a, [wUnlockedUnownMode]
+	and a
+	ld de, .KantoArrowCursorData
+	jr z, .okay2
+	ld de, .NoUnownModeArrowCursorData ; same 3 rows
+	jr .okay2
+.johto_act
 	ld a, [wUnlockedUnownMode]
 	and a
 	jr nz, .okay
@@ -545,7 +589,10 @@ Pokedex_UpdateOptionScreen:
 	ret
 
 .do_menu_action
+	call Pokedex_KantoModeOffset ; Kanto hack (F6): menu index -> dex mode
+	ld b, a
 	ld a, [wDexArrowCursorPosIndex]
+	add b
 	ld hl, .MenuActionJumptable
 	call Pokedex_LoadPointer
 	jp hl
@@ -561,6 +608,11 @@ Pokedex_UpdateOptionScreen:
 	dwcoord 2,  4 ; NEW
 	dwcoord 2,  6 ; OLD
 	dwcoord 2,  8 ; ABC
+
+.KantoArrowCursorData:
+	db PAD_UP | PAD_DOWN, 2
+	dwcoord 2,  4 ; OLD
+	dwcoord 2,  6 ; ABC
 
 .ArrowCursorData:
 	db PAD_UP | PAD_DOWN, 4
@@ -1188,13 +1240,23 @@ Pokedex_DrawOptionScreenBG:
 	hlcoord 0, 1
 	ld de, .Title
 	call Pokedex_PlaceString
+	call Pokedex_KantoModeOffset
+	jr z, .johto_act
+	; Kanto hack (F6): no NEW (Johto regional) row in the Kanto act
+	hlcoord 3, 4
+	ld de, .KantoModes
+	call PlaceString
+	hlcoord 3, 8
+	jr .unown
+.johto_act
 	hlcoord 3, 4
 	ld de, .Modes
 	call PlaceString
+	hlcoord 3, 10
+.unown
 	ld a, [wUnlockedUnownMode]
 	and a
 	ret z
-	hlcoord 3, 10
 	ld de, .UnownMode
 	call PlaceString
 	ret
@@ -1205,6 +1267,11 @@ Pokedex_DrawOptionScreenBG:
 .Modes:
 	db   "NEW #DEX MODE"
 	next "OLD #DEX MODE"
+	next "A to Z MODE"
+	db   "@"
+
+.KantoModes:
+	db   "OLD #DEX MODE"
 	next "A to Z MODE"
 	db   "@"
 
@@ -1714,7 +1781,10 @@ Pokedex_DisplayModeDescription:
 	hlcoord 0, 12
 	lb bc, 4, 18
 	call Pokedex_PlaceBorder
+	call Pokedex_KantoModeOffset ; Kanto hack (F6): menu index -> dex mode
+	ld b, a
 	ld a, [wDexArrowCursorPosIndex]
+	add b
 	ld hl, .Modes
 	call Pokedex_LoadPointer
 	ld e, l
