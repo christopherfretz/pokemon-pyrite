@@ -59,7 +59,33 @@ DEF SSANNE_SEA_CELL       EQU 17 * SCREEN_WIDTH
 ; space for the length of the animation.
 DEF wSSAnneBGMapAnchor    EQUS "(wBGMapBuffer + 2 * SCREEN_WIDTH - 2)"
 
+; K6b: the funnel smoke.  Yellow (VermilionDock_EmitSmokePuff) draws ONE 16x16
+; puff -- four OAM entries sharing one 8x8 smoke tile -- at OAM Y 100, emitted
+; at X 72 - 16n at the start of column n and drifted +2 px per 8-frame step
+; (VermilionDock_AnimSmokePuffDriftRight), so relative to the scrolling hull it
+; is always born over the funnel and trails east.  Keyed to the scroll offset d
+; here: X = 72 - (d & $f0) + 2 * ((d & 15) + 1), which is Yellow's position at
+; every scroll value (measured frame by frame in the Yellow harness).
+;
+; OBJ tile $7c of VRAM bank 0 is free while this runs: the follower's own tiles
+; are $6c-$77 (+ $ec-$f7), emotes use $f8+, the dock has no NPCs, and $7c is
+; the slot Crystal's own heal-machine animation borrows (heal_machine_anim.asm)
+; for the same reason.  Sprites 36-39 are the tail of wShadowOAM; nothing else
+; writes wShadowOAM while a special holds the script, so they stay put.
+; Palette: PAL_OW_EMOTE (silver: white/white/grey/black at every time of day).
+; Yellow's CGB colours tint colour 2 lavender only because OBP1 follows the
+; purple Vermilion map palette; silver is the same smoke on our dock.
+DEF SSANNE_PUFF_TILE      EQU $7c
+DEF SSANNE_PUFF_Y         EQU 100
+DEF SSANNE_PUFF_X         EQU 72
+DEF wSSAnnePuffOAM        EQUS "wShadowOAMSprite36"
+
 SSAnneDeparture::
+	ld de, SSAnneSmokeGFX
+	ld hl, vTiles0 tile SSANNE_PUFF_TILE
+	lb bc, BANK(SSAnneSmokeGFX), 1
+	call Request2bpp
+
 	ldh a, [rWBK]
 	push af
 	ld a, BANK(wBGMapAnchor)
@@ -106,6 +132,9 @@ SSAnneDeparture::
 	push de
 	call .SetBandScroll
 	pop de
+	push de
+	call .SetSmokePuff
+	pop de
 	pop bc
 	ld e, SSANNE_FRAMES
 .frame_loop
@@ -120,6 +149,19 @@ SSAnneDeparture::
 	jr nz, .step_loop
 	dec c
 	jr nz, .column_loop
+
+; Yellow's last puff has drifted off the east edge by now (X 248); hide it for
+; good before the band is repainted.
+	ld hl, wSSAnnePuffOAM
+	ld a, OAM_YCOORD_HIDDEN
+	ld c, 4
+.hide_loop
+	ld [hli], a
+	inc hl
+	inc hl
+	inc hl
+	dec c
+	jr nz, .hide_loop
 
 ; d is 128 now, so the band shows BG map columns 16..35 -> 16-31 and 0-3, every
 ; one of them fed above (16-19 never held the ship).  Columns 4-15 are the ones
@@ -173,6 +215,46 @@ SSAnneDeparture::
 	inc hl
 	dec c
 	jr nz, .band_loop
+	ret
+
+.SetSmokePuff:
+; b := 72 + 2 * ((d & 15) + 1) - (d & $f0), the puff's left OAM X.
+	ld a, d
+	and $0f
+	add a
+	add SSANNE_PUFF_X + 2
+	ld b, a
+	ld a, d
+	and $f0
+	cpl
+	inc a
+	add b
+	ld b, a
+	ld hl, wSSAnnePuffOAM
+	ld c, SSANNE_PUFF_Y
+	call .PuffRow
+	ld c, SSANNE_PUFF_Y + TILE_WIDTH
+.PuffRow:
+; Two entries, (c, b) and (c, b + 8): Yellow's WriteOAMBlock, one row of it.
+	call .PuffEntry
+	ld a, b
+	add TILE_WIDTH
+	ld b, a
+	call .PuffEntry
+	ld a, b
+	sub TILE_WIDTH
+	ld b, a
+	ret
+
+.PuffEntry:
+	ld a, c
+	ld [hli], a
+	ld a, b
+	ld [hli], a
+	ld a, SSANNE_PUFF_TILE
+	ld [hli], a
+	ld a, PAL_OW_EMOTE
+	ld [hli], a
 	ret
 
 .FeedSeaColumn:
@@ -236,3 +318,7 @@ SSAnneDeparture::
 	ld a, 1
 	ldh [hBGMapUpdate], a
 	ret
+
+SSAnneSmokeGFX:
+; Yellow's gfx/overworld/smoke.png, unchanged.
+INCBIN "gfx/overworld/smoke.2bpp"
