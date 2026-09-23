@@ -53,3 +53,11 @@ SECTION "Pikachu Cry 28", ROMX, BANK[$7D] ; "Mobile News Data"
 
 PikachuPCM28::
 	pcm INCBIN "audio/pikachu_cries/pikachu_cry_28.pcm"
+
+
+; M12b-3 (docs/M12-STRETCH.md): the Surfing Pikachu minigame's high-score cry
+; (5386 B with the header).  Beside the static Pokedex entries in $6e.
+SECTION "Pikachu Cry 34", ROMX, BANK[$6E] ; "Pokedex Entries 065-128"
+
+PikachuPCM34::
+	pcm INCBIN "audio/pikachu_cries/pikachu_cry_34.pcm"

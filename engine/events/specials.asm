@@ -184,11 +184,12 @@ UnownPuzzle:
 SurfingPikachuMinigame:
 ; Kanto hack (M12b-2): Yellow's Surfing Pikachu minigame, the UnownPuzzle
 ; pattern: FadeToMenu, the game (engine/games/surfing_pikachu.asm), then
-; ExitAllMenus reloads the map's tiles, palettes and sprites.
+; ExitAllMenus reloads the map's tiles, palettes and sprites.  M12b-3: the map
+; music comes back afterwards (Yellow's PlayDefaultMusic on exit).
 	call FadeToMenu
 	farcall _SurfingPikachuMinigame
 	call ExitAllMenus
-	ret
+	jp RestartMapMusic
 
 SlotMachine:
 	call CheckCoinsAndCoinCase

@@ -131,4 +131,5 @@ Music:
 	dba Music_SilphCoYellow                   ; K6d
 	dba Music_PokemonMansionYellow
 	dba Music_BikeRidingYellow
+	dba Music_SurfingPikachu ; M12b-3
 	assert_table_length NUM_MUSIC_SONGS

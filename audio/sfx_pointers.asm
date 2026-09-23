@@ -209,4 +209,9 @@ SFX:
 	dba Sfx_TwoPcBeeps
 	dba Sfx_4NoteDitty
 	dba Sfx_Twinkle
+	dba Sfx_SurfingJump
+	dba Sfx_SurfingFlip
+	dba Sfx_SurfingCrash
+	dba Sfx_SurfingLand
+	dba Sfx_GetItem2_4_2
 	assert_table_length NUM_SFX

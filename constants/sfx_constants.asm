@@ -208,6 +208,13 @@
 	const SFX_TWO_PC_BEEPS                ; cc
 	const SFX_4_NOTE_DITTY                ; cd
 	const SFX_TWINKLE                     ; ce
+; Kanto hack (M12b-3): the Surfing Pikachu minigame's Gen 1 SFX, kept in
+; Yellow's relative order so the per-channel priority rule carries over.
+	const SFX_SURFING_JUMP                ; cf
+	const SFX_SURFING_FLIP                ; d0
+	const SFX_SURFING_CRASH               ; d1
+	const SFX_SURFING_LAND                ; d2
+	const SFX_GET_ITEM2_4_2               ; d3
 DEF NUM_SFX EQU const_value
 
 ; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's SFX_SS_ANNE_HORN is Crystal's

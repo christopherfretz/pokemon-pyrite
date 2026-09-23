@@ -2568,6 +2568,14 @@ _PlaySFX::
 	ld [wSFXPriority], a
 	ret
 
+_PlaySFXNoClear::
+; Kanto hack (M12b-3, docs/M12-STRETCH.md): play sfx de the Gen 1 way, for the
+; Surfing Pikachu minigame.  _PlaySFX first silences ALL of ch5-8; Yellow's
+; Audio4_PlaySound only re-initialises the channels the new effect uses, so a
+; flip (ch5) must not cut off a jump still sounding on ch8.
+	call MusicOff
+	jr _PlaySFX.chscleared
+
 PlayStereoSFX::
 ; play sfx de
 

@@ -322,14 +322,75 @@ SurfingMinigame_ToggleStartFlag: ; unused
 	ret
 
 SurfingMinigame_UpdateMusicTempo:
-; M12b-3 stub: Yellow speeds the SURFING_PIKACHU track up with Pikachu's speed
-; (wChannelNoteDelayCounters / wMusicTempo, tempos 117/109/101/93/85 indexed by
-; (speed & $3ff) * 2 >> 8).  Needs Crystal's audio engine equivalents.
-	ret
+; Yellow speeds the SURFING_PIKACHU track up with Pikachu's speed: tempos
+; 117/109/101/93/85 indexed by hi((speed & $3ff) * 2), written only when all
+; three music channels are on the last frame of their note.  Crystal port
+; (M12b-3): Yellow's wChannelNoteDelayCounters == 1 is Crystal's
+; CHANNEL_NOTE_DURATION == 1 (_UpdateSound parses the next note when it is
+; < 2), and Yellow's one shared wMusicTempo is Crystal's per-channel
+; CHANNEL_TEMPO (little-endian) on ch1-3 -- the song has no ch4.  Written
+; directly, like Yellow, so the fractional duration carry is kept.
+	ld a, [wSurfingMinigameMusicTempoEnabled]
+	and a
+	ret z
+	call SurfingMinigame_AllMusicChannelsOnLastFrame
+	ret nz
+	; de = ([wSurfingMinigamePikachuSpeed] & $3ff) * 2
+	ld a, [wSurfingMinigamePikachuSpeed]
+	ld e, a
+	ld a, [wSurfingMinigamePikachuSpeed + 1]
+	and $3
+	ld d, a
+	sla e
+	rl d
+	ld e, d
+	ld d, $0
+	ld hl, .Tempos
+	add hl, de
+	add hl, de
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	jr SurfingMinigame_SetMusicTempo
+
+.Tempos:
+	dw 117
+	dw 109
+	dw 101
+	dw 93
+	dw 85
 
 SurfingMinigame_ResetMusicTempo:
-; M12b-3 stub: Yellow resets the tempo to 117 once all channels are on their
-; last note-delay frame.
+; Yellow resets the tempo to 117 once all channels are on their last
+; note-delay frame.
+	call SurfingMinigame_AllMusicChannelsOnLastFrame
+	ret nz
+	ld hl, 117
+	; fallthrough
+
+SurfingMinigame_SetMusicTempo:
+; hl = tempo, into CHANNEL_TEMPO of ch1-3.
+	ld a, l
+	ld [wChannel1Tempo], a
+	ld [wChannel2Tempo], a
+	ld [wChannel3Tempo], a
+	ld a, h
+	ld [wChannel1Tempo + 1], a
+	ld [wChannel2Tempo + 1], a
+	ld [wChannel3Tempo + 1], a
+	ret
+
+SurfingMinigame_AllMusicChannelsOnLastFrame:
+; z if ch1-3 all have CHANNEL_NOTE_DURATION == 1.
+	ld a, 1
+	ld hl, wChannel1NoteDuration
+	cp [hl]
+	ret nz
+	ld hl, wChannel2NoteDuration
+	cp [hl]
+	ret nz
+	ld hl, wChannel3NoteDuration
+	cp [hl]
 	ret
 
 SurfingPikachuMinigame_LoadGFXAndLayout:
@@ -853,7 +914,7 @@ SurfingMinigame_UpdateRidingPikachu:
 	ld [wSurfingMinigameRadnessMeter], a
 	ld [wSurfingMinigameTrickFlags], a
 	xor a
-	; M12b-3: ld [wChannelSoundIDs + CHAN8], a
+	ld [wChannel8MusicID], a ; Yellow: wChannelSoundIDs + CHAN8 (frees ch8)
 	ld a, SURF_SFX_SURFING_JUMP
 	call SurfingMinigame_PlaySFX
 	ret
@@ -889,7 +950,7 @@ SurfingMinigame_UpdateJumpingPikachu:
 	ld a, $10
 	call SetCurrentAnimatedObjectCallbackAndResetFrameStateRegisters
 	xor a
-	; M12b-3: ld [wChannelSoundIDs + CHAN8], a
+	ld [wChannel8MusicID], a ; Yellow: wChannelSoundIDs + CHAN8 (frees ch8)
 	ld a, SURF_SFX_SURFING_CRASH
 	call SurfingMinigame_PlaySFX
 	ret
@@ -1148,7 +1209,7 @@ SurfingMinigame_TileInteraction:
 	call SurfingMinigame_ReduceSpeedBy64
 .cleanLanding
 	xor a
-	; M12b-3: ld [wChannelSoundIDs + CHAN8], a
+	ld [wChannel8MusicID], a ; Yellow: wChannelSoundIDs + CHAN8 (frees ch8)
 	ld a, SURF_SFX_SURFING_LAND
 	call SurfingMinigame_PlaySFX
 	and a
@@ -1849,7 +1910,7 @@ DidPlayerGetAHighScore:
 	jr nz, .highScore
 .notHighScore
 	call WaitSFX
-	ld e, 0 ; M12b-3: ldpikacry e, PikachuCry28
+	ld e, PikachuCry28
 	call SurfingMinigame_PlayPikaCryIfSurfingPikaInParty
 	and a
 	ret
@@ -1860,7 +1921,7 @@ DidPlayerGetAHighScore:
 	ld a, [wSurfingMinigameTotalScore + 1]
 	ld [wSurfingMinigameHiScore + 1], a
 	call WaitSFX
-	ld e, 0 ; M12b-3: ldpikacry e, PikachuCry34
+	ld e, PikachuCry34
 	call SurfingMinigame_PlayPikaCryIfSurfingPikaInParty
 	ld a, SURF_SFX_GET_ITEM2_4_2
 	call SurfingMinigame_PlaySFX
@@ -1868,18 +1929,166 @@ DidPlayerGetAHighScore:
 	ret
 
 SurfingMinigame_PlayPikaCryIfSurfingPikaInParty:
-; M12b-3 stub: Yellow plays Pikachu cry e (PikachuCry28 / PikachuCry34) when
+; Yellow plays Pikachu's sampled cry e (PikachuCry28 / PikachuCry34) when
 ; IsSurfingStarterPikachuInParty.
+	push de
+	; the party lives in WRAM bank 1; the minigame runs with bank 5 mapped
+	ldh a, [rWBK]
+	push af
+	ld a, BANK(wPartyCount)
+	ldh [rWBK], a
+	ASSERT BANK(wPartyCount) == BANK(wPlayerName) && BANK(wPartyCount) == BANK(wPlayerID)
+	ASSERT BANK(wPartyCount) == BANK(wPartyMonOTs)
+	call IsSurfingStarterPikachuInParty
+	pop de ; d = saved rWBK (carry survives: ld/ldh leave the flags alone)
+	ld a, d
+	ldh [rWBK], a
+	pop de
+	ret nc
+	farcall PlayPikachuSoundClip
+	ret
+
+IsSurfingStarterPikachuInParty:
+; Yellow engine/pikachu/pikachu_status.asm: carry if a party mon is PIKACHU
+; (by wPartySpecies), knows SURF, and has the player's OT ID and the first
+; NAME_LENGTH_JP - 1 (5) bytes of the player's name as its OT.
+	ld b, 0
+.loop
+	ld a, [wPartyCount]
+	cp b
+	jr z, .no
+	push bc
+	ld hl, wPartySpecies
+	ld e, b
+	ld d, 0
+	add hl, de
+	ld a, [hl]
+	cp PIKACHU
+	jr nz, .next
+	ld a, b
+	ld hl, wPartyMon1Moves
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call AddNTimes
+	ld c, NUM_MOVES
+.moves
+	ld a, [hli]
+	cp SURF
+	jr z, .surf
+	dec c
+	jr nz, .moves
+	jr .next
+.surf
+	pop bc
+	push bc
+	ld a, b
+	ld hl, wPartyMon1ID
+	ld bc, PARTYMON_STRUCT_LENGTH
+	call AddNTimes
+	ld a, [wPlayerID]
+	cp [hl]
+	jr nz, .next
+	inc hl
+	ld a, [wPlayerID + 1]
+	cp [hl]
+	jr nz, .next
+	pop bc
+	push bc
+	ld a, b
+	ld hl, wPartyMonOTs
+	ld bc, NAME_LENGTH
+	call AddNTimes
+	ld de, wPlayerName
+	ld c, 5 ; Yellow: NAME_LENGTH_JP - 1
+.name
+	ld a, [de]
+	cp [hl]
+	jr nz, .next
+	inc de
+	inc hl
+	dec c
+	jr nz, .name
+	pop bc
+	scf
+	ret
+.next
+	pop bc
+	inc b
+	jr .loop
+.no
+	and a
 	ret
 
 SurfingMinigame_PlaySFX:
-; M12b-3 stub: a = SURF_SFX_* (Yellow's engine-4 ids).
+; a = SURF_SFX_* (Yellow's engine-4 id).  Gen 1's Audio4_PlaySound rule: the
+; effect starts if its channel is free (id 0 -- the jump/crash/land callers
+; zero wChannel8MusicID first, as Yellow zeroes wChannelSoundIDs + CHAN8) or
+; the id sounding there is >= the new one.  The new Crystal ids keep Yellow's
+; order ($90 < $91 < ... < $96), so the comparison carries over.  Started with
+; _PlaySFXNoClear, which leaves the other SFX channels sounding (Gen 1 only
+; re-initialises the channels the new effect uses).  Preserves bc, de, hl.
+	push hl
+	push de
+	push bc
+	ld hl, .Table - 4
+	ld bc, 4
+.find
+	add hl, bc
+	cp [hl]
+	jr nz, .find
+	inc hl
+	ld e, [hl] ; Crystal id
+	ld d, 0
+	inc hl
+	ld a, [hli] ; the effect's first channel struct
+	ld b, [hl]
+	ld c, a
+	ld hl, CHANNEL_MUSIC_ID
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .play
+	ld hl, CHANNEL_FLAGS1
+	add hl, bc
+	bit SOUND_CHANNEL_ON, [hl]
+	jr z, .play
+	ld hl, CHANNEL_MUSIC_ID
+	add hl, bc
+	ld a, [hl]
+	cp e
+	jr c, .done ; lower priority than what is sounding: Yellow returns
+.play
+	ld a, e
+	ld [wCurSFX], a
+	farcall _PlaySFXNoClear
+.done
+	pop bc
+	pop de
+	pop hl
 	ret
 
+.Table:
+	; Yellow id, Crystal id, first channel
+	db SURF_SFX_PRESS_AB,      SFX_READ_TEXT_2
+	dw wChannel5 ; byte-equal
+	db SURF_SFX_SURFING_JUMP,  SFX_SURFING_JUMP
+	dw wChannel8
+	db SURF_SFX_SURFING_FLIP,  SFX_SURFING_FLIP
+	dw wChannel5
+	db SURF_SFX_SURFING_CRASH, SFX_SURFING_CRASH
+	dw wChannel8
+	db SURF_SFX_SURFING_LAND,  SFX_SURFING_LAND
+	dw wChannel8
+	db SURF_SFX_GET_ITEM2_4_2, SFX_GET_ITEM2_4_2
+	dw wChannel5
+
 SurfingMinigame_PlayMusic:
-; M12b-3 stub: Yellow plays MUSIC_SURFING_PIKACHU here; the map music keeps
-; playing until M12b-3 lands (it owns music id $7d).
-	ret
+; Yellow: PlayMusic MUSIC_SURFING_PIKACHU.  Yellow's PlayMusic silences every
+; music channel; Crystal's leaves ch4 of the map song running under a
+; 3-channel song, so stop everything first (the K6c pattern).
+	ld de, MUSIC_NONE
+	call PlayMusic
+	ld de, MUSIC_SURFING_PIKACHU
+	jp PlayMusic
 
 SurfingMinigame_IncreaseRadnessMeter:
 	ld a, [wSurfingMinigameRadnessMeter]

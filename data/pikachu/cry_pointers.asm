@@ -51,7 +51,7 @@ PikachuCriesPointerTable::
 	no_pikachu_pcm ; PikachuCry31
 	no_pikachu_pcm ; PikachuCry32
 	no_pikachu_pcm ; PikachuCry33
-	no_pikachu_pcm ; PikachuCry34
+	dba PikachuPCM34 ; PikachuCry34 (M12b-3: the Surfing Pikachu high-score cry)
 	no_pikachu_pcm ; PikachuCry35
 	no_pikachu_pcm ; PikachuCry36
 	dba PikachuPCM37 ; PikachuCry37

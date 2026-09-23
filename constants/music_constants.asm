@@ -140,6 +140,8 @@
 	const MUSIC_SILPH_CO_YELLOW              ; 7a (Yellow's MUSIC_SILPH_CO; see the MUSIC_SILPH_CO alias below)
 	const MUSIC_POKEMON_MANSION_YELLOW       ; 7b (Yellow's MUSIC_CINNABAR_MANSION)
 	const MUSIC_BIKE_RIDING_YELLOW           ; 7c (Yellow's MUSIC_BIKE_RIDING; Kanto act only, GetBikeMusic)
+	; M12b-3 (docs/M12-STRETCH.md): the Surfing Pikachu minigame ($7e-$7f stay free).
+	const MUSIC_SURFING_PIKACHU              ; 7d
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; Kanto hack (K6a): the rival-theme A/B switch.  Every Kanto rival scene plays
