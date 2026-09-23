@@ -320,6 +320,7 @@ SECTION "bank21", ROMX
 
 INCLUDE "engine/printer/printer_serial.asm"
 INCLUDE "engine/printer/printer.asm"
+INCLUDE "engine/printer/print_surfing_hiscore.asm" ; Kanto hack (M12b-4)
 INCLUDE "gfx/battle_anims.asm"
 INCLUDE "engine/events/halloffame.asm"
 
@@ -789,6 +790,7 @@ INCLUDE "engine/games/animated_objects.asm"
 
 
 INCLUDE "gfx/surfing_pikachu.asm"
+INCLUDE "engine/games/surfing_hiscore_card.asm" ; Kanto hack (M12b-4)
 
 
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]

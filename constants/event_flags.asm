@@ -2237,8 +2237,15 @@
 	const EVENT_BEAT_RIVAL_MT_SILVER ; Kanto hack (M11 14c, D142): SILVER's final fight at the foot of MT.SILVER; also his hide flag there
 	const EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN ; Kanto hack (M11 14g, D149): JESSIE & JAMES at the RADIO TOWER 4F stairs; re-derived by the map's OBJECTS callback (takeover on, EXECUTIVEM_2 fight not won)
 	const EVENT_BEAT_LANCE_MT_SILVER ; Kanto hack (M11 14j, D155): LANCE beaten in SILVER CAVE ROOM 3; also his hide flag there
+; Kanto hack (M12b-4): Yellow's two saved wPikachuMapScriptFlags bits the SUMMER
+; BEACH HOUSE uses.  Bit 0 (BIT_PIKACHU_MAP_PAUSE_IGT, which the SURFIN' DUDE
+; reuses as "already offered": first time "Whoa!...", later "Wanna go SURF?")
+; and bit 1 (BIT_PIKACHU_MAP_SURF_SELECT: set once the minigame has been played;
+; arms SELECT-to-quit and the PRINTER's Hi-Score prompt).
+	const EVENT_SURFIN_DUDE_OFFERED
+	const EVENT_SURFING_MINIGAME_SURF_SELECT
 
-; Unused: next 221 events
+; Unused: next 219 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -211,3 +211,5 @@ SpecialsPointers::
 	add_special CinnabarGymPikachuStepAside
 	add_special FollowerRejoin ; G14
 	add_special SurfingPikachuMinigame ; M12b-2
+	add_special SurfingHiScoreCard ; M12b-4
+	add_special PrintSurfingHiScore ; M12b-4

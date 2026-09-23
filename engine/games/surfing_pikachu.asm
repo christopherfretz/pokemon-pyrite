@@ -178,6 +178,8 @@ SurfingPikachu_VBlank::
 DEF SURFING_MINIGAME_FLAT_WATER_Y EQU $74
 DEF SURFING_MINIGAME_CENTER_X     EQU SCREEN_WIDTH_PX / 2 + OAM_X_OFS
 
+DEF SURFING_EXIT_PAD EQU 26 ; M12b-4: calibrated so routine bit 7 -> map music == Yellow idle (50 frames)
+
 	const_def
 	const SURFING_MINIGAME_PIKACHU_STATE_RIDING       ; 0
 	const SURFING_MINIGAME_PIKACHU_STATE_JUMPING      ; 1
@@ -238,10 +240,6 @@ _SurfingPikachuMinigame::
 	ld [wSurfJoy5], a
 	ld [wSurfVBlankCopySize], a
 	ld [wSurfRedrawRowOrColumnMode], a
-	; M12b-4: the high score belongs in the save block; until then it is
-	; scratch that starts at zero every session.
-	ld [wSurfingMinigameHiScore], a
-	ld [wSurfingMinigameHiScore + 1], a
 	call SurfingPikachuMinigameIntro
 	call SurfingPikachuLoop
 	call SurfingPikachuMinigame_BlankPals
@@ -273,11 +271,40 @@ _SurfingPikachuMinigame::
 	ldh [hBGMapMode], a
 	pop af
 	ldh [hMapAnims], a
-	; M12b-4: Yellow's RunDefaultPaletteCommand / ReloadMapAfterSurfingMinigame /
-	; PlayDefaultMusic / GBPalNormal = the special's ExitAllMenus for now.
 	pop af
 	ldh [rWBK], a
-	ret
+	; fallthrough
+
+SurfingPikachuMinigame_ReloadMap:
+; Kanto hack (M12b-4): Yellow's exit tail -- RunDefaultPaletteCommand,
+; ReloadMapAfterSurfingMinigame, PlayDefaultMusic, GBPalNormal -- in Crystal's
+; words.  The screen stays white (BlankPals) while the map comes back with the
+; LCD off (ReloadTilesetAndPalettes: tileset, fonts, and RefreshSprites, which
+; reloads every map sprite AND the follower block at FOLLOWER_VTILE); the map
+; music then restarts and the map palettes land at once, as Yellow's
+; PlayDefaultMusic + GBPalNormal do (no fade).  Call_ExitMenu pops the menu
+; header the special's FadeToMenu pushed.  Yellow's reload spends most of its
+; frames in ReloadMapSpriteTilePatterns' VBlank tile copies; Crystal's is
+; quicker, so SURFING_EXIT_PAD frames of the same white screen put the map
+; music on Yellow's frame (idle: 50 frames after routine bit 7; rad: 50 vs
+; Yellow's 52, whose PlayDefaultMusic also waits out the last SFX -- WaitSFX
+; here; docs/M12-STRETCH.md "## M12b-4 findings").
+	call ClearBGPalettes
+	call Call_ExitMenu
+	call ReloadTilesetAndPalettes
+	call UpdateSprites
+	ld b, SCGB_MAPPALS
+	call GetSGBLayout
+	farcall LoadOW_BGPal7
+	call WaitBGMap2
+	ld c, SURFING_EXIT_PAD
+	call DelayFrames
+	call WaitSFX ; Yellow: PlayDefaultMusic begins with WaitForSoundToFinish
+	call RestartMapMusic ; the last audio act of the minigame (M12b-3)
+	farcall ApplyPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	jp EnableSpriteUpdates
 
 SurfingPikachuLoop:
 	call SurfingPikachuMinigame_LoadGFXAndLayout
@@ -305,10 +332,23 @@ SurfingPikachuLoop:
 	ret
 
 SurfingPikachu_CheckPressedSelect:
-; M12b-4 stub: Yellow quits on SELECT only when the beach house armed
-; BIT_PIKACHU_MAP_SURF_SELECT in wPikachuMapScriptFlags.  Not armed yet:
-; always returns z.
-	xor a
+; Yellow: `bit BIT_PIKACHU_MAP_SURF_SELECT, [wPikachuMapScriptFlags]; ret z`,
+; then nz if SELECT was just pressed.  The bit is our saved event flag
+; EVENT_SURFING_MINIGAME_SURF_SELECT, which the SURFIN' DUDE sets after the
+; first game; wEventFlags is in WRAM bank 1 and bank 5 is mapped here.
+; Clobbers a and hl, as Yellow's does.
+	ldh a, [rWBK]
+	ld h, a
+	ld a, BANK(wEventFlags)
+	ldh [rWBK], a
+	ld a, [wEventFlags + EVENT_SURFING_MINIGAME_SURF_SELECT / 8]
+	ld l, a
+	ld a, h
+	ldh [rWBK], a
+	bit EVENT_SURFING_MINIGAME_SURF_SELECT % 8, l
+	ret z
+	ldh a, [hJoyPressed]
+	and PAD_SELECT
 	ret
 
 SurfingMinigame_ToggleStartFlag: ; unused
@@ -1898,6 +1938,14 @@ SurfingMinigame_WriteTotal:
 .TotalEnd:
 
 DidPlayerGetAHighScore:
+; Yellow's compare, unchanged: a tie is not a new Hi-Score.  M12b-4: the
+; Hi-Score is saved (WRAM bank 1, wPlayerData); the minigame runs with bank 5
+; mapped, so bank 1 is mapped around the compare and the store (the total
+; score is WRAM0).
+	ldh a, [rWBK]
+	push af
+	ld a, BANK(wSurfingMinigameHiScore)
+	ldh [rWBK], a
 	ld hl, wSurfingMinigameHiScore + 1
 	ld a, [wSurfingMinigameTotalScore + 1]
 	cp [hl]
@@ -1909,6 +1957,8 @@ DidPlayerGetAHighScore:
 	jr c, .notHighScore
 	jr nz, .highScore
 .notHighScore
+	pop af
+	ldh [rWBK], a
 	call WaitSFX
 	ld e, PikachuCry28
 	call SurfingMinigame_PlayPikaCryIfSurfingPikaInParty
@@ -1920,6 +1970,8 @@ DidPlayerGetAHighScore:
 	ld [wSurfingMinigameHiScore], a
 	ld a, [wSurfingMinigameTotalScore + 1]
 	ld [wSurfingMinigameHiScore + 1], a
+	pop af
+	ldh [rWBK], a
 	call WaitSFX
 	ld e, PikachuCry34
 	call SurfingMinigame_PlayPikaCryIfSurfingPikaInParty

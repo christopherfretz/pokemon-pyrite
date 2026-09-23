@@ -339,6 +339,8 @@ ROMX $71
 	"Text 3"
 	; Kanto hack (M12b-2): Surfing Pikachu minigame art, 1a (80 tiles)
 	"Surfing Pikachu Graphics 1"
+	; Kanto hack (M12b-4): the PRINTER's Hi-Score card (art, tilemaps, code)
+	"Surfing Pikachu Hi-Score Card"
 ROMX $72
 	"Miscellaneous Text"
 ROMX $73

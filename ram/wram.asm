@@ -718,8 +718,7 @@ wSurfVBlankCopySource:: dw
 wSurfVBlankCopyDest:: dw
 wSurfFrameCounter:: db ; Yellow's hFrameCounter: VBlank decrements it
 wSurfJoy5:: db ; Yellow's hJoy5: held buttons, sampled every 2nd frame
-; TEMPORARY (M12b-4 moves it into the save block): zeroed on entry.
-wSurfingMinigameHiScore:: dw ; little-endian BCD
+; (M12b-4: wSurfingMinigameHiScore now lives in the WRAM1 save block.)
 
 
 SECTION UNION "Miscellaneous", WRAM0
@@ -3389,7 +3388,12 @@ wBillsHouseSceneID::                              db ; 6j
 wVermilionCitySceneID::                           db ; 7j
 wRoute23SceneID::                                 db ; M10 13e-1: badge checks passed, 0-7
 
-	ds 41
+	ds 39
+; Kanto hack (M12b-4): Yellow's saved Surfing Pikachu Hi-Score, evicted from the
+; END of the scene-ID reserve (was ds 41) so nothing after it moves
+; (docs/HOUSEKEEPING.md section 3).  The minigame runs with WRAM bank 5 mapped:
+; every access maps bank 1 first.
+wSurfingMinigameHiScore:: dw ; little-endian BCD
 
 ; fight counts
 wJackFightCount::    db

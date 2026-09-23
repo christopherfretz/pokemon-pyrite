@@ -6,21 +6,19 @@
 ; exit mat on the bottom row, whose collision the generator overrides to
 ; WARP_CARPET_DOWN (block $0b).
 ;
-; M12a is the SHELL: the house exactly as an *unqualified* Yellow player sees
-; it -- one whose Pikachu cannot SURF.  Every script below is Yellow's
-; unqualified branch.  Where Yellow branches on the player being qualified
-; (the SURFIN' DUDE's minigame offer, the posters' SURFING TIPs, the PRINTER's
-; hi-score card), a `; M12b:` hook comment marks the spot and the script falls
-; through to the unqualified text.  What "qualified" means here is the open Q5
-; gate (docs/survey-m12-stretch.md section 4); M12a deliberately does not
-; decide it.
-;
-; Yellow's gates, for M12b: the dude and the PRINTER test
-; BIT_PIKACHU_SPAWN_SURFING (patched to BIT_PIKACHU_SPAWN_STARTER on the
-; Virtual Console), the three posters test BIT_PIKACHU_SPAWN_SURFING only.
-; M12b-2: TEMPORARY -- the dude launches the minigame unconditionally.
-; M12b-4 removes this switch along with the hook it guards.
-DEF SURFING_DEBUG EQU 1
+; M12a built the shell as an *unqualified* Yellow player sees it; M12b-4 wires
+; Yellow's qualified branches (the SURFIN' DUDE's minigame offer, the posters'
+; SURFING TIPs, the PRINTER's Hi-Score card) under the Q5 gate the operator
+; chose: Yellow's Virtual Console rule, "the starter PIKACHU is in the party"
+; (Yellow's BIT_PIKACHU_SPAWN_STARTER = IsStarterPikachuAliveInOurParty), no
+; SURF needed -- our PIKACHU can never learn SURF.  The unqualified branches
+; are M12a's, unchanged.  Yellow's own gates: the dude and the PRINTER test
+; BIT_PIKACHU_SPAWN_SURFING, patched to BIT_PIKACHU_SPAWN_STARTER on the
+; Virtual Console; the three posters test BIT_PIKACHU_SPAWN_SURFING only (the
+; VC patch leaves them alone).  Here all five use the one gate, so the TIPs
+; are readable too (docs/M12-STRETCH.md "## M12b-4 findings", deviations).
+; Yellow's saved wPikachuMapScriptFlags bits 0 and 1 are the event flags
+; EVENT_SURFIN_DUDE_OFFERED and EVENT_SURFING_MINIGAME_SURF_SELECT.
 
 	object_const_def
 	const SUMMERBEACHHOUSE_SURFIN_DUDE
@@ -32,19 +30,37 @@ SummerBeachHouse_MapScripts:
 	def_callbacks
 
 SummerBeachHouseSurfinDudeScript:
+; Yellow's SummerBeachHouseSurfinDudeText (scripts/SummerBeachHouse.asm).
 	faceplayer
 	opentext
-	; M12b: minigame offer goes here.  Yellow: if qualified, "Whoa! Your
-	; PIKACHU knows how to SURF!..." (first time) or "Wanna go SURF?" (later),
-	; YES -> SurfingPikachuMinigame, NO -> "Come SURF anytime, my friend!".
-	if SURFING_DEBUG
-	; M12b-2 TEMPORARY debug entry: always play.  M12b-4 replaces this with
-	; Yellow's qualified offer and deletes SURFING_DEBUG.
+	callasm SummerBeachHouseCheckStarterPikachu
+	iffalse .Unqualified
+	checkevent EVENT_SURFIN_DUDE_OFFERED
+	setevent EVENT_SURFIN_DUDE_OFFERED
+	iftrue .WannaGoSurf
+	writetext SummerBeachHouseSurfinDudeOfferText
+	sjump .YesNo
+
+.WannaGoSurf:
+	writetext SummerBeachHouseSurfinDudeWannaGoText
+.YesNo:
+	yesorno
+	iffalse .Declined
+	; Yellow: wDoNotWaitForButtonPressAfterDisplayingText, the minigame, then
+	; set BIT_PIKACHU_MAP_SURF_SELECT; no more text.
 	special SurfingPikachuMinigame
+	setevent EVENT_SURFING_MINIGAME_SURF_SELECT
 	closetext
 	end
-	endc
-	; Unqualified falls through to Yellow's SurfinDudeText4:
+
+.Declined:
+	writetext SummerBeachHouseSurfinDudeDeclineText
+	waitbutton
+	closetext
+	end
+
+.Unqualified:
+	; Yellow's SurfinDudeText4 (M12a):
 	writetext SummerBeachHouseSurfinDudeText
 	waitbutton
 	closetext
@@ -62,26 +78,101 @@ SummerBeachHousePikachuScript:
 	end
 
 SummerBeachHousePoster1Script:
-	; M12b: if qualified, Yellow shows "SURFIN' DUDE's scribbles..." instead.
+	callasm SummerBeachHouseCheckStarterPikachu
+	iftrue .Qualified
 	jumptext SummerBeachHousePoster1Text
+.Qualified:
+	jumptext SummerBeachHousePoster1QualifiedText
 
 SummerBeachHousePoster2Script:
-	; M12b: if qualified, Yellow shows "SURFING TIP 1!" instead.
+	callasm SummerBeachHouseCheckStarterPikachu
+	iftrue .Qualified
 	jumptext SummerBeachHousePoster2Text
+.Qualified:
+	jumptext SummerBeachHousePoster2QualifiedText
 
 SummerBeachHousePoster3Script:
-	; M12b: if qualified, Yellow shows "SURFING TIP 2!" instead.
+	callasm SummerBeachHouseCheckStarterPikachu
+	iftrue .Qualified
 	jumptext SummerBeachHousePoster3Text
+.Qualified:
+	jumptext SummerBeachHousePoster3QualifiedText
 
 SummerBeachHousePrinterScript:
-	; M12b: if qualified, Yellow shows "SUMMER BEACH HOUSE PRINTER, it says."
-	; and, once the minigame has been played, offers to PRINT the Hi-Score.
-	; Unqualified falls through to Yellow's PrinterText1 (a stub here):
+; Yellow's SummerBeachHousePrinterText (scripts/SummerBeachHouse_2.asm).
+	callasm SummerBeachHouseCheckStarterPikachu
+	iffalse .Unqualified
+	opentext
+	writetext SummerBeachHousePrinterSaysText
+	waitbutton
+	checkevent EVENT_SURFING_MINIGAME_SURF_SELECT
+	iffalse .done
+	writetext SummerBeachHousePrinterHiScoreText
+	yesorno
+	iftrue .Print
+	; NO: the card on screen until A or B
+	special SurfingHiScoreCard
+.done
+	closetext
+	end
+
+.Print:
+	special PrintSurfingHiScore
+	iftrue .PrintError
+	writetext SummerBeachHousePrintCompletedText
+	waitbutton
+	closetext
+	end
+
+.PrintError:
+	writetext SummerBeachHousePrintErrorText
+	waitbutton
+	closetext
+	end
+
+.Unqualified:
+	; Yellow's PrinterText1 (M12a):
 	jumptext SummerBeachHousePrinterText
+
+SummerBeachHouseCheckStarterPikachu:
+; The Q5 gate: wScriptVar = TRUE if the starter PIKACHU is in the party and
+; not fainted -- IsStarterPikachuAliveInParty (engine/overworld/follower.asm),
+; Yellow's IsStarterPikachuAliveInOurParty, which is what sets
+; BIT_PIKACHU_SPAWN_STARTER.
+	farcall IsStarterPikachuAliveInParty
+	ld a, FALSE
+	jr nc, .done
+	ld a, TRUE
+.done
+	ld [wScriptVar], a
+	ret
 
 SummerBeachHouseSurfinDudeText:
 	text "Dogs and burgers"
 	line "on special today!"
+	done
+
+SummerBeachHouseSurfinDudeOfferText:
+	text "Whoa!"
+
+	para "Your PIKACHU knows"
+	line "how to SURF! So,"
+	cont "I'm not alone…"
+
+	para "Great! You earned"
+	line "the right to SURF"
+	cont "with the DUDE!"
+
+	para "Give it a go?"
+	done
+
+SummerBeachHouseSurfinDudeDeclineText:
+	text "Come SURF anytime,"
+	line "my friend!"
+	done
+
+SummerBeachHouseSurfinDudeWannaGoText:
+	text "Wanna go SURF?"
 	done
 
 SummerBeachHousePikachuText:
@@ -106,6 +197,52 @@ SummerBeachHousePoster3Text:
 SummerBeachHousePrinterText:
 	text "It's some sort of"
 	line "a machine…"
+	done
+
+SummerBeachHousePoster1QualifiedText:
+	text "SURFIN' DUDE's"
+	line "scribbles…"
+
+	para "When I shoot the"
+	line "tube, the tunes"
+	cont "hit the groove!"
+	done
+
+SummerBeachHousePoster2QualifiedText:
+	text "SURFING TIP 1!"
+
+	para "After flips, line"
+	line "the board up with"
+	cont "a wave for a cool"
+	cont "effect!"
+	done
+
+SummerBeachHousePoster3QualifiedText:
+	text "SURFING TIP 2!"
+
+	para "Pulling flips in"
+	line "a jump is totally"
+	cont "rad!"
+	done
+
+SummerBeachHousePrinterSaysText:
+	text "SUMMER BEACH HOUSE"
+	line "PRINTER, it says."
+	done
+
+SummerBeachHousePrinterHiScoreText:
+	text "The Hi-Score is"
+	line "shown."
+
+	para "PRINT it out?"
+	done
+
+SummerBeachHousePrintCompletedText:
+	text "PRINT completed."
+	done
+
+SummerBeachHousePrintErrorText:
+	text "PRINT error!"
 	done
 
 SummerBeachHouse_MapEvents:
