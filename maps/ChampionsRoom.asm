@@ -339,8 +339,8 @@ ChampionsRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4, 23, LANCES_ROOM, 3
-	warp_event  5, 23, LANCES_ROOM, 4
+	warp_event  4, 23, LANCES_ROOM, 2 ; M10 13j: LANCE's exits are warps 2/3 (Yellow); 13k re-cuts this room
+	warp_event  5, 23, LANCES_ROOM, 3
 	warp_event  4,  1, HALL_OF_FAME, 1
 	warp_event  5,  1, HALL_OF_FAME, 2
 

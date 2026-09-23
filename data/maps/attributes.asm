@@ -724,10 +724,10 @@ ENDM
 	map_attributes SSAnne2FRooms, SS_ANNE_2F_ROOMS, $0c
 	map_attributes SSAnneB1FRooms, SS_ANNE_B1F_ROOMS, $0c
 	map_attributes IndigoPlateauPokecenter1F, INDIGO_PLATEAU_POKECENTER_1F, $17 ; Kanto hack (M10 13h): black void border
-	map_attributes LoreleisRoom, LORELEIS_ROOM, $00
-	map_attributes BrunosRoom, BRUNOS_ROOM, $00
-	map_attributes AgathasRoom, AGATHAS_ROOM, $00
-	map_attributes LancesRoom, LANCES_ROOM, $00
+	map_attributes LoreleisRoom, LORELEIS_ROOM, $03 ; Kanto hack (M10 13j): Yellow's `db $3 ; border block`
+	map_attributes BrunosRoom, BRUNOS_ROOM, $03 ; Kanto hack (M10 13j): Yellow's `db $3 ; border block`
+	map_attributes AgathasRoom, AGATHAS_ROOM, $00 ; Kanto hack (M10 13j): Yellow's `db $0 ; border block`
+	map_attributes LancesRoom, LANCES_ROOM, $03 ; Kanto hack (M10 13j): Yellow's `db $3 ; border block`
 	map_attributes ChampionsRoom, CHAMPIONS_ROOM, $00
 	map_attributes HallOfFame, HALL_OF_FAME, $00
 	map_attributes FuchsiaMart, FUCHSIA_MART, $00

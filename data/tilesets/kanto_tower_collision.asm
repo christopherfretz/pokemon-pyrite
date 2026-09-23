@@ -116,3 +116,5 @@
 ; (10,17)/(11,17).  $0e itself is ordinary floor on all seven floors and
 ; must not be overridden; see the module docstring of scripts/lavender_blk.py.
 	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 6e
+	tilecoll WARP_CARPET_UP, WARP_CARPET_UP, FLOOR, FLOOR ; 6f  ; M10 13j: $0e twin, AGATHA's exit (open)
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 70  ; M10 13j: $36 twin, AGATHA's entrance (post-E4)

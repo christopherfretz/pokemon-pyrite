@@ -1,139 +1,192 @@
+; Kanto hack (M10 13j): Yellow's AGATHAS_ROOM
+; (vendor/pokeyellow/data/maps/objects/AgathasRoom.asm, scripts/AgathasRoom.asm,
+; text/AgathasRoom.asm), re-cut to Yellow's 5x6 on TILESET_KANTO_TOWER (Yellow's
+; CEMETERY); the .blk is Yellow's.  Music: Yellow MUSIC_POKEMON_TOWER -> MUSIC_LAVENDER_TOWN (D131, K6).
+;
+; Yellow's mechanics, not Crystal's (docs/M10-INDIGO.md "13j findings"):
+; * Arriving on (4,11)/(5,11) walks the player six steps UP, once
+;   (Yellow: EVENT_AUTOWALKED_INTO_AGATHAS_ROOM = our
+;   EVENT_AGATHAS_ROOM_ENTRANCE_CLOSED).  There is no entrance block swap.
+; * Afterwards, stepping on (4,10)/(5,10) prints "Don't run away!" and pushes
+;   the player one step back UP, so (4,11)/(5,11) are arrival points only.
+; * The exit, block (2,0) = tiles (4-5,0-1), is $3b (row 0 wall) until the
+;   AGATHA is beaten, then $6f (Yellow's $0e; $6f = $0e + WARP_CARPET_UP (TILESET_KANTO_TOWER)).
+;   EVENT_AGATHAS_ROOM_EXIT_OPEN holds it; MAPCALLBACK_TILES sets it both ways
+;   (Yellow: AgathaShowOrHideExitBlock).
+; * AGATHA has sight 0: talk to battle.  A loss is a normal whiteout; the
+;   lobby's PrepareElite4Callback resets every flag and scene.
+; * Post-E4 hook (operator ruling 2026-09-22): once EVENT_BEAT_KANTO_ELITE_FOUR
+;   is set the League is "left in shambles" and freely walkable -- no walk-in,
+;   no push-back, no battle; the exit is open and the entrance block (2,5)
+;   becomes $70, a WARP_CARPET_DOWN twin, so the player can walk back out.
 	object_const_def
-	const AGATHASROOM_BRUNO
+	const AGATHASROOM_AGATHA
 
 AgathasRoom_MapScripts:
 	def_scene_scripts
-	scene_script AgathasRoomLockDoorScene, SCENE_AGATHASROOM_LOCK_DOOR
-	scene_script AgathasRoomNoopScene,     SCENE_AGATHASROOM_NOOP
+	scene_script AgathasRoomWalkInScene, SCENE_AGATHASROOM_WALK_IN
+	scene_script AgathasRoomNoopScene,   SCENE_AGATHASROOM_NOOP
+	scene_script AgathasRoomNoopScene,   SCENE_AGATHASROOM_POST_E4 ; League open: no coord_events
 
 	def_callbacks
-	callback MAPCALLBACK_TILES, AgathasRoomDoorsCallback
+	callback MAPCALLBACK_TILES, AgathasRoomExitCallback
 
-AgathasRoomLockDoorScene:
-	sdefer AgathasRoomDoorLocksBehindYouScript
+AgathasRoomWalkInScene:
+	sdefer AgathasRoomWalkInScript
 	end
 
 AgathasRoomNoopScene:
 	end
 
-AgathasRoomDoorsCallback:
-	checkevent EVENT_AGATHAS_ROOM_ENTRANCE_CLOSED
-	iffalse .KeepEntranceOpen
-	changeblock 4, 14, $2a ; wall
-.KeepEntranceOpen:
+AgathasRoomExitCallback:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
 	checkevent EVENT_AGATHAS_ROOM_EXIT_OPEN
-	iffalse .KeepExitClosed
-	changeblock 4, 2, $16 ; open door
-.KeepExitClosed:
+	iftrue .open
+	changeblock 4, 0, $3b ; Yellow: exit shut
 	endcallback
 
-AgathasRoomDoorLocksBehindYouScript:
-	applymovement PLAYER, AgathasRoom_EnterMovement
-	reanchormap $86
-	playsound SFX_STRENGTH
-	earthquake 80
-	changeblock 4, 14, $2a ; wall
-	refreshmap
-	closetext
-	setscene SCENE_AGATHASROOM_NOOP
+.open:
+	changeblock 4, 0, $6f ; Yellow $0e, with warps
+	endcallback
+
+.league_open:
+	changeblock 4, 0, $6f
+	changeblock 4, 10, $70 ; post-E4: the entrance warps too
+	endcallback
+
+AgathasRoomWalkInScript:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
+	applymovement PLAYER, AgathasRoomWalkInMovement
 	setevent EVENT_AGATHAS_ROOM_ENTRANCE_CLOSED
-	waitsfx
+	setscene SCENE_AGATHASROOM_NOOP
 	end
 
-BrunoScript_Battle:
-	faceplayer
+.league_open:
+	setscene SCENE_AGATHASROOM_POST_E4
+	end
+
+AgathasRoomDontRunAwayScript:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
 	opentext
-	checkevent EVENT_BEAT_ELITE_4_AGATHA
-	iftrue BrunoScript_AfterBattle
-	writetext BrunoScript_BrunoBeforeText
+	writetext AgathasRoomDontRunAwayText
 	waitbutton
 	closetext
-	winlosstext BrunoScript_BrunoBeatenText, 0
-	loadtrainer BRUNO, BRUNO1
+	applymovement PLAYER, AgathasRoomPushBackMovement
+.league_open:
+	end
+
+AgathasRoomAgathaScript:
+	faceplayer
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
+	opentext
+	checkevent EVENT_BEAT_ELITE_4_AGATHA
+	iftrue .after
+	writetext AgathasRoomAgathaBeforeBattleText
+	waitbutton
+	closetext
+	winlosstext AgathasRoomAgathaEndBattleText, 0
+	loadtrainer AGATHA, AGATHA1
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ELITE_4_AGATHA
-	opentext
-	writetext BrunoScript_BrunoDefeatText
-	waitbutton
-	closetext
-	playsound SFX_ENTER_DOOR
-	changeblock 4, 2, $16 ; open door
-	refreshmap
-	closetext
 	setevent EVENT_AGATHAS_ROOM_EXIT_OPEN
-	waitsfx
-	end
-
-BrunoScript_AfterBattle:
-	writetext BrunoScript_BrunoDefeatText
+	changeblock 4, 0, $6f
+	refreshmap
+	opentext
+.after:
+	writetext AgathasRoomAgathaAfterBattleText
 	waitbutton
 	closetext
 	end
 
-AgathasRoom_EnterMovement:
+.league_open:
+	jumptext AgathasRoomAgathaPostE4Text
+
+AgathasRoomWalkInMovement:
+	step UP
+	step UP
 	step UP
 	step UP
 	step UP
 	step UP
 	step_end
 
-BrunoScript_BrunoBeforeText:
-	text "I am BRUNO of the"
-	line "ELITE FOUR."
+AgathasRoomPushBackMovement:
+	step UP
+	step_end
 
-	para "I always train to"
-	line "the extreme be-"
-	cont "cause I believe in"
-	cont "our potential."
+; Yellow: _AgathaBeforeBattleText.
+AgathasRoomAgathaBeforeBattleText:
+	text "I am AGATHA of"
+	line "the ELITE FOUR!"
 
-	para "That is how we"
-	line "became strong."
+	para "OAK's taken a lot"
+	line "of interest in"
+	cont "you, child!"
 
-	para "Can you withstand"
-	line "our power?"
+	para "That old duff was"
+	line "once tough and"
+	cont "handsome! That"
+	cont "was decades ago!"
 
-	para "Hm? I see no fear"
-	line "in you. You look"
+	para "Now he just wants"
+	line "to fiddle with"
+	cont "his #DEX! He's"
+	cont "wrong! #MON"
+	cont "are for fighting!"
 
-	para "determined. Per-"
-	line "fect for battle!"
-
-	para "Ready, <PLAYER>?"
-	line "You will bow down"
-
-	para "to our overwhelm-"
-	line "ing power!"
-
-	para "Hoo hah!"
+	para "<PLAYER>! I'll show"
+	line "you how a real"
+	cont "trainer fights!"
 	done
 
-BrunoScript_BrunoBeatenText:
-	text "Why? How could we"
-	line "lose?"
+; Yellow: _AgathaEndBattleText (its `prompt` is `done` here).
+AgathasRoomAgathaEndBattleText:
+	text "Woo-hoo!"
+	line "You're something"
+	cont "special, child!"
 	done
 
-BrunoScript_BrunoDefeatText:
-	text "Having lost, I"
-	line "have no right to"
-	cont "say anything…"
+; Yellow: _AgathaAfterBattleText.
+AgathasRoomAgathaAfterBattleText:
+	text "You win! I see"
+	line "what the old duff"
+	cont "sees in you now!"
 
-	para "Go face your next"
-	line "challenge!"
+	para "I have nothing"
+	line "else to say! Run"
+	cont "along now, child!"
+	done
+
+; Yellow: _AgathasRoomAgathaDontRunAwayText.
+AgathasRoomDontRunAwayText:
+	text "Someone's voice:"
+	line "Don't run away!"
+	done
+
+; POST-E4 placeholder — 13k writes the real lines
+AgathasRoomAgathaPostE4Text:
+	text "Run along now!"
 	done
 
 AgathasRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4, 17, BRUNOS_ROOM, 3
-	warp_event  5, 17, BRUNOS_ROOM, 4
-	warp_event  4,  2, LANCES_ROOM, 1
-	warp_event  5,  2, LANCES_ROOM, 2
+	warp_event  4, 11, BRUNOS_ROOM, 3 ; arrival only (Yellow's push-back)
+	warp_event  5, 11, BRUNOS_ROOM, 4 ; arrival only
+	warp_event  4,  0, LANCES_ROOM, 1
+	warp_event  5,  0, LANCES_ROOM, 1
 
 	def_coord_events
+	coord_event  4, 10, SCENE_AGATHASROOM_NOOP, AgathasRoomDontRunAwayScript
+	coord_event  5, 10, SCENE_AGATHASROOM_NOOP, AgathasRoomDontRunAwayScript
 
 	def_bg_events
 
 	def_object_events
-	object_event  5,  7, SPRITE_BRUNO, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, BrunoScript_Battle, -1
+	object_event  5,  2, SPRITE_KAREN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, AgathasRoomAgathaScript, -1

@@ -12,7 +12,7 @@
 ;
 ; Warps: Yellow's (7,11)/(8,11) forecourt door and (8,0) E4 door.  (0,11) is
 ; the POKECENTER_2F staircase every Kanto centre keeps (PORTING 15).  The E4
-; door MUST stay warp 4: LoreleisRoom's back-warp targets lobby warp 4.
+; door MUST stay warp 4: LoreleisRoom's back-warps target lobby warp 4.
 ;
 ; Crystal's leftovers are gone (C-8/D133): the Wednesday rival battle (scene
 ; script, both coord_events, the RIVAL object), the TELEPORT GUY + ABRA and
@@ -27,7 +27,6 @@
 	const INDIGOPLATEAUPOKECENTER1F_CLERK
 	const INDIGOPLATEAUPOKECENTER1F_LINK_RECEPTIONIST
 	const INDIGOPLATEAUPOKECENTER1F_CHANSEY
-	const INDIGOPLATEAUPOKECENTER1F_E4_GUARD ; INTERIM 13h — remove in 13j
 
 IndigoPlateauPokecenter1F_MapScripts:
 	def_scene_scripts
@@ -35,17 +34,29 @@ IndigoPlateauPokecenter1F_MapScripts:
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, IndigoPlateauPokecenter1FPrepareElite4Callback
 
-; Crystal's, kept verbatim.  Yellow's lobby script resets the E4 range only
-; once BIT_STARTED_ELITE_4 is set, and resets the VR switch boulder; 13g's
-; Route 23 load already resets VR, and clearing the E4 room state on every
-; entry is equivalent for the player.
+; Crystal's reset, re-pointed at Yellow's rooms (13j).  Yellow's lobby script
+; resets the E4 range only once BIT_STARTED_ELITE_4 is set, and resets the VR
+; switch boulder; 13g's Route 23 load already resets VR, and clearing the E4
+; room state on every entry is equivalent for the player.
+;
+; Post-E4 hook (operator ruling 2026-09-22): once EVENT_BEAT_KANTO_ELITE_FOUR
+; is set the League is freely walkable, so nothing is re-locked -- the four
+; rooms go straight to their open scenes (each room also checks the flag
+; itself, so their door/beat flags no longer matter).  CHAMPIONS_ROOM and
+; HALL_OF_FAME are reset as before either way (13k's).
 IndigoPlateauPokecenter1FPrepareElite4Callback:
-	setmapscene LORELEIS_ROOM, SCENE_LORELEISROOM_LOCK_DOOR
-	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_LOCK_DOOR
-	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_LOCK_DOOR
-	setmapscene LANCES_ROOM, SCENE_LANCESROOM_LOCK_DOOR
 	setmapscene CHAMPIONS_ROOM, SCENE_CHAMPIONSROOM_LOCK_DOOR
 	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_ENTER
+	clearevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
+	clearevent EVENT_CHAMPIONS_ROOM_EXIT_OPEN
+	clearevent EVENT_BEAT_CHAMPION_LANCE
+	setevent EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .LeagueOpen
+	setmapscene LORELEIS_ROOM, SCENE_LORELEISROOM_WALK_IN
+	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_WALK_IN
+	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_WALK_IN
+	setmapscene LANCES_ROOM, SCENE_LANCESROOM_WALK_IN
 	clearevent EVENT_LORELEIS_ROOM_ENTRANCE_CLOSED
 	clearevent EVENT_LORELEIS_ROOM_EXIT_OPEN
 	clearevent EVENT_BRUNOS_ROOM_ENTRANCE_CLOSED
@@ -54,14 +65,17 @@ IndigoPlateauPokecenter1FPrepareElite4Callback:
 	clearevent EVENT_AGATHAS_ROOM_EXIT_OPEN
 	clearevent EVENT_LANCES_ROOM_ENTRANCE_CLOSED
 	clearevent EVENT_LANCES_ROOM_EXIT_OPEN
-	clearevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
-	clearevent EVENT_CHAMPIONS_ROOM_EXIT_OPEN
 	clearevent EVENT_BEAT_ELITE_4_LORELEI
 	clearevent EVENT_BEAT_ELITE_4_BRUNO
 	clearevent EVENT_BEAT_ELITE_4_AGATHA
 	clearevent EVENT_BEAT_ELITE_4_LANCE
-	clearevent EVENT_BEAT_CHAMPION_LANCE
-	setevent EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
+	endcallback
+
+.LeagueOpen:
+	setmapscene LORELEIS_ROOM, SCENE_LORELEISROOM_POST_E4
+	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_POST_E4
+	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_POST_E4
+	setmapscene LANCES_ROOM, SCENE_LANCESROOM_NOOP
 	endcallback
 
 IndigoPlateauPokecenter1FNurseScript:
@@ -104,11 +118,6 @@ IndigoPlateauPokecenter1FLinkReceptionistScript:
 	waitbutton
 	closetext
 	end
-
-; INTERIM 13h — remove in 13j: bars the (8,0) E4 door until the
-; LORELEI's-room rebuild lands.
-IndigoPlateauPokecenter1FE4GuardScript:
-	jumptextfaceplayer IndigoPlateauPokecenter1FE4GuardText
 
 IndigoPlateauPokecenter1FChanseyText:
 	text "CHANSEY: Chaaan"
@@ -158,16 +167,6 @@ IndigoPlateauPokecenter1FCableClubReservedText:
 	cont "linked by cable."
 	done
 
-; INTERIM 13h — remove in 13j.
-IndigoPlateauPokecenter1FE4GuardText:
-	text "The ELITE FOUR"
-	line "are preparing for"
-	cont "challengers."
-
-	para "Please come back"
-	line "a little later!"
-	done
-
 IndigoPlateauPokecenter1F_MapEvents:
 	db 0, 0 ; filler
 
@@ -175,7 +174,7 @@ IndigoPlateauPokecenter1F_MapEvents:
 	warp_event  7, 11, INDIGO_PLATEAU, 1
 	warp_event  8, 11, INDIGO_PLATEAU, 2
 	warp_event  0, 11, POKECENTER_2F, 1
-	warp_event  8,  0, LORELEIS_ROOM, 1 ; Yellow: LORELEIS_ROOM 1 (13j)
+	warp_event  8,  0, LORELEIS_ROOM, 1 ; Yellow: LORELEIS_ROOM 1
 
 	def_coord_events
 
@@ -188,4 +187,3 @@ IndigoPlateauPokecenter1F_MapEvents:
 	object_event  0,  5, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FClerkScript, -1
 	object_event 13,  6, SPRITE_LINK_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FLinkReceptionistScript, -1
 	object_event  8,  5, SPRITE_CHANSEY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FChanseyScript, -1
-	object_event  8,  1, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FE4GuardScript, -1 ; INTERIM 13h — remove in 13j

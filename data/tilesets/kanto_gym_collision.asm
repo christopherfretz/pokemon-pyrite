@@ -139,3 +139,9 @@
 	tilecoll WALK_CONTINUE, FLOOR, WALL, WALL ; 86 = $5e, VIRIDIAN GYM run
 	tilecoll WALK_DOWN, WALL, WALK_CONTINUE, WALL ; 87 = $60, VIRIDIAN GYM run
 	tilecoll FLOOR, WALK_RIGHT, FLOOR, WALL ; 88 = $63, VIRIDIAN GYM run
+; M10 13j: E4 exit twins (scripts/kanto_gym_blk.py E4_CLONES)
+	tilecoll WARP_CARPET_UP, WARP_CARPET_UP, FLOOR, FLOOR ; 89 = $05, LORELEI/BRUNO exit, open (callback)
+	tilecoll WALL, WARP_CARPET_UP, WALL, FLOOR ; 8a = $31, LANCE exit (5,0)
+	tilecoll WARP_CARPET_UP, WALL, FLOOR, WALL ; 8b = $32, LANCE exit (6,0)
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 8c = $05, LORELEI/BRUNO entrance once the League is open (post-E4)
+	tilecoll WARP_PANEL, WALL, FLOOR, WALL ; 8d = $70, LANCE entrance (24,16) once the League is open

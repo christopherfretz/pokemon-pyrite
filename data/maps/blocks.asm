@@ -675,18 +675,6 @@ TeamRocketBaseB3F_Blocks:
 BetaRoute23_Blocks: ; unreferenced
 	INCBIN "maps/unused/BetaRoute23.blk"
 
-LoreleisRoom_Blocks:
-	INCBIN "maps/LoreleisRoom.blk"
-
-BrunosRoom_Blocks:
-	INCBIN "maps/BrunosRoom.blk"
-
-AgathasRoom_Blocks:
-	INCBIN "maps/AgathasRoom.blk"
-
-LancesRoom_Blocks:
-	INCBIN "maps/LancesRoom.blk"
-
 AzaleaGym_Blocks:
 	INCBIN "maps/AzaleaGym.blk"
 
@@ -1453,5 +1441,22 @@ VictoryRoad3F_Blocks:
 ; 9x7, 63 B).
 IndigoPlateauPokecenter1F_Blocks:
 	INCBIN "maps/IndigoPlateauPokecenter1F.blk"
+
+; M10 13j: Yellow's four E4 rooms, re-cut at Yellow's sizes (5x6 x3 = 30 B
+; each, LANCE 13x13 = 169 B); scripts/kanto_gym_blk.py writes LORELEI's,
+; BRUNO's and LANCE's (LANCE's (2,0)/(3,0) are the $8a/$8b exit twins),
+; AGATHA's is Yellow's file verbatim.  Moved from "Map Blocks 2" (Crystal's
+; 5x9 rooms, 45 B each).
+LoreleisRoom_Blocks:
+	INCBIN "maps/LoreleisRoom.blk"
+
+BrunosRoom_Blocks:
+	INCBIN "maps/BrunosRoom.blk"
+
+AgathasRoom_Blocks:
+	INCBIN "maps/AgathasRoom.blk"
+
+LancesRoom_Blocks:
+	INCBIN "maps/LancesRoom.blk"
 
 ENDSECTION
