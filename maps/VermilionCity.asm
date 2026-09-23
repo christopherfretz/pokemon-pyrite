@@ -103,11 +103,11 @@ VermilionCityDockGateScript:
 	end
 
 .ShipDeparted:
-	writetext VermilionCitySailorShipSetSailText
-	waitbutton
-	closetext
-	applymovement PLAYER, VermilionCityDockGateBlockMovement
-	end
+; M11 14i: the S.S.AQUA's pier gate in the JOHTO act, Yellow's "set sail" in
+; the KANTO act -- in VermilionPort.asm.  farsjump (4 bytes) + 6 dead bytes =
+; the 10 bytes this block used to be, so VERMILION CITY's events do not move.
+	farsjump VermilionCityDockGateDepartedScript
+	ds 6
 
 VermilionCityCooltrainerFScript:
 	jumptextfaceplayer VermilionCityCooltrainerFText
@@ -144,10 +144,9 @@ VermilionCitySailor1Script:
 	end
 
 .Departed:
-	writetext VermilionCitySailorShipSetSailText
-	waitbutton
-	closetext
-	end
+; M11 14i: size-neutral (4 + 2 dead bytes), see .ShipDeparted above.
+	farsjump VermilionCitySailor1DepartedScript
+	ds 2
 
 VermilionCityGambler2Script:
 	jumptextfaceplayer VermilionCityGambler2Text

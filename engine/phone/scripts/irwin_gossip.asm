@@ -7,7 +7,10 @@ IrwinRumorScript:
 	iftrue .TrainPass
 	checkflag ENGINE_MARSHBADGE
 	iftrue .MarshBadge
-	checkflag ENGINE_FLYPOINT_VERMILION
+; Kanto hack (M11 14i): ENGINE_FLYPOINT_VERMILION is set in the KANTO act,
+; long before any ship; key "striding onto a ship" on the S.S.AQUA's first
+; crossing instead (same size: checkflag and checkevent are both 3 bytes).
+	checkevent EVENT_FAST_SHIP_FIRST_TIME
 	iftrue .VermilionCity
 	checkevent EVENT_BEAT_ELITE_FOUR
 	iftrue .EliteFour

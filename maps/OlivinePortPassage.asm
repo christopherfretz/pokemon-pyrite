@@ -5,6 +5,19 @@ OlivinePortPassage_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, OlivinePortPassageOpenPortCallback ; M11 14i
+
+; Kanto hack (M11 14i, D156): OLIVINE PORT's FAST SHIP pier opens when the
+; JOHTO act starts, not at a JOHTO Hall of Fame this game does not have (D140).
+; Crystal flips these two in HallOfFame.asm; every way onto OLIVINE PORT's
+; pier from land is through this passage, so the flip lands here.
+OlivinePortPassageOpenPortCallback:
+	checkflag ENGINE_POKEGEAR
+	iffalse .done
+	setevent EVENT_OLIVINE_PORT_SPRITES_BEFORE_HALL_OF_FAME
+	clearevent EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
+.done
+	endcallback
 
 OlivinePortPassagePokefanMScript:
 	jumptextfaceplayer OlivinePortPassagePokefanMText

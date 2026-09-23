@@ -134,9 +134,9 @@ IrwinTrainPassGossipText:
 	line "TRAIN PASS!"
 
 	para "When I saw you"
-	line "departing on the"
+	line "sailing home to"
 
-	para "ship, I felt sad"
+	para "KANTO, I felt sad"
 	line "that I wouldn't be"
 
 	para "able to see you"
