@@ -109,6 +109,24 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_KANTO_SEAFOAM        ; SEAFOAM_ISLANDS_B3F/B4F
 ; Kanto hack (M10 13e-1): Yellow's ROUTE_23 Super Rod row -- id 36, appended.
 	const FISHGROUP_KANTO_ROUTE_23       ; ROUTE_23
+; Kanto hack (M11 14f): the four shared Johto groups split per story stretch
+; (docs/M11-JOHTO.md "## 14f findings").  The Base constant keeps the lowest
+; cap; each variant caps every level at Lv nn.  Appended, never inserted (G7).
+	const FISHGROUP_SHORE_L65    ; GoldenrodCity, Route34
+	const FISHGROUP_SHORE_L78    ; CianwoodCity, OlivineCity, Route40, UnionCaveB2F
+	const FISHGROUP_OCEAN_L58    ; Route26, Route27
+	const FISHGROUP_OCEAN_L78    ; OlivinePort, Route41
+	const FISHGROUP_LAKE_L58     ; TohjoFalls
+	const FISHGROUP_LAKE_L61     ; SlowpokeWellB1F, UnionCave1F
+	const FISHGROUP_LAKE_L78     ; SlowpokeWellB2F, UnionCaveB1F
+	const FISHGROUP_LAKE_L82     ; MountMortar1FOutside, MountMortar2FInside, MountMortarB1F, Route42
+	const FISHGROUP_LAKE_L91     ; DarkCaveBlackthornEntrance
+	const FISHGROUP_LAKE_L95     ; SilverCaveRoom2
+	const FISHGROUP_POND_L65     ; IlexForest
+	const FISHGROUP_POND_L70     ; EcruteakCity, Route35, RuinsOfAlphOutside
+	const FISHGROUP_POND_L82     ; Route43
+	const FISHGROUP_POND_L87     ; BlackthornCity, Route44
+	const FISHGROUP_POND_L95     ; Route28, SilverCaveOutside
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections

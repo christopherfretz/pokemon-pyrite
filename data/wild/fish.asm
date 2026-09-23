@@ -52,190 +52,433 @@ FishGroups:
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoSeafoam_Super
 ; Kanto hack (M10 13e-1)
 	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoRoute23_Super
+; Kanto hack (M11 14f): SHORE/OCEAN/LAKE/POND split per story stretch; the Base
+; constant keeps the lowest cap, each appended _Lnn group caps at Lv nn (G7).
+	fishgroup 50 percent + 1, .Shore_L65_Old, .Shore_L65_Good, .Shore_L65_Super
+	fishgroup 50 percent + 1, .Shore_L78_Old, .Shore_L78_Good, .Shore_L78_Super
+	fishgroup 50 percent + 1, .Ocean_L58_Old, .Ocean_L58_Good, .Ocean_L58_Super
+	fishgroup 50 percent + 1, .Ocean_L78_Old, .Ocean_L78_Good, .Ocean_L78_Super
+	fishgroup 50 percent + 1, .Lake_L58_Old, .Lake_L58_Good, .Lake_L58_Super
+	fishgroup 50 percent + 1, .Lake_L61_Old, .Lake_L61_Good, .Lake_L61_Super
+	fishgroup 50 percent + 1, .Lake_L78_Old, .Lake_L78_Good, .Lake_L78_Super
+	fishgroup 50 percent + 1, .Lake_L82_Old, .Lake_L82_Good, .Lake_L82_Super
+	fishgroup 50 percent + 1, .Lake_L91_Old, .Lake_L91_Good, .Lake_L91_Super
+	fishgroup 50 percent + 1, .Lake_L95_Old, .Lake_L95_Good, .Lake_L95_Super
+	fishgroup 50 percent + 1, .Pond_L65_Old, .Pond_L65_Good, .Pond_L65_Super
+	fishgroup 50 percent + 1, .Pond_L70_Old, .Pond_L70_Good, .Pond_L70_Super
+	fishgroup 50 percent + 1, .Pond_L82_Old, .Pond_L82_Good, .Pond_L82_Super
+	fishgroup 50 percent + 1, .Pond_L87_Old, .Pond_L87_Good, .Pond_L87_Super
+	fishgroup 50 percent + 1, .Pond_L95_Old, .Pond_L95_Good, .Pond_L95_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     KRABBY,     10
+	db  70 percent + 1, MAGIKARP,   57
+	db  85 percent + 1, MAGIKARP,   57
+	db 100 percent,     KRABBY,     57
 .Shore_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     KRABBY,     20
-	db  90 percent + 1, KRABBY,     20
+	db  35 percent,     MAGIKARP,   57
+	db  70 percent,     KRABBY,     57
+	db  90 percent + 1, KRABBY,     57
 	db 100 percent,     time_group 0
 .Shore_Super:
-	db  40 percent,     KRABBY,     40
+	db  40 percent,     KRABBY,     57
 	db  70 percent,     time_group 1
-	db  90 percent + 1, KRABBY,     40
-	db 100 percent,     KINGLER,    40
+	db  90 percent + 1, KRABBY,     57
+	db 100 percent,     KINGLER,    57
 
 .Ocean_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     TENTACOOL,  10
+	db  70 percent + 1, MAGIKARP,   57
+	db  85 percent + 1, MAGIKARP,   57
+	db 100 percent,     TENTACOOL,  57
 .Ocean_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     TENTACOOL,  20
-	db  90 percent + 1, CHINCHOU,   20
+	db  35 percent,     MAGIKARP,   57
+	db  70 percent,     TENTACOOL,  57
+	db  90 percent + 1, CHINCHOU,   57
 	db 100 percent,     time_group 2
 .Ocean_Super:
-	db  40 percent,     CHINCHOU,   40
+	db  40 percent,     CHINCHOU,   57
 	db  70 percent,     time_group 3
-	db  90 percent + 1, TENTACRUEL, 40
-	db 100 percent,     LANTURN,    40
+	db  90 percent + 1, TENTACRUEL, 57
+	db 100 percent,     LANTURN,    57
 
 .Lake_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     GOLDEEN,    10
+	db  70 percent + 1, MAGIKARP,   57
+	db  85 percent + 1, MAGIKARP,   57
+	db 100 percent,     GOLDEEN,    57
 .Lake_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     GOLDEEN,    20
-	db  90 percent + 1, GOLDEEN,    20
+	db  35 percent,     MAGIKARP,   57
+	db  70 percent,     GOLDEEN,    57
+	db  90 percent + 1, GOLDEEN,    57
 	db 100 percent,     time_group 4
 .Lake_Super:
-	db  40 percent,     GOLDEEN,    40
+	db  40 percent,     GOLDEEN,    57
 	db  70 percent,     time_group 5
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     SEAKING,    40
+	db  90 percent + 1, MAGIKARP,   57
+	db 100 percent,     SEAKING,    57
 
 .Pond_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     POLIWAG,    10
+	db  70 percent + 1, MAGIKARP,   57
+	db  85 percent + 1, MAGIKARP,   57
+	db 100 percent,     POLIWAG,    57
 .Pond_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     POLIWAG,    20
-	db  90 percent + 1, POLIWAG,    20
+	db  35 percent,     MAGIKARP,   57
+	db  70 percent,     POLIWAG,    57
+	db  90 percent + 1, POLIWAG,    57
 	db 100 percent,     time_group 6
 .Pond_Super:
-	db  40 percent,     POLIWAG,    40
+	db  40 percent,     POLIWAG,    57
 	db  70 percent,     time_group 7
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     POLIWAG,    40
+	db  90 percent + 1, MAGIKARP,   57
+	db 100 percent,     POLIWAG,    57
 
 .Dratini_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     MAGIKARP,   10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     MAGIKARP,   60
 .Dratini_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     MAGIKARP,   20
-	db  90 percent + 1, MAGIKARP,   20
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     MAGIKARP,   70
+	db  90 percent + 1, MAGIKARP,   70
 	db 100 percent,     time_group 8
 .Dratini_Super:
-	db  40 percent,     MAGIKARP,   40
+	db  40 percent,     MAGIKARP,   87
 	db  70 percent,     time_group 9
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     DRAGONAIR,  40
+	db  90 percent + 1, MAGIKARP,   87
+	db 100 percent,     DRAGONAIR,  87
 
 .Qwilfish_Swarm_Old:
-	db  70 percent + 1, MAGIKARP,   5
-	db  85 percent + 1, MAGIKARP,   5
-	db 100 percent,     QWILFISH,   5
+	db  70 percent + 1, MAGIKARP,   55
+	db  85 percent + 1, MAGIKARP,   55
+	db 100 percent,     QWILFISH,   55
 .Qwilfish_Swarm_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     QWILFISH,   20
-	db  90 percent + 1, QWILFISH,   20
+	db  35 percent,     MAGIKARP,   61
+	db  70 percent,     QWILFISH,   61
+	db  90 percent + 1, QWILFISH,   61
 	db 100 percent,     time_group 10
 .Qwilfish_Swarm_Super:
-	db  40 percent,     QWILFISH,   40
+	db  40 percent,     QWILFISH,   61
 	db  70 percent,     time_group 11
-	db  90 percent + 1, QWILFISH,   40
-	db 100 percent,     QWILFISH,   40
+	db  90 percent + 1, QWILFISH,   61
+	db 100 percent,     QWILFISH,   61
 
 .Remoraid_Swarm_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     REMORAID,   10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     REMORAID,   60
 .Remoraid_Swarm_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     REMORAID,   20
-	db  90 percent + 1, REMORAID,   20
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     REMORAID,   70
+	db  90 percent + 1, REMORAID,   70
 	db 100 percent,     time_group 12
 .Remoraid_Swarm_Super:
-	db  40 percent,     REMORAID,   40
+	db  40 percent,     REMORAID,   87
 	db  70 percent,     time_group 13
-	db  90 percent + 1, REMORAID,   40
-	db 100 percent,     REMORAID,   40
+	db  90 percent + 1, REMORAID,   87
+	db 100 percent,     REMORAID,   87
 
 .Gyarados_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     MAGIKARP,   10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     MAGIKARP,   60
 .Gyarados_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     MAGIKARP,   20
-	db  90 percent + 1, MAGIKARP,   20
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     MAGIKARP,   70
+	db  90 percent + 1, MAGIKARP,   70
 	db 100 percent,     time_group 14
 .Gyarados_Super:
-	db  40 percent,     MAGIKARP,   40
+	db  40 percent,     MAGIKARP,   82
 	db  70 percent,     time_group 15
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     MAGIKARP,   40
+	db  90 percent + 1, MAGIKARP,   82
+	db 100 percent,     MAGIKARP,   82
 
 .Dratini_2_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     MAGIKARP,   10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     MAGIKARP,   60
 .Dratini_2_Good:
-	db  35 percent,     MAGIKARP,   10
-	db  70 percent,     MAGIKARP,   10
-	db  90 percent + 1, MAGIKARP,   10
+	db  35 percent,     MAGIKARP,   60
+	db  70 percent,     MAGIKARP,   60
+	db  90 percent + 1, MAGIKARP,   60
 	db 100 percent,     time_group 16
 .Dratini_2_Super:
-	db  40 percent,     MAGIKARP,   10
+	db  40 percent,     MAGIKARP,   60
 	db  70 percent,     time_group 17
-	db  90 percent + 1, MAGIKARP,   10
-	db 100 percent,     DRAGONAIR,  10
+	db  90 percent + 1, MAGIKARP,   60
+	db 100 percent,     DRAGONAIR,  60
 
 .WhirlIslands_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     KRABBY,     10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     KRABBY,     60
 .WhirlIslands_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     KRABBY,     20
-	db  90 percent + 1, KRABBY,     20
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     KRABBY,     70
+	db  90 percent + 1, KRABBY,     70
 	db 100 percent,     time_group 18
 .WhirlIslands_Super:
-	db  40 percent,     KRABBY,     40
+	db  40 percent,     KRABBY,     78
 	db  70 percent,     time_group 19
-	db  90 percent + 1, KINGLER,    40
-	db 100 percent,     SEADRA,     40
+	db  90 percent + 1, KINGLER,    78
+	db 100 percent,     SEADRA,     78
 
 .Qwilfish_NoSwarm_Old:
 .Qwilfish_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     TENTACOOL,  10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     TENTACOOL,  60
 .Qwilfish_NoSwarm_Good:
 .Qwilfish_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     TENTACOOL,  20
-	db  90 percent + 1, TENTACOOL,  20
+	db  35 percent,     MAGIKARP,   61
+	db  70 percent,     TENTACOOL,  61
+	db  90 percent + 1, TENTACOOL,  61
 	db 100 percent,     time_group 20
 .Qwilfish_NoSwarm_Super:
 .Qwilfish_Super:
-	db  40 percent,     TENTACOOL,  40
+	db  40 percent,     TENTACOOL,  61
 	db  70 percent,     time_group 21
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     QWILFISH,   40
+	db  90 percent + 1, MAGIKARP,   61
+	db 100 percent,     QWILFISH,   61
 
 .Remoraid_Old:
-	db  70 percent + 1, MAGIKARP,   10
-	db  85 percent + 1, MAGIKARP,   10
-	db 100 percent,     POLIWAG,    10
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
 .Remoraid_Good:
-	db  35 percent,     MAGIKARP,   20
-	db  70 percent,     POLIWAG,    20
-	db  90 percent + 1, POLIWAG,    20
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     POLIWAG,    70
+	db  90 percent + 1, POLIWAG,    70
 	db 100 percent,     time_group 6
 .Remoraid_Super:
-	db  40 percent,     POLIWAG,    40
+	db  40 percent,     POLIWAG,    87
 	db  70 percent,     time_group 7
-	db  90 percent + 1, MAGIKARP,   40
-	db 100 percent,     REMORAID,   40
+	db  90 percent + 1, MAGIKARP,   87
+	db 100 percent,     REMORAID,   87
+
+; Kanto hack (M11 14f): the per-stretch variants (scripts/m11_wild.py).
+.Shore_L65_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     KRABBY,     60
+.Shore_L65_Good:
+	db  35 percent,     MAGIKARP,   65
+	db  70 percent,     KRABBY,     65
+	db  90 percent + 1, KRABBY,     65
+	db 100 percent,     time_group 22
+.Shore_L65_Super:
+	db  40 percent,     KRABBY,     65
+	db  70 percent,     time_group 23
+	db  90 percent + 1, KRABBY,     65
+	db 100 percent,     KINGLER,    65
+
+.Shore_L78_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     KRABBY,     60
+.Shore_L78_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     KRABBY,     70
+	db  90 percent + 1, KRABBY,     70
+	db 100 percent,     time_group 24
+.Shore_L78_Super:
+	db  40 percent,     KRABBY,     78
+	db  70 percent,     time_group 25
+	db  90 percent + 1, KRABBY,     78
+	db 100 percent,     KINGLER,    78
+
+.Ocean_L58_Old:
+	db  70 percent + 1, MAGIKARP,   58
+	db  85 percent + 1, MAGIKARP,   58
+	db 100 percent,     TENTACOOL,  58
+.Ocean_L58_Good:
+	db  35 percent,     MAGIKARP,   58
+	db  70 percent,     TENTACOOL,  58
+	db  90 percent + 1, CHINCHOU,   58
+	db 100 percent,     time_group 26
+.Ocean_L58_Super:
+	db  40 percent,     CHINCHOU,   58
+	db  70 percent,     time_group 27
+	db  90 percent + 1, TENTACRUEL, 58
+	db 100 percent,     LANTURN,    58
+
+.Ocean_L78_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     TENTACOOL,  60
+.Ocean_L78_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     TENTACOOL,  70
+	db  90 percent + 1, CHINCHOU,   70
+	db 100 percent,     time_group 28
+.Ocean_L78_Super:
+	db  40 percent,     CHINCHOU,   78
+	db  70 percent,     time_group 29
+	db  90 percent + 1, TENTACRUEL, 78
+	db 100 percent,     LANTURN,    78
+
+.Lake_L58_Old:
+	db  70 percent + 1, MAGIKARP,   58
+	db  85 percent + 1, MAGIKARP,   58
+	db 100 percent,     GOLDEEN,    58
+.Lake_L58_Good:
+	db  35 percent,     MAGIKARP,   58
+	db  70 percent,     GOLDEEN,    58
+	db  90 percent + 1, GOLDEEN,    58
+	db 100 percent,     time_group 30
+.Lake_L58_Super:
+	db  40 percent,     GOLDEEN,    58
+	db  70 percent,     time_group 31
+	db  90 percent + 1, MAGIKARP,   58
+	db 100 percent,     SEAKING,    58
+
+.Lake_L61_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     GOLDEEN,    60
+.Lake_L61_Good:
+	db  35 percent,     MAGIKARP,   61
+	db  70 percent,     GOLDEEN,    61
+	db  90 percent + 1, GOLDEEN,    61
+	db 100 percent,     time_group 32
+.Lake_L61_Super:
+	db  40 percent,     GOLDEEN,    61
+	db  70 percent,     time_group 33
+	db  90 percent + 1, MAGIKARP,   61
+	db 100 percent,     SEAKING,    61
+
+.Lake_L78_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     GOLDEEN,    60
+.Lake_L78_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     GOLDEEN,    70
+	db  90 percent + 1, GOLDEEN,    70
+	db 100 percent,     time_group 34
+.Lake_L78_Super:
+	db  40 percent,     GOLDEEN,    78
+	db  70 percent,     time_group 35
+	db  90 percent + 1, MAGIKARP,   78
+	db 100 percent,     SEAKING,    78
+
+.Lake_L82_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     GOLDEEN,    60
+.Lake_L82_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     GOLDEEN,    70
+	db  90 percent + 1, GOLDEEN,    70
+	db 100 percent,     time_group 36
+.Lake_L82_Super:
+	db  40 percent,     GOLDEEN,    82
+	db  70 percent,     time_group 37
+	db  90 percent + 1, MAGIKARP,   82
+	db 100 percent,     SEAKING,    82
+
+.Lake_L91_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     GOLDEEN,    60
+.Lake_L91_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     GOLDEEN,    70
+	db  90 percent + 1, GOLDEEN,    70
+	db 100 percent,     time_group 38
+.Lake_L91_Super:
+	db  40 percent,     GOLDEEN,    90
+	db  70 percent,     time_group 39
+	db  90 percent + 1, MAGIKARP,   90
+	db 100 percent,     SEAKING,    90
+
+.Lake_L95_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     GOLDEEN,    60
+.Lake_L95_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     GOLDEEN,    70
+	db  90 percent + 1, GOLDEEN,    70
+	db 100 percent,     time_group 40
+.Lake_L95_Super:
+	db  40 percent,     GOLDEEN,    90
+	db  70 percent,     time_group 41
+	db  90 percent + 1, MAGIKARP,   90
+	db 100 percent,     SEAKING,    90
+
+.Pond_L65_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
+.Pond_L65_Good:
+	db  35 percent,     MAGIKARP,   65
+	db  70 percent,     POLIWAG,    65
+	db  90 percent + 1, POLIWAG,    65
+	db 100 percent,     time_group 42
+.Pond_L65_Super:
+	db  40 percent,     POLIWAG,    65
+	db  70 percent,     time_group 43
+	db  90 percent + 1, MAGIKARP,   65
+	db 100 percent,     POLIWAG,    65
+
+.Pond_L70_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
+.Pond_L70_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     POLIWAG,    70
+	db  90 percent + 1, POLIWAG,    70
+	db 100 percent,     time_group 44
+.Pond_L70_Super:
+	db  40 percent,     POLIWAG,    70
+	db  70 percent,     time_group 45
+	db  90 percent + 1, MAGIKARP,   70
+	db 100 percent,     POLIWAG,    70
+
+.Pond_L82_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
+.Pond_L82_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     POLIWAG,    70
+	db  90 percent + 1, POLIWAG,    70
+	db 100 percent,     time_group 46
+.Pond_L82_Super:
+	db  40 percent,     POLIWAG,    82
+	db  70 percent,     time_group 47
+	db  90 percent + 1, MAGIKARP,   82
+	db 100 percent,     POLIWAG,    82
+
+.Pond_L87_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
+.Pond_L87_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     POLIWAG,    70
+	db  90 percent + 1, POLIWAG,    70
+	db 100 percent,     time_group 48
+.Pond_L87_Super:
+	db  40 percent,     POLIWAG,    87
+	db  70 percent,     time_group 49
+	db  90 percent + 1, MAGIKARP,   87
+	db 100 percent,     POLIWAG,    87
+
+.Pond_L95_Old:
+	db  70 percent + 1, MAGIKARP,   60
+	db  85 percent + 1, MAGIKARP,   60
+	db 100 percent,     POLIWAG,    60
+.Pond_L95_Good:
+	db  35 percent,     MAGIKARP,   70
+	db  70 percent,     POLIWAG,    70
+	db  90 percent + 1, POLIWAG,    70
+	db 100 percent,     time_group 50
+.Pond_L95_Super:
+	db  40 percent,     POLIWAG,    90
+	db  70 percent,     time_group 51
+	db  90 percent + 1, MAGIKARP,   90
+	db 100 percent,     POLIWAG,    90
 
 ; Kanto hack (M5 8m): the Kanto act's fishing, ported from Yellow.
 ;
@@ -441,25 +684,56 @@ FishGroups:
 
 TimeFishGroups:
 	;  day              nite
-	db CORSOLA,    20,  STARYU,     20 ; 0
-	db CORSOLA,    40,  STARYU,     40 ; 1
-	db SHELLDER,   20,  SHELLDER,   20 ; 2
-	db SHELLDER,   40,  SHELLDER,   40 ; 3
-	db GOLDEEN,    20,  GOLDEEN,    20 ; 4
-	db GOLDEEN,    40,  GOLDEEN,    40 ; 5
-	db POLIWAG,    20,  POLIWAG,    20 ; 6
-	db POLIWAG,    40,  POLIWAG,    40 ; 7
-	db DRATINI,    20,  DRATINI,    20 ; 8
-	db DRATINI,    40,  DRATINI,    40 ; 9
-	db QWILFISH,   20,  QWILFISH,   20 ; 10
-	db QWILFISH,   40,  QWILFISH,   40 ; 11
-	db REMORAID,   20,  REMORAID,   20 ; 12
-	db REMORAID,   40,  REMORAID,   40 ; 13
-	db GYARADOS,   20,  GYARADOS,   20 ; 14
-	db GYARADOS,   40,  GYARADOS,   40 ; 15
-	db DRATINI,    10,  DRATINI,    10 ; 16
-	db DRATINI,    10,  DRATINI,    10 ; 17
-	db HORSEA,     20,  HORSEA,     20 ; 18
-	db HORSEA,     40,  HORSEA,     40 ; 19
-	db TENTACOOL,  20,  TENTACOOL,  20 ; 20
-	db TENTACOOL,  40,  TENTACOOL,  40 ; 21
+	db CORSOLA,    57,  STARYU,     57 ; 0
+	db CORSOLA,    57,  STARYU,     57 ; 1
+	db SHELLDER,   57,  SHELLDER,   57 ; 2
+	db SHELLDER,   57,  SHELLDER,   57 ; 3
+	db GOLDEEN,    57,  GOLDEEN,    57 ; 4
+	db GOLDEEN,    57,  GOLDEEN,    57 ; 5
+	db POLIWAG,    57,  POLIWAG,    57 ; 6
+	db POLIWAG,    57,  POLIWAG,    57 ; 7
+	db DRATINI,    70,  DRATINI,    70 ; 8
+	db DRATINI,    87,  DRATINI,    87 ; 9
+	db QWILFISH,   61,  QWILFISH,   61 ; 10
+	db QWILFISH,   61,  QWILFISH,   61 ; 11
+	db REMORAID,   70,  REMORAID,   70 ; 12
+	db REMORAID,   87,  REMORAID,   87 ; 13
+	db GYARADOS,   70,  GYARADOS,   70 ; 14
+	db GYARADOS,   82,  GYARADOS,   82 ; 15
+	db DRATINI,    60,  DRATINI,    60 ; 16
+	db DRATINI,    60,  DRATINI,    60 ; 17
+	db HORSEA,     70,  HORSEA,     70 ; 18
+	db HORSEA,     78,  HORSEA,     78 ; 19
+	db TENTACOOL,  61,  TENTACOOL,  61 ; 20
+	db TENTACOOL,  61,  TENTACOOL,  61 ; 21
+; Kanto hack (M11 14f): the split variants' time groups.
+	db CORSOLA,   65,  STARYU,    65 ; 22
+	db CORSOLA,   65,  STARYU,    65 ; 23
+	db CORSOLA,   70,  STARYU,    70 ; 24
+	db CORSOLA,   78,  STARYU,    78 ; 25
+	db SHELLDER,  58,  SHELLDER,  58 ; 26
+	db SHELLDER,  58,  SHELLDER,  58 ; 27
+	db SHELLDER,  70,  SHELLDER,  70 ; 28
+	db SHELLDER,  78,  SHELLDER,  78 ; 29
+	db GOLDEEN,   58,  GOLDEEN,   58 ; 30
+	db GOLDEEN,   58,  GOLDEEN,   58 ; 31
+	db GOLDEEN,   61,  GOLDEEN,   61 ; 32
+	db GOLDEEN,   61,  GOLDEEN,   61 ; 33
+	db GOLDEEN,   70,  GOLDEEN,   70 ; 34
+	db GOLDEEN,   78,  GOLDEEN,   78 ; 35
+	db GOLDEEN,   70,  GOLDEEN,   70 ; 36
+	db GOLDEEN,   82,  GOLDEEN,   82 ; 37
+	db GOLDEEN,   70,  GOLDEEN,   70 ; 38
+	db GOLDEEN,   90,  GOLDEEN,   90 ; 39
+	db GOLDEEN,   70,  GOLDEEN,   70 ; 40
+	db GOLDEEN,   90,  GOLDEEN,   90 ; 41
+	db POLIWAG,   65,  POLIWAG,   65 ; 42
+	db POLIWAG,   65,  POLIWAG,   65 ; 43
+	db POLIWAG,   70,  POLIWAG,   70 ; 44
+	db POLIWAG,   70,  POLIWAG,   70 ; 45
+	db POLIWAG,   70,  POLIWAG,   70 ; 46
+	db POLIWAG,   82,  POLIWAG,   82 ; 47
+	db POLIWAG,   70,  POLIWAG,   70 ; 48
+	db POLIWAG,   87,  POLIWAG,   87 ; 49
+	db POLIWAG,   70,  POLIWAG,   70 ; 50
+	db POLIWAG,   90,  POLIWAG,   90 ; 51

@@ -194,9 +194,9 @@ KantoWaterWildMons:
 
 	def_water_wildmons ROUTE_28
 	db 2 percent ; encounter rate
-	db 40, POLIWAG
-	db 35, POLIWAG
-	db 40, POLIWHIRL
+	db 90, POLIWAG
+	db 85, POLIWAG
+	db 90, POLIWHIRL
 	end_water_wildmons
 
 	def_water_wildmons PALLET_TOWN

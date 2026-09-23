@@ -500,8 +500,13 @@ InitRoamMons:
 	ld [wRoamMon2Species], a
 
 ; level
-	ld a, 40
+; Kanto hack (M11 14f): RAIKOU at the MORTY stretch's wild cap (Lv70, released at
+; the BURNED TOWER).  ENTEI stops at Lv68: roam HP is ONE byte (battle/core.asm
+; .InitRoamHP), and ENTEI's max-DV HP is 254 at Lv68 but 258 at Lv69.  RAIKOU
+; stays under 256 through Lv79.  Widening the field would touch Battle Core.
+	ld a, 70
 	ld [wRoamMon1Level], a
+	ld a, 68
 	ld [wRoamMon2Level], a
 
 ; raikou starting map
