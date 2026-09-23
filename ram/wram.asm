@@ -1728,7 +1728,6 @@ wBattleTowerBattleEnded::
 UNION
 ; intro data
 wIntroSceneFrameCounter:: db
-wIntroSceneTimer:: db
 
 NEXTU
 ; title data

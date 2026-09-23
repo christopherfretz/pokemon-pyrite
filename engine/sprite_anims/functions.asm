@@ -43,12 +43,12 @@ DoSpriteAnimFrame:
 	dw SpriteAnimFunc_EZChatCursor
 	dw SpriteAnimFunc_MobileTradeSentPulse
 	dw SpriteAnimFunc_MobileTradeOTPulse
-	dw SpriteAnimFunc_IntroSuicune
-	dw SpriteAnimFunc_IntroPichuWooper
+	dw SpriteAnimFunc_Null ; M13-Q5: was SpriteAnimFunc_IntroSuicune (Crystal intro, dead)
+	dw SpriteAnimFunc_Null ; M13-Q5: was SpriteAnimFunc_IntroPichuWooper (Crystal intro, dead)
 	dw SpriteAnimFunc_Celebi
-	dw SpriteAnimFunc_IntroUnown
-	dw SpriteAnimFunc_IntroUnownF
-	dw SpriteAnimFunc_IntroSuicuneAway
+	dw SpriteAnimFunc_Null ; M13-Q5: was SpriteAnimFunc_IntroUnown (Crystal intro, dead)
+	dw SpriteAnimFunc_Null ; M13-Q5: was SpriteAnimFunc_IntroUnownF (Crystal intro, dead)
+	dw SpriteAnimFunc_Null ; M13-Q5: was SpriteAnimFunc_IntroSuicuneAway (Crystal intro, dead)
 	assert_table_length NUM_SPRITE_ANIM_FUNCS
 
 SpriteAnimFunc_Null:
@@ -746,95 +746,6 @@ SpriteAnimFunc_MobileTradeSentPulse:
 
 SpriteAnimFunc_MobileTradeOTPulse:
 	farcall MobileTradeAnim_AnimateOTPulse
-	ret
-
-SpriteAnimFunc_IntroSuicune:
-	ld a, [wIntroSceneTimer]
-	and a
-	jr nz, .continue
-	ret
-
-.continue
-	ld hl, SPRITEANIMSTRUCT_YOFFSET
-	add hl, bc
-	ld [hl], $0
-
-	ld hl, SPRITEANIMSTRUCT_VAR2
-	add hl, bc
-	ld a, [hl]
-	add 2
-	ld [hl], a
-	xor $ff
-	inc a
-	ld d, 32
-	call AnimSeqs_Sine
-
-	ld hl, SPRITEANIMSTRUCT_YOFFSET
-	add hl, bc
-	ld [hl], a
-	ld a, SPRITE_ANIM_FRAMESET_INTRO_SUICUNE_2
-	call _ReinitSpriteAnimFrame
-	ret
-
-SpriteAnimFunc_IntroPichuWooper:
-	ld hl, SPRITEANIMSTRUCT_VAR1
-	add hl, bc
-	ld a, [hl]
-	cp 20
-	jr nc, .done
-	add 2
-	ld [hl], a
-	xor $ff
-	inc a
-	ld d, 32
-	call AnimSeqs_Sine
-
-	ld hl, SPRITEANIMSTRUCT_YOFFSET
-	add hl, bc
-	ld [hl], a
-.done
-	ret
-
-SpriteAnimFunc_IntroUnown:
-	ld hl, SPRITEANIMSTRUCT_JUMPTABLE_INDEX
-	add hl, bc
-	ld d, [hl]
-	inc [hl]
-	inc [hl]
-	inc [hl]
-	ld hl, SPRITEANIMSTRUCT_VAR1
-	add hl, bc
-	ld a, [hl]
-	push af
-	push de
-	call AnimSeqs_Sine
-
-	ld hl, SPRITEANIMSTRUCT_YOFFSET
-	add hl, bc
-	ld [hl], a
-	pop de
-	pop af
-	call AnimSeqs_Cosine
-
-	ld hl, SPRITEANIMSTRUCT_XOFFSET
-	add hl, bc
-	ld [hl], a
-	ret
-
-SpriteAnimFunc_IntroUnownF:
-	ld a, [wSlotsDelay]
-	cp $40
-	ret nz
-	ld a, SPRITE_ANIM_FRAMESET_INTRO_UNOWN_F_2
-	call _ReinitSpriteAnimFrame
-	ret
-
-SpriteAnimFunc_IntroSuicuneAway:
-	ld hl, SPRITEANIMSTRUCT_YCOORD
-	add hl, bc
-	ld a, [hl]
-	add 16
-	ld [hl], a
 	ret
 
 SpriteAnimFunc_EZChatCursor:
