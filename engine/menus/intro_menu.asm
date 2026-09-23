@@ -674,23 +674,8 @@ OakSpeech:
 
 	ld hl, OakText2
 	call PrintText
-	ld hl, OakText4
-	call PrintText
-	call RotateThreePalettesRight
-	call ClearTilemap
-
-	xor a
-	ld [wCurPartySpecies], a
-	ld a, POKEMON_PROF
-	ld [wTrainerClass], a
-	call Intro_PrepTrainerPic
-
-	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
-	call GetSGBLayout
-	call Intro_RotatePalettesLeftFrontpic
-
-	ld hl, OakText5
-	call PrintText
+; Kanto hack (F3): Yellow goes straight from the PIKACHU page to the player's
+; pic (oak_speech.asm:90-98); Crystal's OakText4 and second OAK page are cut.
 	call RotateThreePalettesRight
 	call ClearTilemap
 
@@ -757,14 +742,6 @@ OakText2:
 
 OakText3:
 	text_far _OakText3
-	text_end
-
-OakText4:
-	text_far _OakText4
-	text_end
-
-OakText5:
-	text_far _OakText5
 	text_end
 
 OakText6:

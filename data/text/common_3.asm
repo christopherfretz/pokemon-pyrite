@@ -1,28 +1,21 @@
+; Kanto hack (F3): Yellow's _IntroducePlayerText and _OakSpeechText3, verbatim
+; (vendor/pokeyellow/data/text/text_3.asm:466-491).
 _OakText6::
-	text "Now, what did you"
-	line "say your name was?"
+	text "First, what is"
+	line "your name?"
 	prompt
 
 _OakText7::
-	text "<PLAYER>, are you"
-	line "ready?"
+	text "<PLAYER>!"
 
 	para "Your very own"
-	line "#MON story is"
-	cont "about to unfold."
-
-	para "You'll face fun"
-	line "times and tough"
-	cont "challenges."
+	line "#MON legend is"
+	cont "about to unfold!"
 
 	para "A world of dreams"
 	line "and adventures"
-
-	para "with #MON"
-	line "awaits! Let's go!"
-
-	para "I'll be seeing you"
-	line "later!"
+	cont "with #MON"
+	cont "awaits! Let's go!"
 	done
 
 ; Kanto hack (docs/RIVAL-NAMING.md): Yellow's _IntroduceRivalText and
