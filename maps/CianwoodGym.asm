@@ -74,6 +74,13 @@ CianwoodGymChuckScript:
 	end
 
 CianwoodGymActivateRockets:
+; Kanto hack (M11 14h, D147): the 4th JOHTO badge restores power to KANTO --
+; the MAGNET TRAIN runs and the SAFFRON station fills up.  Crystal tied that to
+; the Machine Part errand, which this hack's route never offers.
+	ifless 4, .NoPower
+	setevent EVENT_RESTORED_POWER_TO_KANTO
+	clearevent EVENT_SAFFRON_TRAIN_STATION_POPULATION
+.NoPower:
 	ifequal 7, .RadioTowerRockets
 	ifequal 6, .GoldenrodRockets
 	end

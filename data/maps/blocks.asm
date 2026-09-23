@@ -1464,4 +1464,9 @@ AgathasRoom_Blocks:
 LancesRoom_Blocks:
 	INCBIN "maps/LancesRoom.blk"
 
+; M11 14h (D146): Crystal's SAFFRON station (10x9, 90 B), unreferenced since
+; M8 11a, back for the Johto act.
+SaffronMagnetTrainStation_Blocks:
+	INCBIN "maps/SaffronMagnetTrainStation.blk"
+
 ENDSECTION

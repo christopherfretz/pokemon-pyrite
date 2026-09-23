@@ -292,6 +292,9 @@ INCLUDE "maps/CopycatsHouse2F.asm"
 INCLUDE "maps/Route5UndergroundPathEntrance.asm"
 INCLUDE "maps/Route5SaffronGate.asm"
 INCLUDE "maps/Route5DayCare.asm"
+; Kanto hack (M11 14h, D146): the SAFFRON station, re-added last in the section
+; so no earlier map's *_MapEvents block moves.
+INCLUDE "maps/SaffronMagnetTrainStation.asm"
 
 
 SECTION "Map Scripts 16", ROMX

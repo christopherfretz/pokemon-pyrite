@@ -594,6 +594,7 @@ ENDM
 	map_const SILPH_CO_10F,                                 8,  9 ; 24
 	map_const SILPH_CO_11F,                                 9,  9 ; 25
 	map_const SILPH_CO_ELEVATOR,                            2,  2 ; 26
+	map_const SAFFRON_MAGNET_TRAIN_STATION,                10,  9 ; 27 ; Kanto hack (M11 14h, D146): re-registered for the Johto act, appended so no Saffron map number moves
 	endgroup
 
 	newgroup CHERRYGROVE                                          ; 26

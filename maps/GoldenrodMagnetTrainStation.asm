@@ -168,13 +168,10 @@ GoldenrodMagnetTrainStation_MapEvents:
 	def_warp_events
 	warp_event  8, 17, GOLDENROD_CITY, 5
 	warp_event  9, 17, GOLDENROD_CITY, 5
-; Kanto hack (M8 11a, D74): SAFFRON's station is the PIDGEY house again, so the
-; train has nowhere to arrive.  Both boarding warps self-loop for now.  The
-; whole path is gated on EVENT_RESTORED_POWER_TO_KANTO, which the Kanto act
-; never sets, so this is unreachable; M11 (the Johto act) rebuilds the Kanto
-; terminus and repoints these two warps.
-	warp_event  6,  5, GOLDENROD_MAGNET_TRAIN_STATION, 1
-	warp_event 11,  5, GOLDENROD_MAGNET_TRAIN_STATION, 1
+; Kanto hack (M11 14h, D146): SAFFRON's station is its own map again
+; (SAFFRON_MAGNET_TRAIN_STATION, SAFFRON group #27); Crystal's targets restored.
+	warp_event  6,  5, SAFFRON_MAGNET_TRAIN_STATION, 4
+	warp_event 11,  5, SAFFRON_MAGNET_TRAIN_STATION, 3
 
 	def_coord_events
 	coord_event 11,  6, SCENE_GOLDENRODMAGNETTRAINSTATION_ARRIVE_FROM_SAFFRON, Script_ArriveFromSaffron

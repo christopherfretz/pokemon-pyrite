@@ -53,6 +53,22 @@ Copycat:
 
 .GotTM31:
 	writetext CopycatTM31Explanation2Text
+; Kanto hack (M11 14h, D148): in the JOHTO act (ENGINE_POKEGEAR) her post-doll
+; talk goes on to hand over the rail PASS -- Crystal's COPYCAT reward, minus
+; Crystal's LOST_ITEM errand.  The KANTO act never reaches past this check, so
+; Yellow's flow above is untouched.
+	checkflag ENGINE_POKEGEAR
+	iffalse .GotTM31Done
+	checkevent EVENT_GOT_PASS_FROM_COPYCAT
+	iftrue .GotTM31Done
+	promptbutton
+	writetext CopycatPassPreReceiveText
+	promptbutton
+	verbosegiveitem PASS
+	iffalse .GotTM31Done
+	setevent EVENT_GOT_PASS_FROM_COPYCAT
+	writetext CopycatPassExplanationText
+.GotTM31Done:
 	waitbutton
 	closetext
 	end
@@ -143,6 +159,29 @@ CopycatTM31Explanation2Text:
 
 	para "COPYCAT: You bet!"
 	line "It's a scream!"
+	done
+
+; Kanto hack (M11 14h, D148): our lines.
+CopycatPassPreReceiveText:
+	text "COPYCAT: Oh! They"
+	line "built a MAGNET"
+	cont "TRAIN STATION"
+	cont "up the street!"
+
+	para "Daddy got me a"
+	line "rail PASS, but I"
+
+	para "never go anywhere."
+	line "You can have it!"
+	done
+
+CopycatPassExplanationText:
+	text "The MAGNET TRAIN"
+	line "goes all the way"
+	cont "to GOLDENROD!"
+
+	para "Mimic the conduc-"
+	line "tor for me, OK?"
 	done
 
 CopycatTM31NoRoomText:

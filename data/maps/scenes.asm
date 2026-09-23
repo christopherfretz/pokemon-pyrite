@@ -14,9 +14,10 @@ MapScenes::
 	scene_var ROUTE_25,                                    wRoute25SceneID
 	scene_var TRAINER_HOUSE_B1F,                           wTrainerHouseB1FSceneID
 	scene_var VICTORY_ROAD_GATE,                           wVictoryRoadGateSceneID
-; Kanto hack (M8 11a, D74): SAFFRON_MAGNET_TRAIN_STATION is SAFFRON_PIDGEY_HOUSE
-; now and has no scene scripts.  wSaffronMagnetTrainStationSceneID stays in
-; ram/wram.asm so the WRAM layout is byte-identical (docs/PORTING.md 4).
+; Kanto hack (M8 11a, D74): SAFFRON_MAGNET_TRAIN_STATION became SAFFRON_PIDGEY_HOUSE,
+; but wSaffronMagnetTrainStationSceneID stayed in ram/wram.asm.  M11 14h (D146)
+; re-registers the station as its own map and takes the byte back.
+	scene_var SAFFRON_MAGNET_TRAIN_STATION,                wSaffronMagnetTrainStationSceneID
 	scene_var ROUTE_16_GATE,                               wRoute16GateSceneID
 	scene_var ROUTE_17_ROUTE_18_GATE,                      wRoute17Route18GateSceneID
 	scene_var INDIGO_PLATEAU_POKECENTER_1F,                wIndigoPlateauPokecenter1FSceneID

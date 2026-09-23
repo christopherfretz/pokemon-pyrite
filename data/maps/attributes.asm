@@ -873,6 +873,7 @@ ENDM
 	map_attributes SilphCo10F, SILPH_CO_10F, $2e
 	map_attributes SilphCo11F, SILPH_CO_11F, $2e
 	map_attributes SilphCoElevator, SILPH_CO_ELEVATOR, $00
+	map_attributes SaffronMagnetTrainStation, SAFFRON_MAGNET_TRAIN_STATION, $00 ; Kanto hack (M11 14h)
 	map_attributes CherrygroveMart, CHERRYGROVE_MART, $00
 	map_attributes CherrygrovePokecenter1F, CHERRYGROVE_POKECENTER_1F, $00
 	map_attributes CherrygroveGymSpeechHouse, CHERRYGROVE_GYM_SPEECH_HOUSE, $00

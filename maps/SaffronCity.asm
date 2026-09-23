@@ -45,9 +45,31 @@ SaffronCity_MapScripts:
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, SaffronCityFlypointCallback
+	callback MAPCALLBACK_TILES, SaffronCityStationCallback ; Kanto hack (M11 14h)
 
 SaffronCityFlypointCallback:
 	setflag ENGINE_FLYPOINT_SAFFRON
+	endcallback
+
+; Kanto hack (M11 14h, docs/M11-JOHTO.md D146): the MAGNET TRAIN STATION is
+; built once the story turns to JOHTO (ENGINE_POKEGEAR, set by ELM).  It takes
+; the two doorless office blocks WEST of the PIDGEY house (block columns 2-5,
+; rows 4-5) and uses Crystal's station roof/wall blocks from
+; vendor/pokecrystal/maps/SaffronCity.blk; the PIDGEY house and every Yellow
+; warp stay put.  The door is step (8,11) = warp 9, a wall tile in the Kanto
+; act, so that warp can only be stepped on once the station stands.
+SaffronCityStationCallback:
+	checkflag ENGINE_POKEGEAR
+	iffalse .done
+	changeblock  4,  8, $20
+	changeblock  6,  8, $54
+	changeblock  8,  8, $54
+	changeblock 10,  8, $21
+	changeblock  4, 10, $37
+	changeblock  6, 10, $7d
+	changeblock  8, 10, $3a
+	changeblock 10, 10, $7e
+.done
 	endcallback
 
 SaffronCityRocket1Script:
@@ -285,6 +307,7 @@ SaffronCity_MapEvents:
 	warp_event 18, 21, SILPH_CO_1F, 1
 	warp_event  9, 29, SAFFRON_POKECENTER_1F, 1
 	warp_event 29, 29, MR_PSYCHICS_HOUSE, 1
+	warp_event  8, 11, SAFFRON_MAGNET_TRAIN_STATION, 1 ; Kanto hack (M11 14h): station door, Johto act only (a wall in the Kanto act)
 
 	def_coord_events
 
