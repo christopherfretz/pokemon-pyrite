@@ -3,14 +3,109 @@
 	const RADIOTOWER4F_TEACHER
 	const RADIOTOWER4F_GROWLITHE
 	const RADIOTOWER4F_ROCKET1
-	const RADIOTOWER4F_ROCKET2
+	const RADIOTOWER4F_JESSIE
 	const RADIOTOWER4F_ROCKET_GIRL
 	const RADIOTOWER4F_SCIENTIST
+	const RADIOTOWER4F_JAMES
+
+; Kanto hack (M11 14g, D149): JESSIE & JAMES take the fight that was Crystal's
+; EXECUTIVEM_2 -- the takeover's first executive, who stood on (14,1) facing
+; LEFT with a sight range of 2, guarding the right-hand stairs to 5F.  JESSIE
+; keeps his tile and facing, JAMES stands behind her on (15,1).  His sight
+; line is two coord_events, (13,1) and (12,1): from the far tile both step
+; one LEFT to meet the player, as a sight trainer would.  The battle is
+; Yellow-style (MUSIC_MEET_JESSIE_JAMES, JESSIE_JAMES_6) and they leave with
+; Yellow's fade to black.  EVENT_BEAT_ROCKET_EXECUTIVEM_2 is still set by the
+; win (nothing else reads it).
+;
+; The executive hid on EVENT_RADIO_TOWER_ROCKET_TAKEOVER, which every takeover
+; Rocket shares -- a `disappear` would set it and clear the whole tower -- so
+; the pair have their own hide flag, re-derived on every load: shown only
+; while the takeover is on and the fight is not won.  The coord_events read
+; the same flag, so they are dead before and after the takeover.
 
 RadioTower4F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, RadioTower4FJessieJamesCallback
+
+RadioTower4FJessieJamesCallback:
+	checkevent EVENT_RADIO_TOWER_ROCKET_TAKEOVER
+	iftrue .Hide
+	checkevent EVENT_BEAT_ROCKET_EXECUTIVEM_2
+	iftrue .Hide
+	clearevent EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN
+	endcallback
+
+.Hide:
+	setevent EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN
+	endcallback
+
+; the far end of the old sight line: they step LEFT to meet the player
+RadioTower4FJessieJamesSceneFar:
+	checkevent EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN
+	iftrue .Done
+	scall RadioTower4FJessieJamesStop
+	applymovement RADIOTOWER4F_JESSIE, RadioTower4FJessieJamesStepLeftMovement
+	applymovement RADIOTOWER4F_JAMES, RadioTower4FJessieJamesStepLeftMovement
+	sjump RadioTower4FJessieJamesBattle
+
+.Done:
+	end
+
+; right in front of JESSIE
+RadioTower4FJessieJamesSceneNear:
+	checkevent EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN
+	iftrue .Done
+	scall RadioTower4FJessieJamesStop
+	sjump RadioTower4FJessieJamesBattle
+
+.Done:
+	end
+
+RadioTower4FJessieJamesStop:
+	turnobject PLAYER, RIGHT
+	playmusic MUSIC_MEET_JESSIE_JAMES
+	showemote EMOTE_SHOCK, RADIOTOWER4F_JESSIE, 15
+	opentext
+	writetext RadioTower4FJessieJamesStopText
+	waitbutton
+	closetext
+	end
+
+RadioTower4FJessieJamesBattle:
+	opentext
+	writetext RadioTower4FJessieJamesSeenText
+	waitbutton
+	closetext
+	winlosstext RadioTower4FJessieJamesBeatenText, 0
+	setlasttalked RADIOTOWER4F_JESSIE
+	loadtrainer JESSIE_JAMES, JESSIE_JAMES_6
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	setevent EVENT_BEAT_ROCKET_EXECUTIVEM_2
+	turnobject RADIOTOWER4F_JESSIE, DOWN
+	turnobject RADIOTOWER4F_JAMES, DOWN
+	playmusic MUSIC_MEET_JESSIE_JAMES
+	opentext
+	writetext RadioTower4FJessieJamesAfterBattleText
+	waitbutton
+	closetext
+	pause 30
+	special FadeOutToBlack
+	special ReloadSpritesNoPalettes
+	disappear RADIOTOWER4F_JESSIE
+	disappear RADIOTOWER4F_JAMES
+	pause 15
+	special FadeInFromBlack
+	playmapmusic
+	end
+
+RadioTower4FJessieJamesStepLeftMovement:
+	step LEFT
+	step_end
 
 RadioTower4FFisherScript:
 	jumptextfaceplayer RadioTower4FFisherText
@@ -60,17 +155,6 @@ TrainerGruntM10:
 	endifjustbattled
 	opentext
 	writetext GruntM10AfterBattleText
-	waitbutton
-	closetext
-	end
-
-TrainerExecutivem2:
-	trainer EXECUTIVEM, EXECUTIVEM_2, EVENT_BEAT_ROCKET_EXECUTIVEM_2, Executivem2SeenText, Executivem2BeatenText, 0, .Script
-
-.Script:
-	endifjustbattled
-	opentext
-	writetext Executivem2AfterBattleText
 	waitbutton
 	closetext
 	end
@@ -166,28 +250,33 @@ GruntM10AfterBattleText:
 	line "it! I was beaten!"
 	done
 
-Executivem2SeenText:
-	text "Stop! I'm known as"
-	line "the TEAM ROCKET"
-	cont "fortress!"
-
-	para "You're not taking"
-	line "another step!"
+RadioTower4FJessieJamesStopText:
+	text "Stop right there!"
 	done
 
-Executivem2BeatenText:
-	text "The fortress came"
-	line "down!"
+RadioTower4FJessieJamesSeenText:
+	text "You?! Here too?"
+
+	para "We're taking over"
+	line "the airwaves to"
+	cont "call our BOSS"
+	cont "home!"
+
+	para "Surrender now, or"
+	line "prepare to fight!"
 	done
 
-Executivem2AfterBattleText:
-	text "You've earned my"
-	line "respect, so here's"
-	cont "some advice."
+RadioTower4FJessieJamesBeatenText:
+	text "Like"
+	line "always…"
+	done
 
-	para "It's not too late."
-	line "You can still turn"
-	cont "back."
+RadioTower4FJessieJamesAfterBattleText:
+	text "TEAM ROCKET, blast"
+	line "off at the speed"
+	cont "of light!"
+
+	para "Again…"
 	done
 
 GruntF4SeenText:
@@ -253,6 +342,8 @@ RadioTower4F_MapEvents:
 	warp_event 17,  0, RADIO_TOWER_3F, 3
 
 	def_coord_events
+	coord_event 13,  1, -1, RadioTower4FJessieJamesSceneNear
+	coord_event 12,  1, -1, RadioTower4FJessieJamesSceneFar
 
 	def_bg_events
 	bg_event  7,  0, BGEVENT_READ, RadioTower4FProductionSign
@@ -263,6 +354,7 @@ RadioTower4F_MapEvents:
 	object_event 14,  6, SPRITE_TEACHER, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, RadioTower4FDJMaryScript, -1
 	object_event 12,  7, SPRITE_GROWLITHE, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, RadioTowerMeowth, -1
 	object_event  5,  6, SPRITE_ROCKET, SPRITEMOVEDATA_SPINCLOCKWISE, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 3, TrainerGruntM10, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
-	object_event 14,  1, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_LEFT, 2, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 2, TrainerExecutivem2, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
+	object_event 14,  1, SPRITE_JESSIE, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN
 	object_event 12,  4, SPRITE_ROCKET_GIRL, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerGruntF4, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
 	object_event  4,  2, SPRITE_SCIENTIST, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 4, TrainerScientistRich, EVENT_RADIO_TOWER_ROCKET_TAKEOVER
+	object_event 15,  1, SPRITE_JAMES, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN

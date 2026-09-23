@@ -308,26 +308,33 @@ ClairText_NoRoom:
 
 ClairText_WhatsTheMatterDragonDen:
 	text "CLAIR: What's the"
-	line "matter? Aren't you"
+	line "matter? Wondering"
+	cont "where to go next?"
 
-	para "going on to the"
-	line "#MON LEAGUE?"
+	para "My cousin LANCE"
+	line "lost his title to"
+	cont "one trainer, then"
+	cont "lost to you."
 
-	para "Do you know how to"
-	line "get there?"
+	para "He left the LEAGUE"
+	line "and went to train"
+	cont "on MT.SILVER."
 
 	para "From here, go to"
 	line "NEW BARK TOWN."
 
 	para "Then SURF east to"
-	line "#MON LEAGUE."
+	line "ROUTE 26."
+
+	para "The west door of"
+	line "the gate there"
+	cont "goes to MT.SILVER."
 
 	para "The route there is"
 	line "very tough."
 
 	para "Don't you dare"
-	line "lose at the #-"
-	cont "MON LEAGUE!"
+	line "lose to LANCE!"
 
 	para "If you do, I'll"
 	line "feel even worse"

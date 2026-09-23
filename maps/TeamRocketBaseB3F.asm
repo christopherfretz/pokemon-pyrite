@@ -1,6 +1,6 @@
 	object_const_def
 	const TEAMROCKETBASEB3F_LANCE
-	const TEAMROCKETBASEB3F_ROCKET1
+	const TEAMROCKETBASEB3F_JESSIE
 	const TEAMROCKETBASEB3F_MOLTRES
 	const TEAMROCKETBASEB3F_ROCKET_GIRL
 	const TEAMROCKETBASEB3F_ROCKET2
@@ -13,6 +13,18 @@
 	const TEAMROCKETBASEB3F_POKE_BALL3
 	const TEAMROCKETBASEB3F_POKE_BALL4
 	const TEAMROCKETBASEB3F_POKE_BALL5
+	const TEAMROCKETBASEB3F_JAMES
+
+; Kanto hack (M11 14g, D149): JESSIE & JAMES take the office fight that was
+; Crystal's EXECUTIVEM_4.  Crystal's blocking is kept -- the same two door
+; coord_events, the same approach walk to (8,5), the shock bubble over the
+; guard, one step DOWN to face the player -- with JAMES beside JESSIE at
+; (9,3), stepping down to (9,5) on the player's right as in Yellow's pairs.
+; The battle is Yellow-style (MUSIC_MEET_JESSIE_JAMES, JESSIE_JAMES_5), and the
+; exit is Yellow's fade to black instead of the executive's table-thump and
+; run.  EVENT_BEAT_ROCKET_EXECUTIVEM_4 and SCENE_TEAMROCKETBASEB3F_NOOP are
+; still set, so the base clears exactly as before; both objects share the
+; executive's hide flag.  Crystal's "disbanded three years ago" line is gone.
 
 TeamRocketBaseB3F_MapScripts:
 	def_scene_scripts
@@ -92,29 +104,44 @@ RocketBaseBossRight:
 	applymovement PLAYER, RocketBasePlayerApproachesBossRightMovement
 RocketBaseBoss:
 	pause 30
-	showemote EMOTE_SHOCK, TEAMROCKETBASEB3F_ROCKET1, 15
-	playmusic MUSIC_ROCKET_ENCOUNTER
-	turnobject TEAMROCKETBASEB3F_ROCKET1, DOWN
+	playmusic MUSIC_MEET_JESSIE_JAMES
+	showemote EMOTE_SHOCK, TEAMROCKETBASEB3F_JESSIE, 15
+	turnobject TEAMROCKETBASEB3F_JESSIE, DOWN
+	turnobject TEAMROCKETBASEB3F_JAMES, DOWN
 	opentext
-	writetext ExecutiveM4BeforeText
+	writetext RocketBaseJessieJamesStopText
 	waitbutton
 	closetext
-	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossApproachesPlayerMovement
-	winlosstext ExecutiveM4BeatenText, 0
-	setlasttalked TEAMROCKETBASEB3F_ROCKET1
-	loadtrainer EXECUTIVEM, EXECUTIVEM_4
+	applymovement TEAMROCKETBASEB3F_JESSIE, RocketBaseBossApproachesPlayerMovement
+	applymovement TEAMROCKETBASEB3F_JAMES, RocketBaseJamesApproachesPlayerMovement
+	turnobject TEAMROCKETBASEB3F_JAMES, LEFT
+	opentext
+	writetext RocketBaseJessieJamesSeenText
+	waitbutton
+	closetext
+	winlosstext RocketBaseJessieJamesBeatenText, 0
+	setlasttalked TEAMROCKETBASEB3F_JESSIE
+	loadtrainer JESSIE_JAMES, JESSIE_JAMES_5
 	startbattle
+	dontrestartmapmusic
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ROCKET_EXECUTIVEM_4
+	turnobject TEAMROCKETBASEB3F_JESSIE, DOWN
+	turnobject TEAMROCKETBASEB3F_JAMES, DOWN
+	playmusic MUSIC_MEET_JESSIE_JAMES
 	opentext
-	writetext ExecutiveM4AfterText
+	writetext RocketBaseJessieJamesAfterBattleText
 	waitbutton
 	closetext
-	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossHitsTableMovement
-	playsound SFX_TACKLE
-	applymovement TEAMROCKETBASEB3F_ROCKET1, RocketBaseBossLeavesMovement
-	disappear TEAMROCKETBASEB3F_ROCKET1
+	pause 30
+	special FadeOutToBlack
+	special ReloadSpritesNoPalettes
+	disappear TEAMROCKETBASEB3F_JESSIE
+	disappear TEAMROCKETBASEB3F_JAMES
+	pause 15
+	special FadeInFromBlack
 	setscene SCENE_TEAMROCKETBASEB3F_NOOP
+	playmapmusic
 	end
 
 RocketBaseMurkrow:
@@ -253,40 +280,9 @@ RocketBaseBossApproachesPlayerMovement:
 	step DOWN
 	step_end
 
-RocketBaseBossHitsTableMovement:
-	big_step RIGHT
-	big_step RIGHT
-	step_end
-
-RocketBaseBossLeavesMovement:
-	fix_facing
-	fast_jump_step LEFT
-	remove_fixed_facing
-	step_sleep 8
-	step_sleep 8
-	slow_step RIGHT
-	big_step DOWN
-	big_step DOWN
-	big_step DOWN
-	big_step RIGHT
-	big_step DOWN
-	big_step DOWN
-	big_step DOWN
-	big_step LEFT
-	big_step LEFT
-	big_step LEFT
-	big_step LEFT
-	big_step LEFT
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step UP
-	big_step LEFT
-	big_step LEFT
+RocketBaseJamesApproachesPlayerMovement:
+	step DOWN
+	step DOWN
 	step_end
 
 RocketBaseRivalEnterMovement:
@@ -383,47 +379,35 @@ RocketBaseRivalText:
 	cont "the likes of you!"
 	done
 
-ExecutiveM4BeforeText:
-	text "What? Who are you?"
-	line "This is the office"
-
-	para "of our leader,"
-	line "GIOVANNI."
-
-	para "Since disbanding"
-	line "TEAM ROCKET three"
-
-	para "years ago, he has"
-	line "been in training."
-
-	para "But we're certain"
-	line "he will be back"
-
-	para "some day to assume"
-	line "command again."
-
-	para "That's why we're"
-	line "standing guard."
-
-	para "I won't let any-"
-	line "one disturb this"
-	cont "place!"
+RocketBaseJessieJamesStopText:
+	text "Hold it right"
+	line "there, twerp!"
 	done
 
-ExecutiveM4BeatenText:
-	text "I… I couldn't do a"
-	line "thing…"
+RocketBaseJessieJamesSeenText:
+	text "You again?! This"
+	line "is our BOSS's"
+	cont "office!"
 
-	para "GIOVANNI, please"
-	line "forgive me…"
+	para "GIOVANNI will come"
+	line "back, and TEAM"
+
+	para "ROCKET will be"
+	line "ready for him!"
+
+	para "Surrender now, or"
+	line "prepare to fight!"
 	done
 
-ExecutiveM4AfterText:
-	text "No, I can't let"
-	line "this affect me."
+RocketBaseJessieJamesBeatenText:
+	text "A twerp beat us"
+	line "again?"
+	done
 
-	para "I have to inform"
-	line "the others…"
+RocketBaseJessieJamesAfterBattleText:
+	text "Looks like TEAM"
+	line "ROCKET's blasting"
+	cont "off again!"
 	done
 
 RocketBaseMurkrowText:
@@ -591,7 +575,7 @@ TeamRocketBaseB3F_MapEvents:
 
 	def_object_events
 	object_event 25, 14, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, LanceGetPasswordScript, EVENT_TEAM_ROCKET_BASE_B3F_LANCE_PASSWORDS
-	object_event  8,  3, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TEAM_ROCKET_BASE_B3F_EXECUTIVE
+	object_event  8,  3, SPRITE_JESSIE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TEAM_ROCKET_BASE_B3F_EXECUTIVE
 	object_event  7,  2, SPRITE_MOLTRES, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, RocketBaseMurkrow, EVENT_TEAM_ROCKET_BASE_POPULATION
 	object_event 21,  7, SPRITE_ROCKET_GIRL, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, SlowpokeTailGrunt, EVENT_TEAM_ROCKET_BASE_POPULATION
 	object_event  5, 14, SPRITE_ROCKET, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 3, RaticateTailGrunt, EVENT_TEAM_ROCKET_BASE_POPULATION
@@ -604,3 +588,4 @@ TeamRocketBaseB3F_MapEvents:
 	object_event 28,  9, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, TeamRocketBaseB3FFullHeal, EVENT_TEAM_ROCKET_BASE_B3F_FULL_HEAL
 	object_event 17,  2, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, TeamRocketBaseB3FIceHeal, EVENT_TEAM_ROCKET_BASE_B3F_ICE_HEAL
 	object_event 14, 10, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, TeamRocketBaseB3FUltraBall, EVENT_TEAM_ROCKET_BASE_B3F_ULTRA_BALL
+	object_event  9,  3, SPRITE_JAMES, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TEAM_ROCKET_BASE_B3F_EXECUTIVE

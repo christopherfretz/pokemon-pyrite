@@ -257,23 +257,33 @@ BlackthornGymClairText_BagFull:
 BlackthornGymClairText_League:
 	text "What's the matter?"
 
-	para "Aren't you headed"
-	line "to the #MON"
-	cont "LEAGUE?"
+	para "Wondering where to"
+	line "go next?"
 
-	para "Don't you know"
-	line "where it is?"
+	para "My cousin LANCE"
+	line "lost his title to"
+	cont "one trainer, then"
+	cont "lost to you."
+
+	para "He left the LEAGUE"
+	line "and went to train"
+	cont "on MT.SILVER."
 
 	para "From here, go to"
 	line "NEW BARK TOWN."
 
-	para "Then SURF east."
-	line "The route there is"
-	cont "very tough."
+	para "Then SURF east to"
+	line "ROUTE 26."
+
+	para "The west door of"
+	line "the gate there"
+	cont "goes to MT.SILVER."
+
+	para "The route there is"
+	line "very tough."
 
 	para "Don't you dare"
-	line "lose at the #-"
-	cont "MON LEAGUE!"
+	line "lose to LANCE!"
 
 	para "If you do, I'll"
 	line "feel even worse"

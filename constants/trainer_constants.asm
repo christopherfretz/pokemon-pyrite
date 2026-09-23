@@ -1104,6 +1104,8 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const JESSIE_JAMES_2 ; Pokemon Tower 7F
 	const JESSIE_JAMES_3 ; Rocket Hideout B4F
 	const JESSIE_JAMES_4 ; Silph Co. 11F (Kanto hack, M8 11h)
+	const JESSIE_JAMES_5 ; Team Rocket Base B3F, GIOVANNI's office (M11 14g, D149; was EXECUTIVEM_4's fight)
+	const JESSIE_JAMES_6 ; Radio Tower 4F, the 5F stairs (M11 14g, D149; was EXECUTIVEM_2's fight)
 
 ; Kanto hack: GIOVANNI, the Rocket boss (docs/M6-CELADON.md D33).  Crystal has
 ; no such class -- Yellow's `trainer_const GIOVANNI ; $1D`.  Inserted BEFORE

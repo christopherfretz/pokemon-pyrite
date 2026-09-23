@@ -257,23 +257,22 @@ LakeOfRageLanceIntroText:
 	line "because of the"
 	cont "rumors?"
 
-	para "You're <PLAYER>?"
-	line "I'm LANCE, a"
-	cont "trainer like you."
+	para "You're <PLAYER>…"
+	line "The CHAMPION."
+
+	para "I'm LANCE. You"
+	line "beat me at the"
+	cont "LEAGUE, then beat"
+	cont "the one who took"
+	cont "my title from me."
+
+	para "I left the LEAGUE"
+	line "after that. Now I"
+	cont "train on my own."
 
 	para "I heard some ru-"
 	line "mors, so I came to"
 	cont "investigate…"
-
-	para "I saw the way you"
-	line "battled earlier,"
-	cont "<PLAY_G>."
-
-	para "I can tell that"
-	line "you're a trainer"
-
-	para "with considerable"
-	line "skill."
 
 	para "If you don't mind,"
 	line "could you help me"

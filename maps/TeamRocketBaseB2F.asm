@@ -717,11 +717,12 @@ RocketBaseLanceElectrodeDoneText:
 	para "The LAKE should be"
 	line "back to normal."
 
-	para "You're the hero!"
-	line "Let me thank you"
+	para "You're a true"
+	line "CHAMPION, <PLAY_G>."
 
-	para "on behalf of all"
-	line "the #MON."
+	para "Let me thank you"
+	line "on behalf of all"
+	cont "the #MON."
 
 	para "Oh, yes. You"
 	line "should take this."
@@ -756,28 +757,17 @@ RocketBaseLanceWhirlpoolText:
 RocketBaseLanceMonMasterText:
 	text "<PLAY_G>…"
 
-	para "The journey to be-"
-	line "coming the #MON"
+	para "You hold the title"
+	line "I lost. I haven't"
+	cont "forgotten that."
 
-	para "MASTER is long and"
-	line "difficult."
+	para "I'm going where no"
+	line "one will disturb"
+	cont "my training."
 
-	para "Knowing that, will"
-	line "you keep going?"
-
-	para "…"
-
-	para "I see. No, you're"
-	line "right."
-
-	para "If you would give"
-	line "up that easily,"
-
-	para "you would have"
-	line "never chased that"
-
-	para "dream in the first"
-	line "place."
+	para "The next time we"
+	line "battle, I will be"
+	cont "the challenger."
 
 	para "I look forward to"
 	line "seeing you again!"

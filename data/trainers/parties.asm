@@ -5270,6 +5270,24 @@ JessieJamesGroup:
 	db 31, MEOWTH
 	db -1 ; end
 
+	; JESSIE_JAMES (5): TEAM ROCKET BASE B3F, GIOVANNI's office (M11 14g, D149).
+	; Takes EXECUTIVEM_4's fight and its level shape (72/74/72, the 14e PRYCE
+	; stretch).  Yellow's Silph trio, MEOWTH unevolved as in every Yellow row.
+	db "@", TRAINERTYPE_NORMAL
+	db 72, WEEZING
+	db 74, ARBOK
+	db 72, MEOWTH
+	db -1 ; end
+
+	; JESSIE_JAMES (6): RADIO TOWER 4F, the 5F stairs (M11 14g, D149).  Takes
+	; EXECUTIVEM_2's fight (a lone Lv86 GOLBAT, the 14e CLAIR stretch): the
+	; ace keeps his level, the other two sit two below it.
+	db "@", TRAINERTYPE_NORMAL
+	db 84, WEEZING
+	db 86, ARBOK
+	db 84, MEOWTH
+	db -1 ; end
+
 ; Kanto hack (M6 9x): GIOVANNI, Yellow's GiovanniData rows 1-3 verbatim
 ; (vendor/pokeyellow/data/trainers/parties.asm:535-541).  Yellow's leading $FF
 ; means "per-mon levels", which is TRAINERTYPE_NORMAL's default shape here.
