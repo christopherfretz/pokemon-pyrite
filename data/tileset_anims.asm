@@ -282,6 +282,7 @@ TilesetKantoGateAnim:
 TilesetKantoTowerAnim:
 TilesetKantoInteriorAnim:
 TilesetKantoLabAnim:
+TilesetKantoBeachHouseAnim:
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation
 	tileframe WaitTileAnimation

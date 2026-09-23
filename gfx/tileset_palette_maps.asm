@@ -134,6 +134,10 @@ INCLUDE "gfx/tilesets/kanto_interior_palette_map.asm"
 TilesetKantoLabPalMap:
 INCLUDE "gfx/tilesets/kanto_lab_palette_map.asm"
 
+; Kanto hack: Yellow's BEACH_HOUSE tileset, the SUMMER BEACH HOUSE (M12a).
+TilesetKantoBeachHousePalMap:
+INCLUDE "gfx/tilesets/kanto_beach_house_palette_map.asm"
+
 ; Kanto hack: Yellow's GYM (= DOJO) tileset, VIRIDIAN GYM (M10 13a).
 TilesetKantoGymPalMap:
 INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"

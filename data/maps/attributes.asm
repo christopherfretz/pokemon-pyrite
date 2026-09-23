@@ -606,6 +606,9 @@ ENDM
 	map_attributes PokemonMansion3F, POKEMON_MANSION_3F, $01
 	map_attributes PokemonMansionB1F, POKEMON_MANSION_B1F, $01
 	map_attributes CinnabarGym, CINNABAR_GYM, $2e
+
+; M12a: Yellow's border block $0a, all black tile $10.
+	map_attributes SummerBeachHouse, SUMMER_BEACH_HOUSE, $0a
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
 	map_attributes BikeShop, BIKE_SHOP, $00

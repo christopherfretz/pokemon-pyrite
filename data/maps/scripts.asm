@@ -707,5 +707,7 @@ INCLUDE "maps/SeafoamIslands1F.asm"
 INCLUDE "maps/SeafoamIslandsB3F.asm"
 INCLUDE "maps/SeafoamIslandsB4F.asm"
 INCLUDE "maps/CinnabarGym.asm"
+; M12a: appended after the rest so no earlier map's _MapEvents moves.
+INCLUDE "maps/SummerBeachHouse.asm"
 
 ENDSECTION

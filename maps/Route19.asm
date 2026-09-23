@@ -6,15 +6,16 @@
 ;
 ; D98: ROUTE_19_FUCHSIA_GATE is retired here.  Yellow has no gate between
 ; FUCHSIA and ROUTE 19 -- the city's south edge walks straight onto the
-; HOP_DOWN terrace at row 0 -- so this map has NO warp_events at all now, and
+; HOP_DOWN terrace at row 0 -- so this map has no gate warp_events now, and
 ; 12b's $cb LEDGE_TWIN fence at blocks (4,0)/(5,0) is gone with it.
 ; The map const ROUTE_19_FUCHSIA_GATE stays registered as a dead id (D49) and
 ; maps/Route19FuchsiaGate.asm stays in the build, unreferenced, exactly like
 ; FuchsiaPokecenter2FBeta.
 ;
-; D107: Yellow's SUMMER BEACH HOUSE door at (5,9) keeps its art and its DOOR
-; collision and still has no warp_event; the tile bounces the player back to
-; (5,10).  Unchanged by 12c.
+; D107 (closed by M12a): Yellow's SUMMER BEACH HOUSE door at (5,9) is warp 1,
+; into maps/SummerBeachHouse.asm, exactly as Yellow's own
+; `warp_event 5, 9, SUMMER_BEACH_HOUSE, 1`.  Until M12a it kept its art and
+; DOOR collision with no warp_event and bounced the player back to (5,10).
 ;
 ; Object order below is Yellow's own, and the sight ranges are Yellow's trainer
 ; headers (vendor/pokeyellow/scripts/Route19.asm:30-49).
@@ -322,6 +323,7 @@ Route19_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
+	warp_event  5,  9, SUMMER_BEACH_HOUSE, 1
 
 	def_coord_events
 

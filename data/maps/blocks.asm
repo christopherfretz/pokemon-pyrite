@@ -1412,6 +1412,10 @@ PokemonMansionB1F_Blocks:
 CinnabarGym_Blocks:
 	INCBIN "maps/CinnabarGym.blk"
 
+; M12a: Yellow's SUMMER BEACH HOUSE, byte for byte; scripts/kanto_beach_house_blk.py.
+SummerBeachHouse_Blocks:
+	INCBIN "maps/SummerBeachHouse.blk"
+
 ; M10 13a: VIRIDIAN GYM re-cut to Yellow's 10x9 on TILESET_KANTO_GYM, moved here
 ; from "Map Blocks 3" (90 B, 45 more than the old 5x9).  Yellow's .blk with the
 ; arrow-run blocks swapped for their D115 clones; scripts/kanto_gym_blk.py.

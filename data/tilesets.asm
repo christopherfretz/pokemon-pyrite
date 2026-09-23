@@ -70,4 +70,6 @@ Tilesets::
 	dw TilesetKantoTowerAnim
 	dw NULL
 	dw TilesetKantoE4TowerPalMap
+; M12a: Yellow's BEACH_HOUSE, the SUMMER BEACH HOUSE on ROUTE 19.
+	tileset TilesetKantoBeachHouse
 	assert_table_length NUM_TILESETS + 1
