@@ -69,10 +69,16 @@ SaffronMagnetTrainStationOfficerScript:
 	closetext
 	end
 
+; G14 (Kanto hack): the player's walk off the train ends on (9,10) with the
+; Pikachu follower trailing onto (9,9), the tile the officer walks back to.
+; Hide Pikachu for the cutscene and tuck it onto the player's tile after, as
+; if the player had come through a door; it walks out on the first step.
 Script_ArriveFromGoldenrod:
+	special FollowerHide
 	applymovement SAFFRONMAGNETTRAINSTATION_OFFICER, SaffronMagnetTrainStationOfficerApproachTrainDoorMovement
 	applymovement PLAYER, SaffronMagnetTrainStationPlayerLeaveTrainAndEnterStationMovement
 	applymovement SAFFRONMAGNETTRAINSTATION_OFFICER, SaffronMagnetTrainStationOfficerReturnToBoardingGateMovement
+	special FollowerRejoin
 	opentext
 	writetext SaffronMagnetTrainStationOfficerArrivedInSaffronText
 	waitbutton

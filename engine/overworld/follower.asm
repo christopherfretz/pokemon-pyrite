@@ -133,6 +133,11 @@ MovementFunction_PikaFollower:
 	ret
 
 .Show:
+; G14: a script holding Pikachu hidden (FollowerHide) keeps it hidden even
+; while it trails a scripted player walk (the MAGNET TRAIN arrival).
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_SCRIPTHIDE_F, a
+	ret nz
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	res INVISIBLE_F, [hl]
@@ -692,6 +697,25 @@ StepFunction_FollowerJump:
 	db   0,  -4,  -8, -11, -13, -14, -14, -13
 	db -11,  -9,  -7,  -5,  -3,  -2,  -1,   0
 .x_offsets_end:
+
+FollowerRejoin::
+; Special (G14).  End a FollowerHide that spanned a scripted player walk: tuck
+; Pikachu onto the player's tile, hidden, the way SpawnFollower leaves it after
+; a warp, so it walks out behind them on their first step.  Without this the
+; follower trailed the MAGNET TRAIN arrival walk onto (9,9) -- the tile the
+; station officer returns to -- and stood there visible, overlapping him and
+; answering A (TryObjectEvent checks the follower first) with Pikachu's face.
+	ld hl, wPikaFollowFlags
+	res FOLLOWER_SCRIPTHIDE_F, [hl]
+	bit FOLLOWER_ENABLED_F, [hl]
+	ret z
+	ld bc, wFollowerStruct
+	call FollowerSnapToPlayer
+	ld hl, wFollowerStruct + OBJECT_FLAGS1
+	set INVISIBLE_F, [hl]
+	ld hl, wFollowerStruct + OBJECT_WALKING
+	ld [hl], STANDING
+	jp UpdateSprites
 
 FollowerHide::
 ; Special.  Yellow's DisablePikachuOverworldSpriteDrawing: take Pikachu off

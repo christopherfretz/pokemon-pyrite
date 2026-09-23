@@ -206,3 +206,4 @@ SpecialsPointers::
 	add_special SafariZoneStart
 	add_special SafariZoneEnd
 	add_special CinnabarGymPikachuStepAside
+	add_special FollowerRejoin ; G14
