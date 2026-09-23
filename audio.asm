@@ -136,6 +136,10 @@ INCLUDE "audio/music/dungeon3.asm"
 INCLUDE "audio/music/gamecorneryellow.asm"
 INCLUDE "audio/music/safarizone.asm"
 INCLUDE "audio/music/surfing.asm"
+; K6d: Yellow's Silph Co., Pokemon Mansion and bike themes.
+INCLUDE "audio/music/silphcoyellow.asm"
+INCLUDE "audio/music/pokemonmansionyellow.asm"
+INCLUDE "audio/music/bikeridingyellow.asm"
 ; K6c: moved out of "Songs 1" (bank $3a, pinned behind "Audio"), which the
 ; six new music_pointers entries (18 bytes) would have overflowed.
 INCLUDE "audio/music/lookpokemaniac.asm"

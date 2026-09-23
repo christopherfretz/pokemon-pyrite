@@ -128,7 +128,7 @@
 	const MUSIC_MEET_RIVAL_GSC_ALT_START_TEMPO    ; 71
 	const MUSIC_POKEMON_TOWER                ; 72 (Yellow's POKEMON TOWER, K6a)
 	const MUSIC_SS_ANNE                      ; 73 (Yellow's S.S. ANNE, K6a)
-	; Kanto hack (K6c, docs/K6-MUSIC.md): six more ids ($7a-$7f stay free).  _YELLOW where Crystal
+	; Kanto hack (K6c, docs/K6-MUSIC.md): six more ids.  _YELLOW where Crystal
 	; already has a song of that name (its Lavender / Game Corner stay for Johto).
 	const MUSIC_LAVENDER_YELLOW              ; 74 (Yellow's MUSIC_LAVENDER)
 	const MUSIC_DUNGEON1                     ; 75 (Hideout, Power Plant, Bruno, Cerulean Cave)
@@ -136,6 +136,10 @@
 	const MUSIC_DUNGEON3                     ; 77 (Mt. Moon, Rock Tunnel, Victory Road)
 	const MUSIC_GAME_CORNER_YELLOW           ; 78 (Yellow's MUSIC_GAME_CORNER)
 	const MUSIC_SURFING                      ; 79 (Yellow's surf theme; Kanto act only)
+	; Kanto hack (K6d, docs/K6-MUSIC.md): Yellow's last three tracks ($7d-$7f stay free).
+	const MUSIC_SILPH_CO_YELLOW              ; 7a (Yellow's MUSIC_SILPH_CO; see the MUSIC_SILPH_CO alias below)
+	const MUSIC_POKEMON_MANSION_YELLOW       ; 7b (Yellow's MUSIC_CINNABAR_MANSION)
+	const MUSIC_BIKE_RIDING_YELLOW           ; 7c (Yellow's MUSIC_BIKE_RIDING; Kanto act only, GetBikeMusic)
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; Kanto hack (K6a): the rival-theme A/B switch.  Every Kanto rival scene plays
@@ -150,12 +154,10 @@ DEF RIVAL_THEME_ALT_START       EQU 1 ; Yellow: Music_RivalAlternateStart
 DEF RIVAL_THEME_ALT_TEMPO       EQU 2 ; Yellow: Music_RivalAlternateTempo
 DEF RIVAL_THEME_ALT_START_TEMPO EQU 3 ; Yellow: Music_RivalAlternateStartAndTempo
 
-; Kanto hack (M8 11a, docs/M8-SAFFRON.md D82): SILPH CO. gets a name of its own
-; so the twelve Silph maps can be repointed in one line, but no id of its own
-; yet (after K6c, ids $7a-$7f are still free).  Yellow plays Music_SilphCo there; the
-; ROCKET HIDEOUT theme is the closest Crystal track and is already the "team
-; rocket has taken the place over" cue.  A real port would spend an id here.
-DEF MUSIC_SILPH_CO EQU MUSIC_ROCKET_HIDEOUT
+; Kanto hack (M8 11a, docs/M8-SAFFRON.md D82): SILPH CO. has a name of its own
+; so the twelve Silph maps are repointed in one line.  It was an alias of the
+; ROCKET HIDEOUT theme until K6d ported Yellow's Music_SilphCo.
+DEF MUSIC_SILPH_CO EQU MUSIC_SILPH_CO_YELLOW
 
 ; GetMapMusic picks music for this value (see home/map.asm)
 ; this overlaps with a Crystal song ID, but not one that is used for map music

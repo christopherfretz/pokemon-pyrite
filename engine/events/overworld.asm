@@ -1684,6 +1684,64 @@ UnusedNothingHereText: ; unreferenced
 	text_far _UnusedNothingHereText
 	text_end
 
+GetBikeMusic::
+; Kanto hack (K6d, docs/K6-MUSIC.md): de = the song for riding the BICYCLE here.
+; Kanto act (POKEGEAR_OBTAINED_F clear): Yellow's MUSIC_BIKE_RIDING_YELLOW, but
+; carry (keep the map's own song) on the maps of Yellow's CheckForNoBikingMusicMap
+; (home/audio.asm there), and in every GATE map but the two underground paths:
+; Crystal lets the bike into gates, Yellow walks the player there (its gate
+; tileset is not in BikeRidingTilesets, UNDERGROUND is) and plays the map song.
+; Johto act: Crystal's MUSIC_BICYCLE, nc.  Clobbers a, bc, hl.
+	ld de, MUSIC_BICYCLE
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jr nz, .play_it
+	ld de, MUSIC_BIKE_RIDING_YELLOW
+	ld a, [wMapGroup]
+	ld b, a
+	ld a, [wMapNumber]
+	ld c, a
+	ld hl, .NoBikingMusicMaps
+	call .InTable
+	ret c
+	call GetMapEnvironment
+	cp GATE
+	jr nz, .play_it
+	ld hl, .BikingGateMaps
+	call .InTable
+	ccf
+	ret
+
+.play_it
+	and a
+	ret
+
+.InTable:
+; carry if map bc is in the map_id list at hl
+	ld a, [hli]
+	cp -1
+	jr z, .play_it
+	cp b
+	ld a, [hli]
+	jr nz, .InTable
+	cp c
+	jr nz, .InTable
+	scf
+	ret
+
+.NoBikingMusicMaps:
+	map_id ROUTE_23
+	map_id VICTORY_ROAD_1F
+	map_id VICTORY_ROAD_2F
+	map_id VICTORY_ROAD_3F
+	map_id INDIGO_PLATEAU
+	db -1
+
+.BikingGateMaps:
+	map_id UNDERGROUND_PATH
+	map_id UNDERGROUND_PATH_WEST_EAST
+	db -1
+
 BikeFunction:
 	call .TryBike
 	and JUMPTABLE_INDEX_MASK
@@ -1705,16 +1763,22 @@ BikeFunction:
 	ld de, Script_GetOnBike_Register
 	call .CheckIfRegistered
 	call QueueScript
+; Kanto hack (K6d): Yellow's bike theme in the Kanto act, Crystal's in Johto;
+; carry = a map where Yellow keeps the map music on the bike.
+	call GetBikeMusic
+	jr c, .keep_map_music
+	push de
 	xor a
 	ld [wMusicFade], a
 	ld de, MUSIC_NONE
 	call PlayMusic
 	call DelayFrame
 	call MaxVolume
-	ld de, MUSIC_BICYCLE
+	pop de
 	ld a, e
 	ld [wMapMusic], a
 	call PlayMusic
+.keep_map_music
 	ld a, $1
 	ret
 

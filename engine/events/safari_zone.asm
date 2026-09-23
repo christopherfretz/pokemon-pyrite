@@ -101,6 +101,9 @@ SafariZoneBattleScript::
 SafariZoneTimesUpScript::
 ; Yellow SafariZoneGameOver reached with balls still in the bag: SafariGameOverText
 ; prints TimesUpText and then GameOverText.
+; Yellow's SafariZoneGameOver stops the music (StopAllMusic, no fade) before the
+; PA chime; the gate's own song starts with the warp (K6d).
+	playmusic MUSIC_NONE
 	playsound SFX_ELEVATOR_END
 	opentext
 	writetext SafariZoneTimesUpText
@@ -114,6 +117,7 @@ SafariZoneOutOfBallsScript::
 ; Yellow SafariZoneGameOver reached with an empty bag: SafariGameOverText skips
 ; TimesUpText, because the battle has just said "You are out of SAFARI BALLs!"
 ; (BattleText_OutOfSafariBalls, 10i).
+	playmusic MUSIC_NONE ; Yellow: StopAllMusic before the PA chime (K6d)
 	playsound SFX_ELEVATOR_END
 	opentext
 	writetext SafariZoneGameOverText

@@ -128,4 +128,7 @@ Music:
 	dba Music_Dungeon3
 	dba Music_GameCornerYellow
 	dba Music_Surfing
+	dba Music_SilphCoYellow                   ; K6d
+	dba Music_PokemonMansionYellow
+	dba Music_BikeRidingYellow
 	assert_table_length NUM_MUSIC_SONGS

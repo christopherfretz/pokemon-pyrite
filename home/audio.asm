@@ -371,7 +371,12 @@ PlayMapMusicBike::
 	ld de, MUSIC_BICYCLE
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
-	jr z, .play
+	jr nz, .map_music
+; Kanto hack (K6d): in the Kanto act SpecialMapMusic picks the bike theme.
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jr nz, .play
+.map_music
 	call GetMapMusic_MaybeSpecial
 .play
 	push de
@@ -428,6 +433,13 @@ SpecialMapMusic::
 	cp PLAYER_SURF_PIKA
 	jr z, .surf
 
+	cp PLAYER_BIKE
+	jr nz, .not_bike
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jr z, .bike
+.not_bike
+
 	ld a, [wStatusFlags2]
 	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, a
 	jr nz, .contest
@@ -436,9 +448,16 @@ SpecialMapMusic::
 	and a
 	ret
 
-.bike ; unreferenced
-	ld de, MUSIC_BICYCLE
-	scf
+.bike
+; Kanto hack (K6d, docs/K6-MUSIC.md): Yellow's PlayDefaultMusicCommon plays
+; MUSIC_BIKE_RIDING for a mounted player on every map load, connection and
+; dismount-less music restart, so in the Kanto act (no POKeGEAR yet) the bike
+; theme is this map's music (GetBikeMusic: carry = one of Yellow's
+; CheckForNoBikingMusicMap maps, keep the map's own song).  The Johto act keeps
+; Crystal's behaviour: GetMapMusic, with MUSIC_BICYCLE only from
+; PlayMapMusicBike and the BICYCLE item (and falls through to the contest check).
+	farcall GetBikeMusic
+	ccf
 	ret
 
 .surf
