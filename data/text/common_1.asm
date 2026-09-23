@@ -153,15 +153,12 @@ _CardFolderOpenText::
 	text "CARD FOLDER open.@"
 	text_end
 
+; Kanto hack (F3/Q2, docs/AUDIT-FULL-GAME-LEFTOVERS.md): the clock still gets
+; set (day/night stays), but without Crystal's sleeping-OAK opener.
 _OakTimeWokeUpText::
-	text "<……><……><……><……><……><……>"
-	line "<……><……><……><……><……><……>"
-
-	para "Zzz… Hm? Wha…?"
-	line "You woke me up!"
-
-	para "Will you check the"
-	line "clock for me?"
+	text "Before we begin,"
+	line "will you check the"
+	cont "clock for me?"
 	prompt
 
 _OakTimeWhatTimeIsItText::
@@ -190,19 +187,19 @@ _OakTimeMinutesQuestionMarkText::
 
 _OakTimeOversleptText::
 	text "!"
-	line "I overslept!"
+	line "A fine morning to"
+	cont "begin!"
 	done
 
 _OakTimeYikesText::
 	text "!"
-	line "Yikes! I over-"
-	cont "slept!"
+	line "Plenty of daylight"
+	cont "left today!"
 	done
 
 _OakTimeSoDarkText::
 	text "!"
-	line "No wonder it's so"
-	cont "dark!"
+	line "Quite late, then!"
 	done
 
 _OakTimeWhatDayIsItText::
