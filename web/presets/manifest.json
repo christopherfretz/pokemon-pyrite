@@ -208,5 +208,23 @@
   "title": "ROUTE 22 \u2014 both rival fights won",
   "description": "ROUTE 22 just after the second rival battle, walked west from 'EARTHBADGE won': rival #1 (never fought on this branch) and then rival #2 ACTUALLY FOUGHT in the harness. Same fakes as 'EARTHBADGE won' (RAINBOW/SOUL badges, the level-100 party). The ROUTE 22 GATE, the badge checks and VICTORY ROAD lie west.",
   "sav": "route22_rival2.sav"
+ },
+ {
+  "id": "route23",
+  "title": "ROUTE 23 \u2014 all seven badge checks passed",
+  "description": "ROUTE 23 in front of the VICTORY ROAD entrance (4,32), walked from 'both rival fights won': the ROUTE 22 GATE's BOULDERBADGE check and all seven ROUTE 23 guards passed for real, the water stretch surfed. Same fakes as 'both rival fights won' (RAINBOW/SOUL badges, the level-100 party). VICTORY ROAD is one step north.",
+  "sav": "route23.sav"
+ },
+ {
+  "id": "victory_road",
+  "title": "VICTORY ROAD 1F \u2014 just walked in",
+  "description": "On VICTORY ROAD 1F's entrance tile, one step in from 'all seven badge checks passed'. Nothing new is faked, but note: the harness turns STRENGTH on by poking its field flag (wBikeFlags) rather than teaching HM04, so the boulders may already move for you, and the flag is dropped by the game on the next map change. The party is the same level-100 one as the earlier presets.",
+  "sav": "victory_road.sav"
+ },
+ {
+  "id": "indigo",
+  "title": "INDIGO PLATEAU \u2014 at the lobby door",
+  "description": "Outside the INDIGO PLATEAU lobby door, walked through VICTORY ROAD from 'VICTORY ROAD 1F': all four boulder switches pushed, BOULDER4 dropped down 3F's hole, MOLTRES FOUGHT and knocked out (not caught), then out of 2F's exit and north up ROUTE 23. STRENGTH was faked throughout (the wBikeFlags field flag, not HM04) and the party is the level-100 one of the earlier presets; RAINBOW/SOUL badges as before.",
+  "sav": "indigo.sav"
  }
 ]
