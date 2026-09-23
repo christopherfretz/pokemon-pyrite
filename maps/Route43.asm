@@ -366,7 +366,7 @@ PokemaniacRonSeenText:
 	text "Would you get"
 	line "this?"
 
-	para "Some <RIVAL> guy"
+	para "Some SILVER guy" ; Kanto hack (M11 14c): was <RIVAL>
 	line "made fun of my"
 	cont "#MON!"
 

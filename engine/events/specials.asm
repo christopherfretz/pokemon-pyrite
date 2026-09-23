@@ -83,17 +83,8 @@ FoundNone:
 	ld [wScriptVar], a
 	ret
 
-NameRival:
-	ld b, NAME_RIVAL
-	ld de, wRivalName
-	farcall _NamingScreen
-	ld hl, wRivalName
-	ld de, .DefaultName
-	call InitName
-	ret
-
-.DefaultName:
-	db "SILVER@"
+; Kanto hack (M11 14c): Crystal's NameRival special is gone -- Silver is
+; always "SILVER" and wRivalName belongs to Gary (named in the Kanto intro).
 
 NameRater:
 	farcall _NameRater

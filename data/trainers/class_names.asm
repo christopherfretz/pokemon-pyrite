@@ -9,7 +9,7 @@ TrainerClassNames::
 	li "LEADER"
 	li "LEADER"
 	li "LEADER"
-	li "RIVAL"
+	li "SILVER" ; RIVAL1 -- Kanto hack (M11 14c)
 	li "#MON PROF."
 	li "ELITE FOUR"
 	li "<PKMN> TRAINER"
@@ -42,7 +42,7 @@ TrainerClassNames::
 	li "SWIMMER♀"
 	li "SAILOR"
 	li "SUPER NERD"
-	li "RIVAL"
+	li "SILVER" ; RIVAL2 -- Kanto hack (M11 14c)
 	li "GUITARIST"
 	li "HIKER"
 	li "BIKER"

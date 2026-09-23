@@ -316,7 +316,10 @@ CherrygroveGroupSprites:
 	db SPRITE_FRUIT_TREE
 
 SilverGroupSprites:
-rept MAX_OUTDOOR_SPRITES - 0
+; Kanto hack (M11 14c): MT.SILVER's foot has SILVER now (was empty -- an
+; unlisted sprite gets no vtile and is drawn with the PLAYER's tiles).
+	db SPRITE_RIVAL
+rept MAX_OUTDOOR_SPRITES - 1
 	db 0 ; AddOutdoorSprites always reads MAX_OUTDOOR_SPRITES entries
 endr
 

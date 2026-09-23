@@ -352,7 +352,7 @@ CooltrainerfJoyceAfterBattleText:
 
 CooltrainerfBeth1SeenText:
 	text "I lost to a train-"
-	line "er named <RIVAL>."
+	line "er named SILVER." ; Kanto hack (M11 14c): was <RIVAL>
 
 	para "He was really"
 	line "strong, but…"

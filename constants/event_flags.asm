@@ -479,7 +479,7 @@
 	const EVENT_CONTEST_OFFICER_HAS_BERRY
 	const EVENT_FOUGHT_HO_OH
 	const EVENT_FOUGHT_LUGIA
-	const EVENT_BEAT_RIVAL_IN_MT_MOON
+	const EVENT_BEAT_RIVAL_IN_DRAGONS_DEN ; Kanto hack (M11 14c, D142): renamed in place, was Crystal's never-set EVENT_BEAT_RIVAL_IN_MT_MOON
 	const EVENT_GOT_SS_TICKET ; Kanto hack: renamed in place (6j, docs/M3-CERULEAN.md), was the now-dead EVENT_MET_BILLS_GRANDPA
 	const EVENT_BILL_SAID_USE_CELL_SEPARATOR ; Kanto hack: renamed in place (6j, docs/M3-CERULEAN.md), was the now-dead EVENT_SHOWED_LICKITUNG_TO_BILLS_GRANDPA
 	const EVENT_BILLS_HOUSE_BILL_POKEMON_HIDDEN ; Kanto hack: renamed in place (6j, docs/M3-CERULEAN.md), was the now-dead EVENT_SHOWED_ODDISH_TO_BILLS_GRANDPA
@@ -1568,8 +1568,8 @@
 ; MT_MOON_SQUARE_ROCK and MOUNT_MOON_SQUARE_HIDDEN_MOON_STONE from the deleted
 ; MOUNT_MOON maps) and Crystal's never-used EVENT_BEAT_SUPER_NERD_GREGG was
 ; taken as-is, so 1F's 7 trainers + 6 itemballs cost seven new flags, not
-; thirteen. Mt. Moon B1F has no objects at all. NOTE: EVENT_BEAT_RIVAL_IN_MT_MOON
-; is NOT free - Johto's Dragon's Den / Dragon Shrine / Indigo Plateau scripts
+; thirteen. Mt. Moon B1F has no objects at all. NOTE: EVENT_BEAT_RIVAL_IN_MT_MOON (now
+; EVENT_BEAT_RIVAL_IN_DRAGONS_DEN, M11 14c) was NOT free - Johto's Dragon's Den / Dragon Shrine / Indigo Plateau scripts
 ; still read it - and EVENT_MT_MOON_SQUARE_CLEFAIRY is still set by an (orphaned)
 ; std script, so neither was reused.
 	const EVENT_BEAT_LASS_MELISSA ; Mt. Moon 1F, Yellow's LASS 5
@@ -2234,8 +2234,9 @@
 	const EVENT_BEAT_POWER_PLANT_VOLTORB_7 ; VOLTORB (37,32)
 	const EVENT_OAK_SENT_PLAYER_TO_ELM ; Kanto hack (M11 14a, D135): OAK's post-E4 hand-off in OAK's LAB (HM07 + "go see ELM"); opens VICTORY ROAD GATE's south door
 	const EVENT_ICE_PATH_1F_TM_EARTHQUAKE ; Kanto hack (M11 14a, D135): ICE PATH 1F ball (31,7), was Crystal's HM07 (OAK gives HM07 now)
+	const EVENT_BEAT_RIVAL_MT_SILVER ; Kanto hack (M11 14c, D142): SILVER's final fight at the foot of MT.SILVER; also his hide flag there
 
-; Unused: next 224 events
+; Unused: next 223 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

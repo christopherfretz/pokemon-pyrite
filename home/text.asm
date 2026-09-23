@@ -352,10 +352,12 @@ PlaceEnemysName::
 	jr nz, .linkbattle
 
 	ld a, [wTrainerClass]
+	; Kanto hack (M11 14c): Johto's rival is always "SILVER" -- the class
+	; name alone, like JESSIE&JAMES. wRivalName stays Gary's.
 	cp RIVAL1
-	jr z, .rival
+	jr z, .classonly
 	cp RIVAL2
-	jr z, .rival
+	jr z, .classonly
 	cp KANTO_RIVAL
 	jr z, .rival
 	cp KANTO_CHAMPION ; Kanto hack (M10 13i)

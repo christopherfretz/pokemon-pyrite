@@ -204,8 +204,8 @@ DragonShrineElder1Script:
 	iftrue .ReceivedDratini
 	checkevent EVENT_GOT_DRATINI
 	iffalse .GiveDratini
-	checkevent EVENT_BEAT_RIVAL_IN_MT_MOON
-	iftrue .BeatRivalInMtMoon
+	checkevent EVENT_BEAT_RIVAL_IN_DRAGONS_DEN
+	iftrue .BeatRivalInDragonsDen
 	writetext DragonShrineClairsGrandfatherText
 	waitbutton
 	closetext
@@ -235,7 +235,7 @@ DragonShrineElder1Script:
 	closetext
 	end
 
-.BeatRivalInMtMoon:
+.BeatRivalInDragonsDen:
 	writetext DragonShrineRivalIsInTrainingText
 	waitbutton
 	closetext

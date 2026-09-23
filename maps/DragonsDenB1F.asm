@@ -24,20 +24,23 @@ DragonsDenB1FNoop2Scene:
 	end
 
 DragonsDenB1FCheckRivalCallback:
-	checkevent EVENT_BEAT_RIVAL_IN_MT_MOON
-	iftrue .CheckDay
-	disappear DRAGONSDENB1F_RIVAL
+; Kanto hack (M11 14c, D142): Crystal's Silver only loitered here on Tue/Thu
+; after a Mt. Moon fight this game no longer has.  Now he blocks the SHRINE
+; door once CLAIR is beaten, for a real fight (the unused RIVAL2_1 rows, Crystal's
+; Mt. Moon party) -- before the DRAGON SHRINE's test, never after it.
+; Visibility is set through his hide flag, not appear/disappear: NEWMAP runs
+; before LoadMapGraphics fills wUsedSprites, so an `appear` here spawned him
+; with sprite tile 0 -- the PLAYER's tiles (a Red clone in Silver's palette).
+; LoadMapObjects then spawns him from the flag with the right vtile.
+	checkevent EVENT_BEAT_RIVAL_IN_DRAGONS_DEN
+	iftrue .NoRival
+	checkevent EVENT_BEAT_CLAIR
+	iffalse .NoRival
+	clearevent EVENT_RIVAL_DRAGONS_DEN
 	endcallback
 
-.CheckDay:
-	readvar VAR_WEEKDAY
-	ifequal TUESDAY, .AppearRival
-	ifequal THURSDAY, .AppearRival
-	disappear DRAGONSDENB1F_RIVAL
-	endcallback
-
-.AppearRival:
-	appear DRAGONSDENB1F_RIVAL
+.NoRival:
+	setevent EVENT_RIVAL_DRAGONS_DEN
 	endcallback
 
 DragonsDenB1F_ClairScene:
@@ -157,24 +160,78 @@ DragonsDenB1FDragonFangScript:
 	end
 
 DragonsDenB1FRivalScript:
-	playmusic MUSIC_RIVAL_ENCOUNTER
+; Kanto hack (M11 14c, D142): was Crystal's "I won't battle you now" training
+; chat.  The fight and its texts are Crystal's Mt. Moon rematch (vendor/
+; pokecrystal/maps/MountMoon.asm), whose map this game does not use.
 	faceplayer
+	playmusic MUSIC_RIVAL_ENCOUNTER
 	opentext
-	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	iftrue .RivalTalkAgain
-	writetext RivalText_Training1
+	writetext DragonsDenB1FRivalTextBefore
 	waitbutton
 	closetext
-	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
-	special RestartMapMusic
+	checkevent EVENT_GOT_TOTODILE_FROM_ELM
+	iftrue .Totodile
+	checkevent EVENT_GOT_CHIKORITA_FROM_ELM
+	iftrue .Chikorita
+	winlosstext DragonsDenB1FRivalTextWin, DragonsDenB1FRivalTextLoss
+	setlasttalked DRAGONSDENB1F_RIVAL
+	loadtrainer RIVAL2, RIVAL2_1_TOTODILE
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	sjump .FinishBattle
+
+.Totodile:
+	winlosstext DragonsDenB1FRivalTextWin, DragonsDenB1FRivalTextLoss
+	setlasttalked DRAGONSDENB1F_RIVAL
+	loadtrainer RIVAL2, RIVAL2_1_CHIKORITA
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	sjump .FinishBattle
+
+.Chikorita:
+	winlosstext DragonsDenB1FRivalTextWin, DragonsDenB1FRivalTextLoss
+	setlasttalked DRAGONSDENB1F_RIVAL
+	loadtrainer RIVAL2, RIVAL2_1_CYNDAQUIL
+	startbattle
+	dontrestartmapmusic
+	reloadmapafterbattle
+	sjump .FinishBattle
+
+.FinishBattle:
+	playmusic MUSIC_RIVAL_AFTER
+	opentext
+	writetext DragonsDenB1FRivalTextAfter
+	waitbutton
+	closetext
+	; he hops the ledges south, around whichever side the player is not on
+	readvar VAR_XCOORD
+	ifequal 20, .LeaveWest
+	applymovement DRAGONSDENB1F_RIVAL, DragonsDenB1FRivalLeavesEastMovement
+	sjump .Left
+
+.LeaveWest:
+	applymovement DRAGONSDENB1F_RIVAL, DragonsDenB1FRivalLeavesWestMovement
+.Left:
+	disappear DRAGONSDENB1F_RIVAL
+	setevent EVENT_BEAT_RIVAL_IN_DRAGONS_DEN
+	playmapmusic
 	end
 
-.RivalTalkAgain:
-	writetext RivalText_Training2
-	waitbutton
-	closetext
-	special RestartMapMusic
-	end
+DragonsDenB1FRivalLeavesEastMovement:
+	step RIGHT
+	step DOWN
+	jump_step DOWN
+	jump_step DOWN
+	step_end
+
+DragonsDenB1FRivalLeavesWestMovement:
+	step LEFT
+	step DOWN
+	jump_step DOWN
+	jump_step DOWN
+	step_end
 
 DragonShrineSignpost:
 	jumptext DragonShrineSignpostText
@@ -292,33 +349,78 @@ DragonShrineSignpostText:
 	line "in DRAGON'S DEN."
 	done
 
-RivalText_Training1:
-	text "…"
-	line "What? <PLAYER>?"
+; Kanto hack (M11 14c): Crystal's Mt. Moon rematch texts, verbatim.
+DragonsDenB1FRivalTextBefore:
+	text "<……> <……> <……>"
 
-	para "…No, I won't"
-	line "battle you now…"
+	para "It's been a while,"
+	line "<PLAYER>."
 
-	para "My #MON aren't"
-	line "ready to beat you."
+	para "…Since I lost to"
+	line "you, I thought"
 
-	para "I can't push them"
-	line "too hard now."
+	para "about what I was"
+	line "lacking with my"
+	cont "#MON…"
 
-	para "I have to be dis-"
-	line "ciplined to become"
+	para "And we came up"
+	line "with an answer."
 
-	para "the greatest #-"
-	line "MON trainer…"
+	para "<PLAYER>, now we'll"
+	line "show you!"
 	done
 
-RivalText_Training2:
-	text "…"
+DragonsDenB1FRivalTextWin:
+	text "<……> <……> <……>"
 
-	para "Whew…"
+	para "I thought I raised"
+	line "my #MON to be"
 
-	para "Learn to stay out"
-	line "of my way…"
+	para "the best they"
+	line "could be…"
+
+	para "…But it still "
+	line "wasn't enough…"
+	done
+
+DragonsDenB1FRivalTextAfter:
+	text "<……> <……> <……>"
+
+	para "…You won, fair"
+	line "and square."
+
+	para "I admit it. But"
+	line "this isn't the"
+	cont "end."
+
+	para "I'm going to be"
+	line "the greatest #-"
+	cont "MON trainer ever."
+
+	para "Because these guys"
+	line "are behind me."
+
+	para "…Listen, <PLAYER>."
+
+	para "One of these days"
+	line "I'm going to prove"
+
+	para "how good I am by"
+	line "beating you."
+	done
+
+DragonsDenB1FRivalTextLoss:
+	text "<……> <……> <……>"
+
+	para "I've repaid my"
+	line "debt to you."
+
+	para "With my #MON,"
+	line "I'm going to beat"
+
+	para "the CHAMPION and"
+	line "become the world's"
+	cont "greatest trainer."
 	done
 
 CooltrainermDarinSeenText:
@@ -428,7 +530,7 @@ DragonsDenB1F_MapEvents:
 	def_object_events
 	object_event 35, 16, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DragonsDenB1FDragonFangScript, EVENT_DRAGONS_DEN_B1F_DRAGON_FANG
 	object_event 14, 30, SPRITE_CLAIR, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_DRAGONS_DEN_CLAIR
-	object_event 20, 23, SPRITE_RIVAL, SPRITEMOVEDATA_WANDER, 2, 2, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DragonsDenB1FRivalScript, EVENT_RIVAL_DRAGONS_DEN
+	object_event 19, 30, SPRITE_RIVAL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, DragonsDenB1FRivalScript, EVENT_RIVAL_DRAGONS_DEN ; Kanto hack (M11 14c): was (20,23) WANDER; now blocks the SHRINE door
 	object_event 20,  8, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerCooltrainermDarin, -1
 	object_event  8,  8, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainerfCara, -1
 	object_event  4, 17, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerTwinsLeaandpia1, -1

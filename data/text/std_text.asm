@@ -292,6 +292,33 @@ GymStatue_WinningTrainersText:
 	cont "<PLAYER>"
 	done
 
+; Kanto hack (M11 14c): Johto gyms' statues -- Silver has no player-given
+; name, so "SILVER" is literal (<RIVAL> is Gary's wRivalName).
+GymStatue_CityGymSilverText:
+	text_ram wStringBuffer3
+	text_start
+	line "#MON GYM"
+	cont "LEADER: @"
+	text_ram wStringBuffer4
+	text_start
+
+	para "WINNING TRAINERS:"
+	line "SILVER"
+	done
+
+GymStatue_WinningTrainersSilverText:
+	text_ram wStringBuffer3
+	text_start
+	line "#MON GYM"
+	cont "LEADER: @"
+	text_ram wStringBuffer4
+	text_start
+
+	para "WINNING TRAINERS:"
+	line "SILVER"
+	cont "<PLAYER>"
+	done
+
 CoinVendor_WelcomeText:
 	text "Welcome to the"
 	line "GAME CORNER."

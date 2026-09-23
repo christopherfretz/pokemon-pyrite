@@ -1396,8 +1396,8 @@ ElmsLabOfficerText1b:
 	line "get his name?"
 	done
 
-; Kanto hack (M11 14a): the name is fixed now (no NameRival); 14c makes
-; SILVER literal everywhere else.
+; Kanto hack (M11 14a/14c): the name is fixed now (no NameRival); Silver is
+; literal "SILVER" everywhere (class name, <ENEMY>, Johto texts, statues).
 ElmsLabOfficerText2:
 	text "OK! So SILVER"
 	line "was his name."

@@ -1,8 +1,8 @@
 GetTrainerClassName:
 	ld hl, wRivalName
 	ld a, c
-	cp RIVAL1
-	jr z, .rival
+	; Kanto hack (M11 14c): RIVAL1 is SILVER, a fixed class name -- only
+	; Gary's classes read wRivalName now.
 	cp KANTO_RIVAL
 	jr z, .rival
 	cp KANTO_CHAMPION ; Kanto hack (M10 13i)
@@ -31,8 +31,7 @@ GetOTName:
 
 	ld hl, wRivalName
 	ld a, c
-	cp RIVAL1
-	jr z, .ok
+	; Kanto hack (M11 14c): RIVAL1 no longer reads wRivalName (see above).
 	cp KANTO_RIVAL
 	jr z, .ok
 	cp KANTO_CHAMPION ; Kanto hack (M10 13i)

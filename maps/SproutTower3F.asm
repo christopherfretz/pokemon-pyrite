@@ -199,7 +199,7 @@ SproutTowerRivalOnlyCareAboutStrongText:
 	done
 
 SproutTowerRivalUsedEscapeRopeText:
-	text "<RIVAL> used an"
+	text "SILVER used an" ; Kanto hack (M11 14c): was <RIVAL>
 	line "ESCAPE ROPE!"
 	done
 

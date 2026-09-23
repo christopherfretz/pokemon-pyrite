@@ -1771,7 +1771,15 @@ RematchGiftFScript:
 GymStatue1Script:
 	getcurlandmarkname STRING_BUFFER_3
 	opentext
+	callasm GymStatueIsJohto ; Kanto hack (M11 14c)
+	iftrue .Johto
 	farwritetext GymStatue_CityGymText
+	waitbutton
+	closetext
+	end
+
+.Johto:
+	farwritetext GymStatue_CityGymSilverText
 	waitbutton
 	closetext
 	end
@@ -1784,10 +1792,31 @@ GymStatue2Script:
 ; before the jumpstd.
 	getcurlandmarkname STRING_BUFFER_3
 	opentext
+	callasm GymStatueIsJohto ; Kanto hack (M11 14c)
+	iftrue .Johto
 	farwritetext GymStatue_WinningTrainersText
 	waitbutton
 	closetext
 	end
+
+.Johto:
+	farwritetext GymStatue_WinningTrainersSilverText
+	waitbutton
+	closetext
+	end
+
+GymStatueIsJohto:
+; Kanto hack (M11 14c): <RIVAL> is Gary's name (wRivalName); a Johto gym's
+; statue names Silver, who is always "SILVER".  wScriptVar = TRUE in Johto.
+	farcall RegionCheck
+	ld a, e
+	and a ; JOHTO_REGION
+	ld a, TRUE
+	jr z, .done
+	xor a
+.done
+	ld [wScriptVar], a
+	ret
 
 ReceiveItemScript:
 	waitsfx
