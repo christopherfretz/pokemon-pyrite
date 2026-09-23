@@ -145,3 +145,6 @@
 	tilecoll WARP_CARPET_UP, WALL, FLOOR, WALL ; 8b = $32, LANCE exit (6,0)
 	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 8c = $05, LORELEI/BRUNO entrance once the League is open (post-E4)
 	tilecoll WARP_PANEL, WALL, FLOOR, WALL ; 8d = $70, LANCE entrance (24,16) once the League is open
+	tilecoll WALL, FLOOR, WALL, WARP_CARPET_DOWN ; 8e = $31, CHAMPION entrance (3,7)
+	tilecoll FLOOR, WALL, WARP_CARPET_DOWN, WALL ; 8f = $32, CHAMPION entrance (4,7)
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 90 = $6c, HALL OF FAME entrance (4,7)/(5,7)

@@ -166,9 +166,9 @@ CeruleanCityCooltrainerF2Script:
 ; mouth at (4,11) can be entered from -- (3,11) and (5,11) are cliff -- and
 ; Yellow's Hall of Fame script deletes him with
 ; `HideObject TOGGLE_CERULEAN_CAVE_GUY` (vendor/pokeyellow/scripts/HallOfFame.asm).
-; Ported literally: his hide flag is EVENT_BEAT_ELITE_FOUR, which Crystal's own
-; hack/maps/HallOfFame.asm already sets, so the gate opens for free when the
-; Kanto league lands and costs no new flag.
+; His hide flag is EVENT_BEAT_KANTO_ELITE_FOUR (M10 13k, D109), which only the
+; Kanto HALL_OF_FAME sets -- Crystal's EVENT_BEAT_ELITE_FOUR stays clear for
+; the Johto act.
 CeruleanCitySuperNerd3Script:
 	jumptextfaceplayer CeruleanCitySuperNerd3Text
 
@@ -676,7 +676,7 @@ CeruleanCity_MapEvents:
 	object_event 29, 26, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF1Script, -1
 	object_event 28, 26, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityElectrodeScript, -1
 	object_event  9, 27, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WALK_LEFT_RIGHT, 1, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeruleanCityCooltrainerF2Script, -1
-	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, EVENT_BEAT_ELITE_FOUR
+	object_event  4, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCitySuperNerd3Script, EVENT_BEAT_KANTO_ELITE_FOUR
 	object_event 30,  8, SPRITE_ROCKET, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, CeruleanCityRocketScript, EVENT_CERULEAN_ROCKET_THIEF_HIDDEN
 	object_event 28, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard1Script, EVENT_CERULEAN_GUARD_1_HIDDEN
 	object_event 27, 12, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeruleanCityGuard2Script, EVENT_CERULEAN_GUARD_2_HIDDEN

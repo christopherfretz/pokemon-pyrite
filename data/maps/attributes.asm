@@ -728,8 +728,8 @@ ENDM
 	map_attributes BrunosRoom, BRUNOS_ROOM, $03 ; Kanto hack (M10 13j): Yellow's `db $3 ; border block`
 	map_attributes AgathasRoom, AGATHAS_ROOM, $00 ; Kanto hack (M10 13j): Yellow's `db $0 ; border block`
 	map_attributes LancesRoom, LANCES_ROOM, $03 ; Kanto hack (M10 13j): Yellow's `db $3 ; border block`
-	map_attributes ChampionsRoom, CHAMPIONS_ROOM, $00
-	map_attributes HallOfFame, HALL_OF_FAME, $00
+	map_attributes ChampionsRoom, CHAMPIONS_ROOM, $03 ; Kanto hack (M10 13k): Yellow's `db $3 ; border block`
+	map_attributes HallOfFame, HALL_OF_FAME, $03 ; Kanto hack (M10 13k): Yellow's `db $3 ; border block`
 	map_attributes FuchsiaMart, FUCHSIA_MART, $00
 	map_attributes FuchsiaMeetingRoom, FUCHSIA_MEETING_ROOM, $00
 	map_attributes FuchsiaGym, FUCHSIA_GYM, $00

@@ -294,7 +294,7 @@ PewterCityGrampsScript:
 	opentext
 	checkevent EVENT_GOT_SILVER_WING
 	iftrue .GotSilverWing
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR ; M10 13k: the Kanto HoF flag (D109)
 	iffalse .NotYet
 	writetext PewterCityGrampsText
 	promptbutton

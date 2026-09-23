@@ -103,6 +103,23 @@
 	const US_COORDINATION
 	const TEXT_TRANSLATION
 	const PAAD_TESTING
+; Kanto hack (M10 13k): Yellow's staff strings for the Kanto HoF credits
+; (vendor/pokeyellow/data/credits/credits_text.asm) that Crystal lacks.
+	const KANTO_STAFF
+	const CHARACTER_DESIGN
+	const PIKACHU_VOICE
+	const PRODUCER
+	const SHOGAKUKAN
+	const IKUE_OOTANI
+	const KAZUSHI_SHIMAMURA
+	const TERUYUKI_SHIMOYAMADA
+	const RANDY_SHOEMAKE
+	const SARA_OSBORNE
+	const KOHTA_FUKUI
+	const TAKEHIKO_HOSOKAWA
+	const KENJI_OKUBO
+	const KAMON_YOSHIMURA
+	const SAKAE_YAMAZAKI
 DEF NUM_CREDITS_STRINGS EQU const_value
 
 ; CreditsScript indexes (see data/credits_script.asm)

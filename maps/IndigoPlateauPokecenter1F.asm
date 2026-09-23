@@ -42,17 +42,16 @@ IndigoPlateauPokecenter1F_MapScripts:
 ; Post-E4 hook (operator ruling 2026-09-22): once EVENT_BEAT_KANTO_ELITE_FOUR
 ; is set the League is freely walkable, so nothing is re-locked -- the four
 ; rooms go straight to their open scenes (each room also checks the flag
-; itself, so their door/beat flags no longer matter).  CHAMPIONS_ROOM and
-; HALL_OF_FAME are reset as before either way (13k's).
+; itself, so their door/beat flags no longer matter).  13k: CHAMPIONS_ROOM
+; (empty, the rival has gone to VIRIDIAN) and HALL_OF_FAME (the ceremony runs
+; once) go to their NOOP scenes too; before that they are re-armed.  OAK is
+; hidden either way (he only appears inside the champion cutscene).
 IndigoPlateauPokecenter1FPrepareElite4Callback:
-	setmapscene CHAMPIONS_ROOM, SCENE_CHAMPIONSROOM_LOCK_DOOR
-	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_ENTER
-	clearevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
-	clearevent EVENT_CHAMPIONS_ROOM_EXIT_OPEN
-	clearevent EVENT_BEAT_CHAMPION_LANCE
 	setevent EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
 	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
 	iftrue .LeagueOpen
+	setmapscene CHAMPIONS_ROOM, SCENE_CHAMPIONSROOM_ENTER
+	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_ENTER
 	setmapscene LORELEIS_ROOM, SCENE_LORELEISROOM_WALK_IN
 	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_WALK_IN
 	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_WALK_IN
@@ -76,6 +75,8 @@ IndigoPlateauPokecenter1FPrepareElite4Callback:
 	setmapscene BRUNOS_ROOM, SCENE_BRUNOSROOM_POST_E4
 	setmapscene AGATHAS_ROOM, SCENE_AGATHASROOM_POST_E4
 	setmapscene LANCES_ROOM, SCENE_LANCESROOM_NOOP
+	setmapscene CHAMPIONS_ROOM, SCENE_CHAMPIONSROOM_NOOP
+	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_NOOP
 	endcallback
 
 IndigoPlateauPokecenter1FNurseScript:

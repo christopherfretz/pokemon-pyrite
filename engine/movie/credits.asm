@@ -86,9 +86,26 @@ Credits::
 	ldh [hInMenu], a
 	xor a
 	ldh [hBGMapMode], a
-	ld [wCreditsPos], a
-	ld [wCreditsPos + 1], a
 	ld [wCreditsTimer], a
+	; Kanto hack (M10 13k, D111): after the Kanto HALL OF FAME, start at
+	; KantoCreditsScript (Yellow's staff) instead of Crystal's.
+	; wSpawnAfterChampion is in WRAM bank 1; WBK is BANK(wGBCPalettes) here.
+	ld a, BANK(wSpawnAfterChampion)
+	ldh [rWBK], a
+	ld a, [wSpawnAfterChampion]
+	ld e, a
+	ld a, BANK(wGBCPalettes)
+	ldh [rWBK], a
+	ld a, e
+	cp SPAWN_KANTO_CHAMPION
+	ld de, 0
+	jr nz, .got_script
+	ld de, KantoCreditsScript - CreditsScript
+.got_script
+	ld a, e
+	ld [wCreditsPos], a
+	ld a, d
+	ld [wCreditsPos + 1], a
 
 .execution_loop
 	call Credits_HandleBButton

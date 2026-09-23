@@ -103,8 +103,30 @@ LoreleisRoomLoreleiScript:
 	closetext
 	end
 
+; Post-E4 (ours, not Yellow's -- operator ruling 2026-09-22): the member
+; acknowledges the League's state and offers a rematch with the same team.
+; A loss is a normal white-out; a win or a refusal sets no flag.
 .league_open:
-	jumptext LoreleisRoomLoreleiPostE4Text
+	opentext
+	writetext LoreleisRoomLoreleiPostE4Text
+	yesorno
+	iffalse .no_rematch
+	closetext
+	winlosstext LoreleisRoomLoreleiEndBattleText, 0
+	loadtrainer LORELEI, LORELEI1
+	startbattle
+	reloadmapafterbattle
+	opentext
+	writetext LoreleisRoomLoreleiRematchWinText
+	waitbutton
+	closetext
+	end
+
+.no_rematch:
+	writetext LoreleisRoomLoreleiNoRematchText
+	waitbutton
+	closetext
+	end
 
 LoreleisRoomWalkInMovement:
 	step UP
@@ -166,9 +188,33 @@ LoreleisRoomDontRunAwayText:
 	line "Don't run away!"
 	done
 
-; POST-E4 placeholder — 13k writes the real lines
+; Post-E4 lines: ours (M10 13k), in Yellow's register.
 LoreleisRoomLoreleiPostE4Text:
-	text "Go on ahead!"
+	text "Oh! It's the new"
+	line "champion!"
+
+	para "LANCE walked out"
+	line "after you beat"
+	cont "him, and <RIVAL>"
+	cont "went home to"
+	cont "VIRIDIAN."
+
+	para "The LEAGUE hasn't"
+	line "found anyone to"
+	cont "replace them yet."
+
+	para "Care for another"
+	line "icy battle?"
+	done
+
+LoreleisRoomLoreleiRematchWinText:
+	text "You're still too"
+	line "hot for my ice!"
+	done
+
+LoreleisRoomLoreleiNoRematchText:
+	text "Come back when"
+	line "you want a chill!"
 	done
 
 LoreleisRoom_MapEvents:

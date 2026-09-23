@@ -1,356 +1,304 @@
+; Kanto hack (M10 13k): Yellow's CHAMPIONS_ROOM
+; (vendor/pokeyellow/data/maps/objects/ChampionsRoom.asm, scripts/ChampionsRoom.asm,
+; text/ChampionsRoom.asm), re-cut to Yellow's 4x4 on TILESET_KANTO_GYM.
+; The .blk is Yellow's except (1,0)/(2,0) = $8a/$8b (the north exit, the same
+; $31/$32 twins as LANCE's) and (1,3)/(2,3) = $8e/$8f (the south entrance,
+; WARP_CARPET_DOWN twins) -- scripts/kanto_gym_blk.py.
+;
+; Yellow's sequence (docs/M10-INDIGO.md "13k findings"):
+; * The player arrives at (3,7) and walks UP 3, RIGHT 1, UP 1 to (4,3), below
+;   the rival at (4,2).  Yellow forces battle animations on (res
+;   BIT_BATTLE_ANIMATION, [wOptions]); so do we.
+; * Intro text, then OPP_RIVAL3 by rival starter -> KANTO_CHAMPION 1/2/3.  A
+;   loss is a white-out.  A win keeps the victory tune playing on the map
+;   (Yellow's BIT_NO_MAP_MUSIC for RIVAL3), then the after-battle text, the
+;   CITIES1 alternate-tempo fade (MUSIC_VIRIDIAN_CITY here), "OAK: <PLAYER>!",
+;   OAK walks UP 5 from (3,7), congratulates, scolds the rival, walks UP 2 into
+;   the north exit, and the player follows him to the HALL OF FAME.
+; * No flag is set here; HALL_OF_FAME sets EVENT_BEAT_KANTO_ELITE_FOUR.
+; * Post-E4 (operator ruling 2026-09-22): the rival has gone to VIRIDIAN, so
+;   the room is empty and walkable both ways (the warps are baked in).
 	object_const_def
-	const CHAMPIONSROOM_LANCE
-	const CHAMPIONSROOM_MARY
+	const CHAMPIONSROOM_RIVAL
 	const CHAMPIONSROOM_OAK
 
 ChampionsRoom_MapScripts:
 	def_scene_scripts
-	scene_script ChampionsRoomLockDoorScene, SCENE_CHAMPIONSROOM_LOCK_DOOR
-	scene_script ChampionsRoomNoopScene,     SCENE_CHAMPIONSROOM_APPROACH_LANCE
+	scene_script ChampionsRoomEnterScene, SCENE_CHAMPIONSROOM_ENTER
+	scene_script ChampionsRoomNoopScene,  SCENE_CHAMPIONSROOM_NOOP
 
 	def_callbacks
-	callback MAPCALLBACK_TILES, ChampionsRoomDoorsCallback
 
-ChampionsRoomLockDoorScene:
-	sdefer ChampionsRoomDoorLocksBehindYouScript
+ChampionsRoomEnterScene:
+	sdefer ChampionsRoomRivalScript
 	end
 
 ChampionsRoomNoopScene:
 	end
 
-ChampionsRoomDoorsCallback:
-	checkevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
-	iffalse .KeepEntranceOpen
-	changeblock 4, 22, $34 ; wall
-.KeepEntranceOpen:
-	checkevent EVENT_CHAMPIONS_ROOM_EXIT_OPEN
-	iffalse .KeepExitClosed
-	changeblock 4, 0, $0b ; open door
-.KeepExitClosed:
-	endcallback
-
-ChampionsRoomDoorLocksBehindYouScript:
-	applymovement PLAYER, ChampionsRoom_EnterMovement
-	reanchormap $86
-	playsound SFX_STRENGTH
-	earthquake 80
-	changeblock 4, 22, $34 ; wall
-	refreshmap
-	closetext
-	setscene SCENE_CHAMPIONSROOM_APPROACH_LANCE
-	setevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
-	end
-
-Script_ApproachLanceFromLeft:
-	special FadeOutMusic
-	applymovement PLAYER, MovementData_ApproachLanceFromLeft
-	sjump ChampionsRoomLanceScript
-
-Script_ApproachLanceFromRight:
-	special FadeOutMusic
-	applymovement PLAYER, MovementData_ApproachLanceFromRight
-ChampionsRoomLanceScript:
-	turnobject CHAMPIONSROOM_LANCE, LEFT
+ChampionsRoomRivalScript:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
+	applymovement PLAYER, ChampionsRoomWalkToRivalMovement
+	; Yellow: res BIT_BATTLE_ANIMATION, [wOptions] (BATTLE_SCENE, bit 7)
+	readmem wOptions
+	ifless 1 << BATTLE_SCENE, .anims_on
+	addval 1 << BATTLE_SCENE ; wraps: clears bit 7, keeps the rest
+	writemem wOptions
+.anims_on:
 	opentext
-	writetext LanceBattleIntroText
+	writetext ChampionsRoomRivalIntroText
 	waitbutton
 	closetext
-	winlosstext LanceBattleWinText, 0
-	setlasttalked CHAMPIONSROOM_LANCE
-	loadtrainer CHAMPION, LANCE
+	winlosstext ChampionsRoomRivalDefeatedText, ChampionsRoomRivalVictoryText
+	setlasttalked CHAMPIONSROOM_RIVAL
+	special GetKantoRivalStarter
+	ifequal RIVAL_STARTER_JOLTEON, .Jolteon
+	ifequal RIVAL_STARTER_FLAREON, .Flareon
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_3 ; RIVAL_STARTER_VAPOREON
+	sjump .Fight
+
+.Jolteon:
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_1
+	sjump .Fight
+
+.Flareon:
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_2
+
+.Fight:
 	startbattle
 	dontrestartmapmusic
 	reloadmapafterbattle
-	setevent EVENT_BEAT_CHAMPION_LANCE
+	; Yellow's BIT_NO_MAP_MUSIC: the victory tune carries on over the map
+	playmusic MUSIC_GYM_VICTORY
 	opentext
-	writetext LanceBattleAfterText
+	writetext ChampionsRoomRivalAfterBattleText
 	waitbutton
 	closetext
-	playsound SFX_ENTER_DOOR
-	changeblock 4, 0, $0b ; open door
-	refreshmap
-	closetext
-	setevent EVENT_CHAMPIONS_ROOM_ENTRANCE_CLOSED
-	musicfadeout MUSIC_BEAUTY_ENCOUNTER, 16
-	pause 30
-	showemote EMOTE_SHOCK, CHAMPIONSROOM_LANCE, 15
-	turnobject CHAMPIONSROOM_LANCE, DOWN
-	pause 10
-	turnobject PLAYER, DOWN
-	appear CHAMPIONSROOM_MARY
-	applymovement CHAMPIONSROOM_MARY, ChampionsRoomMovementData_MaryRushesIn
+	; Yellow's Music_Cities1AlternateTempo: fade, 100 frames, CITIES1
+	musicfadeout MUSIC_VIRIDIAN_CITY, 10
+	pause 50
 	opentext
-	writetext ChampionsRoomMaryOhNoOakText
+	writetext ChampionsRoomOakText
 	waitbutton
 	closetext
 	appear CHAMPIONSROOM_OAK
-	applymovement CHAMPIONSROOM_OAK, ChampionsRoomMovementData_OakWalksIn
-	follow CHAMPIONSROOM_MARY, CHAMPIONSROOM_OAK
-	applymovement CHAMPIONSROOM_MARY, ChampionsRoomMovementData_MaryYieldsToOak
-	stopfollow
-	turnobject CHAMPIONSROOM_OAK, UP
-	turnobject CHAMPIONSROOM_LANCE, LEFT
-	opentext
-	writetext ChampionsRoomOakCongratulationsText
-	waitbutton
-	closetext
-	applymovement CHAMPIONSROOM_MARY, ChampionsRoomMovementData_MaryInterviewChampion
+	applymovement CHAMPIONSROOM_OAK, ChampionsRoomOakWalksInMovement
 	turnobject PLAYER, LEFT
+	turnobject CHAMPIONSROOM_RIVAL, LEFT
+	turnobject CHAMPIONSROOM_OAK, DOWN
 	opentext
-	writetext ChampionsRoomMaryInterviewText
+	writetext ChampionsRoomOakCongratulatesPlayerText
 	waitbutton
 	closetext
-	applymovement CHAMPIONSROOM_LANCE, ChampionsRoomMovementData_LancePositionsSelfToGuidePlayerAway
-	turnobject PLAYER, UP
+	turnobject CHAMPIONSROOM_OAK, RIGHT
 	opentext
-	writetext ChampionsRoomNoisyText
+	writetext ChampionsRoomOakDisappointedWithRivalText
 	waitbutton
 	closetext
-	follow CHAMPIONSROOM_LANCE, PLAYER
-	turnobject CHAMPIONSROOM_MARY, UP
-	turnobject CHAMPIONSROOM_OAK, UP
-	applymovement CHAMPIONSROOM_LANCE, ChampionsRoomMovementData_LanceLeadsPlayerToHallOfFame
-	stopfollow
-	playsound SFX_EXIT_BUILDING
-	disappear CHAMPIONSROOM_LANCE
-	applymovement PLAYER, ChampionsRoomMovementData_PlayerExits
-	playsound SFX_EXIT_BUILDING
-	disappear PLAYER
-	applymovement CHAMPIONSROOM_MARY, ChampionsRoomMovementData_MaryTriesToFollow
-	showemote EMOTE_SHOCK, CHAMPIONSROOM_MARY, 15
+	turnobject CHAMPIONSROOM_OAK, DOWN
 	opentext
-	writetext ChampionsRoomMaryNoInterviewText
-	pause 30
+	writetext ChampionsRoomOakComeWithMeText
+	waitbutton
 	closetext
-	applymovement CHAMPIONSROOM_MARY, ChampionsRoomMovementData_MaryRunsBackAndForth
-	special FadeOutToWhite
-	pause 15
-	warpfacing UP, HALL_OF_FAME, 4, 13
+	applymovement CHAMPIONSROOM_OAK, ChampionsRoomOakExitsMovement
+	disappear CHAMPIONSROOM_OAK
+	setscene SCENE_CHAMPIONSROOM_NOOP
+	applymovement PLAYER, ChampionsRoomPlayerFollowsOakMovement
+	warpfacing UP, HALL_OF_FAME, 4, 7
 	end
 
-ChampionsRoom_EnterMovement:
-	step UP
-	step UP
-	step UP
-	step UP
-	step_end
+.league_open:
+	setscene SCENE_CHAMPIONSROOM_NOOP
+	end
 
-MovementData_ApproachLanceFromLeft:
+ChampionsRoomWalkToRivalMovement:
 	step UP
 	step UP
-	turn_head RIGHT
-	step_end
-
-MovementData_ApproachLanceFromRight:
-	step UP
-	step LEFT
-	step UP
-	turn_head RIGHT
-	step_end
-
-ChampionsRoomMovementData_MaryRushesIn:
-	big_step UP
-	big_step UP
-	big_step UP
-	turn_head DOWN
-	step_end
-
-ChampionsRoomMovementData_OakWalksIn:
-	step UP
-	step UP
-	step_end
-
-ChampionsRoomMovementData_MaryYieldsToOak:
-	step LEFT
-	turn_head RIGHT
-	step_end
-
-ChampionsRoomMovementData_MaryInterviewChampion:
-	big_step UP
-	turn_head RIGHT
-	step_end
-
-ChampionsRoomMovementData_LancePositionsSelfToGuidePlayerAway:
-	step UP
-	step LEFT
-	turn_head DOWN
-	step_end
-
-ChampionsRoomMovementData_LanceLeadsPlayerToHallOfFame:
-	step UP
-	step_end
-
-ChampionsRoomMovementData_PlayerExits:
-	step UP
-	step_end
-
-ChampionsRoomMovementData_MaryTriesToFollow:
 	step UP
 	step RIGHT
-	turn_head UP
+	step UP
 	step_end
 
-ChampionsRoomMovementData_MaryRunsBackAndForth:
-	big_step RIGHT
-	big_step RIGHT
-	big_step LEFT
-	big_step LEFT
-	big_step LEFT
-	big_step RIGHT
-	big_step RIGHT
-	big_step RIGHT
-	big_step LEFT
-	big_step LEFT
-	turn_head UP
+ChampionsRoomOakWalksInMovement:
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
 	step_end
 
-LanceBattleIntroText:
-	text "LANCE: I've been"
-	line "waiting for you."
+ChampionsRoomOakExitsMovement:
+	step UP
+	step UP
+	step_end
 
-	para "<PLAY_G>!"
+ChampionsRoomPlayerFollowsOakMovement:
+	step LEFT
+	step UP
+	step UP
+	step UP
+	step_end
 
-	para "I knew that you,"
-	line "with your skills,"
+ChampionsRoomRivalIntroText:
+	text "<RIVAL>: Hey!"
 
-	para "would eventually"
-	line "reach me here."
+	para "I was looking"
+	line "forward to seeing"
+	cont "you, <PLAYER>!"
 
-	para "There's no need"
-	line "for words now."
+	para "My rival should"
+	line "be strong to keep"
+	cont "me sharp!"
 
-	para "We will battle to"
-	line "determine who is"
+	para "While working on"
+	line "#DEX, I looked"
+	cont "all over for"
+	cont "powerful #MON!"
 
-	para "the stronger of"
-	line "the two of us."
+	para "Not only that, I"
+	line "assembled teams"
+	cont "that would beat"
+	cont "any #MON type!"
 
-	para "As the most power-"
-	line "ful trainer and as"
+	para "And now!"
 
-	para "the #MON LEAGUE"
-	line "CHAMPION…"
+	para "I'm the #MON"
+	line "LEAGUE champion!"
 
-	para "I, LANCE the drag-"
-	line "on master, accept"
-	cont "your challenge!"
+	para "<PLAYER>! Do you"
+	line "know what that"
+	cont "means?"
+
+	para "I'll tell you!"
+
+	para "I am the most"
+	line "powerful trainer"
+	cont "in the world!"
 	done
 
-LanceBattleWinText:
-	text "…It's over."
+ChampionsRoomRivalDefeatedText:
+	text "NO!"
+	line "That can't be!"
+	cont "You beat my best!"
 
-	para "But it's an odd"
-	line "feeling."
+	para "After all that"
+	line "work to become"
+	cont "LEAGUE champ?"
 
-	para "I'm not angry that"
-	line "I lost. In fact, I"
-	cont "feel happy."
-
-	para "Happy that I"
-	line "witnessed the rise"
-
-	para "of a great new"
-	line "CHAMPION!"
+	para "My reign is over"
+	line "already?"
+	cont "It's not fair!"
 	done
 
-LanceBattleAfterText:
-	text "…Whew."
+ChampionsRoomRivalVictoryText:
+	text "Hahaha!"
+	line "I won, I won!"
 
-	para "You have become"
-	line "truly powerful,"
-	cont "<PLAY_G>."
+	para "I'm too good for"
+	line "you, <PLAYER>!"
 
-	para "Your #MON have"
-	line "responded to your"
+	para "You did well to"
+	line "even reach me,"
+	cont "<RIVAL>, the"
+	cont "#MON genius!"
 
-	para "strong and up-"
-	line "standing nature."
-
-	para "As a trainer, you"
-	line "will continue to"
-
-	para "grow strong with"
-	line "your #MON."
+	para "Nice try, loser!"
+	line "Hahaha!"
 	done
 
-ChampionsRoomMaryOhNoOakText:
-	text "MARY: Oh, no!"
-	line "It's all over!"
+ChampionsRoomRivalAfterBattleText:
+	text "Why?"
+	line "Why did I lose?"
 
-	para "PROF.OAK, if you"
-	line "weren't so slow…"
+	para "I never made any"
+	line "mistakes raising"
+	cont "my #MON…"
+
+	para "Darn it! You're"
+	line "the new #MON"
+	cont "LEAGUE champion!"
+
+	para "Although I don't"
+	line "like to admit it."
 	done
 
-ChampionsRoomOakCongratulationsText:
-	text "PROF.OAK: Ah,"
-	line "<PLAY_G>!"
-
-	para "It's been a long"
-	line "while."
-
-	para "You certainly look"
-	line "more impressive."
-
-	para "Your conquest of"
-	line "the LEAGUE is just"
-	cont "fantastic!"
-
-	para "Your dedication,"
-	line "trust and love for"
-
-	para "your #MON made"
-	line "this happen."
-
-	para "Your #MON were"
-	line "outstanding too."
-
-	para "Because they be-"
-	line "lieved in you as a"
-
-	para "trainer, they per-"
-	line "severed."
-
-	para "Congratulations,"
-	line "<PLAY_G>!"
+ChampionsRoomOakText:
+	text "OAK: <PLAYER>!"
 	done
 
-ChampionsRoomMaryInterviewText:
-	text "MARY: Let's inter-"
-	line "view the brand new"
-	cont "CHAMPION!"
+; Yellow prints the starter's species from wNameBuffer: always PIKACHU.
+ChampionsRoomOakCongratulatesPlayerText:
+	text "OAK: So, you won!"
+	line "Congratulations!"
+	cont "You're the new"
+	cont "#MON LEAGUE"
+	cont "champion!"
+
+	para "You've grown up so"
+	line "much since you"
+	cont "first left with"
+	cont "PIKACHU!"
+
+	para "<PLAYER>, you have"
+	line "come of age!"
 	done
 
-ChampionsRoomNoisyText:
-	text "LANCE: This is"
-	line "getting to be a"
-	cont "bit too noisy…"
+ChampionsRoomOakDisappointedWithRivalText:
+	text "OAK: <RIVAL>! I'm"
+	line "disappointed!"
 
-	para "<PLAY_G>, could you"
-	line "come with me?"
+	para "I came when I"
+	line "heard you beat"
+	cont "the ELITE FOUR!"
+
+	para "But, when I got"
+	line "here, you had"
+	cont "already lost!"
+
+	para "<RIVAL>! Do you"
+	line "understand why"
+	cont "you lost?"
+
+	para "You have forgotten"
+	line "to treat your"
+	cont "#MON with"
+	cont "trust and love!"
+
+	para "Without them, you"
+	line "will never become"
+	cont "a champ again!"
 	done
 
-ChampionsRoomMaryNoInterviewText:
-	text "MARY: Oh, wait!"
-	line "We haven't done"
-	cont "the interview!"
+ChampionsRoomOakComeWithMeText:
+	text "OAK: <PLAYER>!"
+
+	para "You understand"
+	line "that your victory"
+	cont "was not just your"
+	cont "own doing!"
+
+	para "The bond you share"
+	line "with your #MON"
+	cont "is marvelous!"
+
+	para "<PLAYER>!"
+	line "Come with me!"
 	done
 
 ChampionsRoom_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4, 23, LANCES_ROOM, 2 ; M10 13j: LANCE's exits are warps 2/3 (Yellow); 13k re-cuts this room
-	warp_event  5, 23, LANCES_ROOM, 3
-	warp_event  4,  1, HALL_OF_FAME, 1
-	warp_event  5,  1, HALL_OF_FAME, 2
+	warp_event  3,  7, LANCES_ROOM, 2
+	warp_event  4,  7, LANCES_ROOM, 3
+	warp_event  3,  0, HALL_OF_FAME, 1
+	warp_event  4,  0, HALL_OF_FAME, 1
 
 	def_coord_events
-	coord_event  4,  5, SCENE_CHAMPIONSROOM_APPROACH_LANCE, Script_ApproachLanceFromLeft
-	coord_event  5,  5, SCENE_CHAMPIONSROOM_APPROACH_LANCE, Script_ApproachLanceFromRight
 
 	def_bg_events
 
 	def_object_events
-	object_event  5,  3, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ChampionsRoomLanceScript, -1
-	object_event  4,  7, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
-	object_event  4,  7, SPRITE_OAK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CHAMPIONS_ROOM_OAK_AND_MARY
+	object_event  4,  2, SPRITE_KANTO_RIVAL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_BEAT_KANTO_ELITE_FOUR ; post-E4: gone to VIRIDIAN
+	object_event  3,  7, SPRITE_OAK, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_CHAMPIONS_ROOM_OAK_AND_MARY

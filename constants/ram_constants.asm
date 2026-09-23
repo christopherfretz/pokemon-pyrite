@@ -211,9 +211,8 @@ DEF PLAYERGENDER_FEMALE_F EQU 0
 	const SCRIPT_WAIT_MOVEMENT
 	const SCRIPT_WAIT
 
-; wSpawnAfterChampion::
-DEF SPAWN_LANCE EQU 1
-DEF SPAWN_RED   EQU 2
+; wSpawnAfterChampion:: SPAWN_LANCE, SPAWN_KANTO_CHAMPION, SPAWN_RED are
+; defined after the SPAWN_* list in constants/map_data_constants.asm (M10 13k).
 
 ; wGameTimeCap::
 DEF GAME_TIME_CAPPED EQU 0

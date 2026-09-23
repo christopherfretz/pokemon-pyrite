@@ -375,8 +375,8 @@ Continue:
 	farcall CopyMysteryGiftReceivedDecorationsToPC
 	farcall ClockContinue
 	ld a, [wSpawnAfterChampion]
-	cp SPAWN_LANCE
-	jr z, .SpawnAfterE4
+	and a ; Kanto hack (M10 13k): any HoF marker (SPAWN_LANCE/KANTO_CHAMPION)
+	jr nz, .SpawnAfterE4
 	ld a, MAPSETUP_CONTINUE
 	ldh [hMapEntryMethod], a
 	jp FinishContinueFunction
@@ -385,8 +385,7 @@ Continue:
 	ret
 
 .SpawnAfterE4:
-	ld a, SPAWN_NEW_BARK
-	ld [wDefaultSpawnpoint], a
+	ld [wDefaultSpawnpoint], a ; the marker is the spawn point (M10 13k)
 	call PostCreditsSpawn
 	jp FinishContinueFunction
 

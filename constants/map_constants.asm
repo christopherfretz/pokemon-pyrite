@@ -382,8 +382,8 @@ ENDM
 	map_const BRUNOS_ROOM,                                  5,  6 ;  4 ; Kanto hack (M10 13j): Yellow 5x6
 	map_const AGATHAS_ROOM,                                 5,  6 ;  5 ; Kanto hack (M10 13j): Yellow 5x6
 	map_const LANCES_ROOM,                                  13, 13 ;  6 ; Kanto hack (M10 13j): Yellow 13x13
-	map_const CHAMPIONS_ROOM,                               5, 12 ;  7
-	map_const HALL_OF_FAME,                                 5,  7 ;  8
+	map_const CHAMPIONS_ROOM,                               4,  4 ;  7 ; Kanto hack (M10 13k): Yellow 4x4
+	map_const HALL_OF_FAME,                                 5,  4 ;  8 ; Kanto hack (M10 13k): Yellow 5x4
 	map_const ROUTE_23,                                    10, 72 ;  9 ; Kanto hack (M10 13e-1): Yellow's ROUTE 23, appended (Crystal's ROUTE_23 is INDIGO_PLATEAU now)
 	endgroup
 

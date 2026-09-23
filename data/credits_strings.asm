@@ -104,6 +104,22 @@ CreditsStringsPointers:
 	dw .UsCoordination
 	dw .TextTranslation
 	dw .PaadTesting
+	; Kanto hack (M10 13k)
+	dw .KantoStaff
+	dw .CharacterDesign
+	dw .PikachuVoice
+	dw .Producer
+	dw .Shogakukan
+	dw .IkueOotani
+	dw .KazushiShimamura
+	dw .TeruyukiShimoyamada
+	dw .RandyShoemake
+	dw .SaraOsborne
+	dw .KohtaFukui
+	dw .TakehikoHosokawa
+	dw .KenjiOkubo
+	dw .KamonYoshimura
+	dw .SakaeYamazaki
 	assert_table_length NUM_CREDITS_STRINGS
 
 .SatoshiTajiri:       db "   SATOSHI TAJIRI@"         ; "たじり　さとし@"
@@ -212,6 +228,27 @@ CreditsStringsPointers:
 .UsCoordination:      db "  US COORDINATION@"
 .TextTranslation:     db "  TEXT TRANSLATION@"
 .PaadTesting:         db "    PAAD TESTING@"
+
+; Kanto hack (M10 13k): Yellow's staff strings (credits_text.asm), centred on
+; 20 columns like Crystal's.
+.KantoStaff:          db "      #MON"
+                    next "   YELLOW VERSION"
+                    next "       STAFF@"
+.Shogakukan:          db "     SHOGAKUKAN"
+                    next "     PRODUCTION@"
+.CharacterDesign:    db "  CHARACTER DESIGN@"
+.PikachuVoice:       db "   PIKACHU VOICE@"
+.Producer:           db "      PRODUCER@"
+.IkueOotani:         db "    IKUE OOTANI@"
+.KazushiShimamura:   db " KAZUSHI SHIMAMURA@"
+.TeruyukiShimoyamada:  db "TERUYUKI SHIMOYAMADA@"
+.RandyShoemake:      db "   RANDY SHOEMAKE@"
+.SaraOsborne:        db "    SARA OSBORNE@"
+.KohtaFukui:         db "    KOHTA FUKUI@"
+.TakehikoHosokawa:   db " TAKEHIKO HOSOKAWA@"
+.KenjiOkubo:         db "    KENJI OKUBO@"
+.KamonYoshimura:     db "  KAMON YOSHIMURA@"
+.SakaeYamazaki:      db "   SAKAE YAMAZAKI@"
 
 .Copyright:
 INCLUDE "data/copyright.asm"

@@ -1,5 +1,18 @@
+; Kanto hack (M10 13k): Yellow's HALL_OF_FAME
+; (vendor/pokeyellow/data/maps/objects/HallOfFame.asm, scripts/HallOfFame.asm,
+; text/HallOfFame.asm), re-cut to Yellow's 5x4 on TILESET_KANTO_GYM.  The .blk
+; is Yellow's except (2,3) = $90, a WARP_CARPET_DOWN twin of $6c
+; (scripts/kanto_gym_blk.py), so the room can be left post-E4.
+;
+; Yellow: the player walks UP 5 from (4,7) to (4,2), beside OAK at (5,2); OAK
+; faces LEFT, the player RIGHT; OAK's text; HallOfFamePC.  Here that is
+; `halloffame` (Crystal's registration, credits, then the soft reset).
+; This room sets ONLY EVENT_BEAT_KANTO_ELITE_FOUR (D109/D110): none of
+; Crystal's Johto post-game flags (EVENT_BEAT_ELITE_FOUR, TELEPORT_GUY, RED at
+; MT. SILVER, the Olivine port, Sprout Tower, the S.S. TICKET call).
+; Post-E4: the ceremony is over; OAK is gone and the room is walkable.
 	object_const_def
-	const HALLOFFAME_LANCE
+	const HALLOFFAME_OAK
 
 HallOfFame_MapScripts:
 	def_scene_scripts
@@ -16,108 +29,72 @@ HallOfFameNoopScene:
 	end
 
 HallOfFameEnterScript:
-	follow HALLOFFAME_LANCE, PLAYER
-	applymovement HALLOFFAME_LANCE, HallOfFame_WalkUpWithLance
-	stopfollow
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iftrue .league_open
+	applymovement PLAYER, HallOfFameEntryMovement
+	turnobject HALLOFFAME_OAK, LEFT
 	turnobject PLAYER, RIGHT
 	opentext
-	writetext HallOfFame_LanceText
+	writetext HallOfFameOakText
 	waitbutton
 	closetext
-	turnobject HALLOFFAME_LANCE, UP
-	applymovement PLAYER, HallOfFame_SlowlyApproachMachine
 	setscene SCENE_HALLOFFAME_NOOP
-	pause 15
-	setval HEALMACHINE_HALL_OF_FAME
-	special HealMachineAnim
-	setevent EVENT_BEAT_ELITE_FOUR
-	setevent EVENT_TELEPORT_GUY
-	setevent EVENT_RIVAL_SPROUT_TOWER
-	clearevent EVENT_RED_IN_MT_SILVER
-	setevent EVENT_OLIVINE_PORT_SPRITES_BEFORE_HALL_OF_FAME
-	clearevent EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
-	setmapscene SPROUT_TOWER_3F, SCENE_SPROUTTOWER3F_NOOP
+	setevent EVENT_BEAT_KANTO_ELITE_FOUR
 	special HealParty
-	checkevent EVENT_GOT_SS_TICKET_FROM_ELM
-	iftrue .SkipPhoneCall
-	specialphonecall SPECIALCALL_SSTICKET
-.SkipPhoneCall:
 	halloffame
 	end
 
-HallOfFame_WalkUpWithLance:
+.league_open:
+	setscene SCENE_HALLOFFAME_NOOP
+	end
+
+HallOfFameEntryMovement:
 	step UP
 	step UP
 	step UP
 	step UP
 	step UP
-	step UP
-	step UP
-	step UP
-	step RIGHT
-	turn_head LEFT
 	step_end
 
-HallOfFame_SlowlyApproachMachine:
-	slow_step UP
-	step_end
+HallOfFameOakText:
+	text "OAK: Er-hem!"
+	line "Congratulations,"
+	cont "<PLAYER>!"
 
-HallOfFame_LanceText:
-	text "LANCE: It's been a"
-	line "long time since I"
-	cont "last came here."
+	para "This floor is the"
+	line "#MON HALL OF"
+	cont "FAME!"
 
-	para "This is where we"
-	line "honor the LEAGUE"
+	para "#MON LEAGUE"
+	line "champions are"
+	cont "honored for their"
+	cont "exploits here!"
 
-	para "CHAMPIONS for all"
-	line "eternity."
+	para "Their #MON are"
+	line "also recorded in"
+	cont "the HALL OF FAME!"
 
-	para "Their courageous"
-	line "#MON are also"
-	cont "inducted."
+	para "<PLAYER>! You have"
+	line "endeavored hard"
+	cont "to become the new"
+	cont "LEAGUE champion!"
 
-	para "Here today, we"
-	line "witnessed the rise"
-
-	para "of a new LEAGUE"
-	line "CHAMPION--a"
-
-	para "trainer who feels"
-	line "compassion for,"
-
-	para "and trust toward,"
-	line "all #MON."
-
-	para "A trainer who"
-	line "succeeded through"
-
-	para "perseverance and"
-	line "determination."
-
-	para "The new LEAGUE"
-	line "CHAMPION who has"
-
-	para "all the makings"
-	line "of greatness!"
-
-	para "<PLAY_G>, allow me"
-	line "to register you"
-
-	para "and your partners"
-	line "as CHAMPIONS!"
+	para "Congratulations,"
+	line "<PLAYER>, you and"
+	cont "your #MON are"
+	cont "HALL OF FAMERs!"
 	done
 
 HallOfFame_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  4, 13, CHAMPIONS_ROOM, 3
-	warp_event  5, 13, CHAMPIONS_ROOM, 4
+	warp_event  4,  7, CHAMPIONS_ROOM, 3
+	warp_event  5,  7, CHAMPIONS_ROOM, 4
 
 	def_coord_events
 
 	def_bg_events
 
 	def_object_events
-	object_event  4, 12, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, -1
+	object_event  5,  2, SPRITE_OAK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_BEAT_KANTO_ELITE_FOUR ; post-E4: the ceremony is over

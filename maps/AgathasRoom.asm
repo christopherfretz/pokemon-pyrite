@@ -103,8 +103,30 @@ AgathasRoomAgathaScript:
 	closetext
 	end
 
+; Post-E4 (ours, not Yellow's -- operator ruling 2026-09-22): the member
+; acknowledges the League's state and offers a rematch with the same team.
+; A loss is a normal white-out; a win or a refusal sets no flag.
 .league_open:
-	jumptext AgathasRoomAgathaPostE4Text
+	opentext
+	writetext AgathasRoomAgathaPostE4Text
+	yesorno
+	iffalse .no_rematch
+	closetext
+	winlosstext AgathasRoomAgathaEndBattleText, 0
+	loadtrainer AGATHA, AGATHA1
+	startbattle
+	reloadmapafterbattle
+	opentext
+	writetext AgathasRoomAgathaRematchWinText
+	waitbutton
+	closetext
+	end
+
+.no_rematch:
+	writetext AgathasRoomAgathaNoRematchText
+	waitbutton
+	closetext
+	end
 
 AgathasRoomWalkInMovement:
 	step UP
@@ -168,9 +190,36 @@ AgathasRoomDontRunAwayText:
 	line "Don't run away!"
 	done
 
-; POST-E4 placeholder — 13k writes the real lines
+; Post-E4 lines: ours (M10 13k), in Yellow's register.
 AgathasRoomAgathaPostE4Text:
-	text "Run along now!"
+	text "Ohoho! You again,"
+	line "child!"
+
+	para "LANCE stormed off"
+	line "after his loss,"
+	cont "and that brat"
+	cont "<RIVAL> scurried"
+	cont "home to VIRIDIAN!"
+
+	para "The LEAGUE still"
+	line "hasn't found any-"
+	cont "one to take their"
+	cont "places!"
+
+	para "Shall an old woman"
+	line "show you a real"
+	cont "battle again?"
+	done
+
+AgathasRoomAgathaRematchWinText:
+	text "Hmph! You've"
+	line "still got it,"
+	cont "child!"
+	done
+
+AgathasRoomAgathaNoRematchText:
+	text "Run along now,"
+	line "child!"
 	done
 
 AgathasRoom_MapEvents:

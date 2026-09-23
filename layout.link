@@ -33,6 +33,11 @@ ROMX $01
 	"bank1"
 ROMX $02
 	"bank2"
+	; Kanto hack (M10 13k): pinned where it always floated.  13k's intro_menu
+	; edit freed 3 B of bank $01, which made the 1572-B section fit there
+	; exactly; the linker then moved it in and pushed "Sprites 4" and "S.S.
+	; Anne Departure" out, leaving bank $01 with 1 free byte.
+	"Tileset Data 11"
 ROMX $03
 	"bank3"
 ROMX $04

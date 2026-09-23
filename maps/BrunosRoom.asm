@@ -103,8 +103,30 @@ BrunosRoomBrunoScript:
 	closetext
 	end
 
+; Post-E4 (ours, not Yellow's -- operator ruling 2026-09-22): the member
+; acknowledges the League's state and offers a rematch with the same team.
+; A loss is a normal white-out; a win or a refusal sets no flag.
 .league_open:
-	jumptext BrunosRoomBrunoPostE4Text
+	opentext
+	writetext BrunosRoomBrunoPostE4Text
+	yesorno
+	iffalse .no_rematch
+	closetext
+	winlosstext BrunosRoomBrunoEndBattleText, 0
+	loadtrainer BRUNO, BRUNO1
+	startbattle
+	reloadmapafterbattle
+	opentext
+	writetext BrunosRoomBrunoRematchWinText
+	waitbutton
+	closetext
+	end
+
+.no_rematch:
+	writetext BrunosRoomBrunoNoRematchText
+	waitbutton
+	closetext
+	end
 
 BrunosRoomWalkInMovement:
 	step UP
@@ -161,9 +183,35 @@ BrunosRoomDontRunAwayText:
 	line "Don't run away!"
 	done
 
-; POST-E4 placeholder — 13k writes the real lines
+; Post-E4 lines: ours (M10 13k), in Yellow's register.
 BrunosRoomBrunoPostE4Text:
-	text "Go on ahead!"
+	text "LANCE is gone."
+	line "He walked out"
+	cont "after you beat"
+	cont "him."
+
+	para "<RIVAL> went home"
+	line "to VIRIDIAN."
+
+	para "No one has come"
+	line "to take their"
+	cont "places yet."
+
+	para "But my training"
+	line "never stops!"
+
+	para "Will you fight me"
+	line "again?"
+	done
+
+BrunosRoomBrunoRematchWinText:
+	text "Hm! You are"
+	line "stronger still!"
+	done
+
+BrunosRoomBrunoNoRematchText:
+	text "Then I will keep"
+	line "training!"
 	done
 
 BrunosRoom_MapEvents:

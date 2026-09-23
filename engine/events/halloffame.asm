@@ -7,7 +7,15 @@ HallOfFame::
 	ld a, 1
 	ld [wGameLogicPaused], a
 	call DisableSpriteUpdates
+	; Kanto hack (M10 13k): the Kanto HoF (EVENT_BEAT_ELITE_FOUR still
+	; clear, D109) spawns at PALLET after the credits; Crystal's at NEW BARK.
+	ld de, EVENT_BEAT_ELITE_FOUR
+	ld b, CHECK_FLAG
+	call EventFlagAction
 	ld a, SPAWN_LANCE
+	jr nz, .got_spawn
+	ld a, SPAWN_KANTO_CHAMPION
+.got_spawn
 	ld [wSpawnAfterChampion], a
 
 	; Enable the Pokégear map to cycle through all of Kanto

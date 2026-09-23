@@ -155,6 +155,14 @@ DEF NUM_SPAWNS EQU const_value
 
 DEF SPAWN_N_A EQU -1
 
+; wSpawnAfterChampion values.  Kanto hack (M10 13k): an after-HoF marker IS
+; the spawn point Continue lands on (intro_menu's .SpawnAfterE4 copies it to
+; wDefaultSpawnpoint), so the Kanto HoF can spawn at PALLET without growing
+; bank 1.  Crystal had LANCE = 1, RED = 2 and a hard-coded SPAWN_NEW_BARK.
+DEF SPAWN_LANCE          EQU SPAWN_NEW_BARK ; Crystal's (Johto) HoF
+DEF SPAWN_KANTO_CHAMPION EQU SPAWN_PALLET   ; Yellow: fly_warp PALLET_TOWN, 5, 6
+DEF SPAWN_RED            EQU $ff            ; after RED's credits; never saved
+
 ; Flypoints indexes (see data/maps/flypoints.asm)
 	const_def
 ; johto
