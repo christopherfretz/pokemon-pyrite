@@ -71,7 +71,12 @@ RegionCheck:
 	jr c, .johto
 
 ; Victory Road area is considered to be Johto.
-	cp LANDMARK_VICTORY_ROAD
+; Kanto hack (M10 13i): only from ROUTE 26 on.  VICTORY ROAD, ROUTE 23 and the
+; INDIGO PLATEAU (the ELITE FOUR rooms) are Yellow's Kanto, where every trainer
+; and wild battle plays Yellow's one MUSIC_TRAINER_BATTLE / MUSIC_WILD_BATTLE --
+; Crystal's cutoff gave LORELEI, BRUNO, AGATHA and the VICTORY ROAD trainers the
+; Johto themes.  RegionCheck's only callers are the two in start_battle.asm.
+	cp LANDMARK_ROUTE_26
 	jr c, .kanto
 
 .johto

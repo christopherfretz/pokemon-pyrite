@@ -12,11 +12,11 @@ TrainerClassDVs:
 	dn  7, 12, 13, 13 ; CLAIR
 	dn 13, 13, 13, 13 ; RIVAL1
 	dn  9,  8,  8,  8 ; POKEMON_PROF
-	dn 13, 12, 13, 13 ; WILL
+	dn 13, 12, 13, 13 ; LORELEI (Crystal's WILL values)
 	dn 13, 12, 13, 13 ; CAL
 	dn 13, 12, 13, 13 ; BRUNO
-	dn  7, 15, 13, 15 ; KAREN
-	dn 13, 12, 13, 13 ; KOGA
+	dn  7, 15, 13, 15 ; AGATHA (Crystal's KAREN values)
+	dn 13, 12, 13, 13 ; LANCE_E4 (Crystal's E4 KOGA values)
 	dn 13, 12, 13, 13 ; CHAMPION
 	dn  9,  8,  8,  8 ; BROCK
 	dn  7,  8,  8,  8 ; MISTY
@@ -74,5 +74,6 @@ TrainerClassDVs:
 	dn 13, 13, 13, 13 ; GIOVANNI
 	dn  9,  8,  8,  8 ; CUE_BALL
 	dn  9,  8,  8,  8 ; TAMER
+	dn  9,  8,  8,  8 ; KANTO_CHAMPION -- Yellow's $9888, as KANTO_RIVAL
 	dn  9,  8,  8,  8 ; MYSTICALMAN
 	assert_table_length NUM_TRAINER_CLASSES

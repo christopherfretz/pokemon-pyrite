@@ -19,11 +19,11 @@ INCBIN "gfx/trainers/chuck.gbcpal", middle_colors
 INCBIN "gfx/trainers/clair.gbcpal", middle_colors
 INCBIN "gfx/trainers/rival1.gbcpal", middle_colors
 INCBIN "gfx/trainers/oak.gbcpal", middle_colors
-INCBIN "gfx/trainers/will.gbcpal", middle_colors
+INCBIN "gfx/trainers/lorelei.gbcpal", middle_colors ; Kanto hack (M10 13i)
 INCBIN "gfx/trainers/cal.gbcpal", middle_colors
 INCBIN "gfx/trainers/bruno.gbcpal", middle_colors
-INCBIN "gfx/trainers/karen.gbcpal", middle_colors
-INCBIN "gfx/trainers/koga.gbcpal", middle_colors
+INCBIN "gfx/trainers/agatha.gbcpal", middle_colors ; Kanto hack (M10 13i)
+INCBIN "gfx/trainers/lance_e4.gbcpal", middle_colors ; Kanto hack (M10 13i)
 INCBIN "gfx/trainers/champion.gbcpal", middle_colors
 INCBIN "gfx/trainers/brock.gbcpal", middle_colors
 INCBIN "gfx/trainers/misty.gbcpal", middle_colors
@@ -84,6 +84,7 @@ INCBIN "gfx/trainers/cueball.gbcpal", middle_colors ; CUE_BALL
 ; per-class palettes, so the two middle colours are ours: a warm skin tone
 ; and a circus red for the tamer's coat (see "## 10h findings").
 INCBIN "gfx/trainers/tamer.gbcpal", middle_colors
+INCBIN "gfx/trainers/kanto_champion.gbcpal", middle_colors ; KANTO_CHAMPION -- Kanto hack (M10 13i)
 INCBIN "gfx/trainers/mysticalman.gbcpal", middle_colors
 
 	assert_table_length NUM_TRAINER_CLASSES + 1

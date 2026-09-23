@@ -13,11 +13,11 @@ TrainerPicPointers::
 	dba_pic ClairPic
 	dba_pic Rival1Pic
 	dba_pic PokemonProfPic
-	dba_pic WillPic
+	dba_pic LoreleiPic ; Kanto hack (M10 13i): Yellow's LORELEI pic, over WILL
 	dba_pic CalPic
 	dba_pic BrunoPic
-	dba_pic KarenPic
-	dba_pic KogaPic
+	dba_pic AgathaPic ; Kanto hack (M10 13i): Yellow's AGATHA pic, over KAREN
+	dba_pic LanceE4Pic ; Kanto hack (M10 13i): Yellow's LANCE pic, over ELITE FOUR KOGA
 	dba_pic ChampionPic
 	dba_pic BrockPic
 	dba_pic MistyPic
@@ -28,7 +28,7 @@ TrainerPicPointers::
 	dba_pic SchoolboyPic
 	dba_pic BirdKeeperPic
 	dba_pic LassPic
-	dba_pic KogaPic ; Kanto hack (M7 10h): KOGA_LEADER reuses ELITE FOUR KOGA's pic
+	dba_pic KogaPic ; Kanto hack (M7 10h): KOGA_LEADER reuses Crystal's KOGA pic
 	dba_pic CooltrainermPic
 	dba_pic CooltrainerfPic
 	dba_pic BeautyPic
@@ -74,5 +74,6 @@ TrainerPicPointers::
 	dba_pic GiovanniPic ; GIOVANNI (Yellow's boss pic)
 	dba_pic CueBallPic ; CUE_BALL (Yellow's cueball pic)
 	dba_pic TamerPic ; Kanto hack (M7 10h): Yellow's own TAMER pic
+	dba_pic KantoChampionPic ; KANTO_CHAMPION -- Kanto hack (M10 13i): Yellow's RIVAL3 pic
 	dba_pic MysticalmanPic
 	assert_table_length NUM_TRAINER_CLASSES

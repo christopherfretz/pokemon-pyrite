@@ -13,11 +13,11 @@ TrainerGroups:
 	dw ClairGroup
 	dw Rival1Group
 	dw PokemonProfGroup
-	dw WillGroup
+	dw LoreleiGroup
 	dw PKMNTrainerGroup
 	dw BrunoGroup
-	dw KarenGroup
-	dw KogaGroup
+	dw AgathaGroup
+	dw LanceE4Group
 	dw ChampionGroup
 	dw BrockGroup
 	dw MistyGroup
@@ -74,5 +74,6 @@ TrainerGroups:
 	dw GiovanniGroup
 	dw CueBallGroup
 	dw TamerGroup
+	dw KantoChampionGroup ; Kanto hack (M10 13i)
 	dw MysticalmanGroup
 	assert_table_length NUM_TRAINER_CLASSES

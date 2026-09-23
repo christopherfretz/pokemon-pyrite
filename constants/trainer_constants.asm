@@ -71,8 +71,12 @@ DEF KRIS EQU __trainer_class__
 
 	trainerclass POKEMON_PROF ; a
 
-	trainerclass WILL ; b
-	const WILL1
+; Kanto hack (M10 13i): Crystal's WILL/KAREN/E4 KOGA class slots are renamed in
+; place to Yellow's LORELEI/AGATHA/LANCE (runtime ids unchanged).  TrainerClassNames
+; still says "ELITE FOUR".  CHAMPION/LANCE ($10) is Crystal's and untouched (C-1):
+; Yellow's LANCE is an ELITE FOUR member, so he gets his own class.
+	trainerclass LORELEI ; b
+	const LORELEI1
 
 	trainerclass CAL ; c
 	const CAL1 ; unused
@@ -82,11 +86,11 @@ DEF KRIS EQU __trainer_class__
 	trainerclass BRUNO ; d
 	const BRUNO1
 
-	trainerclass KAREN ; e
-	const KAREN1
+	trainerclass AGATHA ; e
+	const AGATHA1
 
-	trainerclass KOGA ; f
-	const KOGA1
+	trainerclass LANCE_E4 ; f
+	const LANCE_E4_1
 
 	trainerclass CHAMPION ; 10
 	const LANCE
@@ -284,7 +288,8 @@ DEF KRIS EQU __trainer_class__
 ; is already "LEADER" -- matching BROCK/MISTY/LT_SURGE/ERIKA/SABRINA/BLAINE.
 ; Every other per-class row (pic, palette, DVs, attributes, encounter music,
 ; Battle Tower sprite/gender) is retuned to Crystal's KOGA values, so the swap
-; changes only the displayed class name.  ELITE FOUR KOGA is left untouched.
+; changes only the displayed class name.  (M10 13i: the ELITE FOUR KOGA class is
+; now LANCE_E4; KOGA_LEADER keeps Crystal's KOGA pic and palette.)
 	trainerclass KOGA_LEADER ; 1a
 	const KOGA_LEADER1
 
@@ -1144,7 +1149,17 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const TAMER_4 ; VIRIDIAN GYM (M10 13b)
 	const TAMER_5 ; VICTORY ROAD 2F (19,8), Yellow TamerData 5 (placed in M10 13g)
 
-	trainerclass MYSTICALMAN ; 48
+; Kanto hack (M10 13i): KANTO_CHAMPION, the rival as INDIGO PLATEAU CHAMPION
+; (Yellow's `trainer_const RIVAL3 ; $2B`).  Inserted BEFORE MYSTICALMAN like
+; GIOVANNI/CUE_BALL/TAMER.  Named like KANTO_RIVAL: the party name is "?@" and
+; PlaceEnemysName / GetTrainerClassName / GetOTName print wRivalName.
+; The row is picked by the Eevee rule (wScriptVar 1/2/3 = RIVAL_STARTER_*).
+	trainerclass KANTO_CHAMPION ; 48
+	const KANTO_CHAMPION_1 ; JOLTEON branch (Yellow RIVAL3 party 1)
+	const KANTO_CHAMPION_2 ; FLAREON branch (Yellow RIVAL3 party 2)
+	const KANTO_CHAMPION_3 ; VAPOREON branch (Yellow RIVAL3 party 3)
+
+	trainerclass MYSTICALMAN ; 49
 	const EUSINE
 
 DEF NUM_TRAINER_CLASSES EQU __trainer_class__ - 1

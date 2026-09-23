@@ -358,6 +358,8 @@ PlaceEnemysName::
 	jr z, .rival
 	cp KANTO_RIVAL
 	jr z, .rival
+	cp KANTO_CHAMPION ; Kanto hack (M10 13i)
+	jr z, .rival
 	cp JESSIE_JAMES
 	jr z, .classonly ; "JESSIE&JAMES" is the whole name; the party name is empty
 

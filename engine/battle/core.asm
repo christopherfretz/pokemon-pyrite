@@ -2678,6 +2678,11 @@ PlayVictoryMusic:
 
 .trainer_victory
 	ld de, MUSIC_GYM_VICTORY
+	; Kanto hack (M10 13i): Yellow's TrainerBattleVictory plays
+	; MUSIC_DEFEATED_GYM_LEADER for RIVAL3, not being a gym leader.
+	ld a, [wOtherTrainerClass]
+	cp KANTO_CHAMPION
+	jr z, .play_music
 	call IsGymLeader
 	jr c, .play_music
 	ld de, MUSIC_TRAINER_VICTORY

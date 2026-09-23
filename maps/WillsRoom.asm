@@ -49,7 +49,7 @@ WillScript_Battle:
 	waitbutton
 	closetext
 	winlosstext WillScript_WillBeatenText, 0
-	loadtrainer WILL, WILL1
+	loadtrainer LORELEI, LORELEI1 ; Kanto hack (M10 13i): class renamed; room is 13j's
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ELITE_4_WILL

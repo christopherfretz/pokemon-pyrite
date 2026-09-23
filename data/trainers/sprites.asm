@@ -11,11 +11,11 @@ BTTrainerClassSprites:
 	db SPRITE_CLAIR
 	db SPRITE_RIVAL
 	db SPRITE_OAK
-	db SPRITE_WILL
+	db SPRITE_WILL ; LORELEI (SPRITE_WILL is re-skinned as Lorelei, M10 13i)
 	db SPRITE_CHRIS
 	db SPRITE_BRUNO
-	db SPRITE_KAREN
-	db SPRITE_KOGA
+	db SPRITE_KAREN ; AGATHA (SPRITE_KAREN is re-skinned as Agatha, M10 13i)
+	db SPRITE_LANCE ; LANCE_E4 -- Kanto hack (M10 13i)
 	db SPRITE_LANCE
 	db SPRITE_BROCK
 	db SPRITE_MISTY
@@ -72,4 +72,5 @@ BTTrainerClassSprites:
 	db SPRITE_GIOVANNI ; GIOVANNI
 	db SPRITE_BIKER ; CUE_BALL -- Yellow draws every CUE BALL with SPRITE_BIKER
 	db SPRITE_ROCKER ; TAMER -- Yellow's gym TAMERs are SPRITE_ROCKER
+	db SPRITE_BLUE ; KANTO_CHAMPION -- Kanto hack (M10 13i)
 	assert_table_length NUM_TRAINER_CLASSES - 1 ; exclude MYSTICALMAN

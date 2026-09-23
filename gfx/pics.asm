@@ -777,6 +777,16 @@ INCBIN "gfx/pokemon/unown_r/back.2bpp.lz"
 ; Sections "Pics 20" to "Pics 24" are not used for any graphics,
 ; but entries for their banks exist in FixPicBank (see engine/gfx/load_pics.asm).
 
+; Kanto hack (M10 13i): Yellow's ELITE FOUR and CHAMPION pics, with Crystal-style
+; two-colour palettes (gfx/trainers/*.png; see docs/M10-INDIGO.md "## 13i findings").
+; BRUNO keeps Crystal's pic.  "Pics 19" ($5a) is inside the "Pics 1".."Pics 24"
+; range FixPicBank maps, so dba_pic works here.
+LoreleiPic:          INCBIN "gfx/trainers/lorelei.2bpp.lz" ; Yellow's LORELEI
+AgathaPic:           INCBIN "gfx/trainers/agatha.2bpp.lz" ; Yellow's AGATHA
+LanceE4Pic:          INCBIN "gfx/trainers/lance_e4.2bpp.lz" ; Yellow's LANCE
+KantoChampionPic:    INCBIN "gfx/trainers/kanto_champion.2bpp.lz" ; Yellow's RIVAL3
+
+
 SECTION "Pics 20", ROMX
 
 SECTION "Pics 21", ROMX

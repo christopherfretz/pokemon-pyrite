@@ -62,8 +62,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_AGGRESSIVE | AI_STATUS
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Will
-	db MAX_POTION, NO_ITEM ; items
+; Lorelei -- Kanto hack (M10 13i, D126): Yellow's LORELEI AI uses 2 SUPER POTIONs
+	db SUPER_POTION, SUPER_POTION ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -74,20 +74,20 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Bruno
-	db MAX_POTION, NO_ITEM ; items
+; Bruno -- Kanto hack (M10 13i, D126): Yellow's BRUNO AI uses 2 X DEFENDs
+	db X_DEFEND, X_DEFEND ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Karen
-	db FULL_HEAL, MAX_POTION ; items
+; Agatha -- Kanto hack (M10 13i, D126): Yellow's AGATHA AI uses 2 SUPER POTIONs
+	db SUPER_POTION, SUPER_POTION ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Koga
-	db FULL_HEAL, FULL_RESTORE ; items
+; Lance_E4 -- Kanto hack (M10 13i, D126): Yellow's LANCE AI uses 1 HYPER POTION
+	db HYPER_POTION, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -430,6 +430,13 @@ TrainerClassAttributes:
 	db NO_ITEM, NO_ITEM ; items
 	db 12 ; base reward
 	dw AI_BASIC | AI_TYPES | AI_STATUS | AI_RISKY
+	dw CONTEXT_USE | SWITCH_SOMETIMES
+
+; Kanto_Champion -- Kanto hack (M10 13i, D126): Yellow's RIVAL3 AI uses 1
+; FULL RESTORE.  AI flags and reward are Crystal's CHAMPION row.
+	db FULL_RESTORE, NO_ITEM ; items
+	db 25 ; base reward
+	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
 ; Mysticalman

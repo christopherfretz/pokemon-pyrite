@@ -1,10 +1,10 @@
 ; Places and People will not describe these trainers.
 
 PnP_HiddenPeople:
-	db WILL
+	db LORELEI ; Kanto hack (M10 13i): Crystal WILL slot, renamed
 	db BRUNO
-	db KAREN
-	db KOGA
+	db AGATHA ; Crystal KAREN slot
+	db LANCE_E4 ; Crystal E4 KOGA slot
 	db CHAMPION
 	; fallthrough
 PnP_HiddenPeople_BeatE4:

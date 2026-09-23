@@ -49,7 +49,7 @@ KogaScript_Battle:
 	waitbutton
 	closetext
 	winlosstext KogaScript_KogaBeatenText, 0
-	loadtrainer KOGA, KOGA1
+	loadtrainer LANCE_E4, LANCE_E4_1 ; Kanto hack (M10 13i): class renamed; room is 13j's
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ELITE_4_KOGA

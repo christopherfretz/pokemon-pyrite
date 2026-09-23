@@ -90,6 +90,8 @@ PlayBattleMusic:
 	ld de, MUSIC_CHAMPION_BATTLE
 	cp CHAMPION
 	jr z, .done
+	cp KANTO_CHAMPION ; Kanto hack (M10 13i): Yellow's RIVAL3 plays MUSIC_FINAL_BATTLE
+	jr z, .done
 	cp RED
 	jr z, .done
 
@@ -103,6 +105,11 @@ PlayBattleMusic:
 	jr z, .done
 
 	ld de, MUSIC_KANTO_GYM_LEADER_BATTLE
+	; Kanto hack (M10 13i): Yellow's PlayBattleMusic gives OPP_LANCE the gym-leader
+	; theme ("lance also plays gym leader theme"); the other three ELITE FOUR get
+	; the ordinary trainer theme via .othertrainer.
+	cp LANCE_E4
+	jr z, .done
 	farcall IsKantoGymLeader
 	jr c, .done
 

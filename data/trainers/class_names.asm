@@ -72,5 +72,6 @@ TrainerClassNames::
 	li "GIOVANNI" ; the class IS the name (Yellow's trainer_const GIOVANNI); every party row leaves the name empty so PlaceEnemysName prints "GIOVANNI" alone
 	li "CUE BALL"
 	li "TAMER"
+	li "RIVAL" ; KANTO_CHAMPION -- Kanto hack (M10 13i): shown as wRivalName alone, like KANTO_RIVAL
 	li "MYSTICALMAN"
 	assert_list_length NUM_TRAINER_CLASSES

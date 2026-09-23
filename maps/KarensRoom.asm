@@ -49,7 +49,7 @@ KarenScript_Battle:
 	waitbutton
 	closetext
 	winlosstext KarenScript_KarenBeatenText, 0
-	loadtrainer KAREN, KAREN1
+	loadtrainer AGATHA, AGATHA1 ; Kanto hack (M10 13i): class renamed; room is 13j's
 	startbattle
 	reloadmapafterbattle
 	setevent EVENT_BEAT_ELITE_4_KAREN
