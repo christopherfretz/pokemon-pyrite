@@ -630,7 +630,9 @@ OakSpeech:
 	call RotateFourPalettesLeft
 	call ClearTilemap
 
-	ld de, MUSIC_ROUTE_30
+; Kanto hack (F2): Yellow plays MUSIC_ROUTES2, its Route 24/25 theme
+; (oak_speech.asm:55, data/maps/songs.asm:38-39); ours is MUSIC_ROUTE_3.
+	ld de, MUSIC_ROUTE_3
 	call PlayMusic
 
 	call RotateFourPalettesRight
