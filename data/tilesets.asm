@@ -59,4 +59,15 @@ Tilesets::
 	tileset TilesetKantoLab
 	tileset TilesetKantoGym
 	tileset TilesetKantoPlateau
+; M10 13j2: the E4 wing's clones -- KANTO_GYM's / KANTO_TOWER's gfx, blocks,
+; collision and animation; only the palette map differs (the per-room colours
+; come from LoadSpecialMapPalette).
+	dba TilesetKantoGymGFX, TilesetKantoGymMeta, TilesetKantoGymColl
+	dw TilesetKantoGymAnim
+	dw NULL
+	dw TilesetKantoE4PalMap
+	dba TilesetKantoTowerGFX, TilesetKantoTowerMeta, TilesetKantoTowerColl
+	dw TilesetKantoTowerAnim
+	dw NULL
+	dw TilesetKantoE4TowerPalMap
 	assert_table_length NUM_TILESETS + 1

@@ -142,6 +142,14 @@ INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"
 TilesetKantoPlateauPalMap:
 INCLUDE "gfx/tilesets/kanto_plateau_palette_map.asm"
 
+; Kanto hack: the E4 wing's role maps (M10 13j2); colours per room in
+; gfx/tilesets/kanto_e4.pal via LoadSpecialMapPalette.
+TilesetKantoE4PalMap:
+INCLUDE "gfx/tilesets/kanto_e4_palette_map.asm"
+
+TilesetKantoE4TowerPalMap:
+INCLUDE "gfx/tilesets/kanto_e4_tower_palette_map.asm"
+
 MapGroupPalettes: ; unreferenced
 ; entries correspond to MAPGROUP_* constants
 rept NUM_MAP_GROUPS

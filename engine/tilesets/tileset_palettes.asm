@@ -12,7 +12,14 @@ LoadSpecialMapPalette:
 	jr z, .radio_tower
 	cp TILESET_MANSION
 	jr z, .mansion_mobile
+	cp TILESET_KANTO_E4
+	jr z, .kanto_e4
+	cp TILESET_KANTO_E4_TOWER
+	jr z, .kanto_e4
 	jr .do_nothing
+
+.kanto_e4
+	jp LoadKantoE4Palette ; carry = loaded
 
 .pokecom_2f
 	call LoadPokeComPalette
@@ -135,3 +142,30 @@ LoadMansionPalette:
 
 MansionPalette2:
 INCLUDE "gfx/tilesets/mansion_2.pal"
+
+; M10 13j2: the E4 wing (LORELEIS_ROOM .. HALL_OF_FAME, consecutive map numbers
+; in GROUP_INDIGO) gets its own 8 BG palettes per room.  Carry set = loaded;
+; carry clear (any other map on these tilesets) = the normal indoor palettes.
+LoadKantoE4Palette:
+	ld a, [wMapGroup]
+	cp GROUP_LORELEIS_ROOM
+	jr nz, .no
+	ld a, [wMapNumber]
+	sub MAP_LORELEIS_ROOM
+	cp MAP_HALL_OF_FAME - MAP_LORELEIS_ROOM + 1
+	jr nc, .no
+	ld hl, KantoE4Palettes
+	ld bc, 8 palettes
+	call AddNTimes
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1
+	call FarCopyWRAM
+	scf
+	ret
+
+.no
+	and a
+	ret
+
+KantoE4Palettes:
+INCLUDE "gfx/tilesets/kanto_e4.pal"
