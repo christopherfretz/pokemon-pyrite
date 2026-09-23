@@ -24,7 +24,7 @@ BillScript:
 	writetext ReceivedEeveeText
 	playsound SFX_CAUGHT_MON
 	waitsfx
-	givepoke EEVEE, 20
+	givepoke EEVEE, 70 ; Kanto hack (M11 14d, D157): +50
 	setevent EVENT_GOT_EEVEE
 	writetext BillEeveeMayEvolveText
 	waitbutton

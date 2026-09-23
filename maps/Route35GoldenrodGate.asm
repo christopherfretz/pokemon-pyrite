@@ -28,7 +28,7 @@ RandyScript:
 	writetext Route35GoldenrodGatePlayerReceivedAMonWithMailText
 	playsound SFX_KEY_ITEM
 	waitsfx
-	givepoke SPEAROW, 10, NO_ITEM, GiftSpearowName, GiftSpearowOTName
+	givepoke SPEAROW, 60, NO_ITEM, GiftSpearowName, GiftSpearowOTName ; Kanto hack (M11 14d): +50
 	givepokemail GiftSpearowMail
 	setevent EVENT_GOT_KENYA
 .alreadyhavekenya

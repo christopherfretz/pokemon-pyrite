@@ -451,7 +451,7 @@ VoltorbExplodingTrap:
 	special FadeInFromWhite
 	setlasttalked -1
 	loadvar VAR_BATTLETYPE, BATTLETYPE_TRAP
-	loadwildmon VOLTORB, 23
+	loadwildmon VOLTORB, 73 ; Kanto hack (M11 14d): +50
 	startbattle
 	end
 
@@ -461,7 +461,7 @@ GeodudeExplodingTrap:
 	special FadeInFromWhite
 	setlasttalked -1
 	loadvar VAR_BATTLETYPE, BATTLETYPE_TRAP
-	loadwildmon GEODUDE, 21
+	loadwildmon GEODUDE, 71 ; Kanto hack (M11 14d): +50
 	startbattle
 	end
 
@@ -471,7 +471,7 @@ KoffingExplodingTrap:
 	special FadeInFromWhite
 	setlasttalked -1
 	loadvar VAR_BATTLETYPE, BATTLETYPE_TRAP
-	loadwildmon KOFFING, 21
+	loadwildmon KOFFING, 71 ; Kanto hack (M11 14d): +50
 	startbattle
 	end
 

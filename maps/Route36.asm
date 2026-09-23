@@ -74,7 +74,7 @@ WateredWeirdTreeScript:: ; export (for when you use Squirtbottle from pack)
 	writetext SudowoodoAttackedText
 	waitbutton
 	closetext
-	loadwildmon SUDOWOODO, 20
+	loadwildmon SUDOWOODO, 70 ; Kanto hack (M11 14d): +50
 	startbattle
 	setevent EVENT_FOUGHT_SUDOWOODO
 	ifequal DRAW, DidntCatchSudowoodo

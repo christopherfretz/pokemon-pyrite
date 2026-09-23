@@ -189,7 +189,7 @@ GoldenrodGameCornerPrizeMonVendorScript:
 	waitbutton
 	setval ABRA
 	special GameCornerPrizeMonCheckDex
-	givepoke ABRA, 5
+	givepoke ABRA, 55 ; Kanto hack (M11 14d): +50
 	takecoins GOLDENRODGAMECORNER_ABRA_COINS
 	sjump .loop
 
@@ -207,7 +207,7 @@ GoldenrodGameCornerPrizeMonVendorScript:
 	waitbutton
 	setval CUBONE
 	special GameCornerPrizeMonCheckDex
-	givepoke CUBONE, 15
+	givepoke CUBONE, 65 ; Kanto hack (M11 14d): +50
 	takecoins GOLDENRODGAMECORNER_CUBONE_COINS
 	sjump .loop
 
@@ -225,7 +225,7 @@ GoldenrodGameCornerPrizeMonVendorScript:
 	waitbutton
 	setval WOBBUFFET
 	special GameCornerPrizeMonCheckDex
-	givepoke WOBBUFFET, 15
+	givepoke WOBBUFFET, 65 ; Kanto hack (M11 14d): +50
 	takecoins GOLDENRODGAMECORNER_WOBBUFFET_COINS
 	sjump .loop
 

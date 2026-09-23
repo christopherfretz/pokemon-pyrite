@@ -5,10 +5,10 @@ GiveShuckle:
 	xor a ; PARTYMON
 	ld [wMonType], a
 
-; Level 15 Shuckle.
+; Level 65 Shuckle (Crystal: 15).
 	ld a, SHUCKLE
 	ld [wCurPartySpecies], a
-	ld a, 15
+	ld a, 65 ; Kanto hack (M11 14d, D157): +50
 	ld [wCurPartyLevel], a
 
 	predef TryAddMonToParty

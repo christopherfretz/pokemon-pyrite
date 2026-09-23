@@ -31,7 +31,7 @@ TinTowerHoOh:
 	closetext
 	setevent EVENT_FOUGHT_HO_OH
 	loadvar VAR_BATTLETYPE, BATTLETYPE_FORCEITEM
-	loadwildmon HO_OH, 60
+	loadwildmon HO_OH, 95 ; Kanto hack (M11 14d): "90+", under LANCE's ace
 	startbattle
 	disappear TINTOWERROOF_HO_OH
 	reloadmapafterbattle
