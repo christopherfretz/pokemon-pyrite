@@ -316,6 +316,9 @@ CeladonGameCornerRocketWalkDirectMovement:
 	step RIGHT
 	step_end
 
+CeladonGameCornerShelfScript: ; BG2
+	jumpstd KantoMerchandiseShelfScript
+
 CeladonGameCornerPosterScript:
 	opentext
 	writetext CeladonGameCornerPosterText
@@ -827,6 +830,16 @@ CeladonGameCorner_MapEvents:
 	bg_event 15,  8, BGEVENT_IFNOTSET, CeladonGameCornerCoin11
 	bg_event 12, 15, BGEVENT_IFNOTSET, CeladonGameCornerCoin12
 	bg_event  9,  4, BGEVENT_READ, CeladonGameCornerPosterScript
+; BG2: Yellow's LOBBY shelf tiles $50/$52 on (0,5)-(7,5) say PokemonStuffText,
+; facing UP only (bookshelf_tile_ids.asm); here they are solid cabinet art.
+	bg_event  0,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  1,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  2,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  3,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  4,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  5,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  6,  5, BGEVENT_UP, CeladonGameCornerShelfScript
+	bg_event  7,  5, BGEVENT_UP, CeladonGameCornerShelfScript
 
 	def_object_events
 	object_event  2,  6, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerBeauty1Script, -1

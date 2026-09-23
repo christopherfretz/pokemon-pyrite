@@ -79,6 +79,9 @@ IndigoPlateauPokecenter1FPrepareElite4Callback:
 	setmapscene HALL_OF_FAME, SCENE_HALLOFFAME_NOOP
 	endcallback
 
+IndigoPlateauPokecenter1FShelfScript: ; BG2
+	jumpstd KantoMerchandiseShelfScript
+
 IndigoPlateauPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
 
@@ -180,6 +183,12 @@ IndigoPlateauPokecenter1F_MapEvents:
 	def_coord_events
 
 	def_bg_events
+; BG2: Yellow's MART shelf tiles $54/$55 on (0,9)-(3,9) say PokemonStuffText,
+; facing UP only (bookshelf_tile_ids.asm); here they are plain walls.
+	bg_event  0,  9, BGEVENT_UP, IndigoPlateauPokecenter1FShelfScript
+	bg_event  1,  9, BGEVENT_UP, IndigoPlateauPokecenter1FShelfScript
+	bg_event  2,  9, BGEVENT_UP, IndigoPlateauPokecenter1FShelfScript
+	bg_event  3,  9, BGEVENT_UP, IndigoPlateauPokecenter1FShelfScript
 
 	def_object_events
 	object_event  7,  5, SPRITE_NURSE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, IndigoPlateauPokecenter1FNurseScript, -1

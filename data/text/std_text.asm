@@ -141,6 +141,11 @@ MerchandiseShelfText:
 	line "merchandise!"
 	done
 
+KantoMerchandiseShelfText: ; BG2: Yellow's PokemonStuffText, verbatim
+	text "Wow! Tons of"
+	line "#MON stuff!"
+	done
+
 LookTownMapText:
 	text "It's the TOWN MAP."
 	done

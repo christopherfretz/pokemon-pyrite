@@ -56,6 +56,7 @@ StdScripts::
 	add_stdscript PCScript
 	add_stdscript GameCornerCoinVendorScript
 	add_stdscript HappinessCheckScript
+	add_stdscript KantoMerchandiseShelfScript ; BG2
 
 PokecenterNurseScript:
 ; Kanto hack (N1a, docs/AUDIT-NPC-TEXT.md N1.2 #151): the clock fan-out STAYS
@@ -171,6 +172,12 @@ IncenseBurnerScript:
 
 MerchandiseShelfScript:
 	farjumptext MerchandiseShelfText
+
+KantoMerchandiseShelfScript:
+; BG2 (docs/BG1-BENCH-AND-SHELVES.md): Yellow's PokemonStuffText
+; (vendor/pokeyellow/data/text/text_2.asm), read facing UP on a Kanto-side
+; MART_SHELF tile and from the Game Corner / Indigo lobby shelf bg_events.
+	farjumptext KantoMerchandiseShelfText
 
 TownMapScript:
 	opentext

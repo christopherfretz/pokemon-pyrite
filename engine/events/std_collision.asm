@@ -4,7 +4,7 @@ CheckFacingTileForStdScript::
 	jr c, .notintable
 	ld a, c
 	ld de, 3
-	ld hl, TileCollisionStdScripts
+	; hl = the table KantoSilentStdTile picked
 	call IsInArray
 	jr nc, .notintable
 
@@ -35,7 +35,12 @@ KantoSilentStdTile:
 ; BookOrSculptureText verbatim).  Crystal's std scripts (the #MON PAL magazines,
 ; the POKeMON CHANNEL, "It's a TV.") stay for Johto, including the four
 ; Johto-act houses that carry a Kanto landmark.
-; In: c = collision.  Out: carry = silent.  Preserves c.
+; BG2: a Kanto-side MART_SHELF is Yellow's MART/LOBBY shelf tile ($54/$55,
+; $50/$52 in bookshelf_tile_ids.asm): facing UP it says Yellow's "Wow! Tons of
+; #MON stuff!" (KantoMerchandiseShelfScript), any other facing nothing.  Johto
+; keeps Crystal's "Lots of #MON merchandise!" from every side.
+; In: c = collision.  Out: carry = silent, else hl = the std-script table to
+; search.  Preserves c.
 	ld a, c
 	cp COLL_BOOKSHELF
 	jr z, .q1
@@ -43,7 +48,10 @@ KantoSilentStdTile:
 	jr z, .q1
 	cp COLL_RADIO
 	jr z, .q1
+	cp COLL_MART_SHELF
+	jr z, .q1
 .crystal
+	ld hl, TileCollisionStdScripts
 	and a
 	ret
 
@@ -61,13 +69,25 @@ KantoSilentStdTile:
 .loop
 	ld a, [hli]
 	cp -1
-	jr z, .silent
+	jr z, .kanto
 	cp d
 	ld a, [hli]
 	jr nz, .loop
 	cp e
 	jr nz, .loop
 	jr .crystal
+
+.kanto
+	ld a, c
+	cp COLL_MART_SHELF
+	jr nz, .silent
+	ld a, [wPlayerDirection]
+	and %1100
+	cp OW_UP
+	jr nz, .silent
+	ld hl, KantoTileCollisionStdScripts
+	and a
+	ret
 
 .silent
 	scf

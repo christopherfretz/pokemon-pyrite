@@ -16,3 +16,8 @@ TileCollisionStdScripts:
 	stdcoll COLL_WINDOW,         WindowScript
 	stdcoll COLL_INCENSE_BURNER, IncenseBurnerScript
 	db -1 ; end
+
+KantoTileCollisionStdScripts:
+; BG2: Kanto-side shelf facing UP (engine/events/std_collision.asm KantoSilentStdTile)
+	stdcoll COLL_MART_SHELF,     KantoMerchandiseShelfScript
+	db -1 ; end
