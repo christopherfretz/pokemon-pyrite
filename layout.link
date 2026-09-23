@@ -40,6 +40,10 @@ ROMX $02
 	"Tileset Data 11"
 ROMX $03
 	"bank3"
+	; Kanto hack (M13-Q5): pinned where it floated before Q5 freed 71 B in
+	; bank $01 -- the linker then bin-packed this 272-B text section into $01
+	; and the map's bank-$01 free figure stopped meaning anything.
+	"Kanto hack 14k Tin Tower Text"
 ROMX $04
 	"bank4"
 ROMX $05
