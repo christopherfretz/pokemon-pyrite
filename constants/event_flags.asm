@@ -165,8 +165,8 @@
 	const EVENT_SILVER_CAVE_ROOM_1_HIDDEN_ULTRA_BALL
 	const EVENT_SILVER_CAVE_ROOM_2_HIDDEN_MAX_POTION
 	const EVENT_DARK_CAVE_VIOLET_ENTRANCE_HIDDEN_ELIXER
-	const EVENT_VICTORY_ROAD_HIDDEN_MAX_POTION
-	const EVENT_VICTORY_ROAD_HIDDEN_FULL_HEAL
+	const EVENT_VICTORY_ROAD_2F_HIDDEN_ULTRA_BALL ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_HIDDEN_MAX_POTION (dead); Yellow's VICTORY ROAD 2F hidden ULTRA BALL (5,2)
+	const EVENT_VICTORY_ROAD_2F_HIDDEN_FULL_RESTORE ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_HIDDEN_FULL_HEAL (dead); Yellow's VICTORY ROAD 2F hidden FULL RESTORE (26,7)
 	const EVENT_DRAGONS_DEN_B1F_HIDDEN_REVIVE
 	const EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_POTION
 	const EVENT_DRAGONS_DEN_B1F_HIDDEN_MAX_ELIXER
@@ -224,7 +224,7 @@
 ; EVENT_GOT_PASS_FROM_COPYCAT are left alone: the second is still read by
 ; engine/phone/scripts/irwin_gossip.asm, and the PASS itself is wanted for the
 ; Johto act's MAGNET TRAIN, so only the SAFFRON half of the quest is retired.
-	const EVENT_RETURNED_LOST_ITEM_TO_COPYCAT ; Kanto hack (M8 11n audit): DEAD since M8 11d (D75: Crystal's LOST ITEM -> PASS quest retired in Kanto) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_VICTORY_ROAD_2F_GUARD_SPEC ; Kanto hack (M10 13g): renamed in place, was EVENT_RETURNED_LOST_ITEM_TO_COPYCAT (dead); ball (11,0)
 	const EVENT_GOT_PASS_FROM_COPYCAT
 	const EVENT_GOT_BIKE_VOUCHER ; Kanto hack: renamed in place (7f), was EVENT_GOT_LOST_ITEM_FROM_FAN_CLUB (Crystal's LOST_ITEM quest deleted); Yellow's EVENT_GOT_BIKE_VOUCHER
 	const EVENT_PIKACHU_FAN_BOAST ; Kanto hack: renamed in place (7f), was EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT_BUT_BAG_WAS_FULL; Yellow's boast toggle -- SET means the CLEFAIRY fan brags back next
@@ -238,7 +238,7 @@
 	const EVENT_SS_ANNE_1F_ROOMS_TM_BODY_SLAM ; Kanto hack: renamed in place (7h), was EVENT_GOT_CLEANSE_TAG; S.S. ANNE 1F Rooms item ball (12,15)
 	const EVENT_GOT_TM21_MEGA_DRAIN ; Kanto hack: renamed in place (M6 9q), was EVENT_GOT_TM19_GIGA_DRAIN; ERIKA's TM is Yellow's TM21 MEGA DRAIN (our TM67)
 	const EVENT_GOT_TM06_TOXIC
-	const EVENT_GOT_UP_GRADE ; Kanto hack (M8 11n audit): DEAD since M8 11e (Crystal's SILPH 1F OFFICER + UP_GRADE deleted; Yellow has neither) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_VICTORY_ROAD_3F_MAX_REVIVE ; Kanto hack (M10 13g): renamed in place, was EVENT_GOT_UP_GRADE (dead); ball (26,5)
 	const EVENT_GOT_TM07_ZAP_CANNON
 	const EVENT_GOT_TM42_DREAM_EATER
 	const EVENT_TALKED_TO_OAK_IN_KANTO
@@ -646,7 +646,7 @@
 	const EVENT_BEAT_ROUTE_17_BIKER_4 ; was EVENT_BEAT_BIKER_GLENN; ROUTE 17 (5,98), Yellow's OPP_BIKER 11
 ; Psychic
 	const EVENT_BEAT_PSYCHIC_NATHAN
-	const EVENT_BEAT_PSYCHIC_FRANKLIN ; Kanto hack (M8 11n audit): DEAD since M8 11l (Crystal's SAFFRON GYM roster replaced by Yellow's seven) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_VICTORY_ROAD_3F_TM_EXPLOSION ; Kanto hack (M10 13g): renamed in place, was EVENT_BEAT_PSYCHIC_FRANKLIN (dead); ball (7,7), TM82
 	const EVENT_BEAT_SCIENTIST_MAXWELL ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_HERMAN; ROUTE 11, Yellow's ENGINEER 2
 	const EVENT_BEAT_SCIENTIST_THURSTON ; Kanto hack: renamed in place (7l), was the dead EVENT_BEAT_PSYCHIC_FIDEL; ROUTE 11, Yellow's ENGINEER 3
 	const EVENT_BEAT_PSYCHIC_GREG
@@ -655,7 +655,7 @@
 	const EVENT_BEAT_PSYCHIC_PHIL
 	const EVENT_BEAT_PSYCHIC_RICHARD
 	const EVENT_BEAT_PSYCHIC_GILBERT
-	const EVENT_BEAT_PSYCHIC_JARED ; Kanto hack (M8 11n audit): DEAD since M8 11l (as above) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_BEAT_MOLTRES ; Kanto hack (M10 13g): renamed in place, was EVENT_BEAT_PSYCHIC_JARED (dead); Yellow's flag of the same name; MOLTRES (11,5)'s hide flag, set on win/catch/run
 	const EVENT_BEAT_PSYCHIC_RODNEY
 ; Firebreather
 	const EVENT_BEAT_BUG_CATCHER_COLTON ; Kanto hack: was EVENT_BEAT_FIREBREATHER_OTIS; Route 3, Yellow's BUG_CATCHER 4
@@ -1215,11 +1215,11 @@
 	const EVENT_DARK_CAVE_VIOLET_ENTRANCE_HYPER_POTION
 	const EVENT_DARK_CAVE_BLACKTHORN_ENTRANCE_REVIVE
 	const EVENT_DARK_CAVE_BLACKTHORN_ENTRANCE_TM_SNORE
-	const EVENT_VICTORY_ROAD_TM_EARTHQUAKE
-	const EVENT_VICTORY_ROAD_MAX_REVIVE
-	const EVENT_VICTORY_ROAD_FULL_RESTORE
-	const EVENT_VICTORY_ROAD_FULL_HEAL
-	const EVENT_VICTORY_ROAD_HP_UP
+	const EVENT_VICTORY_ROAD_1F_TM_SKY_ATTACK ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_TM_EARTHQUAKE (dead); ball (11,0), TM79
+	const EVENT_VICTORY_ROAD_1F_RARE_CANDY ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_MAX_REVIVE (dead); ball (9,2)
+	const EVENT_VICTORY_ROAD_2F_TM_SUBMISSION ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_FULL_RESTORE (dead); ball (27,5), TM63
+	const EVENT_VICTORY_ROAD_2F_FULL_HEAL ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_FULL_HEAL (dead); ball (18,9)
+	const EVENT_VICTORY_ROAD_2F_TM_MEGA_KICK ; Kanto hack (M10 13g): renamed in place, was EVENT_VICTORY_ROAD_HP_UP (dead); ball (9,11), TM55
 	const EVENT_DRAGONS_DEN_B1F_DRAGON_FANG
 	const EVENT_TOHJO_FALLS_MOON_STONE
 	const EVENT_ROUTE_26_MAX_ELIXER
@@ -1247,7 +1247,7 @@
 	const EVENT_RIVAL_AZALEA_TOWN
 	const EVENT_RIVAL_TEAM_ROCKET_BASE
 	const EVENT_RIVAL_GOLDENROD_UNDERGROUND
-	const EVENT_RIVAL_VICTORY_ROAD
+	const EVENT_VICTORY_ROAD_2F_BOULDER_HIDDEN ; Kanto hack (M10 13g): renamed in place, was EVENT_RIVAL_VICTORY_ROAD (dead); hide flag of 2F BOULDER3 (23,16), Yellow's TOGGLE_VICTORY_ROAD_2F_BOULDER inverted.  Still SET by InitializeEventsScript (the old setevent, renamed) and by ROUTE 23's NEWMAP; cleared when a boulder drops through 3F's hole
 	const EVENT_RIVAL_OLIVINE_CITY
 	const EVENT_RIVAL_SPROUT_TOWER
 	const EVENT_RIVAL_BURNED_TOWER
@@ -1291,8 +1291,8 @@
 	const EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	const EVENT_ROUTE_34_ILEX_FOREST_GATE_TEACHER_IN_WALKWAY
 	const EVENT_ILEX_FOREST_LASS
-	const EVENT_COPYCAT_1 ; Kanto hack (M8 11n audit): DEAD since M8 11d (as EVENT_RETURNED_LOST_ITEM_TO_COPYCAT) -- no live reference anywhere; free to rename in place (D49)
-	const EVENT_COPYCAT_2 ; Kanto hack (M8 11n audit): DEAD since M8 11d (as above) -- no live reference anywhere; free to rename in place (D49)
+	const EVENT_VICTORY_ROAD_1F_BOULDER_ON_SWITCH ; Kanto hack (M10 13g): renamed in place, was EVENT_COPYCAT_1 (dead); Yellow's EVENT_VICTORY_ROAD_1_BOULDER_ON_SWITCH; cleared on every 2F entry
+	const EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH1 ; Kanto hack (M10 13g): renamed in place, was EVENT_COPYCAT_2 (dead); Yellow's EVENT_VICTORY_ROAD_2_BOULDER_ON_SWITCH1; cleared by ROUTE 23's NEWMAP
 	const EVENT_GOLDENROD_SALE_OFF
 	const EVENT_GOLDENROD_SALE_ON
 	const_skip ; unused in Crystal
@@ -1426,7 +1426,7 @@
 	const EVENT_BEAT_ROUTE_24_ROCKET ; Kanto hack (6h): renamed in place.  Crystal's Route 24 Rocket-executive object flag is dead -- 6h deletes that NPC -- so this slot now records the win over Yellow's Nugget Bridge recruiter.  Its two setters (PowerPlant.asm, InitializeEventsScript) were deleted with it.
 	const EVENT_CERULEAN_GYM_ROCKET
 	const EVENT_ROUTE_17_HIDDEN_MAX_REVIVE ; Kanto hack: renamed in place (M6 9z), was DEAD since 6i (Crystal's Misty's-date NPC); ROUTE 17 (4,91)
-	const EVENT_TRAINERS_IN_CERULEAN_GYM ; Kanto hack: DEAD since 6i (Crystal's gym-trainer gate is gone with Misty's date); free to rename in place
+	const EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH2 ; Kanto hack (M10 13g): renamed in place, was EVENT_TRAINERS_IN_CERULEAN_GYM (dead); Yellow's EVENT_VICTORY_ROAD_2_BOULDER_ON_SWITCH2; cleared by ROUTE 23's NEWMAP
 	const EVENT_SS_ANNE_LEFT ; Kanto hack: renamed in place (7e), was EVENT_VERMILION_CITY_SNORLAX (Snorlax deleted); Yellow's EVENT_SS_ANNE_LEFT, set in 7g
 	const EVENT_GAVE_SAFFRON_GUARDS_DRINK ; Kanto hack: renamed in place (7d), was EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH; Yellow's BIT_GAVE_SAFFRON_GUARDS_DRINK, shared by every SAFFRON gate guard
 	const EVENT_SAFFRON_TRAIN_STATION_POPULATION
@@ -2202,8 +2202,24 @@
 	const EVENT_CINNABAR_GYM_GATE5_UNLOCKED ; Yellow block (2,6)
 	const EVENT_CINNABAR_GYM_GATE6_UNLOCKED ; Yellow block (2,3)
 	const EVENT_GOT_TM38_FIRE_BLAST
+; Kanto hack (M10 13g): VICTORY ROAD's eleven trainers and 3F's two boulder
+; flags, appended (D49) -- the 15 renamed rows above ran out.  Yellow's names,
+; with the floor spelled 1F/2F/3F.
+	const EVENT_VICTORY_ROAD_3F_BOULDER_ON_SWITCH1 ; switch (3,5); cleared by ROUTE 23's NEWMAP
+	const EVENT_VICTORY_ROAD_3F_BOULDER_ON_SWITCH2 ; = "a boulder went down the hole (23,15)"; hide flag of 3F BOULDER4 (22,15); cleared by ROUTE 23's NEWMAP
+	const EVENT_BEAT_VICTORY_ROAD_1F_TRAINER_0 ; COOLTRAINER F (7,5)
+	const EVENT_BEAT_VICTORY_ROAD_1F_TRAINER_1 ; COOLTRAINER M (3,2)
+	const EVENT_BEAT_VICTORY_ROAD_2F_TRAINER_0 ; BLACKBELT (12,9)
+	const EVENT_BEAT_VICTORY_ROAD_2F_TRAINER_1 ; JUGGLER (21,13)
+	const EVENT_BEAT_VICTORY_ROAD_2F_TRAINER_2 ; TAMER (19,8)
+	const EVENT_BEAT_VICTORY_ROAD_2F_TRAINER_3 ; POKEMANIAC (4,2)
+	const EVENT_BEAT_VICTORY_ROAD_2F_TRAINER_4 ; JUGGLER (26,3)
+	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_0 ; COOLTRAINER M (28,5)
+	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_1 ; COOLTRAINER F (7,13)
+	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_2 ; COOLTRAINER M (6,14)
+	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_3 ; COOLTRAINER F (13,3)
 
-; Unused: next 249 events
+; Unused: next 236 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

@@ -1312,6 +1312,31 @@ CooltrainerMGroup:
 	db 37, DRAGONAIR,  WRAP, SURF, DRAGON_RAGE, SLAM
 	db -1 ; end
 
+	; COOLTRAINERM (21) = COOLTRAINERM_VICTORY_ROAD_1: Kanto hack (M10 13g) VICTORY ROAD, 1F (3,2), Yellow CoolTrainerMData 5.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 42, IVYSAUR
+	db 42, WARTORTLE
+	db 42, CHARMELEON
+	db 42, CHARIZARD
+	db -1 ; end
+
+	; COOLTRAINERM (22) = COOLTRAINERM_VICTORY_ROAD_2: Kanto hack (M10 13g) VICTORY ROAD, 3F (28,5), Yellow CoolTrainerMData 2.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, EXEGGUTOR
+	db 43, CLOYSTER
+	db 43, ARCANINE
+	db -1 ; end
+
+	; COOLTRAINERM (23) = COOLTRAINERM_VICTORY_ROAD_3: Kanto hack (M10 13g) VICTORY ROAD, 3F (6,14), Yellow CoolTrainerMData 3.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, KINGLER
+	db 43, TENTACRUEL
+	db 43, BLASTOISE
+	db -1 ; end
+
 CooltrainerFGroup:
 	; COOLTRAINERF (1)
 	db "GWEN@", TRAINERTYPE_NORMAL
@@ -1449,6 +1474,29 @@ CooltrainerFGroup:
 	db 24, WEEPINBELL
 	db 24, GLOOM
 	db 24, IVYSAUR
+	db -1 ; end
+
+	; COOLTRAINERF (23) = COOLTRAINERF_VICTORY_ROAD_1: Kanto hack (M10 13g) VICTORY ROAD, 1F (7,5), Yellow CoolTrainerFData 5.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 44, PERSIAN
+	db 44, NINETALES
+	db -1 ; end
+
+	; COOLTRAINERF (24) = COOLTRAINERF_VICTORY_ROAD_2: Kanto hack (M10 13g) VICTORY ROAD, 3F (7,13), Yellow CoolTrainerFData 2.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, BELLSPROUT
+	db 43, WEEPINBELL
+	db 43, VICTREEBEL
+	db -1 ; end
+
+	; COOLTRAINERF (25) = COOLTRAINERF_VICTORY_ROAD_3: Kanto hack (M10 13g) VICTORY ROAD, 3F (13,3), Yellow CoolTrainerFData 3.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, PARASECT
+	db 43, DEWGONG
+	db 43, CHANSEY
 	db -1 ; end
 
 BeautyGroup:
@@ -1710,6 +1758,14 @@ PokemaniacGroup:
 	; POKEMANIAC (21) - Kanto hack: ROCK TUNNEL B1F, Yellow's POKEMANIAC 5
 	db "WALDO@", TRAINERTYPE_NORMAL
 	db 25, SLOWPOKE
+	db -1 ; end
+
+	; POKEMANIAC (22) = POKEMANIAC_VICTORY_ROAD: Kanto hack (M10 13g) VICTORY ROAD, 2F (4,2), Yellow PokemaniacData 6.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 40, CHARMELEON
+	db 40, LAPRAS
+	db 40, LICKITUNG
 	db -1 ; end
 
 GruntMGroup:
@@ -3786,6 +3842,21 @@ JugglerGroup:
 	db 29, MR__MIME
 	db -1 ; end
 
+	; JUGGLER (9) = JUGGLER_10: Kanto hack (M10 13g) VICTORY ROAD, 2F (21,13), Yellow JugglerData 2.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 41, DROWZEE
+	db 41, HYPNO
+	db 41, KADABRA
+	db 41, KADABRA
+	db -1 ; end
+
+	; JUGGLER (10) = JUGGLER_11: Kanto hack (M10 13g) VICTORY ROAD, 2F (26,3), Yellow JugglerData 5.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 48, MR__MIME
+	db -1 ; end
+
 BlackbeltGroup:
 	; BLACKBELT_T (1)
 	db "KENJI@", TRAINERTYPE_NORMAL
@@ -3892,6 +3963,14 @@ BlackbeltGroup:
 	db 38, MACHOKE
 	db 38, MACHOP
 	db 38, MACHOKE
+	db -1 ; end
+
+	; BLACKBELT_T (18) = BLACKBELT_VICTORY_ROAD: Kanto hack (M10 13g) VICTORY ROAD, 2F (12,9), Yellow BlackbeltData 9.
+	; Appended nameless, as the 13b rows.
+	db "@", TRAINERTYPE_NORMAL
+	db 43, MACHOKE
+	db 43, MACHOP
+	db 43, MACHOKE
 	db -1 ; end
 
 ExecutiveMGroup:

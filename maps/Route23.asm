@@ -32,9 +32,22 @@ Route23_MapScripts:
 	scene_script Route23NoopScene, SCENE_ROUTE23_ALL_PASSED
 
 	def_callbacks
+	callback MAPCALLBACK_NEWMAP, Route23ResetVictoryRoadCallback
 
 Route23NoopScene:
 	end
+
+; Kanto hack (M10 13g): Yellow's Route23SetVictoryRoadBoulders
+; (vendor/pokeyellow/scripts/Route23.asm:8-19), run on every ROUTE 23 load:
+; the 2F and 3F switches close again, the 3F hole boulder comes back and the
+; one that fell to 2F goes away.  1F's switch is 2F's business (2F NEWMAP).
+Route23ResetVictoryRoadCallback:
+	clearevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH1
+	clearevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH2
+	clearevent EVENT_VICTORY_ROAD_3F_BOULDER_ON_SWITCH1
+	clearevent EVENT_VICTORY_ROAD_3F_BOULDER_ON_SWITCH2 ; shows 3F BOULDER4
+	setevent EVENT_VICTORY_ROAD_2F_BOULDER_HIDDEN
+	endcallback
 
 ; row 136: CASCADEBADGE (Yellow's GUARD)
 Route23CascadeCheckStepScript:

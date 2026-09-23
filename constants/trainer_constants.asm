@@ -309,6 +309,9 @@ DEF KRIS EQU __trainer_class__
 	const COOLTRAINERM_VIRIDIAN_3 ; Kanto hack (M10 13b): was STEVE (unused) -- VIRIDIAN GYM, Yellow CoolTrainerMData 1
 	const ALLEN
 	const DARIN
+	const COOLTRAINERM_VICTORY_ROAD_1 ; Kanto hack (M10 13g): VICTORY ROAD, 1F (3,2), Yellow CoolTrainerMData 5
+	const COOLTRAINERM_VICTORY_ROAD_2 ; Kanto hack (M10 13g): VICTORY ROAD, 3F (28,5), Yellow CoolTrainerMData 2
+	const COOLTRAINERM_VICTORY_ROAD_3 ; Kanto hack (M10 13g): VICTORY ROAD, 3F (6,14), Yellow CoolTrainerMData 3
 
 	trainerclass COOLTRAINERF ; 1c
 	const GWEN
@@ -333,6 +336,9 @@ DEF KRIS EQU __trainer_class__
 	const REENA3
 	const CARA
 	const IVY ; Kanto hack: CELADON GYM (Yellow COOLTRAINER_F 1), appended (M6 9q)
+	const COOLTRAINERF_VICTORY_ROAD_1 ; Kanto hack (M10 13g): VICTORY ROAD, 1F (7,5), Yellow CoolTrainerFData 5
+	const COOLTRAINERF_VICTORY_ROAD_2 ; Kanto hack (M10 13g): VICTORY ROAD, 3F (7,13), Yellow CoolTrainerFData 2
+	const COOLTRAINERF_VICTORY_ROAD_3 ; Kanto hack (M10 13g): VICTORY ROAD, 3F (13,3), Yellow CoolTrainerFData 3
 
 	trainerclass BEAUTY ; 1d
 	const VICTORIA
@@ -389,6 +395,7 @@ DEF KRIS EQU __trainer_class__
 	const CEDRIC
 	const AMOS
 	const WALDO
+	const POKEMANIAC_VICTORY_ROAD ; Kanto hack (M10 13g): VICTORY ROAD, 2F (4,2), Yellow PokemaniacData 6
 
 	trainerclass GRUNTM ; 1f
 	const GRUNTM_1
@@ -796,6 +803,8 @@ DEF KRIS EQU __trainer_class__
 	const JUGGLER_7 ; FUCHSIA GYM (was IRWIN4, unused)
 	const JUGGLER_8 ; FUCHSIA GYM, appended
 	const JUGGLER_9 ; Kanto hack (M8 11f): SILPH CO. 5F (18,10), Yellow JugglerData 1
+	const JUGGLER_10 ; Kanto hack (M10 13g): VICTORY ROAD, 2F (21,13), Yellow JugglerData 2
+	const JUGGLER_11 ; Kanto hack (M10 13g): VICTORY ROAD, 2F (26,3), Yellow JugglerData 5
 
 	trainerclass BLACKBELT_T ; 32
 	const KENJI1 ; unused
@@ -820,6 +829,7 @@ DEF KRIS EQU __trainer_class__
 	const BLACKBELT_VIRIDIAN_1
 	const BLACKBELT_VIRIDIAN_2
 	const BLACKBELT_VIRIDIAN_3
+	const BLACKBELT_VICTORY_ROAD ; Kanto hack (M10 13g): VICTORY ROAD, 2F (12,9), Yellow BlackbeltData 9
 
 	trainerclass EXECUTIVEM ; 33
 	const EXECUTIVEM_1
@@ -1132,7 +1142,7 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const TAMER_2 ; FUCHSIA GYM
 	const TAMER_3 ; VIRIDIAN GYM (M10 13b)
 	const TAMER_4 ; VIRIDIAN GYM (M10 13b)
-	const TAMER_5 ; VICTORY ROAD 2F (reserved for M8)
+	const TAMER_5 ; VICTORY ROAD 2F (19,8), Yellow TamerData 5 (placed in M10 13g)
 
 	trainerclass MYSTICALMAN ; 48
 	const EUSINE
