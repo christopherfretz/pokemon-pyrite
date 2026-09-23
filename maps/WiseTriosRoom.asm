@@ -25,8 +25,13 @@ WiseTriosRoomWiseTrioCallback:
 	iftrue .NoWiseTrio
 	checkevent EVENT_KOJI_ALLOWS_YOU_PASSAGE_TO_TIN_TOWER
 	iftrue .WiseTrio2
+	; Kanto hack (M11 14k, D151): the trio keeps blocking until the Mt.
+	; Silver LANCE is beaten, CLEAR BELL or not.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
+	iffalse .WiseTrio1
 	checkitem CLEAR_BELL
 	iftrue .WiseTrio2
+.WiseTrio1:
 	clearevent EVENT_WISE_TRIOS_ROOM_WISE_TRIO_1
 	setevent EVENT_WISE_TRIOS_ROOM_WISE_TRIO_2
 	endcallback
@@ -362,3 +367,8 @@ WiseTriosRoom_MapEvents:
 	object_event  4,  2, SPRITE_SAGE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 2, TrainerSageGaku, EVENT_WISE_TRIOS_ROOM_WISE_TRIO_2
 	object_event  4,  6, SPRITE_SAGE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 2, TrainerSageMasa, EVENT_WISE_TRIOS_ROOM_WISE_TRIO_2
 	object_event  6,  4, SPRITE_SAGE, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 2, TrainerSageKoji, EVENT_WISE_TRIOS_ROOM_WISE_TRIO_2
+
+; Kanto hack (M11 14k): filler, so the net growth of this map and
+; ECRUTEAK TIN TOWER ENTRANCE is zero and VIRIDIAN / ROUTE 2 later in
+; "Map Scripts 11" keep their savestate addresses.
+	ds 81

@@ -29,7 +29,7 @@ TinTower1FNoopScene:
 TinTower1FNPCsCallback:
 	checkevent EVENT_GOT_RAINBOW_WING
 	iftrue .GotRainbowWing
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iffalse .FaceBeasts
 	special BeastsCheck
 	iffalse .FaceBeasts

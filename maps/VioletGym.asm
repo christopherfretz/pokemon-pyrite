@@ -284,8 +284,8 @@ VioletGymGuideWinText:
 	text "Nice battle! Keep"
 	line "it up, and you'll"
 
-	para "be the CHAMP in no"
-	line "time at all!"
+	para "have every BADGE"
+	line "in no time at all!"
 	done
 
 VioletGym_MapEvents:

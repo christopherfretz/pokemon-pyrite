@@ -425,7 +425,7 @@ DragonsDenB1FRivalTextLoss:
 	para "With my #MON,"
 	line "I'm going to beat"
 
-	para "the CHAMPION and"
+	para "you someday and"
 	line "become the world's"
 	cont "greatest trainer."
 	done

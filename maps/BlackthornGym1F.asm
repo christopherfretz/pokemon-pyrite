@@ -189,8 +189,8 @@ ClairText_GoToDragonsDen:
 	para "I may have lost,"
 	line "but you're still"
 
-	para "not ready for the"
-	line "#MON LEAGUE."
+	para "not ready for"
+	line "MT.SILVER."
 
 	para "I know. You should"
 	line "take the dragon"
@@ -359,8 +359,7 @@ CooltrainerfLolaAfterBattleText:
 	done
 
 BlackthornGymGuideText:
-	text "Yo! CHAMP in"
-	line "making!"
+	text "Yo! KANTO CHAMP!"
 
 	para "It's been a long"
 	line "journey, but we"
@@ -388,12 +387,10 @@ BlackthornGymGuideWinText:
 	line "beat CLAIR!"
 
 	para "All that's left is"
-	line "the #MON LEAGUE"
-	cont "challenge."
+	line "to earn her BADGE."
 
-	para "You're on the way"
-	line "to becoming the"
-	cont "#MON CHAMPION!"
+	para "Then MT.SILVER"
+	line "awaits you!"
 	done
 
 BlackthornGym1F_MapEvents:
@@ -420,3 +417,7 @@ BlackthornGym1F_MapEvents:
 	object_event  1, 14, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerCooltrainermPaul, -1
 	object_event  9,  2, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 1, TrainerCooltrainerfLola, -1
 	object_event  7, 15, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, BlackthornGymGuideScript, -1
+
+; Kanto hack (M11 14k): filler for the bytes 14k removed above, so FUCHSIA's maps
+; later in this section keep their savestate addresses.
+	ds 39

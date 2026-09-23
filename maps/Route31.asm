@@ -65,7 +65,7 @@ TrainerBugCatcherWade1:
 	ifequal 1, .Fight1
 	ifequal 0, .LoadFight0
 .Fight4:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .LoadFight4
 .Fight3:
 	checkevent EVENT_CLEARED_RADIO_TOWER

@@ -1,25 +1,23 @@
 IrwinRumorScript:
-	checkevent EVENT_OPENED_MT_SILVER
+; Kanto hack (M11 14k): newest news first, in the Kanto-first order.  The
+; KANTO act is over before IRWIN can be met, so Crystal's SNORLAX, MARSHBADGE
+; ("a ruckus over in KANTO") and ELITE FOUR ("your mom in NEW BARK") rumors
+; are gone; the "world championship" rumor waits for the MT.SILVER LANCE.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .MtSilver
-	checkevent EVENT_FOUGHT_SNORLAX
-	iftrue .Snorlax
-	checkevent EVENT_GOT_PASS_FROM_COPYCAT
-	iftrue .TrainPass
-	checkflag ENGINE_MARSHBADGE
-	iftrue .MarshBadge
-; Kanto hack (M11 14i): ENGINE_FLYPOINT_VERMILION is set in the KANTO act,
-; long before any ship; key "striding onto a ship" on the S.S.AQUA's first
-; crossing instead (same size: checkflag and checkevent are both 3 bytes).
-	checkevent EVENT_FAST_SHIP_FIRST_TIME
-	iftrue .VermilionCity
-	checkevent EVENT_BEAT_ELITE_FOUR
-	iftrue .EliteFour
 	checkflag ENGINE_RISINGBADGE
 	iftrue .RisingBadge
 	checkevent EVENT_CLEARED_RADIO_TOWER
 	iftrue .RadioTower
 	checkevent EVENT_CLEARED_ROCKET_HIDEOUT
 	iftrue .RocketHideout
+	checkevent EVENT_GOT_PASS_FROM_COPYCAT
+	iftrue .TrainPass
+; Kanto hack (M11 14i): ENGINE_FLYPOINT_VERMILION is set in the KANTO act,
+; long before any ship; key "striding onto a ship" on the S.S.AQUA's first
+; crossing instead.
+	checkevent EVENT_FAST_SHIP_FIRST_TIME
+	iftrue .VermilionCity
 	checkevent EVENT_JASMINE_RETURNED_TO_GYM
 	iftrue .JasmineReturned
 	checkflag ENGINE_FOGBADGE
@@ -55,10 +53,6 @@ IrwinRumorScript:
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
 
-.EliteFour:
-	farwritetext IrwinEliteFourGossipText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male
 
 .VermilionCity:
 	farwritetext IrwinVermilionCityGossipText
@@ -70,10 +64,6 @@ IrwinRumorScript:
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
 
-.Snorlax:
-	farwritetext IrwinSnorlaxGossipText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male
 
 .MtSilver:
 	farwritetext IrwinMtSilverGossipText
@@ -85,7 +75,3 @@ IrwinRumorScript:
 	promptbutton
 	sjump PhoneScript_HangUpText_Male
 
-.MarshBadge:
-	farwritetext IrwinMarshBadgeGossipText
-	promptbutton
-	sjump PhoneScript_HangUpText_Male

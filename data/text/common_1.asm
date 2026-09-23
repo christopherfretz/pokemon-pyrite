@@ -966,7 +966,7 @@ _RocketRadioText2::
 
 _RocketRadioText3::
 	text_start
-	line "After three years"
+	line "After many months"
 	done
 
 _RocketRadioText4::

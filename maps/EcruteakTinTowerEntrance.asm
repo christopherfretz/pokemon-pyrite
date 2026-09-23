@@ -31,8 +31,13 @@ EcruteakTinTowerEntranceInitializeSagesCallback:
 	clearevent EVENT_RANG_CLEAR_BELL_1
 	setevent EVENT_RANG_CLEAR_BELL_2
 	setevent EVENT_ECRUTEAK_TIN_TOWER_ENTRANCE_WANDERING_SAGE
+	; Kanto hack (M11 14k, D151): the tower stays shut until the Mt. Silver
+	; LANCE is beaten, CLEAR BELL or not.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
+	iffalse .SagesBlock
 	checkitem CLEAR_BELL
 	iftrue .NoClearBell
+.SagesBlock:
 	setscene SCENE_ECRUTEAKTINTOWERENTRANCE_SAGE_BLOCKS
 .NoClearBell:
 	endcallback
@@ -87,9 +92,18 @@ EcruteakTinTowerEntranceSageScript:
 	iftrue .AllowedThrough
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
 	iftrue .RangClearBell
+	; Kanto hack (M11 14k, D151): not until the Mt. Silver LANCE is beaten.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
+	iffalse .NotYet
 	checkitem CLEAR_BELL
 	iftrue .GotClearBell
 	writetext EcruteakTinTowerEntranceSageText_NoClearBell
+	waitbutton
+	closetext
+	end
+
+.NotYet:
+	writetext EcruteakTinTowerEntranceSageText_NotYet
 	waitbutton
 	closetext
 	end
@@ -161,18 +175,8 @@ EcruteakTinTowerEntranceSageText:
 	done
 
 EcruteakTinTowerEntranceSageText_GotFogBadge:
-	text "TIN TOWER is off"
-	line "limits to anyone"
-
-	para "without ECRUTEAK"
-	line "GYM's BADGE."
-
-	para "Ah!"
-
-	para "ECRUTEAK's GYM"
-	line "BADGE! Please, go"
-	cont "right through."
-	done
+	text_far _EcruteakTinTowerEntranceSageText_GotFogBadge
+	text_end
 
 EcruteakTinTowerEntranceSageText_NoClearBell:
 	text "A momentous event"
@@ -191,6 +195,10 @@ EcruteakTinTowerEntranceSageText_NoClearBell:
 	para "very difficult to"
 	line "understand…"
 	done
+
+EcruteakTinTowerEntranceSageText_NotYet:
+	text_far _EcruteakTinTowerEntranceSageText_NotYet
+	text_end
 
 EcruteakTinTowerEntranceSageText_HearsClearBell:
 	text "A momentous event"
@@ -296,3 +304,40 @@ EcruteakTinTowerEntrance_MapEvents:
 	object_event  5,  6, SPRITE_SAGE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, EcruteakTinTowerEntranceSageScript, EVENT_RANG_CLEAR_BELL_2
 	object_event  6,  9, SPRITE_SAGE, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, EcruteakTinTowerEntranceWanderingSageScript, EVENT_ECRUTEAK_TIN_TOWER_ENTRANCE_WANDERING_SAGE
 	object_event  3, 11, SPRITE_GRAMPS, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, EcruteakTinTowerEntranceGrampsScript, EVENT_ECRUTEAK_TIN_TOWER_ENTRANCE_WANDERING_SAGE
+
+; Kanto hack (M11 14k): new text lives in its own section, so "Map Scripts 11"
+; keeps the later Kanto maps (VIRIDIAN, ROUTE 2) at their savestate addresses.
+PUSHS
+SECTION "Kanto hack 14k Tin Tower Text", ROMX
+
+_EcruteakTinTowerEntranceSageText_NotYet:
+	text "The TIN TOWER is"
+	line "sealed to all."
+
+	para "Its #MON will"
+	line "not show itself"
+
+	para "until one proves"
+	line "stronger than the"
+	cont "LEAGUE itself."
+
+	para "They say such a"
+	line "trial waits atop"
+	cont "MT.SILVER…"
+	done
+
+_EcruteakTinTowerEntranceSageText_GotFogBadge: ; Crystal's text, moved here unchanged
+	text "TIN TOWER is off"
+	line "limits to anyone"
+
+	para "without ECRUTEAK"
+	line "GYM's BADGE."
+
+	para "Ah!"
+
+	para "ECRUTEAK's GYM"
+	line "BADGE! Please, go"
+	cont "right through."
+	done
+
+POPS

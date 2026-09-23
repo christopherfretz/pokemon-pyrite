@@ -83,8 +83,8 @@ ReleaseTheBeasts:
 	setevent EVENT_RELEASED_THE_BEASTS
 	special InitRoamMons
 	setmapscene ECRUTEAK_GYM, SCENE_ECRUTEAKGYM_NOOP
-	setmapscene CIANWOOD_CITY, SCENE_CIANWOODCITY_SUICUNE_AND_EUSINE
-	clearevent EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY
+; Kanto hack (M11 14k, D151): the SUICUNE chase opens after the MT.SILVER
+; LANCE (maps/SilverCaveRoom3.asm), not here.
 	setevent EVENT_ECRUTEAK_GYM_GRAMPS
 	clearevent EVENT_ECRUTEAK_CITY_GRAMPS
 	setevent EVENT_BURNED_TOWER_MORTY
@@ -259,3 +259,7 @@ BurnedTowerB1F_MapEvents:
 	object_event 10,  4, SPRITE_SUICUNE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_EMOTE, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_BURNED_TOWER_B1F_BEASTS_2
 	object_event 16,  4, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, BurnedTowerB1FTMEndure, EVENT_BURNED_TOWER_B1F_TM_ENDURE
 	object_event 10, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BurnedTowerB1FEusine, EVENT_EUSINE_IN_BURNED_TOWER
+
+; Kanto hack (M11 14k): filler for the bytes 14k removed above, so POKEMON TOWER 2F-7F
+; later in this section keep their savestate addresses.
+	ds 7

@@ -109,7 +109,7 @@ TrainerBirdKeeperJose2:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
 .Fight1:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .LoadFight1
 .LoadFight0:
 	loadtrainer BIRD_KEEPER, JOSE2
@@ -252,7 +252,7 @@ TrainerCooltrainerfReena:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
 .Fight1:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .LoadFight1
 .LoadFight0:
 	loadtrainer COOLTRAINERF, REENA1
@@ -446,8 +446,8 @@ PsychicGilbertSeenText:
 	para "Mmmmmmm…"
 
 	para "I got it! You're"
-	line "on the #MON"
-	cont "LEAGUE challenge!"
+	line "the new #MON"
+	cont "LEAGUE CHAMPION!"
 	done
 
 PsychicGilbertBeatenText:
@@ -456,8 +456,8 @@ PsychicGilbertBeatenText:
 
 PsychicGilbertAfterBattleText:
 	text "With your skills,"
-	line "you'll do well at"
-	cont "the LEAGUE."
+	line "you'll do well in"
+	cont "JOHTO, too."
 
 	para "That's what my"
 	line "premonition says."

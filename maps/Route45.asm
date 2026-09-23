@@ -184,7 +184,7 @@ TrainerHikerParry:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight2
 .Fight1:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .LoadFight1
 .LoadFight0:
 	loadtrainer HIKER, PARRY3

@@ -1114,6 +1114,12 @@ PeoplePlaces4: ; People
 	call IsInArray
 	pop bc
 	jr c, PeoplePlaces4
+	; Kanto hack (M11 14k, D161): the rival (KANTO_CHAMPION) holds VIRIDIAN
+	; GYM in the Johto act, as BLUE does in Crystal: read "LEADER <RIVAL>".
+	; GetTrainerClassName would print wRivalName and the party name is "?".
+	ld a, c
+	cp KANTO_CHAMPION
+	jr z, .rival
 	push bc
 	callfar GetTrainerClassName
 	ld de, wStringBuffer1
@@ -1121,6 +1127,17 @@ PeoplePlaces4: ; People
 	pop bc
 	ld b, 1
 	callfar GetTrainerName
+	jr .got_name
+.rival
+	ld c, BLUE ; class name "LEADER"
+	callfar GetTrainerClassName
+	ld de, wStringBuffer1
+	call CopyName1
+	ld hl, wRivalName
+	ld de, wStringBuffer1
+	ld bc, NAME_LENGTH
+	call CopyBytes
+.got_name
 	ld hl, PnP_Text4
 	ld a, PLACES_AND_PEOPLE_5
 	jp NextRadioLine

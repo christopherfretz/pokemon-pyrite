@@ -23,6 +23,12 @@ SilverCaveRoom3LanceScript:
 	dontrestartmapmusic
 	reloadmapafterbattle
 	setevent EVENT_BEAT_LANCE_MT_SILVER
+; Kanto hack (M11 14k, D151): the post-game opens here -- SUICUNE waits in
+; CIANWOOD (the chase BURNED TOWER used to arm), and ELM calls about the
+; MASTER BALL (the call the RISINGBADGE used to place).
+	setmapscene CIANWOOD_CITY, SCENE_CIANWOODCITY_SUICUNE_AND_EUSINE
+	clearevent EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY
+	specialphonecall SPECIALCALL_MASTERBALL
 	special FadeOutMusic
 	opentext
 	writetext SilverCaveRoom3LanceLeavesText

@@ -368,8 +368,7 @@ BeautySamanthaAfterBattleText:
 	done
 
 GoldenrodGymGuideText:
-	text "Yo! CHAMP in"
-	line "making!"
+	text "Yo! KANTO CHAMP!"
 
 	para "This GYM is home"
 	line "to normal-type"

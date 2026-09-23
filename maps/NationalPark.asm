@@ -111,7 +111,7 @@ TrainerSchoolboyJack1:
 	checkevent EVENT_RESTORED_POWER_TO_KANTO
 	iftrue .LoadFight4
 .Fight3:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iftrue .LoadFight3
 .Fight2:
 	checkevent EVENT_CLEARED_RADIO_TOWER

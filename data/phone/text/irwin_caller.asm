@@ -84,35 +84,6 @@ IrwinRisingBadgeGossipText:
 	line "You can't fail!"
 	done
 
-IrwinEliteFourGossipText:
-	text "Yesterday, I went"
-	line "out to NEW BARK"
-
-	para "TOWN.  There was a"
-	line "lady who looked a"
-
-	para "lot like you,"
-	line "<PLAY_G>."
-
-	para "What? That lady"
-	line "was your mom?"
-
-	para "Aww, I should've"
-	line "introduced myself!"
-
-	para "I bet your mom's"
-	line "really proud of"
-
-	para "all that you've"
-	line "accomplished."
-
-	para "Heh, put it this"
-	line "way. I'd be proud"
-
-	para "if I were your"
-	line "mom, believe me!"
-	done
-
 IrwinVermilionCityGossipText:
 	text "I saw, I saw,"
 	line "I saw!"
@@ -153,25 +124,6 @@ IrwinTrainPassGossipText:
 
 	para "What do you mean"
 	line "by FLY?"
-	done
-
-IrwinSnorlaxGossipText:
-	text "I saw, I saw!"
-
-	para "You waking up"
-	line "SNORLAX!"
-
-	para "I was watching you"
-	line "from afar, so I"
-
-	para "couldn't tell what"
-	line "you did exactly."
-
-	para "Did you play a"
-	line "flute to wake it?"
-
-	para "Wow! That's like"
-	line "magic!"
 	done
 
 IrwinMtSilverGossipText:
@@ -223,21 +175,6 @@ IrwinFogBadgeGossipText:
 
 	para "chickened out and"
 	line "took off for home…"
-	done
-
-IrwinMarshBadgeGossipText:
-	text "<PLAY_G>, I heard!"
-
-	para "You're kicking up"
-	line "a mighty ruckus"
-
-	para "over in KANTO!"
-	line "What a glorious"
-
-	para "rampage it must"
-	line "be!"
-
-	para "You so rock!"
 	done
 
 IrwinYourEscapadesRockText:

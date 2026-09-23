@@ -70,7 +70,8 @@ ChadHangUpText:
 	done
 
 ChadBlueGossipText:
-	text "Do you know BLUE?"
+	text "Do you know"
+	line "<RIVAL>?"
 
 	para "He's PROF.OAK's"
 	line "grandson and a"
@@ -78,8 +79,8 @@ ChadBlueGossipText:
 	para "former #MON"
 	line "LEAGUE CHAMPION!"
 
-	para "He's one super"
-	line "#MON trainer!"
+	para "Now he's the"
+	line "VIRIDIAN LEADER!"
 	done
 
 ChadDaisyGossipText:

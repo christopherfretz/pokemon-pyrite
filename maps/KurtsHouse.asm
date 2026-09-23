@@ -472,7 +472,7 @@ KurtsHouseKurtMakingBallsMustWaitText:
 
 	para "They're supposed"
 	line "to have disbanded"
-	cont "three years ago."
+	cont "some months ago."
 
 	para "Anyway, they're at"
 	line "the WELL, cutting"

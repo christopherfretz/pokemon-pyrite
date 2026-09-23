@@ -389,7 +389,7 @@ RadioTower2FBlackBelt2Text:
 	done
 
 GruntM4SeenText:
-	text "Three years ago,"
+	text "Some months ago,"
 	line "TEAM ROCKET was"
 	cont "forced to disband."
 

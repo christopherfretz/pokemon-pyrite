@@ -26,7 +26,7 @@ GoldenrodGameCorner_MapScripts:
 	callback MAPCALLBACK_OBJECTS, GoldenrodGameCornerMoveTutorCallback
 
 GoldenrodGameCornerMoveTutorCallback:
-	checkevent EVENT_BEAT_ELITE_FOUR
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
 	iffalse .finish
 	checkitem COIN_CASE
 	iffalse .move_tutor_inside

@@ -187,8 +187,8 @@ VioletPokecenter1FGameboyKidText:
 	done
 
 VioletPokecenter1FGentlemanText:
-	text "It was around"
-	line "three years ago."
+	text "It was only some"
+	line "months ago."
 
 	para "TEAM ROCKET was up"
 	line "to no good with"

@@ -188,7 +188,7 @@ Route35GoldenrodGateFisherText:
 	para "there are in the"
 	line "world."
 
-	para "Three years ago,"
+	para "Not long ago,"
 	line "PROF.OAK said that"
 
 	para "there were 150"
