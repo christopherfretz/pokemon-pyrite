@@ -549,7 +549,7 @@ INCLUDE "mobile/mobile_42.asm"
 
 SECTION "Title", ROMX
 
-INCLUDE "engine/movie/unused_title.asm"
+; M12c: Yellow's title screen (Crystal's Suicune title and unused_title.asm removed)
 INCLUDE "engine/movie/title.asm"
 
 

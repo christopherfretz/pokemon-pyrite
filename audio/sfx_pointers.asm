@@ -214,4 +214,6 @@ SFX:
 	dba Sfx_SurfingCrash
 	dba Sfx_SurfingLand
 	dba Sfx_GetItem2_4_2
+	dba Sfx_IntroCrash ; M12c
+	dba Sfx_IntroWhooshYellow ; M12c
 	assert_table_length NUM_SFX

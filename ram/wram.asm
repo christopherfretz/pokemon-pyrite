@@ -1722,7 +1722,7 @@ wIntroSceneTimer:: db
 NEXTU
 ; title data
 wTitleScreenSelectedOption:: db
-wTitleScreenTimer:: dw
+wTitleScreenTimer:: dw ; M12c: Yellow's 16-bit reset counter
 
 NEXTU
 ; credits data
@@ -2301,7 +2301,7 @@ wKeepSevenBiasChance::
 wPokeFluteCuredSleep::
 wTempRestorePPItem::
 wApricorns::
-wSuicuneFrame::
+wTitleScreenBlinkTimer:: ; M12c: Yellow's wTitleScreenTimer (was Crystal's wSuicuneFrame)
 	db
 
 

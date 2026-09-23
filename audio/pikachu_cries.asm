@@ -61,3 +61,12 @@ SECTION "Pikachu Cry 34", ROMX, BANK[$6E] ; "Pokedex Entries 065-128"
 
 PikachuPCM34::
 	pcm INCBIN "audio/pikachu_cries/pikachu_cry_34.pcm"
+
+
+; M12c (docs/M12-STRETCH.md): the "Pika!" of Yellow's title screen (2328 B),
+; in the title's own bank, which lost Crystal's unused_title.asm and Suicune
+; graphics to the Yellow title port.
+SECTION "Pikachu Cry 1", ROMX, BANK[$43] ; "Title"
+
+PikachuPCM1::
+	pcm INCBIN "audio/pikachu_cries/pikachu_cry_1.pcm"

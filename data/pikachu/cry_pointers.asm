@@ -18,7 +18,7 @@ MACRO no_pikachu_pcm
 ENDM
 
 PikachuCriesPointerTable::
-	no_pikachu_pcm ; PikachuCry1
+	dba PikachuPCM1 ; PikachuCry1 (M12c: the title screen)
 	no_pikachu_pcm ; PikachuCry2
 	no_pikachu_pcm ; PikachuCry3
 	dba PikachuPCM4 ; PikachuCry4

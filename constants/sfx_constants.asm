@@ -215,6 +215,8 @@
 	const SFX_SURFING_CRASH               ; d1
 	const SFX_SURFING_LAND                ; d2
 	const SFX_GET_ITEM2_4_2               ; d3
+	const SFX_INTRO_CRASH                 ; d4 (M12c: Yellow title logo landing)
+	const SFX_INTRO_WHOOSH_YELLOW         ; d5 (M12c: Yellow title speech bubble)
 DEF NUM_SFX EQU const_value
 
 ; Kanto hack (K6c, docs/K6-MUSIC.md): Yellow's SFX_SS_ANNE_HORN is Crystal's
