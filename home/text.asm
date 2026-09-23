@@ -364,6 +364,8 @@ PlaceEnemysName::
 	jr z, .rival
 	cp JESSIE_JAMES
 	jr z, .classonly ; "JESSIE&JAMES" is the whole name; the party name is empty
+	cp CHAMPION ; Kanto hack (M11 14j): Mt. Silver's "LANCE", not "CHAMPION LANCE"
+	jr z, .classonly
 
 	ld de, wOTClassName
 	call PlaceString

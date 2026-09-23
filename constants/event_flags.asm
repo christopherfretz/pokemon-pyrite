@@ -2236,8 +2236,9 @@
 	const EVENT_ICE_PATH_1F_TM_EARTHQUAKE ; Kanto hack (M11 14a, D135): ICE PATH 1F ball (31,7), was Crystal's HM07 (OAK gives HM07 now)
 	const EVENT_BEAT_RIVAL_MT_SILVER ; Kanto hack (M11 14c, D142): SILVER's final fight at the foot of MT.SILVER; also his hide flag there
 	const EVENT_RADIO_TOWER_4F_JESSIE_JAMES_HIDDEN ; Kanto hack (M11 14g, D149): JESSIE & JAMES at the RADIO TOWER 4F stairs; re-derived by the map's OBJECTS callback (takeover on, EXECUTIVEM_2 fight not won)
+	const EVENT_BEAT_LANCE_MT_SILVER ; Kanto hack (M11 14j, D155): LANCE beaten in SILVER CAVE ROOM 3; also his hide flag there
 
-; Unused: next 222 events
+; Unused: next 221 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

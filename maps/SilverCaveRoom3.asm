@@ -1,31 +1,36 @@
+; Kanto hack (M11 14j, D154/D155): the finale.  LANCE, who gave up his title
+; at the INDIGO PLATEAU, waits here in RED's old spot with his maxed team.
+; Beating him sets EVENT_BEAT_LANCE_MT_SILVER (also his hide flag) and rolls
+; Crystal's credits with no Hall of Fame entry; Continue lands at NEW BARK.
 	object_const_def
-	const SILVERCAVEROOM3_RED
+	const SILVERCAVEROOM3_LANCE
 
 SilverCaveRoom3_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
 
-Red:
+SilverCaveRoom3LanceScript:
 	special FadeOutMusic
 	faceplayer
 	opentext
-	writetext RedSeenText
+	writetext SilverCaveRoom3LanceSeenText
 	waitbutton
 	closetext
-	winlosstext RedWinLossText, RedWinLossText
-	loadtrainer RED, RED1
+	winlosstext SilverCaveRoom3LanceBeatenText, SilverCaveRoom3LanceWinText
+	loadtrainer CHAMPION, LANCE
 	startbattle
 	dontrestartmapmusic
 	reloadmapafterbattle
+	setevent EVENT_BEAT_LANCE_MT_SILVER
 	special FadeOutMusic
 	opentext
-	writetext RedLeavesText
+	writetext SilverCaveRoom3LanceLeavesText
 	waitbutton
 	closetext
 	special FadeOutToBlack
 	special ReloadSpritesNoPalettes
-	disappear SILVERCAVEROOM3_RED
+	disappear SILVERCAVEROOM3_LANCE
 	pause 15
 	special FadeInFromBlack
 	pause 30
@@ -34,18 +39,55 @@ Red:
 	credits
 	end
 
-RedSeenText:
-	text "<……>"
-	line "<……>"
+SilverCaveRoom3LanceSeenText:
+	text "LANCE: …<PLAYER>."
+	line "I've been waiting."
+
+	para "Since I left the"
+	line "LEAGUE, my dragons"
+
+	para "and I have trained"
+	line "on this mountain."
+
+	para "They are stronger"
+	line "than the team you"
+	cont "beat at INDIGO."
+
+	para "I said that next"
+	line "time, I would be"
+	cont "the challenger."
+
+	para "<PLAYER>!"
+	line "I challenge you!"
 	done
 
-RedWinLossText:
-	text "…"
+SilverCaveRoom3LanceBeatenText:
+	text "…Magnificent."
+
+	para "Even at my best,"
+	line "I couldn't reach"
+	cont "you."
 	done
 
-RedLeavesText:
-	text "<……>"
-	line "<……>"
+SilverCaveRoom3LanceWinText:
+	text "My dragons were"
+	line "ready this time."
+	done
+
+SilverCaveRoom3LanceLeavesText:
+	text "A title isn't"
+	line "what makes a"
+	cont "trainer strong."
+
+	para "I understand that"
+	line "now. Thank you."
+
+	para "I'll return to the"
+	line "DRAGON'S DEN and"
+	cont "start again."
+
+	para "Keep going,"
+	line "CHAMPION."
 	done
 
 SilverCaveRoom3_MapEvents:
@@ -59,4 +101,4 @@ SilverCaveRoom3_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  9, 10, SPRITE_RED, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, Red, EVENT_RED_IN_MT_SILVER
+	object_event  9, 10, SPRITE_LANCE, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, SilverCaveRoom3LanceScript, EVENT_BEAT_LANCE_MT_SILVER

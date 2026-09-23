@@ -16,7 +16,7 @@ TrainerClassNames::
 	li "ELITE FOUR"
 	li "ELITE FOUR"
 	li "ELITE FOUR"
-	li "CHAMPION"
+	li "LANCE" ; CHAMPION -- Kanto hack (M11 14j): Mt. Silver LANCE is no champion
 	li "LEADER"
 	li "LEADER"
 	li "LEADER"
