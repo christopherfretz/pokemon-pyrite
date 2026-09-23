@@ -1436,6 +1436,11 @@ VictoryRoad2F_Blocks:
 VictoryRoad3F_Blocks:
 	INCBIN "maps/VictoryRoad3F.blk"
 
+; M10 13l: Yellow's 20x18 POWER PLANT on TILESET_KANTO_FACILITY (360 B);
+; scripts/celadon_blk.py cuts it (Yellow's .blk verbatim + the west-exit clone).
+KantoPowerPlant_Blocks:
+	INCBIN "maps/KantoPowerPlant.blk"
+
 ; M10 13h: Yellow's 8x6 INDIGO_PLATEAU_LOBBY on TILESET_POKECENTER (48 B);
 ; scripts/indigo_lobby_blk.py.  Moved here from "Map Blocks 2" (Crystal's
 ; 9x7, 63 B).

@@ -747,6 +747,35 @@ KantoGrassWildMons:
 	db 47, GRAVELER
 	end_grass_wildmons
 
+; KANTO_POWER_PLANT (M10 13l): Yellow rate 10; dropped slots 1 (30 MAGNEMITE), 5 (37 VOLTORB) and 8 (38 MAGNETON).
+	def_grass_wildmons KANTO_POWER_PLANT
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 35, MAGNEMITE
+	db 33, MAGNETON
+	db 33, VOLTORB
+	db 33, GRIMER
+	db 37, GRIMER
+	db 33, MUK
+	db 37, MUK
+	; day
+	db 35, MAGNEMITE
+	db 33, MAGNETON
+	db 33, VOLTORB
+	db 33, GRIMER
+	db 37, GRIMER
+	db 33, MUK
+	db 37, MUK
+	; nite
+	db 35, MAGNEMITE
+	db 33, MAGNETON
+	db 33, VOLTORB
+	db 33, GRIMER
+	db 37, GRIMER
+	db 33, MUK
+	db 37, MUK
+	end_grass_wildmons
+
 	def_grass_wildmons TOHJO_FALLS
 	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
 	; morn

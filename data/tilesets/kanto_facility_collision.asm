@@ -165,3 +165,4 @@
 	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 98  1F back door -- clone of $0e
 	tilecoll PIT, PIT, FLOOR, FLOOR ; 99  3F holes (16,14)+(17,14) -- clone of $01
 	tilecoll FLOOR, PIT, FLOOR, FLOOR ; 9a  3F hole (19,14) -- clone of $01
+	tilecoll WALL, FLOOR, WARP_CARPET_LEFT, FLOOR ; 9b  POWER PLANT west exit (0,11) -- clone of $70

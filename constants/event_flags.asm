@@ -231,10 +231,10 @@
 	const EVENT_SEEL_FAN_BOAST ; Kanto hack: renamed in place (7f), was EVENT_LISTENED_TO_FAN_CLUB_PRESIDENT; Yellow's boast toggle -- SET means the SEEL fan brags back next
 	const EVENT_TALKED_TO_SEAFOAM_GYM_GUIDE_ONCE
 	const EVENT_ENABLE_DIPLOMA_PRINTING
-	const EVENT_CINNABAR_ROCKS_CLEARED
+	const EVENT_POWER_PLANT_HIDDEN_MAX_ELIXER ; Kanto hack (M10 13l): renamed in place, was EVENT_CINNABAR_ROCKS_CLEARED (dead); Yellow's POWER PLANT hidden MAX ELIXER (17,16)
 	const EVENT_BEAT_HIKER_MORTON ; Kanto hack: renamed in place (6i), was EVENT_CLEARED_NUGGET_BRIDGE; Route 25, Yellow's HIKER 4
 	const EVENT_WARDENS_HOME_RARE_CANDY ; Kanto hack (M7 10g): was EVENT_TALKED_TO_WARDENS_GRANDDAUGHTER
-	const EVENT_GOT_TM03_CURSE
+	const EVENT_POWER_PLANT_HIDDEN_PP_UP ; Kanto hack (M10 13l): renamed in place, was EVENT_GOT_TM03_CURSE (dead); Yellow's POWER PLANT hidden PP UP (12,1)
 	const EVENT_SS_ANNE_1F_ROOMS_TM_BODY_SLAM ; Kanto hack: renamed in place (7h), was EVENT_GOT_CLEANSE_TAG; S.S. ANNE 1F Rooms item ball (12,15)
 	const EVENT_GOT_TM21_MEGA_DRAIN ; Kanto hack: renamed in place (M6 9q), was EVENT_GOT_TM19_GIGA_DRAIN; ERIKA's TM is Yellow's TM21 MEGA DRAIN (our TM67)
 	const EVENT_GOT_TM06_TOXIC
@@ -518,7 +518,7 @@
 	const EVENT_BUENA_OFFERED_HER_PHONE_NUMBER
 	const EVENT_MET_BUENA
 	const EVENT_GOT_ODD_EGG
-	const_skip ; unused
+	const EVENT_BEAT_ZAPDOS ; Kanto hack (M10 13l): was a const_skip (unused) row; Yellow's flag of the same name; ZAPDOS (4,9)'s hide flag, set on win/catch/run
 	const EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
 ; Unused: next 167 events
 
@@ -624,7 +624,7 @@
 	const EVENT_BEAT_BURGLAR_DUNCAN
 	const EVENT_BEAT_BURGLAR_EDDIE
 	const EVENT_BEAT_BURGLAR_COREY
-	const_skip ; unused
+	const EVENT_POWER_PLANT_TM_THUNDER ; Kanto hack (M10 13l): was a const_skip (unused) row; ball (26,32), TM25
 ; Biker
 ; Kanto hack (M6 9y): Yellow's three ROUTE 16 BIKERs (OPP_BIKER 5/6/7).  Rows 1
 ; and 2 were BIKER_BENNY / KAZU, dead in vanilla Crystal; row 3 was BIKER_DWAYNE,
@@ -832,7 +832,7 @@
 	const EVENT_BEAT_ROCKET_HIDEOUT_GIOVANNI ; Kanto hack (M6 9x): ROCKET HIDEOUT B4F GIOVANNI; also his object hide flag (was EVENT_BEAT_POKEFANF_BEVERLY3, a dead Johto rematch flag)
 	const EVENT_BEAT_POKEFANF_GEORGIA
 ; Kimono Girl
-	const_skip ; unused
+	const EVENT_POWER_PLANT_TM_REFLECT ; Kanto hack (M10 13l): was a const_skip (unused) row; ball (20,32), TM72
 	const EVENT_BEAT_KIMONO_GIRL_NAOKO
 	const EVENT_BEAT_KIMONO_GIRL_SAYO
 	const EVENT_BEAT_KIMONO_GIRL_ZUKI
@@ -1295,7 +1295,7 @@
 	const EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH1 ; Kanto hack (M10 13g): renamed in place, was EVENT_COPYCAT_2 (dead); Yellow's EVENT_VICTORY_ROAD_2_BOULDER_ON_SWITCH1; cleared by ROUTE 23's NEWMAP
 	const EVENT_GOLDENROD_SALE_OFF
 	const EVENT_GOLDENROD_SALE_ON
-	const_skip ; unused in Crystal
+	const EVENT_POWER_PLANT_CARBOS ; Kanto hack (M10 13l): was a const_skip (unused) row; ball (7,25)
 	const EVENT_ILEX_FOREST_APPRENTICE
 	const EVENT_ILEX_FOREST_CHARCOAL_MASTER
 	const EVENT_CHARCOAL_KILN_FARFETCH_D
@@ -2218,8 +2218,22 @@
 	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_1 ; COOLTRAINER F (7,13)
 	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_2 ; COOLTRAINER M (6,14)
 	const EVENT_BEAT_VICTORY_ROAD_3F_TRAINER_3 ; COOLTRAINER F (13,3)
+; Kanto hack (M10 13l): POWER PLANT, appended -- the dead rows ran out after six
+; (see the 13l renames above).  Yellow's EVENT_BEAT_POWER_PLANT_VOLTORB_0..7 are
+; the eight fake POKe BALLs' hide flags, in Yellow's object order (VOLTORB x6 +
+; ELECTRODE x2 share one run, as in Yellow).
+	const EVENT_POWER_PLANT_HP_UP ; ball (28,3)
+	const EVENT_POWER_PLANT_RARE_CANDY ; ball (34,3)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_0 ; VOLTORB (9,20)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_1 ; VOLTORB (32,18)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_2 ; VOLTORB (21,25)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_3 ; ELECTRODE (25,18)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_4 ; VOLTORB (23,34)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_5 ; VOLTORB (26,28)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_6 ; ELECTRODE (21,14)
+	const EVENT_BEAT_POWER_PLANT_VOLTORB_7 ; VOLTORB (37,32)
 
-; Unused: next 236 events
+; Unused: next 226 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

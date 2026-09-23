@@ -228,7 +228,7 @@ Route10_MapEvents:
 	; (warps 2 and 4 are Yellow's dead duplicates of 1 and 3).
 	warp_event  8, 53, ROCK_TUNNEL_1F, 3
 	; Surf-only in Yellow -- the door sits on a shelf across the water channel.
-	warp_event  6, 39, POWER_PLANT, 1
+	warp_event  6, 39, KANTO_POWER_PLANT, 1 ; M10 13l: Yellow's POWER PLANT (was Crystal's POWER_PLANT)
 
 	def_coord_events
 

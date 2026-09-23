@@ -589,6 +589,9 @@ ENDM
 ; (1F keeps Crystal's VictoryRoad row, renamed).
 	map_attributes VictoryRoad2F, VICTORY_ROAD_2F, $1d
 	map_attributes VictoryRoad3F, VICTORY_ROAD_3F, $1d
+; M10 13l: Yellow's POWER PLANT border, block $2e (`db $2e ; border block` in
+; vendor/pokeyellow/data/maps/objects/PowerPlant.asm) -- the facility wall.
+	map_attributes KantoPowerPlant, KANTO_POWER_PLANT, $2e
 	map_attributes CinnabarMart, CINNABAR_MART, $00
 ; 12i: the four LAB maps take Yellow's own border, block $17 (`db $17 ; border
 ; block` in all four of vendor/pokeyellow/data/maps/objects/CinnabarLab*.asm) --

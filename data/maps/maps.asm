@@ -172,6 +172,7 @@ MapGroup_Dungeons:
 	map UndergroundPathWestEast, TILESET_UNDERGROUND, GATE, LANDMARK_UNDERGROUND_PATH, MUSIC_ROUTE_1, FALSE, PALETTE_NITE, FISHGROUP_NONE ; Kanto hack (M8 11n): UNDERGROUND PATH is a tunnel/gate hut with no water; FISHGROUP_SHORE leaked CORSOLA to the Super Rod.  Matches the Route5UndergroundPathEntrance row 11m already fixed.  ; Kanto hack (docs/M5-LAVENDER.md, 8b)
 	map VictoryRoad2F, TILESET_CAVE, CAVE, LANDMARK_VICTORY_ROAD, MUSIC_VICTORY_ROAD, TRUE, PALETTE_NITE, FISHGROUP_NONE ; Kanto hack (M10 13f)
 	map VictoryRoad3F, TILESET_CAVE, CAVE, LANDMARK_VICTORY_ROAD, MUSIC_VICTORY_ROAD, TRUE, PALETTE_NITE, FISHGROUP_NONE ; Kanto hack (M10 13f)
+	map KantoPowerPlant, TILESET_KANTO_FACILITY, DUNGEON, LANDMARK_POWER_PLANT, MUSIC_ROCKET_HIDEOUT, TRUE, PALETTE_DAY, FISHGROUP_NONE ; Kanto hack (M10 13l): Yellow's 20x18 POWER PLANT on FACILITY.  DUNGEON = wild grass on the floor + ESCAPE ROPE/DIG, as the Mansion.  Yellow plays MUSIC_DUNGEON1 here; MUSIC_ROCKET_HIDEOUT is the stand-in the HIDEOUT (Yellow's other DUNGEON1 map) already uses -- on the K6 list (D131).  No water: FISHGROUP_NONE
 	assert_table_length NUM_DUNGEONS_MAPS
 
 MapGroup_Ecruteak:

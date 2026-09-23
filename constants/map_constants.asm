@@ -163,6 +163,7 @@ ENDM
 	map_const UNDERGROUND_PATH_WEST_EAST,                  25,  4 ; 94
 	map_const VICTORY_ROAD_2F,                             15,  9 ; 95 ; M10 13f
 	map_const VICTORY_ROAD_3F,                             15,  9 ; 96 ; M10 13f
+	map_const KANTO_POWER_PLANT,                           20, 18 ; 97 ; M10 13l: Yellow's POWER PLANT (Crystal's POWER_PLANT stays for M11)
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4

@@ -643,6 +643,8 @@ INCLUDE "maps/PokemonMansionB1F.asm"
 ; "Map Scripts 8", where Crystal's VictoryRoad lived).
 INCLUDE "maps/VictoryRoad2F.asm"
 INCLUDE "maps/VictoryRoad3F.asm"
+; M10 13l: Yellow's POWER PLANT, same bank ($76).
+INCLUDE "maps/KantoPowerPlant.asm"
 
 ENDSECTION
 
