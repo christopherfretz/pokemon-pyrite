@@ -107,6 +107,7 @@ TrainerCard_Page1_LoadGFX:
 	ld d, 6
 	call TrainerCard_InitBorder
 	call WaitBGMap
+	call TrainerCard_RestorePals
 	ld de, CardStatusGFX
 	ld hl, vTiles2 tile $29
 	lb bc, BANK(CardStatusGFX), 86
@@ -124,7 +125,13 @@ TrainerCard_Page1_Joypad:
 	ret
 
 .pressed_right_a
+; Kanto hack (F5): the Kanto act has no Johto badges, so page 1 goes straight
+; to the Kanto page (Yellow's single badge card); the Johto act keeps 1 -> 2.
+	farcall PCPC_CheckKantoAct
 	ld a, TRAINERCARDSTATE_PAGE2_LOADGFX
+	jr z, .got_page
+	ld a, TRAINERCARDSTATE_PAGE3_LOADGFX
+.got_page
 	ld [wJumptableIndex], a
 	ret
 
@@ -142,6 +149,7 @@ TrainerCard_Page2_LoadGFX:
 	ld d, 6
 	call TrainerCard_InitBorder
 	call WaitBGMap
+	call TrainerCard_RestorePals
 	ld de, LeaderGFX
 	ld hl, vTiles2 tile $29
 	lb bc, BANK(LeaderGFX), 86
@@ -164,6 +172,9 @@ TrainerCard_Page2_Joypad:
 	ld a, [hl]
 	and PAD_LEFT
 	jr nz, .d_left
+	ld a, [hl]
+	and PAD_RIGHT ; Kanto hack (F5): Johto act, page 2 -> Kanto page
+	jr nz, .KantoBadgeCheck
 	ret
 
 .d_left
@@ -171,7 +182,7 @@ TrainerCard_Page2_Joypad:
 	ld [wJumptableIndex], a
 	ret
 
-.KantoBadgeCheck: ; unreferenced
+.KantoBadgeCheck:
 	ld a, [wKantoBadges]
 	and a
 	ret z
@@ -185,27 +196,183 @@ TrainerCard_Page2_Joypad:
 	ret
 
 TrainerCard_Page3_LoadGFX:
+; Kanto hack (F5): page 3 is Yellow's badge card (pokeyellow
+; engine/menus/draw_badges.asm): eight numbered KANTO leader faces, each
+; replaced by its badge once earned, all BG tiles at Yellow's own coordinates,
+; coloured like Yellow's CGB card (SetPal_TrainerCard).
 	call ClearSprites
 	hlcoord 0, 8
 	ld d, 6
 	call TrainerCard_InitBorder
 	call WaitBGMap
-	ld de, LeaderGFX2
-	ld hl, vTiles2 tile $29
-	lb bc, BANK(LeaderGFX2), 86
+	ld de, KantoBadgeNumbersGFX
+	ld hl, vTiles2 tile KANTO_CARD_NUMBER_TILE
+	lb bc, BANK(KantoBadgeNumbersGFX), NUM_KANTO_BADGES
 	call Request2bpp
-	ld de, BadgeGFX2
-	ld hl, vTiles0 tile $00
-	lb bc, BANK(BadgeGFX2), 44
+	ld de, KantoLeaderBadgeGFX
+	ld hl, vTiles2 tile KANTO_CARD_FACE_TILE
+	lb bc, BANK(KantoLeaderBadgeGFX), NUM_KANTO_BADGES * 8
 	call Request2bpp
-	call TrainerCard_Page2_3_InitObjectsAndStrings
+	ld de, LeaderGFX tile 80 ; "BADGES" (TrainerCard_Page2_3_InitObjectsAndStrings.BadgesTilemap)
+	ld hl, vTiles2 tile $79
+	lb bc, BANK(LeaderGFX), 5
+	call Request2bpp
+	call TrainerCard_Page3_PlaceKantoBadges
+	call TrainerCard_Page3_KantoPals
 	call TrainerCard_IncrementJumptable
 	ret
 
+DEF KANTO_CARD_NUMBER_TILE EQU $29 ; 8 badge numbers
+DEF KANTO_CARD_FACE_TILE   EQU $31 ; Yellow's badges.png: face i at +8i, badge i at +8i+4
+
+TrainerCard_Page3_PlaceKantoBadges:
+	hlcoord 2, 8
+	ld de, TrainerCard_Page2_3_InitObjectsAndStrings.BadgesTilemap
+	call TrainerCardSetup_PlaceTilemapString
+	ld a, [wKantoBadges]
+	ld e, a
+	ld d, KANTO_CARD_NUMBER_TILE
+	hlcoord 2, 11 ; Yellow DrawBadges: rows 11 and 14, 4 leaders each
+	call .Row
+	hlcoord 2, 14
+.Row:
+	ld c, 4
+.loop
+	push hl
+	ld [hl], d ; badge number
+	ld a, d
+	sub KANTO_CARD_NUMBER_TILE
+	add a
+	add a
+	add a
+	add KANTO_CARD_FACE_TILE ; face
+	srl e
+	jr nc, .got_tile
+	add 4 ; badge art follows each face
+.got_tile
+	push de
+	ld de, SCREEN_WIDTH + 1
+	add hl, de
+	ld [hli], a
+	inc a
+	ld [hl], a
+	inc a
+	ld de, SCREEN_WIDTH - 1
+	add hl, de
+	ld [hli], a
+	inc a
+	ld [hl], a
+	pop de
+	inc d
+	pop hl
+rept 4
+	inc hl
+endr
+	dec c
+	jr nz, .loop
+	ret
+
+TrainerCard_Page3_KantoPals:
+; BG palettes 2-5 = Yellow's CGB MEWMON/BADGE/REDMON/YELLOWMON (pokeyellow
+; data/sgb/sgb_palettes.asm CGBBasePalettes, PalPacket_TrainerCard); the leader
+; area is MEWMON like Yellow's card, and each earned badge gets Yellow's
+; BlkPacket_TrainerCard blocks (data/sgb/sgb_packets.asm).
+	ld hl, .Pals
+	ld de, wBGPals1 palette 2
+	ld bc, 4 palettes
+	ld a, BANK(wBGPals1)
+	call FarCopyWRAM
+	hlcoord 2, 11, wAttrmap
+	lb bc, 6, 16
+	ld a, 2
+	call .Fill
+	ld a, [wKantoBadges]
+	ld e, a
+	ld hl, .Blocks
+.block_loop
+	ld a, [hli]
+	cp -1
+	jr z, .apply
+	and e
+	jr z, .next_block
+	push de
+	ld a, [hli]
+	ld e, a
+	ld a, [hli]
+	ld d, a
+	ld a, [hli]
+	ld b, a
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	push hl
+	ld h, d
+	ld l, e
+	call .Fill
+	pop hl
+	pop de
+	jr .block_loop
+
+.next_block
+	ld bc, 5
+	add hl, bc
+	jr .block_loop
+
+.apply
+	farcall ApplyAttrmap
+	farcall ApplyPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ret
+
+.Fill:
+; fill b rows x c columns of wAttrmap at hl with a
+.row
+	push bc
+	push hl
+.col
+	ld [hli], a
+	dec c
+	jr nz, .col
+	pop hl
+	ld bc, SCREEN_WIDTH
+	add hl, bc
+	pop bc
+	dec b
+	jr nz, .row
+	ret
+
+.Pals:
+	RGB 31,31,31, 31,31,00, 31,01,01, 03,03,03 ; PAL_MEWMON
+	RGB 31,31,31, 23,08,00, 17,14,11, 03,03,03 ; PAL_BADGE
+	RGB 31,31,31, 31,17,00, 31,00,00, 03,03,03 ; PAL_REDMON
+	RGB 31,31,31, 31,31,00, 28,14,00, 03,03,03 ; PAL_YELLOWMON
+
+MACRO kanto_card_blk
+; badge flag, x1, y1, x2, y2, Yellow palette (0 MEWMON .. 3 YELLOWMON)
+	db 1 << \1
+	dw wAttrmap + (\3) * SCREEN_WIDTH + (\2)
+	db (\5) - (\3) + 1, (\4) - (\2) + 1, (\6) + 2
+ENDM
+
+.Blocks:
+	; Boulder Badge (03,12)-(04,13) stays MEWMON
+	kanto_card_blk CASCADEBADGE, 07, 12, 08, 13, 1
+	kanto_card_blk THUNDERBADGE, 11, 12, 12, 13, 3
+	kanto_card_blk RAINBOWBADGE, 16, 11, 17, 12, 2
+	kanto_card_blk RAINBOWBADGE, 14, 13, 15, 13, 1
+	kanto_card_blk RAINBOWBADGE, 16, 13, 17, 13, 3
+	kanto_card_blk SOULBADGE,    03, 15, 04, 16, 2
+	kanto_card_blk MARSHBADGE,   07, 15, 08, 16, 3
+	kanto_card_blk VOLCANOBADGE, 11, 15, 12, 16, 2
+	kanto_card_blk EARTHBADGE,   15, 15, 16, 16, 1
+	db -1
+
 TrainerCard_Page3_Joypad:
-	ld hl, TrainerCard_JohtoBadgesOAM
-	call TrainerCard_Page2_3_AnimateBadges
 	ld hl, hJoyLast
+	ld a, [hl]
+	and PAD_A
+	jr nz, .quit
 	ld a, [hl]
 	and PAD_LEFT
 	jr nz, .left
@@ -214,15 +381,27 @@ TrainerCard_Page3_Joypad:
 	jr nz, .right
 	ret
 
-.left
-	ld a, TRAINERCARDSTATE_PAGE2_LOADGFX
+.quit
+	ld a, TRAINERCARDSTATE_QUIT
 	ld [wJumptableIndex], a
 	ret
 
+.left
+; Kanto hack (F5): back to page 1 in the Kanto act (no Johto page), else page 2
+	farcall PCPC_CheckKantoAct
+	ld a, TRAINERCARDSTATE_PAGE2_LOADGFX
+	jr z, .got_page
 .right
 	ld a, TRAINERCARDSTATE_PAGE1_LOADGFX
+.got_page
 	ld [wJumptableIndex], a
 	ret
+
+TrainerCard_RestorePals:
+; Kanto hack (F5): the Kanto page repaints BG palettes 2-5 and the leader
+; area's attributes; pages 1 and 2 put Crystal's layout back.
+	ld b, SCGB_TRAINER_CARD
+	jp GetSGBLayout
 
 TrainerCard_PrintTopHalfOfCard:
 	hlcoord 0, 0
@@ -612,8 +791,10 @@ TrainerCard_JohtoBadgesOAM:
 CardStatusGFX: INCBIN "gfx/trainer_card/card_status.2bpp"
 
 LeaderGFX:  INCBIN "gfx/trainer_card/leaders.2bpp"
-LeaderGFX2: INCBIN "gfx/trainer_card/leaders.2bpp"
 BadgeGFX:   INCBIN "gfx/trainer_card/badges.2bpp"
-BadgeGFX2:  INCBIN "gfx/trainer_card/badges.2bpp"
+; Kanto hack (F5): Crystal's unused page-3 copies (LeaderGFX2/BadgeGFX2, the
+; same Johto files again) are replaced by Yellow's card art.
+KantoLeaderBadgeGFX:  INCBIN "gfx/trainer_card/kanto_badges.2bpp"  ; pokeyellow gfx/trainer_card/badges.png
+KantoBadgeNumbersGFX: INCBIN "gfx/trainer_card/kanto_badge_numbers.2bpp" ; pokeyellow gfx/trainer_card/badge_numbers.png
 
 CardRightCornerGFX: INCBIN "gfx/trainer_card/card_right_corner.2bpp"
