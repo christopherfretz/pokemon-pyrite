@@ -214,7 +214,7 @@
 ; reference was one dead `setevent` in Crystal's CeruleanGym grunt scene (6e
 ; deletes that scene outright). Set when Yellow's Cerulean Rocket thief has
 ; been beaten; gates the (30,7)/(30,9) coord trigger.
-	const EVENT_MET_REDS_MOM
+	const EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN ; Kanto hack (M10 13k2): was EVENT_MET_REDS_MOM (unreferenced since the N1 audit #73, renamed in place).  The post-E4 rival's object hide flag in VIRIDIAN GYM; the OBJECTS callback derives it on every load, so a stale SET from an old save is harmless
 	const EVENT_RESTORED_POWER_TO_KANTO
 	const EVENT_GOT_COINS_FROM_GAME_CORNER_GURU_2 ; Kanto hack: renamed in place (M6 9u), was EVENT_GOT_COINS_FROM_GAMBLER_AT_CELADON (Crystal's own CELADON GAME CORNER one-off, this map's only user); CELADON GAME CORNER, Yellow's FISHING GURU 2 (17,13) and his 20 coins
 	const EVENT_GOT_TM31_MIMIC ; Kanto hack: renamed in place (M8 11d), was

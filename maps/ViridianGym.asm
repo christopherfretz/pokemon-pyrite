@@ -10,11 +10,31 @@
 	const VIRIDIANGYM_COOLTRAINER3
 	const VIRIDIANGYM_GYM_GUIDE
 	const VIRIDIANGYM_REVIVE
+	const VIRIDIANGYM_RIVAL
 
 ViridianGym_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, ViridianGymRivalCallback
+
+; Kanto hack (M10 13k2, operator ruling 2026-09-22): after the Kanto E4 the
+; rival leaves INDIGO PLATEAU and takes over this gym, on GIOVANNI's tile.  His
+; hide flag is derived on every load: shown once EVENT_BEAT_KANTO_ELITE_FOUR is
+; set AND GIOVANNI has said his farewell (EVENT_VIRIDIAN_GYM_GIOVANNI_GONE) --
+; a player who never took that last talk still finds GIOVANNI on (2,1), and
+; the rival arrives on the first load after he leaves.
+ViridianGymRivalCallback:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iffalse .Hide
+	checkevent EVENT_VIRIDIAN_GYM_GIOVANNI_GONE
+	iffalse .Hide
+	clearevent EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN
+	endcallback
+
+.Hide:
+	setevent EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN
+	endcallback
 
 ; Kanto hack (M10 13b): Yellow's VIRIDIAN GYM people (vendor/pokeyellow/
 ; scripts/ViridianGym.asm, data/maps/objects/ViridianGym.asm).  GIOVANNI #3
@@ -83,6 +103,51 @@ ViridianGymGiovanniScript:
 	disappear VIRIDIANGYM_GIOVANNI
 	pause 15
 	special FadeInFromBlack
+	end
+
+; M10 13k2 (ours, not Yellow's): the rival as VIRIDIAN GYM leader.  An
+; optional, repeatable rematch like the post-E4 LORELEI/BRUNO/AGATHA: no flag
+; on a win or a refusal, a loss is a normal white-out.  KANTO_CHAMPION rows
+; 4-6 = his Champion team +6 levels; the class keeps MUSIC_CHAMPION_BATTLE /
+; MUSIC_GYM_VICTORY and is NOT a gym leader for IsGymLeaderCommon (D117 is
+; GIOVANNI_3 only) -- no badge, no leader music, no gym happiness.
+ViridianGymRivalScript:
+	faceplayer
+	opentext
+	writetext ViridianGymRivalPostE4Text
+	yesorno
+	iffalse .NoRematch
+	writetext ViridianGymRivalAcceptText
+	waitbutton
+	closetext
+	winlosstext ViridianGymRivalDefeatedText, 0 ; no loss text: Crystal prints it only for BATTLETYPE_CANLOSE (LostBattle)
+	setlasttalked VIRIDIANGYM_RIVAL
+	special GetKantoRivalStarter
+	ifequal RIVAL_STARTER_JOLTEON, .Jolteon
+	ifequal RIVAL_STARTER_FLAREON, .Flareon
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_6 ; RIVAL_STARTER_VAPOREON
+	sjump .Fight
+
+.Jolteon:
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_4
+	sjump .Fight
+
+.Flareon:
+	loadtrainer KANTO_CHAMPION, KANTO_CHAMPION_5
+
+.Fight:
+	startbattle
+	reloadmapafterbattle
+	opentext
+	writetext ViridianGymRivalAfterBattleText
+	waitbutton
+	closetext
+	end
+
+.NoRematch:
+	writetext ViridianGymRivalNoRematchText
+	waitbutton
+	closetext
 	end
 
 TrainerViridianGymCooltrainer1:
@@ -176,6 +241,8 @@ TrainerViridianGymCooltrainer3:
 ViridianGymGuideScript:
 	faceplayer
 	opentext
+	checkevent EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN ; M10 13k2: the rival leads now
+	iffalse .RivalLeader
 	checkevent EVENT_BEAT_VIRIDIAN_GYM_GIOVANNI
 	iftrue .BeatGiovanni
 	writetext ViridianGymGuidePreBattleText
@@ -189,10 +256,24 @@ ViridianGymGuideScript:
 	closetext
 	end
 
+.RivalLeader:
+	writetext ViridianGymGuideRivalLeaderText
+	waitbutton
+	closetext
+	end
+
 ViridianGymRevive:
 	itemball REVIVE
 
 ViridianGymStatue:
+	; M10 13k2: once the rival leads the gym the statue names him (ours, in
+	; the shape of Yellow's _GymStatueText2; <RIVAL> can't go through
+	; wStringBuffer4, TRAINER_NAME prints the class's "RIVAL").
+	checkevent EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN
+	iftrue .Giovanni
+	jumptext ViridianGymRivalStatueText
+
+.Giovanni:
 	; N1a: Yellow's pre-badge statue names the LEADER too.  GIOVANNI's party
 	; rows are nameless, so the class name is the leader's name.
 	gettrainerclassname STRING_BUFFER_4, GIOVANNI
@@ -450,6 +531,84 @@ ViridianGymGuidePostBattleText:
 	cont "GYM LEADER here?"
 	done
 
+; --- M10 13k2 text: OURS (not Yellow's), written in Yellow's rival register
+; for the post-E4 "League in shambles" ruling -- intentional, not a leftover.
+
+ViridianGymRivalPostE4Text:
+	text "<RIVAL>: Hey,"
+	line "<PLAYER>!"
+
+	para "What, surprised?"
+	line "This GYM had no"
+	cont "LEADER, so I took"
+	cont "it over!"
+
+	para "GRAMPS says I"
+	line "have to learn to"
+	cont "love my #MON."
+	cont "So I train here!"
+
+	para "Don't think you're"
+	line "top dog just"
+	cont "'cause you beat"
+	cont "me once!"
+
+	para "My team's even"
+	line "tougher now! Want"
+	cont "a rematch?"
+	done
+
+ViridianGymRivalAcceptText:
+	text "<RIVAL>: Heh!"
+	line "That's the spirit!"
+	done
+
+ViridianGymRivalDefeatedText:
+	text "NO! Not again!"
+
+	para "How are you this"
+	line "good, <PLAYER>?"
+	done
+
+ViridianGymRivalAfterBattleText:
+	text "<RIVAL>: Hmph!"
+	line "Fine, you win"
+	cont "this round!"
+
+	para "I'll be training"
+	line "right here, so"
+	cont "come back anytime!"
+
+	para "Smell ya later!"
+	done
+
+ViridianGymRivalNoRematchText:
+	text "<RIVAL>: Heh!"
+	line "Scared, huh?"
+
+	para "Come back when"
+	line "you've got the"
+	cont "guts!"
+	done
+
+ViridianGymGuideRivalLeaderText:
+	text "Yo, champ! Get"
+	line "this!"
+
+	para "<RIVAL> is the new"
+	line "LEADER here!"
+	done
+
+ViridianGymRivalStatueText:
+	text "VIRIDIAN CITY"
+	line "#MON GYM"
+	cont "LEADER: <RIVAL>"
+
+	para "WINNING TRAINERS:"
+	line "<RIVAL>"
+	cont "<PLAYER>"
+	done
+
 ViridianGym_MapEvents:
 	db 0, 0 ; filler
 
@@ -482,3 +641,5 @@ ViridianGym_MapEvents:
 	object_event  6,  5, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerViridianGymCooltrainer3, -1
 	object_event 16, 15, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, ViridianGymGuideScript, -1
 	object_event 16,  9, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, ViridianGymRevive, EVENT_VIRIDIAN_GYM_REVIVE
+	; M10 13k2: the rival, post-E4, on GIOVANNI's tile (hide flag from the OBJECTS callback)
+	object_event  2,  1, SPRITE_KANTO_RIVAL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ViridianGymRivalScript, EVENT_VIRIDIAN_GYM_RIVAL_HIDDEN

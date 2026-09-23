@@ -1158,6 +1158,9 @@ DEF RIVAL_STARTER_VAPOREON EQU 3
 	const KANTO_CHAMPION_1 ; JOLTEON branch (Yellow RIVAL3 party 1)
 	const KANTO_CHAMPION_2 ; FLAREON branch (Yellow RIVAL3 party 2)
 	const KANTO_CHAMPION_3 ; VAPOREON branch (Yellow RIVAL3 party 3)
+	const KANTO_CHAMPION_4 ; M10 13k2: VIRIDIAN GYM leader, JOLTEON branch (row 1, every level +6)
+	const KANTO_CHAMPION_5 ; M10 13k2: VIRIDIAN GYM leader, FLAREON branch (row 2, every level +6)
+	const KANTO_CHAMPION_6 ; M10 13k2: VIRIDIAN GYM leader, VAPOREON branch (row 3, every level +6)
 
 	trainerclass MYSTICALMAN ; 49
 	const EUSINE
