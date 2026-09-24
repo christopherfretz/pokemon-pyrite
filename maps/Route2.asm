@@ -8,13 +8,16 @@
 ; Crystal's three
 ; Bug Catchers (ROB/ED/DOUG) are gone, and the four GSC itemballs collapse to
 ; Yellow's two: HP_UP and MOON_STONE, both south of the Route 2 gate.
-; The hidden items are Crystal's and stay.
+; Crystal's four hidden items are gone (N1e, below).
 ; 4b carved the two Viridian Forest gate doorways into Route2.blk - warps 6
-; (3,27, Pewter half) and 7 (5,33, Viridian half) - and opened the cut trees
-; at (5,8) and (15,18) so the Route 2 gate, Diglett's Cave and the Route 2
-; trade house are reachable without CUT. The cut trees at
-; (10,40)/(12,46)/(12,50) stay: opening them would let the player skip the
-; forest entirely.
+; (3,27, Pewter half) and 7 (5,33, Viridian half).
+; P5 (docs/M2-PEWTER-CITY.md "## P5 findings"): 4b had also opened the cut
+; trees at (5,8) and (15,18), which let a no-CUT player walk from Pewter into
+; Diglett's Cave and out at Vermilion before Brock.  Both are back (block $32
+; at .blk offsets 42/97), matching Yellow's (5,10)/(15,22): the cave mouth
+; and trade house sit behind the first tree, the gate's north door behind the
+; second, so the whole east side needs HM01 CUT as in Yellow.  The cut trees
+; at (10,40)/(12,46)/(12,50) stay too.
 ; N1d: Crystal's NUGGET HOUSE is gone - Yellow's Route 2 has exactly one
 ; building, the trade house. Its front blocks (Route2.blk offsets 77/78) are
 ; now trees, so the door tile (15,15) is a WALL. Warp 1 below is left in the
