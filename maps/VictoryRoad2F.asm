@@ -1,7 +1,7 @@
 ; VICTORY ROAD 2F (M10 13f geometry; 13g adds boulders, switches, trainers,
 ; items and MOLTRES).
 ;
-; Yellow's 15x9 VICTORY_ROAD_2F on TILESET_CAVE (scripts/vr_blk.py).  Warps 1-7
+; Yellow's 15x9 VICTORY_ROAD_2F on TILESET_KANTO_CAVE (CT1, scripts/ct1_kanto_cave.py).  Warps 1-7
 ; are Yellow's, in Yellow's order
 ; (vendor/pokeyellow/data/maps/objects/VictoryRoad2F.asm).  Warps 2-3 are the
 ; east exit onto ROUTE_23 (14,31) (Yellow: LAST_MAP, 4): Yellow walks off the
@@ -10,8 +10,8 @@
 ; fly_warp VICTORY_ROAD_2F, 22, 16 (vendor/pokeyellow/data/maps/special_warps.asm).
 ; It sits on plain floor, so stepping on it does nothing.
 ;
-; 13g: switch 1 TILE (1,16) opens BLOCK (3,4) $61 -> stock $05 (Yellow $15);
-; switch 2 TILE (9,16) opens BLOCK (11,7) $60 -> stock $0d (Yellow $1d).
+; 13g: switch 1 TILE (1,16) opens BLOCK (3,4) $98 -> $83 (CT1 clones of Yellow $37 -> $15);
+; switch 2 TILE (9,16) opens BLOCK (11,7) $25 -> $1d (Yellow's ids, CT1).
 
 MACRO vr_switch
 ; x, y, event flag
@@ -53,11 +53,11 @@ VictoryRoad2FResetCallback:
 VictoryRoad2FSwitchCallback:
 	checkevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH1
 	iffalse .switch2
-	changeblock 6, 8, $05 ; Yellow block (3,4) -> $15
+	changeblock 6, 8, $83 ; Yellow block (3,4) -> $15; CT1 clone $83 keeps its UP_WALL top edge
 .switch2
 	checkevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH2
 	iffalse .done
-	changeblock 22, 14, $0d ; Yellow block (11,7) -> $1d
+	changeblock 22, 14, $1d ; Yellow block (11,7) -> $1d
 .done
 	endcallback
 
@@ -77,13 +77,13 @@ VictoryRoad2FSwitchScene:
 
 VictoryRoad2FSwitch1Script:
 	setevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH1
-	changeblock 6, 8, $05
+	changeblock 6, 8, $83
 	reloadmappart
 	end
 
 VictoryRoad2FSwitch2Script:
 	setevent EVENT_VICTORY_ROAD_2F_BOULDER_ON_SWITCH2
-	changeblock 22, 14, $0d
+	changeblock 22, 14, $1d
 	reloadmappart
 	end
 

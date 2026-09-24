@@ -72,4 +72,6 @@ Tilesets::
 	dw TilesetKantoE4TowerPalMap
 ; M12a: Yellow's BEACH_HOUSE, the SUMMER BEACH HOUSE on ROUTE 19.
 	tileset TilesetKantoBeachHouse
+; CT1: Yellow's CAVERN, every Kanto cave (docs/CT1-KANTO-CAVE.md).
+	tileset TilesetKantoCave
 	assert_table_length NUM_TILESETS + 1

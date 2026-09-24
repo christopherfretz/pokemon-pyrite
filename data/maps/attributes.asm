@@ -543,18 +543,18 @@ ENDM
 	map_attributes MahoganyGym, MAHOGANY_GYM, $00
 	map_attributes MahoganyPokecenter1F, MAHOGANY_POKECENTER_1F, $00
 	map_attributes Route42EcruteakGate, ROUTE_42_ECRUTEAK_GATE, $00
-	map_attributes DiglettsCave, DIGLETTS_CAVE, $09
+	map_attributes DiglettsCave, DIGLETTS_CAVE, $19 ; CT1: Yellow cavern border $19
 	map_attributes UndergroundPath, UNDERGROUND_PATH, $00
 
 	map_attributes UndergroundPathWestEast, UNDERGROUND_PATH_WEST_EAST, $01
-	map_attributes RockTunnel1F, ROCK_TUNNEL_1F, $2e
-	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $2e
+	map_attributes RockTunnel1F, ROCK_TUNNEL_1F, $03 ; CT1: Yellow cavern border $03
+	map_attributes RockTunnelB1F, ROCK_TUNNEL_B1F, $03 ; CT1: Yellow cavern border $03
 	map_attributes SafariZoneFuchsiaGateBeta, SAFARI_ZONE_FUCHSIA_GATE_BETA, $00
 	map_attributes SafariZoneBeta, SAFARI_ZONE_BETA, $13
-	map_attributes VictoryRoad1F, VICTORY_ROAD_1F, $1d
-	map_attributes MtMoon1F, MT_MOON_1F, $01
-	map_attributes MtMoonB1F, MT_MOON_B1F, $01
-	map_attributes MtMoonB2F, MT_MOON_B2F, $01
+	map_attributes VictoryRoad1F, VICTORY_ROAD_1F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes MtMoon1F, MT_MOON_1F, $03 ; CT1: Yellow cavern border $03
+	map_attributes MtMoonB1F, MT_MOON_B1F, $03 ; CT1: Yellow cavern border $03
+	map_attributes MtMoonB2F, MT_MOON_B2F, $03 ; CT1: Yellow cavern border $03
 	map_attributes EcruteakTinTowerEntrance, ECRUTEAK_TIN_TOWER_ENTRANCE, $00
 	map_attributes WiseTriosRoom, WISE_TRIOS_ROOM, $00
 	map_attributes EcruteakPokecenter1F, ECRUTEAK_POKECENTER_1F, $00
@@ -579,16 +579,16 @@ ENDM
 ; indoor border every Kanto house/mart/centre uses.  No connections: all
 ; fifteen are indoor maps.
 ; 12d: the Seafoam floors take Yellow's own border, cavern block $7d (a 2x2
-; boulder field), whose exact TILESET_CAVE twin is metatile $1d.
-	map_attributes SeafoamIslands1F, SEAFOAM_ISLANDS_1F, $1d
-	map_attributes SeafoamIslandsB1F, SEAFOAM_ISLANDS_B1F, $1d
-	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $1d
-	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $1d
-	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $1d
-; M10 13f: Yellow's VICTORY ROAD 2F/3F take the same cavern $7d border -> $1d
+; boulder field); CT1 moved them onto TILESET_KANTO_CAVE, so it is $7d verbatim.
+	map_attributes SeafoamIslands1F, SEAFOAM_ISLANDS_1F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes SeafoamIslandsB1F, SEAFOAM_ISLANDS_B1F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes SeafoamIslandsB2F, SEAFOAM_ISLANDS_B2F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes SeafoamIslandsB3F, SEAFOAM_ISLANDS_B3F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes SeafoamIslandsB4F, SEAFOAM_ISLANDS_B4F, $7d ; CT1: Yellow cavern border $7d
+; M10 13f: Yellow's VICTORY ROAD 2F/3F take the same cavern $7d border (CT1: verbatim)
 ; (1F keeps Crystal's VictoryRoad row, renamed).
-	map_attributes VictoryRoad2F, VICTORY_ROAD_2F, $1d
-	map_attributes VictoryRoad3F, VICTORY_ROAD_3F, $1d
+	map_attributes VictoryRoad2F, VICTORY_ROAD_2F, $7d ; CT1: Yellow cavern border $7d
+	map_attributes VictoryRoad3F, VICTORY_ROAD_3F, $7d ; CT1: Yellow cavern border $7d
 ; M10 13l: Yellow's POWER PLANT border, block $2e (`db $2e ; border block` in
 ; vendor/pokeyellow/data/maps/objects/PowerPlant.asm) -- the facility wall.
 	map_attributes KantoPowerPlant, KANTO_POWER_PLANT, $2e
@@ -697,7 +697,7 @@ ENDM
 	map_attributes Route11Gate2F, ROUTE_11_GATE_2F, $0a
 	map_attributes Route12Gate1F, ROUTE_12_GATE_1F, $0a ; Kanto hack (M5 8l)
 	map_attributes Route12Gate2F, ROUTE_12_GATE_2F, $0a ; Kanto hack (M5 8l)
-	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $1d ; Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute11.asm
+	map_attributes DiglettsCaveRoute11, DIGLETTS_CAVE_ROUTE_11, $7d ; CT1 (TILESET_KANTO_CAVE); Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute11.asm
 	map_attributes RedsHouse1F, REDS_HOUSE_1F, $00
 	map_attributes RedsHouse2F, REDS_HOUSE_2F, $00
 	map_attributes BluesHouse, BLUES_HOUSE, $00
@@ -840,7 +840,7 @@ ENDM
 	map_attributes ViridianForestNorthGate, VIRIDIAN_FOREST_NORTH_GATE, $0a
 	map_attributes Route2TradeHouse, ROUTE_2_TRADE_HOUSE, $00
 	map_attributes ViridianSchoolHouse, VIRIDIAN_SCHOOL_HOUSE, $00
-	map_attributes DiglettsCaveRoute2, DIGLETTS_CAVE_ROUTE_2, $1d ; Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute2.asm
+	map_attributes DiglettsCaveRoute2, DIGLETTS_CAVE_ROUTE_2, $7d ; CT1 (TILESET_KANTO_CAVE); Kanto hack (M4 audit): Yellow's $7d, vendor/pokeyellow/data/maps/objects/DiglettsCaveRoute2.asm
 	map_attributes ElmsLab, ELMS_LAB, $00
 	map_attributes PlayersHouse1F, PLAYERS_HOUSE_1F, $00
 	map_attributes PlayersHouse2F, PLAYERS_HOUSE_2F, $00

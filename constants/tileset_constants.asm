@@ -48,6 +48,7 @@
 	const TILESET_KANTO_E4 ; 2e (M10 13j2: KANTO_GYM + per-room E4 colours)
 	const TILESET_KANTO_E4_TOWER ; 2f (M10 13j2: KANTO_TOWER + AGATHA's colours)
 	const TILESET_KANTO_BEACH_HOUSE ; 30 (M12a: Yellow's BEACH_HOUSE)
+	const TILESET_KANTO_CAVE ; 31 (CT1: Yellow's CAVERN)
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

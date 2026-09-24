@@ -227,6 +227,9 @@ UnusedTilesetRocketHouseAnim: ; unreferenced
 	tileframe WaitTileAnimation
 	tileframe DoneTileAnimation
 
+TilesetKantoCaveAnim:
+; Kanto hack (CT1): Yellow's CAVERN header is TILEANIM_WATER on tile $14 too
+; (Seafoam's currents, Mt. Moon/Rock Tunnel have none) -- same list.
 TilesetKantoPlateauAnim:
 ; Kanto hack (M10 13e-1): Yellow's PLATEAU header is TILEANIM_WATER on tile $14
 ; (ROUTE 23's lake), outdoors like SHIP_PORT's sea -- same list.

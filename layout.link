@@ -390,6 +390,9 @@ ROMX $77
 ROMX $78
 	"Debug Room"
 	"Tileset Data 8"
+	; Kanto hack (CT1): Yellow's CAVERN tileset, ~4.5 KB.  "Tileset Data 14"
+	; ($79) had 1 KB left; $78 had 6 KB, so the new tileset gets its own pin.
+	"Tileset Data 15"
 ROMX $79
 	; Kanto hack: the Kanto metatile + collision tables (M7 10l,
 	; docs/M7-FUCHSIA.md D48).  They used to float as "Tileset Data 9" and had

@@ -146,6 +146,10 @@ INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"
 TilesetKantoPlateauPalMap:
 INCLUDE "gfx/tilesets/kanto_plateau_palette_map.asm"
 
+; Kanto hack: Yellow's CAVERN tileset, every Kanto cave (CT1).
+TilesetKantoCavePalMap:
+INCLUDE "gfx/tilesets/kanto_cave_palette_map.asm"
+
 ; Kanto hack: the E4 wing's role maps (M10 13j2); colours per room in
 ; gfx/tilesets/kanto_e4.pal via LoadSpecialMapPalette.
 TilesetKantoE4PalMap:
