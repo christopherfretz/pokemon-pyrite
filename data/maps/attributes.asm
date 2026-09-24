@@ -750,7 +750,7 @@ ENDM
 ; Yellow interiors.  Border blocks are real blocks of each map's own tileset, not
 ; $00: the gate rooms and rest houses take $0a (what Route15FuchsiaGate above
 ; uses, and Yellow's own border for all of them), the four outdoor areas take
-; $0f (ViridianForest's, the other TILESET_KANTO map whose edge is solid trees).
+; $0f (solid trees; ViridianForest used it too until VF3 made its border black).
 ; No connections: the areas are joined by warps in Yellow, not by map seams.
 	map_attributes Route15Gate2F, ROUTE_15_GATE_2F, $0a
 	map_attributes FuchsiaGoodRodHouse, FUCHSIA_GOOD_ROD_HOUSE, $0c ; Kanto hack (M7 10g): Yellow's own border (db $c) on the SHIP tileset
@@ -837,7 +837,7 @@ ENDM
 	map_attributes Route2NuggetHouse, ROUTE_2_NUGGET_HOUSE, $00
 	map_attributes Route2Gate, ROUTE_2_GATE, $0a
 	map_attributes VictoryRoadGate, VICTORY_ROAD_GATE, $00
-	map_attributes ViridianForest, VIRIDIAN_FOREST, $0f
+	map_attributes ViridianForest, VIRIDIAN_FOREST, $cf ; VF3: solid black, Yellow's forest border ($03 = tile $33)
 	map_attributes ViridianForestSouthGate, VIRIDIAN_FOREST_SOUTH_GATE, $0a
 	map_attributes ViridianForestNorthGate, VIRIDIAN_FOREST_NORTH_GATE, $0a
 	map_attributes Route2TradeHouse, ROUTE_2_TRADE_HOUSE, $00

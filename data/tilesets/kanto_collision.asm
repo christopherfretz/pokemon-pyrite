@@ -313,3 +313,14 @@
 ; kanto $84 (north doorway, DOOR,W,W,W) with the BL tree -> sign: the
 ; LEAVING sign at tile (2,1), under warp tile (2,0)
 	tilecoll DOOR, WALL, WALL, WALL ; ce
+
+; ---- VF3: Viridian Forest's exits as Yellow draws them (docs/M2-FOREST.md
+; "## VF2 findings").  Tiles $80/$81 are kanto.png's appended row (VRAM bank 1).
+; solid black (tile $80): ViridianForest's border block, Yellow's $03
+	tilecoll WALL, WALL, WALL, WALL ; cf
+; kanto $85 (south doorway) with Yellow's $58 top row: up-arrow tile $81 x2
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; d0
+; kanto $6d (tree column left) with its floor quadrant on row 47 a warp: (15,47)
+	tilecoll WALL, FLOOR, WALL, WARP_CARPET_DOWN ; d1
+; kanto $6e (tree column right) with its floor quadrant on row 47 a warp: (18,47)
+	tilecoll FLOOR, WALL, WARP_CARPET_DOWN, WALL ; d2

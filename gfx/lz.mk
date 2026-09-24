@@ -58,7 +58,11 @@ gfx/tilesets/house.2bpp.lz: LZFLAGS += --odd-alternate --align 4
 gfx/tilesets/johto.2bpp.lz: LZFLAGS += --literal-only --align 1
 gfx/tilesets/johto_modern.2bpp.lz: LZFLAGS += --literal-only --align 1
 gfx/tilesets/kabuto_word_room.2bpp.lz: LZFLAGS += --literal-only --align 1
-gfx/tilesets/kanto.2bpp.lz: LZFLAGS += --literal-only --align 1
+# Kanto hack (VF3, docs/M2-FOREST.md): kanto.png is no longer vanilla (a tile
+# row appended for Viridian Forest), so there is nothing to match.  The matching
+# preset stored the new row near-literally (+256 B) and pushed the floated
+# "Tileset Data 13" out of bank $06; plain lzcompress packs the set ~430 B smaller.
+gfx/tilesets/kanto.2bpp.lz: LZFLAGS =
 gfx/tilesets/mansion.2bpp.lz: LZFLAGS += --odd-alternate --align 4
 gfx/tilesets/mart.2bpp.lz: LZFLAGS += --odd-alternate --align 4
 gfx/tilesets/omanyte_word_room.2bpp.lz: LZFLAGS += --literal-only --align 1

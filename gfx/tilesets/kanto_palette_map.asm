@@ -15,7 +15,9 @@ rept 16
 	db $ff
 endr
 
-	tilepal 1, GRAY, BROWN, BROWN, RED, BROWN, ROOF, ROOF, ROOF
+; Kanto hack (VF3): kanto.png's appended row lands here ($80 = PNG tile $60).
+; $80 solid black -> GRAY; $81 ground $2c + Yellow's arrow -> GREEN, as $2c.
+	tilepal 1, GRAY, GREEN, BROWN, RED, BROWN, ROOF, ROOF, ROOF
 	tilepal 1, ROOF, ROOF, YELLOW, YELLOW, YELLOW, GRAY, BROWN, GRAY
 	tilepal 1, GRAY, BROWN, ROOF, BROWN, WATER, ROOF, ROOF, ROOF
 	tilepal 1, ROOF, ROOF, GRAY, BROWN, BROWN, GRAY, BROWN, GRAY
