@@ -298,3 +298,18 @@
 ; scripts/saffron_blk.py rewrites every $00 in SaffronCity.blk to point here.
 	tilecoll WALL, WALL, WALL, WALL ; ca
 
+
+; ---- VF1: Viridian Forest SIGNPOSTS.  Yellow's forest blocks $21/$15/$16
+; carry its signpost in one quadrant; scripts/forest_blk.py used to map them
+; onto the tree corners $87/$86/$82, drawing the six signs as trees.  These
+; are those corners with the tree quadrant redrawn as Crystal's Kanto sign
+; (tiles 46 47/56 57, as in block $08); the sign quadrant stays WALL.
+; kanto $87 with the TL tree -> sign
+	tilecoll WALL, FLOOR, FLOOR, FLOOR ; cb
+; kanto $86 with the BL tree -> sign
+	tilecoll FLOOR, WALL, WALL, WALL ; cc
+; kanto $82 with the TL tree -> sign
+	tilecoll WALL, TALL_GRASS, TALL_GRASS, TALL_GRASS ; cd
+; kanto $84 (north doorway, DOOR,W,W,W) with the BL tree -> sign: the
+; LEAVING sign at tile (2,1), under warp tile (2,0)
+	tilecoll DOOR, WALL, WALL, WALL ; ce
