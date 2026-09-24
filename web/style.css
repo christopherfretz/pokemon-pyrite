@@ -276,8 +276,22 @@ kbd {
     grid-template-areas: "dpadcol screenwrap facecol" "status status status";
     align-items: center;
   }
-  #screenwrap { grid-area: screenwrap; padding: 4px; }
-  #status { grid-area: status; padding-bottom: 4px; }
+  /* The grid's align-items: center would size this cell to its content, and
+     app.js's fitScreen() sizes the content from this cell — a feedback loop
+     that settled at 1x on desktop.  Stretch it to the whole 1fr track so the
+     measurement is the real free space; the flex centring inside still
+     centres the screen. */
+  #screenwrap {
+    grid-area: screenwrap;
+    padding: 4px;
+    align-self: stretch;
+    justify-self: stretch;
+    min-height: 0;
+    min-width: 0;
+  }
+  /* START/SELECT are a fixed overlay at the bottom (below); reserve their
+     height so they never sit on top of the status text. */
+  #status { grid-area: status; padding-bottom: calc(40px + var(--safe-b)); }
 
   #pad {
     display: contents;
