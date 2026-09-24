@@ -252,6 +252,12 @@
   "sav": "viridian_rival.sav"
  },
  {
+  "id": "cerulean_cave",
+  "title": "CERULEAN CAVE \u2014 face to face with MEWTWO",
+  "description": "Two steps below MEWTWO on CERULEAN CAVE B1F, facing it, after the HALL OF FAME. Walked in from 'KANTO COMPLETE': flown to CERULEAN, up the NUGGET BRIDGE, SURFED down ROUTE 24's pond and CERULEAN's west river to the cave (its guard is gone post-game), then Yellow's own ladder route through 1F/2F to B1F, SURFING its lakes. Every item in the cave is still there and MEWTWO (L70) is unfought: step up and press A. Save first -- win, catch or run, it does not come back. Same fakes as 'KANTO COMPLETE' (the level-100 party with SURF, RAINBOW/SOUL badges).",
+  "sav": "cerulean_cave.sav"
+ },
+ {
   "id": "newbark",
   "title": "NEW BARK TOWN \u2014 just arrived from KANTO",
   "description": "Walked from 'KANTO COMPLETE': OAK's hand-off and HM07, the ROUTE 22 GATE's south door, ROUTES 26/27 and TOHJO FALLS, into NEW BARK. ELM has not been met yet. FAKED throughout Johto: the level-100 PIKACHU (999 stats, PSYCHIC/SURF/FLY/WATERFALL) that won every fight, ELM's starter carrying CUT/STRENGTH/WHIRLPOOL/FLASH as if taught, and the Kanto fakes (RAINBOW/SOUL badges).",
