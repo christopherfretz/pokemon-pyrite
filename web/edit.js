@@ -162,6 +162,19 @@
   function backupKey() { return 'battery-backup:' + titleKey; }
   function resumeKey() { return 'resume:' + titleKey; }
 
+  /* Same save-region signature app.js stores in every battery/resume record:
+     FNV-1a over cartridge RAM from $600 on (past sScratch, the decompression
+     scratch area).  Keep in step with sig()/saveSig() in app.js. */
+  function saveSig(ram) {
+    var bytes = ram.subarray(Math.min(0x600, ram.length));
+    var h = 0x811c9dc5;
+    for (var i = 0; i < bytes.length; i++) {
+      h ^= bytes[i];
+      h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+    }
+    return h + ':' + bytes.length;
+  }
+
   // ------------------------------------------------------------- ROM load ---
 
   function titleKeyOf(r) {
@@ -1066,7 +1079,7 @@
     var stash = original ? kvPut(backupKey(), { ram: original, date: Date.now(), title: titleKey })
       : Promise.resolve();
     return stash.then(function () {
-      return kvPut(batteryKey(), { ram: bytes, date: Date.now(), title: titleKey });
+      return kvPut(batteryKey(), { ram: bytes, date: Date.now(), title: titleKey, saveSig: saveSig(bytes) });
     }).then(function () {
       return kvDel(resumeKey());
     }).then(function () {
@@ -1108,7 +1121,9 @@
     kvGet(backupKey()).then(function (entry) {
       if (!entry || !entry.ram || !entry.ram.length) { say('There is no previous save to restore.', true); return; }
       if (!window.confirm('Put the pre-edit save back? Anything you changed since is lost.')) { return; }
-      return kvPut(batteryKey(), { ram: entry.ram, date: Date.now(), title: titleKey })
+      return kvPut(batteryKey(), {
+        ram: entry.ram, date: Date.now(), title: titleKey, saveSig: saveSig(new Uint8Array(entry.ram))
+      })
         .then(function () { return kvDel(resumeKey()); })
         .then(function () {
           say('Previous save restored - starting the game…');

@@ -152,9 +152,19 @@ to start" badge sits over the screen. **Menu → Sound** toggles mute,
 
 ## Saves
 
-**In-game (battery) saves** are the real thing: the page snapshots cartridge RAM
-to IndexedDB every 10 seconds when it has changed, and whenever you leave or
-background the page. On the next visit it is restored before the ROM starts.
+**In-game (battery) saves** are the real thing: the page mirrors cartridge RAM
+to IndexedDB (`battery:<title>`) about **one second after the game writes it**
+(a single coalesced timer), retries every 10 seconds if anything is still
+unwritten, and writes again whenever you leave or background the page
+(`visibilitychange`, `pagehide`, `freeze`). On the next visit it is restored
+before the ROM starts. The battery record is the source of truth for your
+progress; everything else is an optimisation on top of it.
+
+If a write fails or hangs (every IndexedDB open/transaction has an 8-second
+deadline, after which the connection is dropped and reopened), the status line
+shows **`SAVE FAILED HH:MM - export .sav`** and keeps retrying; the page says so
+once per failure streak and again when saving works. Use **Export .sav**
+while it is red.
 
 - **Export .sav** downloads `kanto-first.sav` — **raw 32 KB cartridge RAM and
   nothing else, no RTC footer.** That is byte for byte what binjgb itself
@@ -196,6 +206,20 @@ attempt to restore it did not survive its first half-second (a `sessionStorage`
 guard, so a bad snapshot cannot wedge the page in a reload loop). **Reset** and
 **Import .sav** both delete it.
 
+**A battery save newer than the snapshot wins.** Both records carry `saveSig`,
+a hash of cartridge RAM past the `sScratch` decompression area (SRAM offset
+`$600` onward — the part that only changes on SAVE, box and event writes). The
+snapshot is rewritten whenever that region changes, so normally it is never
+older than your last in-game SAVE; the 60-second cadence only covers scratch
+churn. If at boot the battery record is newer *and* its `saveSig` differs from
+the snapshot's (the snapshot write after a SAVE never landed, e.g. Safari
+dropped the write started in `pagehide`), the snapshot is deleted and the game
+boots from the battery save, with the status line saying *Booted from your last
+SAVE - the resume snapshot was older*. You lose only clock continuity, never the
+SAVE. Records written before `saveSig` existed are checked the slow way: the
+snapshot is restored, its cartridge RAM compared with the battery save's, and
+thrown away on the same rule.
+
 Caveat worth knowing: the clock only advances while the page is actually
 running. Close the tab for a week and the game will think a few minutes passed,
 not a week. Real hardware (and Delta) keep counting.
@@ -220,6 +244,13 @@ different matter: those are matched on the exact ROM hash and core commit.)
   wipe the save. The export file is the only copy you control.
 - Storage is per-origin: the save on `example.com` is invisible to
   `192.168.1.5:8080`. Pick one URL and stay on it.
+- Safari does not promise to finish an IndexedDB write started while the page
+  is being hidden or closed, which is why the mirror does not wait for that: a
+  SAVE is in IndexedDB about a second after the game finishes writing it. Give
+  it that second before closing or refreshing.
+- iOS Safari can leave its IndexedDB connection hung after the app has been in
+  the background for a long time. The page times out and reopens it; if it keeps
+  failing you will see **SAVE FAILED** in the status line — export, then reload.
 
 ---
 

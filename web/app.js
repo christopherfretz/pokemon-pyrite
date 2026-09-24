@@ -49,12 +49,26 @@
   var DB_VERSION = 1;
   var STORE = 'kv';
 
+  /* Battery mirror: flushed about a second after the game writes cartridge
+     RAM (FLUSH_MS, one coalesced timer), with the 10-second tick as a fallback
+     retry. */
   var AUTOSAVE_MS = 10000;
+  var FLUSH_MS = 1000;
   /* A full EmulatorState embeds VRAM + WRAM + cartridge RAM (a few hundred KB),
      so the resume snapshot is written on a slower cadence than the battery
-     mirror - plus unconditionally whenever the page is backgrounded or closed,
-     which is when it actually matters. Worst case the clock loses a minute. */
+     mirror when only the scratch area of SRAM churns - but IMMEDIATELY whenever
+     the save region (SAVE_REGION_START..end) changes, so a snapshot is never
+     older than an in-game SAVE - plus unconditionally whenever the page is
+     backgrounded or closed.  Worst case the clock loses a minute. */
   var RESUME_MS = 60000;
+  /* SRAM $a000-$a5ff is sScratch (ram/sram.asm: `ds $60 tiles`), a
+     decompression buffer the game churns during normal play.  Everything from
+     here on (backup save, main save + checksum, boxes, Hall of Fame...) only
+     changes on SAVE / box / event writes. */
+  var SAVE_REGION_START = 0x600;
+  /* A hung IndexedDB connection (iOS Safari after long backgrounding) must
+     not swallow saves silently: every open/transaction gets a deadline. */
+  var IDB_TIMEOUT_MS = 8000;
   var DEADZONE = 0.30;
 
   // binjgb constants (src/emulator.h, src/emscripten/wrapper.c).
@@ -176,31 +190,88 @@
 
   function openDb(name, version, upgrade) {
     return new Promise(function (resolve, reject) {
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (settled) { return; }
+        settled = true;
+        reject(new Error('IndexedDB open timed out'));
+      }, IDB_TIMEOUT_MS);
       var req = indexedDB.open(name, version);
       req.onupgradeneeded = function (ev) { upgrade(req.result, ev); };
-      req.onsuccess = function () { resolve(req.result); };
-      req.onerror = function () { reject(req.error); };
-      req.onblocked = function () { reject(new Error('IndexedDB blocked')); };
+      req.onsuccess = function () {
+        var d = req.result;
+        if (settled) { try { d.close(); } catch (e) { /* ignore */ } return; }
+        settled = true; clearTimeout(timer); resolve(d);
+      };
+      req.onerror = function () {
+        if (settled) { return; }
+        settled = true; clearTimeout(timer); reject(req.error);
+      };
+      req.onblocked = function () {
+        if (settled) { return; }
+        settled = true; clearTimeout(timer); reject(new Error('IndexedDB blocked'));
+      };
     });
   }
 
+  /* The connection is cached, but never trusted forever: a failed open, a
+     timed-out transaction, a browser-initiated close or a version change all
+     drop it so the next call reopens. */
   var dbPromise = null;
+  var dbHandle = null;
+  function dropDb(d) {
+    if (d && dbHandle !== d) { return; }      // already replaced
+    if (dbHandle) { try { dbHandle.close(); } catch (e) { /* ignore */ } }
+    dbHandle = null;
+    dbPromise = null;
+  }
   function db() {
     if (!dbPromise) {
-      dbPromise = openDb(DB_NAME, DB_VERSION, function (d) {
+      var p = openDb(DB_NAME, DB_VERSION, function (d) {
         if (!d.objectStoreNames.contains(STORE)) { d.createObjectStore(STORE); }
+      }).then(function (d) {
+        if (dbPromise !== p) { try { d.close(); } catch (e) { /* ignore */ } return db(); }
+        dbHandle = d;
+        d.onclose = function () { if (dbHandle === d) { dbHandle = null; dbPromise = null; } };
+        d.onversionchange = function () { dropDb(d); };
+        return d;
+      }, function (e) {
+        if (dbPromise === p) { dbPromise = null; }
+        throw e;
       });
+      dbPromise = p;
     }
     return dbPromise;
   }
 
   function tx(dbh, store, mode, fn) {
     return new Promise(function (resolve, reject) {
-      var t = dbh.transaction(store, mode);
-      var req = fn(t.objectStore(store));
-      t.oncomplete = function () { resolve(req ? req.result : undefined); };
-      t.onerror = function () { reject(t.error); };
-      t.onabort = function () { reject(t.error); };
+      var done = false;
+      var t;
+      var timer = setTimeout(function () {
+        if (done) { return; }
+        done = true;
+        try { if (t) { t.abort(); } } catch (e) { /* ignore */ }
+        dropDb(dbh);
+        reject(new Error('IndexedDB ' + mode + ' timed out'));
+      }, IDB_TIMEOUT_MS);
+      function finish(ok, val) {
+        if (done) { return; }
+        done = true;
+        clearTimeout(timer);
+        if (ok) { resolve(val); } else { reject(val); }
+      }
+      try {
+        t = dbh.transaction(store, mode);
+        var req = fn(t.objectStore(store));
+        t.oncomplete = function () { finish(true, req ? req.result : undefined); };
+        t.onerror = function () { finish(false, t.error || new Error('IndexedDB transaction error')); };
+        t.onabort = function () { finish(false, t.error || new Error('IndexedDB transaction aborted')); };
+      } catch (e) {
+        // InvalidStateError: the connection is closing/closed. Reopen next time.
+        dropDb(dbh);
+        finish(false, e);
+      }
     });
   }
 
@@ -297,6 +368,9 @@
   var fastForward = false;
   var extRamDirty = false;
   var lastSramSig = null;
+  var lastSaveSig = null;
+  var flushTimer = null;
+  var saveFailing = false;
   var lastResumeWriteMs = 0;
   var audioUnlocked = false;
   var framesSinceStart = 0;
@@ -315,6 +389,30 @@
       h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
     }
     return h + ':' + bytes.length;
+  }
+
+  // Signature of the save region only (everything past sScratch).  edit.js
+  // computes the same thing; keep the two in step.
+  function saveSig(ram) {
+    return sig(ram.subarray(Math.min(SAVE_REGION_START, ram.length)));
+  }
+
+  function hhmm() {
+    var d = new Date();
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function clearFlush() {
+    if (flushTimer !== null) { clearTimeout(flushTimer); flushTimer = null; }
+  }
+  // One pending timer: the first SRAM write in a burst arms it, later ones
+  // coalesce into it, so a steady trickle cannot postpone the flush forever.
+  function armFlush() {
+    if (flushTimer !== null) { return; }
+    flushTimer = setTimeout(function () {
+      flushTimer = null;
+      saveProgress(false);
+    }, FLUSH_MS);
   }
 
   function ss(key, value) {           // sessionStorage, never fatal
@@ -432,6 +530,7 @@
 
   function destroyEmulator() {
     stopLoop();
+    clearFlush();
     if (emu) { mod._emulator_delete(emu); emu = 0; }
     if (joypadBuf) { mod._joypad_delete(joypadBuf); joypadBuf = 0; }
     if (romPtr) { mod._free(romPtr); romPtr = 0; }
@@ -512,7 +611,7 @@
       if (event & EVENT_AUDIO_BUFFER_FULL) { pushAudio(); }
       if (event & EVENT_UNTIL_TICKS) { break; }
     }
-    if (mod._emulator_was_ext_ram_updated(emu)) { extRamDirty = true; }
+    if (mod._emulator_was_ext_ram_updated(emu)) { extRamDirty = true; armFlush(); }
     return newFrame;
   }
 
@@ -596,9 +695,13 @@
     rom = bytes;
     romTitleKey = titleKeyOf(rom);
     lastSramSig = null;
+    lastSaveSig = null;
     lastResumeWriteMs = 0;
     extRamDirty = false;
+    clearFlush();
     framesSinceStart = 0;
+    var wantResume = resume !== false;
+    var poisoned = false;
 
     return sha256(rom).then(function (digest) {
       romSha = digest;
@@ -609,48 +712,89 @@
       destroyEmulator();
       createEmulator(rom);
 
-      if (resume === false) { return { mode: 'battery' }; }
+      if (wantResume) {
+        // A resume snapshot that crashed us last time is still marked pending.
+        poisoned = ss(RESUME_GUARD) === '1';
+        if (poisoned) { ss(RESUME_GUARD, null); }
+      }
 
-      // A resume snapshot that crashed us last time is still marked pending.
-      var poisoned = ss(RESUME_GUARD) === '1';
-      if (poisoned) { ss(RESUME_GUARD, null); }
+      // Read both records up front: the battery save is the source of truth,
+      // and it decides whether the snapshot is still worth restoring.
+      return Promise.all([
+        kvGet(batteryKey()).catch(function (e) {
+          console.warn('could not read the battery save', e);
+          return null;
+        }),
+        wantResume ? kvGet(resumeKey()).catch(function (e) {
+          console.warn('could not read the resume snapshot', e);
+          return null;
+        }) : null
+      ]);
+    }).then(function (got) {
+      var battery = got[0];
+      var entry = got[1];
+      if (!(battery && battery.ram && battery.ram.length)) { battery = null; }
+      var batteryRam = battery ? normalizeSram(new Uint8Array(battery.ram)) : null;
+      var how = { mode: 'battery', stale: false };
+      if (!wantResume) { return { how: how, ram: batteryRam }; }
 
-      return kvGet(resumeKey()).then(function (entry) {
-        var usable = !poisoned && entry && entry.state &&
-          entry.state.byteLength === stateSize &&
-          entry.core === CORE_COMMIT && entry.romSha === romSha;
-        if (usable) {
-          ss(RESUME_GUARD, '1');
-          if (putState(new Uint8Array(entry.state))) { return { mode: 'resume' }; }
+      var usable = !poisoned && entry && entry.state &&
+        entry.state.byteLength === stateSize &&
+        entry.core === CORE_COMMIT && entry.romSha === romSha;
+      var batteryNewer = !!(battery && entry && typeof battery.date === 'number' &&
+        typeof entry.date === 'number' && battery.date > entry.date);
+
+      // Precedence rule, cheap form: both records carry the save-region
+      // signature, so we can tell without restoring anything.
+      if (usable && battery && battery.saveSig && entry.saveSig &&
+          battery.saveSig !== entry.saveSig && batteryNewer) {
+        usable = false;
+        how.stale = true;
+      }
+      if (usable) {
+        ss(RESUME_GUARD, '1');
+        if (putState(new Uint8Array(entry.state))) {
+          how.mode = 'resume';
+          // Old records without saveSig: compare the restored cartridge RAM
+          // against the battery save directly.
+          if (battery && !(battery.saveSig && entry.saveSig) && batteryNewer) {
+            var restored = getExtRam();
+            if (restored && saveSig(restored) !== saveSig(batteryRam)) {
+              ss(RESUME_GUARD, null);
+              destroyEmulator();
+              createEmulator(rom);
+              how.mode = 'battery';
+              how.stale = true;
+            }
+          }
+        } else {
           ss(RESUME_GUARD, null);
         }
-        if (poisoned) { console.warn('previous resume snapshot looked unhealthy; ignoring it'); }
-        return kvDel(resumeKey()).catch(function () { return null; })
-          .then(function () { return { mode: 'battery' }; });
-      }).catch(function (e) {
-        console.warn('could not read the resume snapshot', e);
-        return { mode: 'battery' };
-      });
-    }).then(function (how) {
-      if (how.mode === 'resume') { return how; }
-      return kvGet(batteryKey()).then(function (entry) {
-        if (entry && entry.ram && entry.ram.length) {
-          var ram = normalizeSram(new Uint8Array(entry.ram));
-          if (!putExtRam(ram)) { console.warn('battery save did not fit cartridge RAM'); }
-          lastSramSig = sig(ram);
-        }
-        return how;
-      }).catch(function (e) {
-        console.warn('could not read the battery save', e);
-        return how;
-      });
-    }).then(function (how) {
+      }
+      if (how.mode === 'resume') { return { how: how, ram: null }; }
+      if (how.stale) {
+        console.warn('the resume snapshot predates the newer battery save; discarding it');
+      } else if (poisoned) {
+        console.warn('previous resume snapshot looked unhealthy; ignoring it');
+      }
+      if (!entry) { return { how: how, ram: batteryRam }; }
+      return kvDel(resumeKey()).catch(function () { return null; })
+        .then(function () { return { how: how, ram: batteryRam }; });
+    }).then(function (r) {
+      var how = r.how;
+      if (how.mode === 'battery' && r.ram) {
+        if (!putExtRam(r.ram)) { console.warn('battery save did not fit cartridge RAM'); }
+        lastSramSig = sig(r.ram);
+        lastSaveSig = saveSig(r.ram);
+      }
       started = true;
       wantPlaying = true;
       fitScreen();
       refreshSlotLabels();
       pushJoypad(true);
-      say(how.mode === 'resume' ? 'Running (picked up where you left off)' : 'Running');
+      say(how.mode === 'resume' ? 'Running (picked up where you left off)'
+        : how.stale ? 'Booted from your last SAVE - the resume snapshot was older'
+        : 'Running');
       if (!audioUnlocked) { overlay.hidden = false; }
       startLoop();
     }).catch(function (e) {
@@ -672,45 +816,80 @@
 
   /* One IndexedDB write covers both halves of "where you were": the battery
      save (portable, what Export writes) and a full machine state (this core
-     only, but it is the thing that carries the MBC3 clock). */
+     only, but it is the thing that carries the MBC3 clock).  Both records
+     carry saveSig so the boot path can tell whether the snapshot predates an
+     in-game SAVE (see startWithRom). */
   function saveProgress(force) {
     if (!started || !emu) { return Promise.resolve(false); }
     if (!force && !extRamDirty) { return Promise.resolve(false); }
     extRamDirty = false;
 
-    var wantState = force || (Date.now() - lastResumeWriteMs) >= RESUME_MS;
     var ram = null, state = null;
     try {
       ram = getExtRam();
-      if (wantState) { state = getState(); }
     } catch (e) {
-      console.warn('could not read save data out of the core', e);
+      console.warn('could not read cartridge RAM out of the core', e);
+      extRamDirty = true;
       return Promise.resolve(false);
     }
-    if (!ram || !ram.length) { return Promise.resolve(false); }
+    if (!ram || !ram.length) { extRamDirty = true; return Promise.resolve(false); }
 
     var s = sig(ram);
+    var sv = saveSig(ram);
     var ramChanged = s !== lastSramSig;
+    var saveChanged = sv !== lastSaveSig;
+    // The machine state is written whenever the save region changed (so the
+    // snapshot is never older than a SAVE), on the 60 s cadence for scratch
+    // churn, and always when forced (page hidden / closing).
+    var wantState = force || saveChanged || (Date.now() - lastResumeWriteMs) >= RESUME_MS;
+    if (wantState) {
+      try { state = getState(); } catch (e) {
+        console.warn('could not read the machine state out of the core', e);
+        state = null;
+      }
+    }
     lastSramSig = s;
+    lastSaveSig = sv;
 
+    var now = Date.now();
     var writes = [];
     if (ramChanged || force) {
-      writes.push(kvPut(batteryKey(), { ram: ram, date: Date.now(), title: romTitleKey }));
+      writes.push(kvPut(batteryKey(), { ram: ram, date: now, title: romTitleKey, saveSig: sv }));
     }
     if (state) {
-      lastResumeWriteMs = Date.now();
+      lastResumeWriteMs = now;
       writes.push(kvPut(resumeKey(), {
-        state: state, date: Date.now(), core: CORE_COMMIT, romSha: romSha, title: romTitleKey
+        state: state, date: now, core: CORE_COMMIT, romSha: romSha, title: romTitleKey, saveSig: sv
       }));
     }
     if (!writes.length) { return Promise.resolve(false); }
 
     return Promise.all(writes).then(function () {
-      var d = new Date();
-      statusParts.save = 'saved ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-      renderStatus();
+      statusParts.save = 'saved ' + hhmm();
+      if (saveFailing) {
+        saveFailing = false;
+        say('Saving to browser storage works again');
+      } else {
+        renderStatus();
+      }
       return true;
-    }).catch(function (e) { console.warn('save failed', e); return false; });
+    }).catch(function (e) {
+      console.warn('save failed', e);
+      // Never believe the mirror is current after a failed or hung write:
+      // forget what we "wrote" so the next tick writes everything again.
+      lastSramSig = null;
+      lastSaveSig = null;
+      lastResumeWriteMs = 0;
+      extRamDirty = true;
+      statusParts.save = 'SAVE FAILED ' + hhmm() + ' - export .sav';
+      if (!saveFailing) {
+        saveFailing = true;
+        say('Could not write your save to browser storage - use Menu > Export .sav to keep it', true);
+      } else {
+        renderStatus(true);
+      }
+      return false;
+    });
   }
 
   function download(name, bytes) {
@@ -756,9 +935,10 @@
       var ram = normalizeSram(bytes);
       if (!putExtRam(ram)) { throw new Error('core refused ' + ram.length + ' bytes of cartridge RAM'); }
       lastSramSig = sig(ram);
+      lastSaveSig = saveSig(ram);
       // The imported RAM is now the truth; the old resume snapshot is not.
       return Promise.all([
-        kvPut(batteryKey(), { ram: ram, date: Date.now(), title: romTitleKey }),
+        kvPut(batteryKey(), { ram: ram, date: Date.now(), title: romTitleKey, saveSig: saveSig(ram) }),
         kvDel(resumeKey()),
         stashRomIfNeeded()
       ]).then(function () {
@@ -810,7 +990,9 @@
         return;
       }
       lastSramSig = null;
+      lastSaveSig = null;
       extRamDirty = true;
+      armFlush();
       audioStartSec = 0;
       say('Loaded state from slot ' + n);
     }).catch(function (e) { fail('Load state failed', e); });
@@ -1057,6 +1239,8 @@
     }
   });
   window.addEventListener('pagehide', function () { saveProgress(true); });
+  // Page Lifecycle: a frozen tab may be discarded without another event.
+  document.addEventListener('freeze', function () { saveProgress(true); });
 
   // --------------------------------------------------------------- wiring -
 
