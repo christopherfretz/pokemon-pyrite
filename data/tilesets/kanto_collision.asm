@@ -324,3 +324,5 @@
 	tilecoll WALL, FLOOR, WALL, WARP_CARPET_DOWN ; d1
 ; kanto $6e (tree column right) with its floor quadrant on row 47 a warp: (18,47)
 	tilecoll FLOOR, WALL, WARP_CARPET_DOWN, WALL ; d2
+; VF5: kanto $7c (gate front, left) without its door: BR quadrant = $7d's wall/window
+	tilecoll WALL, WALL, WALL, WALL ; d3
