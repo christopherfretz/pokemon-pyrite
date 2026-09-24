@@ -98,6 +98,34 @@ SeafoamIslandsB3FCurrentNearSteps:
 .nocurrent:
 	end
 
+; SF2: surfing off the (15,7) steps onto (15,8) fires the current in vanilla
+; Yellow (its default script polls the coordinate every frame), but GSC's
+; coord_event only fires after a WALKED step: UsedSurfScript's applymovement
+; lands with wEnabledPlayerEvents clear.  UsedSurfScript (engine/events/
+; overworld.asm) callasms this after every surf-on; on this map it queues a
+; mem script (RunMemScript is not gated) that re-checks the landing square.
+SeafoamIslandsB3FSurfLanding::
+	ld a, [wMapGroup]
+	cp GROUP_SEAFOAM_ISLANDS_B3F
+	ret nz
+	ld a, [wMapNumber]
+	cp MAP_SEAFOAM_ISLANDS_B3F
+	ret nz
+	ld b, BANK(SeafoamIslandsB3FSurfLandingCurrent)
+	ld de, SeafoamIslandsB3FSurfLandingCurrent
+	farcall LoadMemScript
+	ret
+
+SeafoamIslandsB3FSurfLandingCurrent:
+	readvar VAR_YCOORD
+	ifnotequal 8, .nocurrent
+	readvar VAR_XCOORD
+	ifnotequal 15, .nocurrent
+	sjump SeafoamIslandsB3FCurrentNearSteps
+
+.nocurrent:
+	end
+
 ; wScriptVar = 1 when BOTH of B2F's boulders are down their holes, i.e. when
 ; Yellow's `CheckBothEventsSet` / `ret z` would have stopped the current.
 SeafoamIslandsB3FCurrentIsOff:

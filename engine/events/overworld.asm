@@ -423,6 +423,10 @@ UsedSurfScript:
 ; step into the water (slow_step DIR, step_end)
 	special SurfStartStep
 	applymovement PLAYER, wMovementBuffer
+; SF2: a scripted step never re-arms coord events (wEnabledPlayerEvents is set
+; only when a walked step lands), so Seafoam B3F's (15,8) current -- which
+; Yellow fires on the surf-on step -- is queued from here instead.
+	callasm SeafoamIslandsB3FSurfLanding
 	end
 
 .stubbed_fn

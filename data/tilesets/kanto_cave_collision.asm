@@ -131,11 +131,11 @@
 	tilecoll FLOOR, WALL, FLOOR, WALL ; 7f
 ; collision clones: Yellow's art byte for byte, other collision
 	tilecoll WALL, WALL, WALL, WALL ; 80 = $02 (MtMoon1F, RockTunnel1F, RockTunnelB1F, VictoryRoad3F)
-	tilecoll WALL, UP_WALL, WALL, FLOOR ; 81 = $14 (CeruleanCave1F, CeruleanCaveB1F, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad3F)
+	tilecoll WALL, UP_WALL, WALL, FLOOR ; 81 = $14 (CeruleanCave1F, CeruleanCaveB1F, MtMoonB2F, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad3F)
 	tilecoll WALL, WALL, WALL, WALL ; 82 = $14 (MtMoon1F, RockTunnel1F)
-	tilecoll UP_WALL, UP_WALL, FLOOR, FLOOR ; 83 = $15 (CeruleanCave1F, DiglettsCave, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad2F switch, VictoryRoad3F)
+	tilecoll UP_WALL, UP_WALL, FLOOR, FLOOR ; 83 = $15 (CeruleanCave1F, DiglettsCave, MtMoonB2F, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad2F switch, VictoryRoad3F)
 	tilecoll WALL, WALL, WALL, WALL ; 84 = $15 (MtMoonB2F, RockTunnel1F)
-	tilecoll UP_WALL, WALL, FLOOR, WALL ; 85 = $16 (DiglettsCave, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad3F)
+	tilecoll UP_WALL, WALL, FLOOR, WALL ; 85 = $16 (DiglettsCave, MtMoonB2F, SeafoamIslandsB1F, SeafoamIslandsB2F, SeafoamIslandsB3F, SeafoamIslandsB4F, VictoryRoad1F, VictoryRoad2F, VictoryRoad3F)
 	tilecoll WALL, WALL, WALL, WALL ; 86 = $16 (MtMoon1F, RockTunnel1F)
 	tilecoll WALL, WALL, WALL, WALL ; 87 = $17 (MtMoon1F, RockTunnel1F, RockTunnelB1F)
 	tilecoll WALL, WALL, WALL, WALL ; 88 = $18 (MtMoon1F, RockTunnel1F)
