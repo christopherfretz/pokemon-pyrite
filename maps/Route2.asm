@@ -18,6 +18,9 @@
 ; and trade house sit behind the first tree, the gate's north door behind the
 ; second, so the whole east side needs HM01 CUT as in Yellow.  The cut trees
 ; at (10,40)/(12,46)/(12,50) stay too.
+; P5b: HP_UP moved from Crystal-side (10,45), open west road, to Yellow's own
+; (13,45), which here too is the east strip below the gate's south door -
+; CUT-gated as in Yellow.
 ; N1d: Crystal's NUGGET HOUSE is gone - Yellow's Route 2 has exactly one
 ; building, the trade house. Its front blocks (Route2.blk offsets 77/78) are
 ; now trees, so the door tile (15,15) is a WALL. Warp 1 below is left in the
@@ -83,6 +86,6 @@ Route2_MapEvents:
 	bg_event 11,  9, BGEVENT_READ, Route2DiglettsCaveSign
 
 	def_object_events
-	object_event 10, 45, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2HPUp, EVENT_ROUTE_2_HP_UP
+	object_event 13, 45, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2HPUp, EVENT_ROUTE_2_HP_UP
 	object_event 14, 50, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route2MoonStone, EVENT_ROUTE_2_MOON_STONE
 	object_event 10, 14, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route2FruitTree, -1
