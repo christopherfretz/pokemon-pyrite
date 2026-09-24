@@ -264,7 +264,7 @@ Museum1F_MapEvents:
 	coord_event 10,  4, -1, Museum1FTicketCounterScript
 
 	def_bg_events
-	bg_event  2,  2, BGEVENT_READ, Museum1FAerodactylFossilScript
+	bg_event  2,  3, BGEVENT_READ, Museum1FAerodactylFossilScript
 	bg_event  2,  6, BGEVENT_READ, Museum1FKabutopsFossilScript
 
 	def_object_events
