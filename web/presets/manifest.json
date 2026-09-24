@@ -24,6 +24,12 @@
   "sav": "brock.sav"
  },
  {
+  "id": "route4",
+  "title": "Route 4 \u2014 outside MT.MOON (BOULDERBADGE faked)",
+  "description": "Route 4, on the tile below the MT.MOON entrance, with the MT.MOON POK\u00e9MON CENTER just visited. Chains from the 'BOULDERBADGE won' preset: the badge, EVENT_BEAT_BROCK and the TM39 flag are WRITTEN, not fought, and TM39 is not in the bag. Four Route 3 trainers whose spots block the road (COLTON, WARREN, SALLY, BRETT) are pre-flagged as beaten; the other four and everything inside MT.MOON are real and unplayed.",
+  "sav": "route4.sav"
+ },
+ {
   "id": "cerulean",
   "title": "Cerulean City",
   "description": "Cerulean's west entrance, walked in through Mt. Moon on foot. Mt. Moon B2F's JESSIE & JAMES are pre-flagged as beaten; everything else is real.",
