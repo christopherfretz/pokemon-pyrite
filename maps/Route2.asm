@@ -11,6 +11,9 @@
 ; Crystal's four hidden items are gone (N1e, below).
 ; 4b carved the two Viridian Forest gate doorways into Route2.blk - warps 6
 ; (3,27, Pewter half) and 7 (5,33, Viridian half).
+; VF4 (docs/M2-FOREST.md "## VF4 findings"): the north gate's warp moved to
+; its entry carpet ABOVE the roof, (4,23) = warp 6 and (5,23) = warp 9, as
+; Yellow's (3,11); the drawn front door at (3,27) no longer warps.
 ; P5 (docs/M2-PEWTER-CITY.md "## P5 findings"): 4b had also opened the cut
 ; trees at (5,8) and (15,18), which let a no-CUT player walk from Pewter into
 ; Diglett's Cave and out at Vermilion before Brock.  Both are back (block $32
@@ -75,9 +78,10 @@ Route2_MapEvents:
 	warp_event 16, 27, ROUTE_2_GATE, 2 ; M1: Yellow's gate has only ONE north door tile (the west half is wall); warp 1 is Yellow's dead duplicate
 	warp_event 17, 27, ROUTE_2_GATE, 2
 	warp_event 12,  7, DIGLETTS_CAVE_ROUTE_2, 1 ; Kanto hack (docs/M4-VERMILION.md, 7c)
-	warp_event  3, 27, VIRIDIAN_FOREST_NORTH_GATE, 2 ; Kanto hack (docs/M2-FOREST.md) ; M1: Yellow's gate has only ONE north door tile (the west half is wall); warp 1 is Yellow's dead duplicate
+	warp_event  4, 23, VIRIDIAN_FOREST_NORTH_GATE, 2 ; Kanto hack (docs/M2-FOREST.md): VF4, the gate's north entry carpet above its roof, as Yellow's (3,11); the front door at (3,27) is art only. Both carpet tiles -> gate warp 2: the gate's (4,0) is wall (M1, as ROUTE_2_GATE)
 	warp_event  5, 33, VIRIDIAN_FOREST_SOUTH_GATE, 3 ; Kanto hack (docs/M2-FOREST.md)
 	warp_event 15, 11, ROUTE_2_TRADE_HOUSE, 1 ; Kanto hack (docs/M2-PEWTER.md, 4f)
+	warp_event  5, 23, VIRIDIAN_FOREST_NORTH_GATE, 2 ; Kanto hack: VF4, appended so warps 7/8 keep their ids
 
 	def_coord_events
 

@@ -45,7 +45,7 @@ ViridianForestNorthGate_MapEvents:
 
 	def_warp_events
 	warp_event  4,  0, ROUTE_2, 6
-	warp_event  5,  0, ROUTE_2, 6
+	warp_event  5,  0, ROUTE_2, 9 ; VF4: Route 2's second carpet tile
 	warp_event  4,  7, VIRIDIAN_FOREST, 1
 	warp_event  5,  7, VIRIDIAN_FOREST, 1 ; (2,0) in the forest is walled off; both doors land on (1,0)
 
