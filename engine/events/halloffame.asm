@@ -53,8 +53,8 @@ RedCredits::
 	call DelayFrames
 	call DisableSpriteUpdates
 	; Kanto hack (M11 14j, D155): the finale is LANCE, not RED.  Crystal's
-	; credits with no Hall of Fame entry; Continue lands at NEW BARK, so
-	; save first (the win flag is already set by the map script).
+	; credits with no Hall of Fame entry; Continue lands at PALLET TOWN
+	; (SPAWN_LANCE = SPAWN_PALLET_LANCE, W5), so save first (the win flag is already set by the map script).
 	ld a, SPAWN_LANCE
 	ld [wSpawnAfterChampion], a
 	farcall HallOfFame_InitSaveIfNeeded

@@ -169,6 +169,12 @@ DEF NUM_FISHGROUPS EQU const_value - 1
 	const SPAWN_BLACKTHORN
 	const SPAWN_MT_SILVER
 	const SPAWN_FAST_SHIP
+; Kanto hack (M11 W5, D155): PALLET_TOWN 5, 6 again, under its own index so
+; the post-Lance marker stays distinct from SPAWN_KANTO_CHAMPION (credits.asm
+; picks Crystal's vs Yellow's staff roll by the marker).  Appended last so
+; IsSpawnPoint still resolves PALLET_TOWN to SPAWN_PALLET; wVisitedSpawns
+; stays 4 bytes (29 flags).
+	const SPAWN_PALLET_LANCE
 DEF NUM_SPAWNS EQU const_value
 
 DEF SPAWN_N_A EQU -1
@@ -177,7 +183,10 @@ DEF SPAWN_N_A EQU -1
 ; the spawn point Continue lands on (intro_menu's .SpawnAfterE4 copies it to
 ; wDefaultSpawnpoint), so the Kanto HoF can spawn at PALLET without growing
 ; bank 1.  Crystal had LANCE = 1, RED = 2 and a hard-coded SPAWN_NEW_BARK.
-DEF SPAWN_LANCE          EQU SPAWN_NEW_BARK ; Crystal's (Johto) HoF
+; M11 W5 (operator, 2026-09-23): after the Mt. Silver LANCE finale Continue
+; lands at PALLET TOWN like Yellow's post-HoF, via SPAWN_PALLET_LANCE (the
+; same tile as SPAWN_PALLET, but a different marker value -- see above).
+DEF SPAWN_LANCE          EQU SPAWN_PALLET_LANCE ; Mt. Silver finale -> PALLET 5, 6
 DEF SPAWN_KANTO_CHAMPION EQU SPAWN_PALLET   ; Yellow: fly_warp PALLET_TOWN, 5, 6
 DEF SPAWN_RED            EQU $ff            ; after RED's credits; never saved
 

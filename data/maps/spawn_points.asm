@@ -45,6 +45,7 @@ SpawnPoints:
 	spawn BLACKTHORN_CITY,            21, 30
 	spawn SILVER_CAVE_OUTSIDE,        23, 20
 	spawn FAST_SHIP_CABINS_SW_SSW_NW,  6,  2
+	spawn PALLET_TOWN,                 5,  6 ; SPAWN_PALLET_LANCE (M11 W5): post-Lance Continue
 
 	spawn N_A,                        -1, -1
 

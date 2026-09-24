@@ -838,6 +838,12 @@ def main():
             region = "johto" if idx >= K.get("SPAWN_NEW_BARK", 1 << 30) \
                 else "kanto"
             sx, sy = int(xs), int(ys)
+            # SPAWN_PALLET_LANCE (M11 W5) repeats PALLET_TOWN 5, 6 only as a
+            # distinct post-credits marker; list each tile once.
+            if any(q["group"] == g and q["number"] == mn and q["x"] == sx
+                   and q["y"] == sy for q in spawns):
+                idx += 1
+                continue
             spawns.append({"index": idx, "map": const, "group": g, "number": mn,
                            "x": sx, "y": sy, "region": region,
                            "label": title_case(const),
