@@ -245,7 +245,9 @@ ENDM
 	map_const CERULEAN_CITY,                               20, 18 ; 17
 	map_const MT_MOON_POKECENTER,                           5,  4 ; 18
 	map_const CERULEAN_BADGE_HOUSE,                         4,  4 ; 19
-	map_const CERULEAN_CAVE_1F,                             5,  4 ; 20
+	map_const CERULEAN_CAVE_1F,                            15,  9 ; 20  M10P: Yellow's 15x9 (was M3 6k's 5x4 stub)
+	map_const CERULEAN_CAVE_2F,                            15,  9 ; 21  M10P
+	map_const CERULEAN_CAVE_B1F,                           15,  9 ; 22  M10P
 	endgroup
 
 	newgroup AZALEA                                               ;  8

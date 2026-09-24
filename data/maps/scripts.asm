@@ -507,9 +507,6 @@ INCLUDE "maps/Route2TradeHouse.asm"
 ; "Map Scripts 15".
 INCLUDE "maps/CeruleanBadgeHouse.asm"
 
-; Kanto hack: the Cerulean Cave stub behind it (docs/M3-CERULEAN.md, 6k).
-INCLUDE "maps/CeruleanCave1F.asm"
-
 ; Kanto hack: Yellow's VIRIDIAN SCHOOL HOUSE (docs/AUDIT-NPC-TEXT.md, N1c), on
 ; the warp Crystal gave the TRAINER HOUSE.  Not in "Map Scripts 23" (bank $6a,
 ; the Viridian group) because that bank is the tightest one we have.
@@ -648,6 +645,11 @@ INCLUDE "maps/VictoryRoad2F.asm"
 INCLUDE "maps/VictoryRoad3F.asm"
 ; M10 13l: Yellow's POWER PLANT, same bank ($76).
 INCLUDE "maps/KantoPowerPlant.asm"
+; M10P: Yellow's CERULEAN CAVE, same bank ($76).  1F moves here from
+; "Map Scripts 26" ($7b), where M3 6k's stub lived.
+INCLUDE "maps/CeruleanCave1F.asm"
+INCLUDE "maps/CeruleanCave2F.asm"
+INCLUDE "maps/CeruleanCaveB1F.asm"
 
 ENDSECTION
 

@@ -127,6 +127,10 @@ DEF NUM_MAP_PALETTES EQU const_value
 	const FISHGROUP_POND_L82     ; Route43
 	const FISHGROUP_POND_L87     ; BlackthornCity, Route44
 	const FISHGROUP_POND_L95     ; Route28, SilverCaveOutside
+; Kanto hack (M10P): Yellow's two CERULEAN CAVE Super Rod rows -- appended,
+; never inserted (G7).  2F has no water and no row.
+	const FISHGROUP_KANTO_CERULEAN_CAVE_1F  ; CERULEAN_CAVE_1F
+	const FISHGROUP_KANTO_CERULEAN_CAVE_B1F ; CERULEAN_CAVE_B1F
 DEF NUM_FISHGROUPS EQU const_value - 1
 
 ; wMapConnections

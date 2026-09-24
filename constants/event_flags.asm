@@ -307,39 +307,39 @@
 	const EVENT_BETH_ASKED_FOR_PHONE_NUMBER
 	const EVENT_ROUTE_23_HIDDEN_MAX_ETHER ; Kanto hack (M10 13e-1): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's ROUTE 23 hidden item (8,90)
 	const EVENT_JOSE_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_1F_RARE_CANDY ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's CERULEAN CAVE 1F ball (29,16)
 	const EVENT_REENA_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_1F_MAX_ELIXER ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; ball (7,11)
 	const EVENT_JOEY_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_1F_MAX_REVIVE ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; ball (29,9)
 	const EVENT_WADE_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_1F_ULTRA_BALL ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; ball (18,3)
 	const EVENT_RALPH_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_1F_HIDDEN_PP_UP ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; hidden item (18,7)
 	const EVENT_LIZ_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_2F_RARE_CANDY ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; 2F ball (0,11)
 	const EVENT_ANTHONY_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_2F_ULTRA_BALL ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; 2F ball (16,7)
 	const EVENT_TODD_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_2F_MAX_REVIVE ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; 2F ball (19,11)
 	const EVENT_GINA_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_2F_FULL_RESTORE ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; 2F ball (27,9)
 	const EVENT_IRWIN_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_2F_HIDDEN_PP_UP ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; 2F hidden item (16,13)
 	const EVENT_ARNIE_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_B1F_ULTRA_BALL_1 ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; B1F ball (26,1)
 	const EVENT_ALAN_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_B1F_ULTRA_BALL_2 ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; B1F ball (2,13)
 	const_skip ; unused
 	const_skip ; unused
 	const EVENT_DANA_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_B1F_MAX_REVIVE ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; B1F ball (3,13)
 	const EVENT_CHAD_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_B1F_MAX_ELIXER ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; B1F ball (15,3)
 	const EVENT_DEREK_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_CERULEAN_CAVE_B1F_HIDDEN_PP_UP ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; B1F hidden item (8,14)
 	const EVENT_TULLY_ASKED_FOR_PHONE_NUMBER
-	const_skip ; unused in Crystal
+	const EVENT_BEAT_MEWTWO ; Kanto hack (M10P): renamed in place, was an unused const_skip in Crystal's phone block; Yellow's flag of the same name; MEWTWO (27,13)'s hide flag, set on win/catch/run
 	const EVENT_BRENT_ASKED_FOR_PHONE_NUMBER
 	const_skip ; unused
 	const EVENT_TIFFANY_ASKED_FOR_PHONE_NUMBER

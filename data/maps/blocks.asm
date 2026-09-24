@@ -1047,12 +1047,6 @@ CeruleanBadgeHouse_Blocks:
 FuchsiaGoodRodHouse_Blocks:
 	INCBIN "maps/FuchsiaGoodRodHouse.blk"
 
-; Kanto hack: the Cerulean Cave mouth stub (docs/M3-CERULEAN.md, 6k).  One
-; 5x4 cave room behind the champion-gated warp; the real cave is its own
-; milestone (survey 7).
-CeruleanCave1F_Blocks:
-	INCBIN "maps/CeruleanCave1F.blk"
-
 ; Kanto hack: Bill's House (docs/M3-CERULEAN.md, 6j).  Split out of the shared
 ; House1 alias group above: Bill's cutscene needs a cell-separator console and
 ; a bank of machines along the north wall, which House1's living room has not
@@ -1476,5 +1470,17 @@ LancesRoom_Blocks:
 ; M8 11a, back for the Johto act.
 SaffronMagnetTrainStation_Blocks:
 	INCBIN "maps/SaffronMagnetTrainStation.blk"
+
+; M10P (docs/M10P-CERULEAN-CAVE.md): Yellow's CERULEAN CAVE, 15x9 x3 on
+; TILESET_KANTO_CAVE (scripts/ct1_kanto_cave.py YELLOW_MAPS).  1F moves here
+; from "Map Blocks 3", where M3 6k's 5x4 stub lived.
+CeruleanCave1F_Blocks:
+	INCBIN "maps/CeruleanCave1F.blk"
+
+CeruleanCave2F_Blocks:
+	INCBIN "maps/CeruleanCave2F.blk"
+
+CeruleanCaveB1F_Blocks:
+	INCBIN "maps/CeruleanCaveB1F.blk"
 
 ENDSECTION

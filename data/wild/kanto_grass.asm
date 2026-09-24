@@ -1917,4 +1917,100 @@ KantoGrassWildMons:
 	db 46, PRIMEAPE
 	end_grass_wildmons
 
+; Kanto hack (M10P, docs/M10P-CERULEAN-CAVE.md): Yellow's three CERULEAN CAVE
+; floors (vendor/pokeyellow/data/wild/maps/CeruleanCave{1F,2F,B1F}.asm), folded
+; 10 -> 7 by the M10 13f rule (keep Yellow's order, drop the three slots that
+; minimise species-share L1, ties to squared error then mean level).  1F and
+; 2F each list EIGHT species, so each must lose one; the drops are chosen
+; CAVE-WIDE (as M7 10n did for the Safari Zone): 1F loses DITTO (2F and B1F
+; keep it), 2F loses GLOOM (1F keeps it).  Every species Yellow puts in the cave
+; still has a nest in it.  Rates: Yellow 10/15/25 -> 4/6/10 percent.  Flat
+; morn/day/nite; Yellow's water rate is 0 on all three, so no surf table.
+; CERULEAN_CAVE_1F (Yellow rate 10): dropped slots 1 (L50 GOLBAT), 9 (L55 DITTO), 10 (L60 DITTO).
+	def_grass_wildmons CERULEAN_CAVE_1F
+	db 4 percent, 4 percent, 4 percent ; encounter rates: morn/day/nite
+	; morn
+	db 55, GOLBAT
+	db 45, GRAVELER
+	db 55, GLOOM
+	db 55, WEEPINBELL
+	db 52, SANDSLASH
+	db 54, VENOMOTH
+	db 54, PARASECT
+	; day
+	db 55, GOLBAT
+	db 45, GRAVELER
+	db 55, GLOOM
+	db 55, WEEPINBELL
+	db 52, SANDSLASH
+	db 54, VENOMOTH
+	db 54, PARASECT
+	; nite
+	db 55, GOLBAT
+	db 45, GRAVELER
+	db 55, GLOOM
+	db 55, WEEPINBELL
+	db 52, SANDSLASH
+	db 54, VENOMOTH
+	db 54, PARASECT
+	end_grass_wildmons
+
+; CERULEAN_CAVE_2F (Yellow rate 15): dropped slots 1 (L52 GOLBAT), 7 (L58 GLOOM), 10 (L58 RHYDON).
+	def_grass_wildmons CERULEAN_CAVE_2F
+	db 6 percent, 6 percent, 6 percent ; encounter rates: morn/day/nite
+	; morn
+	db 57, GOLBAT
+	db 50, GRAVELER
+	db 56, SANDSLASH
+	db 50, RHYHORN
+	db 60, DITTO
+	db 58, WEEPINBELL
+	db 60, RHYDON
+	; day
+	db 57, GOLBAT
+	db 50, GRAVELER
+	db 56, SANDSLASH
+	db 50, RHYHORN
+	db 60, DITTO
+	db 58, WEEPINBELL
+	db 60, RHYDON
+	; nite
+	db 57, GOLBAT
+	db 50, GRAVELER
+	db 56, SANDSLASH
+	db 50, RHYHORN
+	db 60, DITTO
+	db 58, WEEPINBELL
+	db 60, RHYDON
+	end_grass_wildmons
+
+; CERULEAN_CAVE_B1F (Yellow rate 25): dropped slots 1 (L54 GOLBAT), 8 (L65 DITTO), 10 (L50 LICKITUNG).
+	def_grass_wildmons CERULEAN_CAVE_B1F
+	db 10 percent, 10 percent, 10 percent ; encounter rates: morn/day/nite
+	; morn
+	db 59, GOLBAT
+	db 55, GRAVELER
+	db 52, RHYHORN
+	db 62, RHYDON
+	db 60, DITTO
+	db 56, CHANSEY
+	db 55, LICKITUNG
+	; day
+	db 59, GOLBAT
+	db 55, GRAVELER
+	db 52, RHYHORN
+	db 62, RHYDON
+	db 60, DITTO
+	db 56, CHANSEY
+	db 55, LICKITUNG
+	; nite
+	db 59, GOLBAT
+	db 55, GRAVELER
+	db 52, RHYHORN
+	db 62, RHYDON
+	db 60, DITTO
+	db 56, CHANSEY
+	db 55, LICKITUNG
+	end_grass_wildmons
+
 	db -1 ; end

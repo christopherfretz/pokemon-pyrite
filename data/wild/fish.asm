@@ -69,6 +69,9 @@ FishGroups:
 	fishgroup 50 percent + 1, .Pond_L82_Old, .Pond_L82_Good, .Pond_L82_Super
 	fishgroup 50 percent + 1, .Pond_L87_Old, .Pond_L87_Good, .Pond_L87_Super
 	fishgroup 50 percent + 1, .Pond_L95_Old, .Pond_L95_Good, .Pond_L95_Super
+; Kanto hack (M10P)
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoCeruleanCave1F_Super
+	fishgroup 50 percent + 1, .Kanto_Old, .Kanto_Good, .KantoCeruleanCaveB1F_Super
 	assert_table_length NUM_FISHGROUPS
 
 .Shore_Old:
@@ -681,6 +684,21 @@ FishGroups:
 	db  70 percent,     POLIWAG,    30
 	db  90 percent + 1, POLIWHIRL,  30
 	db 100 percent,     POLIWHIRL,  40
+
+; Kanto hack (M10P): Yellow's CERULEAN CAVE super_rod.asm rows.
+; db CERULEAN_CAVE_1F, GOLDEEN, 25, SEAKING, 35, SEAKING, 45, SEAKING, 55
+.KantoCeruleanCave1F_Super:
+	db  40 percent,     GOLDEEN,    25
+	db  70 percent,     SEAKING,    35
+	db  90 percent + 1, SEAKING,    45
+	db 100 percent,     SEAKING,    55
+
+; db CERULEAN_CAVE_B1F, GOLDEEN, 30, SEAKING, 40, SEAKING, 50, SEAKING, 60
+.KantoCeruleanCaveB1F_Super:
+	db  40 percent,     GOLDEEN,    30
+	db  70 percent,     SEAKING,    40
+	db  90 percent + 1, SEAKING,    50
+	db 100 percent,     SEAKING,    60
 
 TimeFishGroups:
 	;  day              nite
