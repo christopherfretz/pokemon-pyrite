@@ -1324,7 +1324,7 @@ JohtoGrassWildMons:
 	db 54, EKANS
 	db 55, RATTATA
 	db 57, BELLSPROUT
-	db 56, HOPPIP
+	db 56, MAREEP ; Kanto hack (A251): G/S placement
 	db 57, PIDGEY
 	db 57, HOPPIP
 	db 57, HOPPIP
@@ -1332,7 +1332,7 @@ JohtoGrassWildMons:
 	db 54, EKANS
 	db 55, RATTATA
 	db 57, BELLSPROUT
-	db 56, HOPPIP
+	db 56, MAREEP ; Kanto hack (A251): G/S placement
 	db 57, PIDGEY
 	db 57, HOPPIP
 	db 57, HOPPIP
@@ -1548,7 +1548,7 @@ JohtoGrassWildMons:
 	db 63, EKANS
 	db 64, SPEAROW
 	db 65, RATTATA
-	db 66, RATICATE
+	db 66, FLAAFFY ; Kanto hack (A251): G/S placement
 	db 65, ARBOK
 	db 66, FEAROW
 	db 66, FEAROW
@@ -1556,7 +1556,7 @@ JohtoGrassWildMons:
 	db 63, EKANS
 	db 64, SPEAROW
 	db 65, RATTATA
-	db 66, RATICATE
+	db 66, FLAAFFY ; Kanto hack (A251): G/S placement
 	db 65, ARBOK
 	db 66, FEAROW
 	db 66, FEAROW
@@ -1576,7 +1576,7 @@ JohtoGrassWildMons:
 	db 65, SENTRET
 	db 66, PIDGEOTTO
 	db 66, FARFETCH_D
-	db 65, FURRET
+	db 65, GIRAFARIG ; Kanto hack (A251): G/S placement
 	db 67, RATICATE
 	db 67, FURRET
 	db 67, FURRET
@@ -1584,7 +1584,7 @@ JohtoGrassWildMons:
 	db 65, SENTRET
 	db 66, PIDGEOTTO
 	db 66, FARFETCH_D
-	db 65, FURRET
+	db 65, GIRAFARIG ; Kanto hack (A251): G/S placement
 	db 67, RATICATE
 	db 67, FURRET
 	db 67, FURRET

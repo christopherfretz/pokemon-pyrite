@@ -756,7 +756,7 @@ KantoGrassWildMons:
 	db 33, VOLTORB
 	db 33, GRIMER
 	db 37, GRIMER
-	db 33, MUK
+	db 35, ELECTABUZZ ; Kanto hack (A251): Red/Blue's Power Plant ELECTABUZZ, 4% slot (was 33 MUK)
 	db 37, MUK
 	; day
 	db 35, MAGNEMITE
@@ -764,7 +764,7 @@ KantoGrassWildMons:
 	db 33, VOLTORB
 	db 33, GRIMER
 	db 37, GRIMER
-	db 33, MUK
+	db 35, ELECTABUZZ ; Kanto hack (A251): Red/Blue's Power Plant ELECTABUZZ, 4% slot (was 33 MUK)
 	db 37, MUK
 	; nite
 	db 35, MAGNEMITE
@@ -772,7 +772,7 @@ KantoGrassWildMons:
 	db 33, VOLTORB
 	db 33, GRIMER
 	db 37, GRIMER
-	db 33, MUK
+	db 35, ELECTABUZZ ; Kanto hack (A251): Red/Blue's Power Plant ELECTABUZZ, 4% slot (was 33 MUK)
 	db 37, MUK
 	end_grass_wildmons
 

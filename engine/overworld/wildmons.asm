@@ -49,6 +49,8 @@ FindNest:
 	decoord 0, 0
 	ld hl, KantoGrassWildMons
 	call .FindGrass
+	ld hl, PostE4GrassWildMons ; Kanto hack (A251): Pokédex AREA for MURKROW/HOUNDOUR/SLUGMA
+	call .FindGrass
 	ld hl, KantoWaterWildMons
 	jp .FindWater
 
@@ -386,6 +388,18 @@ _GrassWildmonLookup:
 	ld bc, GRASS_WILDDATA_LENGTH
 	call _SwarmWildmonCheck
 	ret c
+; Kanto hack (A251): in the Johto act a few Kanto routes get Crystal's nite
+; species back (data/wild/kanto_post_e4_grass.asm); the Kanto act never
+; reads that list.
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jr z, .normal
+	call CopyCurrMapDE
+	ld hl, PostE4GrassWildMons
+	ld bc, GRASS_WILDDATA_LENGTH
+	call LookUpWildmonsForMapDE
+	ret c
+.normal
 	ld hl, JohtoGrassWildMons
 	ld de, KantoGrassWildMons
 	call _JohtoWildmonCheck
@@ -970,6 +984,7 @@ RandomPhoneMon:
 INCLUDE "data/wild/johto_grass.asm"
 INCLUDE "data/wild/johto_water.asm"
 INCLUDE "data/wild/kanto_grass.asm"
+INCLUDE "data/wild/kanto_post_e4_grass.asm"
 INCLUDE "data/wild/kanto_water.asm"
 INCLUDE "data/wild/swarm_grass.asm"
 INCLUDE "data/wild/swarm_water.asm"
