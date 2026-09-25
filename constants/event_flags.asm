@@ -2244,8 +2244,14 @@
 ; arms SELECT-to-quit and the PRINTER's Hi-Score prompt).
 	const EVENT_SURFIN_DUDE_OFFERED
 	const EVENT_SURFING_MINIGAME_SURF_SELECT
+; Kanto hack (A251, all 251 catchable): appended, never renumber (D49).
+	const EVENT_ELMS_LAB_STARTERS_RESTOCKED ; ELM's LAB: the post-LANCE restock of the two unpicked starter balls has run (one-shot latch)
+	const EVENT_MT_MOON_B2F_TOOK_DOME ; MT.MOON B2F: the player (not MIGUEL) took the DOME FOSSIL -- records WHICH, for the Johto-act second fossil
+	const EVENT_MT_MOON_B2F_TOOK_HELIX ; MT.MOON B2F: ditto, HELIX FOSSIL
+	const EVENT_MT_MOON_B2F_SECOND_FOSSIL ; MT.MOON B2F: the Johto-act second fossil has been taken
+	const EVENT_GOT_UP_GRADE_SILPH_CO ; SILPH CO. 1F receptionist's Johto-act UP-GRADE gift (Crystal's EVENT_GOT_UP_GRADE was renamed away in M10 13g)
 
-; Unused: next 219 events
+; Unused: next 214 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00
