@@ -48,7 +48,23 @@ PokemonMansionB1F_MapScripts:
 ; subroutine so the switch statue can redraw them in place, as Yellow does.
 PokemonMansionB1FSwitchCallback:
 	scall PokemonMansionB1FGates
+	scall PokemonMansionB1FSealedLabBlocks ; MEW1
 	endcallback
+
+; MEW1: after the Kanto E4 a MEWTWO statue stands in the middle room at block
+; (7,5) ($0e -> kanto_facility's switch statue $77, tiles (14,10)/(14,11));
+; once opened, the room's north wall at block (8,4) becomes $6a, the same wall
+; with a STAIRCASE at (16,9) -- warp 2, down to the SEALED LAB.  Before the E4
+; nothing is drawn, so the Kanto act's B1F is Yellow's.
+PokemonMansionB1FSealedLabBlocks:
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	iffalse .Done
+	changeblock 14, 10, $77
+	checkevent EVENT_MANSION_SEALED_LAB_OPEN
+	iffalse .Done
+	changeblock 16, 8, $6a
+.Done:
+	end
 
 PokemonMansionB1FGates:
 	checkevent EVENT_MANSION_SWITCH_ON
@@ -113,8 +129,175 @@ PokemonMansionB1FTMSolarbeam:
 PokemonMansionB1FSecretKey:
 	itemball SECRET_KEY
 
+; MEW1: the Sept. 1 page.  Read fourth, after July 5 -> July 10 -> Feb. 6 (and
+; for good once that has happened) it gains an appended page after Yellow's
+; text and sets EVENT_MANSION_JOURNALS_IN_ORDER, which arms the statue.
 PokemonMansionB1FDiary:
+	scall PokemonMansionJournalTrackSept1
+	iftrue .Appended
 	jumptext PokemonMansionB1FDiaryText
+
+.Appended:
+	opentext
+	writetext PokemonMansionB1FDiaryText
+	promptbutton
+	writetext PokemonMansionB1FDiaryAppendedText
+	waitbutton
+	closetext
+	end
+
+; MEW1: journal order tracking, shared by 2F/3F/B1F (all in "Map Scripts 30").
+; Order state = how many of STEP_1..STEP_3 are set (0-3).  Reading page k:
+; k = 1 restarts at 1; state k-1 advances to k; state k (a re-read) changes
+; nothing; anything else is out of order and resets to 0.  Inert before the
+; Kanto E4 and once the sequence is complete.
+PokemonMansionJournalTrackJuly5:
+	scall PokemonMansionJournalTrackActive
+	iffalse .Done
+	setevent EVENT_MANSION_JOURNAL_STEP_1
+	clearevent EVENT_MANSION_JOURNAL_STEP_2
+	clearevent EVENT_MANSION_JOURNAL_STEP_3
+.Done:
+	end
+
+PokemonMansionJournalTrackJuly10:
+	scall PokemonMansionJournalTrackActive
+	iffalse .Done
+	checkevent EVENT_MANSION_JOURNAL_STEP_3
+	iftrue PokemonMansionJournalReset
+	checkevent EVENT_MANSION_JOURNAL_STEP_2
+	iftrue .Done
+	checkevent EVENT_MANSION_JOURNAL_STEP_1
+	iffalse PokemonMansionJournalReset
+	setevent EVENT_MANSION_JOURNAL_STEP_2
+.Done:
+	end
+
+PokemonMansionJournalTrackFeb6:
+	scall PokemonMansionJournalTrackActive
+	iffalse .Done
+	checkevent EVENT_MANSION_JOURNAL_STEP_3
+	iftrue .Done
+	checkevent EVENT_MANSION_JOURNAL_STEP_2
+	iffalse PokemonMansionJournalReset
+	setevent EVENT_MANSION_JOURNAL_STEP_3
+.Done:
+	end
+
+; Returns wScriptVar TRUE if the appended page should show.
+PokemonMansionJournalTrackSept1:
+	checkevent EVENT_MANSION_JOURNALS_IN_ORDER
+	iftrue .Yes
+	scall PokemonMansionJournalTrackActive
+	iffalse .No
+	checkevent EVENT_MANSION_JOURNAL_STEP_3
+	iffalse .Reset
+	setevent EVENT_MANSION_JOURNALS_IN_ORDER
+.Yes:
+	setval TRUE
+	end
+
+.Reset:
+	scall PokemonMansionJournalReset
+.No:
+	setval FALSE
+	end
+
+PokemonMansionJournalReset:
+	clearevent EVENT_MANSION_JOURNAL_STEP_1
+	clearevent EVENT_MANSION_JOURNAL_STEP_2
+	clearevent EVENT_MANSION_JOURNAL_STEP_3
+	end
+
+; TRUE iff post-Kanto-E4 and the sequence is not yet complete.
+PokemonMansionJournalTrackActive:
+	checkevent EVENT_MANSION_JOURNALS_IN_ORDER
+	iftrue .No
+	checkevent EVENT_BEAT_KANTO_ELITE_FOUR
+	end ; wScriptVar = the flag
+
+.No:
+	setval FALSE
+	end
+
+; MEW1: the MEWTWO statue (post-E4 only; BGEVENT_IFSET on the E4 flag, so it
+; is inert -- and not drawn, see the callback -- in the Kanto act).
+PokemonMansionB1FMewtwoStatue:
+	checkevent EVENT_MANSION_SEALED_LAB_OPEN
+	iftrue .AlreadyOpen
+	checkevent EVENT_MANSION_JOURNALS_IN_ORDER
+	iffalse .Plain
+	checkpoke MEWTWO
+	iffalse .Searching
+	opentext
+	writetext PokemonMansionB1FStatueSearchingText
+	waitbutton
+	writetext PokemonMansionB1FStatueReactsText
+	waitbutton
+	closetext
+	earthquake 30
+	playsound SFX_STRENGTH
+	showemote EMOTE_SHOCK, PLAYER, 15
+	changeblock 16, 8, $6a ; wall -> wall with a staircase down at (16,9)
+	refreshmap
+	earthquake 50
+	waitsfx
+	setevent EVENT_MANSION_SEALED_LAB_OPEN
+	end
+
+.Plain:
+	jumptext PokemonMansionB1FStatueText
+
+.Searching:
+	opentext
+	writetext PokemonMansionB1FStatueText
+	promptbutton
+	writetext PokemonMansionB1FStatueSearchingText
+	waitbutton
+	closetext
+	end
+
+.AlreadyOpen:
+	jumptext PokemonMansionB1FStatueOpenText
+
+PokemonMansionB1FMewtwoStatueEvent:
+	conditional_event EVENT_BEAT_KANTO_ELITE_FOUR, PokemonMansionB1FMewtwoStatue
+
+PokemonMansionB1FStatueText:
+	text "It's a statue of"
+	line "MEWTWO."
+	done
+
+PokemonMansionB1FStatueSearchingText:
+	text "The statue's eyes"
+	line "seem to be looking"
+	cont "for something…"
+	done
+
+PokemonMansionB1FStatueReactsText:
+	text "Your MEWTWO stares"
+	line "back at it…"
+	done
+
+PokemonMansionB1FStatueOpenText:
+	text "It's a statue of"
+	line "MEWTWO."
+
+	para "A cold draft comes"
+	line "up the stairs."
+	done
+
+PokemonMansionB1FDiaryAppendedText:
+	text "A later page is"
+	line "pinned to it…"
+
+	para "P.S. I sealed the"
+	line "lab below the"
+	cont "basement."
+
+	para "Only MEWTWO can"
+	line "open it again…"
+	done
 
 PokemonMansionB1FHiddenRareCandy:
 	hiddenitem RARE_CANDY, EVENT_POKEMON_MANSION_B1F_HIDDEN_RARE_CANDY
@@ -156,7 +339,7 @@ PokemonMansionB1FDiaryText:
 
 	para "We have failed to"
 	line "curb its vicious"
-	cont "tendencies…"
+	cont "tendencies..."
 	done
 
 PokemonMansionB1F_MapEvents:
@@ -164,6 +347,7 @@ PokemonMansionB1F_MapEvents:
 
 	def_warp_events
 	warp_event 23, 22, POKEMON_MANSION_1F, 6
+	warp_event 16,  9, POKEMON_MANSION_SEALED_LAB, 1 ; MEW1: live only once block (8,4) is $6a
 
 	def_coord_events
 
@@ -171,6 +355,8 @@ PokemonMansionB1F_MapEvents:
 	bg_event 20,  3, BGEVENT_UP, PokemonMansionB1FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 	bg_event 18, 25, BGEVENT_UP, PokemonMansionB1FSwitch ; Yellow's secret switch (data/events/hidden_events.asm)
 	bg_event  1,  9, BGEVENT_ITEM, PokemonMansionB1FHiddenRareCandy ; Yellow's hidden RARE CANDY (data/events/hidden_events.asm:135)
+	bg_event 14, 10, BGEVENT_IFSET, PokemonMansionB1FMewtwoStatueEvent ; MEW1
+	bg_event 14, 11, BGEVENT_IFSET, PokemonMansionB1FMewtwoStatueEvent ; MEW1
 
 	def_object_events
 	object_event 16, 23, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, TrainerPokemonMansionB1FBurglar, -1

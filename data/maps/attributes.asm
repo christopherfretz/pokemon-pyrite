@@ -609,6 +609,7 @@ ENDM
 
 ; M12a: Yellow's border block $0a, all black tile $10.
 	map_attributes SummerBeachHouse, SUMMER_BEACH_HOUSE, $0a
+	map_attributes PokemonMansionSealedLab, POKEMON_MANSION_SEALED_LAB, $17 ; MEW1
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $00
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
 	map_attributes BikeShop, BIKE_SHOP, $00

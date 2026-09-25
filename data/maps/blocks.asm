@@ -1483,4 +1483,7 @@ CeruleanCave2F_Blocks:
 CeruleanCaveB1F_Blocks:
 	INCBIN "maps/CeruleanCaveB1F.blk"
 
+PokemonMansionSealedLab_Blocks: ; MEW1
+	INCBIN "maps/PokemonMansionSealedLab.blk"
+
 ENDSECTION

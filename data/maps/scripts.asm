@@ -650,6 +650,8 @@ INCLUDE "maps/KantoPowerPlant.asm"
 INCLUDE "maps/CeruleanCave1F.asm"
 INCLUDE "maps/CeruleanCave2F.asm"
 INCLUDE "maps/CeruleanCaveB1F.asm"
+; MEW1: the SEALED LAB below the MANSION (docs/MEW1-SEALED-LAB.md).
+INCLUDE "maps/PokemonMansionSealedLab.asm"
 
 ENDSECTION
 

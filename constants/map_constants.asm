@@ -223,6 +223,7 @@ ENDM
 	map_const POKEMON_MANSION_B1F,                         15, 14 ; 22
 	map_const CINNABAR_GYM,                                10,  9 ; 23
 	map_const SUMMER_BEACH_HOUSE,                           7,  4 ; 24 ; M12a: Yellow's, off ROUTE 19 (D107)
+	map_const POKEMON_MANSION_SEALED_LAB,                   5,  5 ; 25 ; MEW1: post-E4 MEW room below B1F
 	endgroup
 
 	newgroup CERULEAN                                             ;  7

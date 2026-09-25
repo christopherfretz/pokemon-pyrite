@@ -2250,8 +2250,15 @@
 	const EVENT_MT_MOON_B2F_TOOK_HELIX ; MT.MOON B2F: ditto, HELIX FOSSIL
 	const EVENT_MT_MOON_B2F_SECOND_FOSSIL ; MT.MOON B2F: the Johto-act second fossil has been taken
 	const EVENT_GOT_UP_GRADE_SILPH_CO ; SILPH CO. 1F receptionist's Johto-act UP-GRADE gift (Crystal's EVENT_GOT_UP_GRADE was renamed away in M10 13g)
+; MEW1 (docs/MEW1-SEALED-LAB.md): the post-E4 MEW puzzle in the POKeMON MANSION.
+	const EVENT_MANSION_JOURNAL_STEP_1 ; July 5 diary read first (2F)
+	const EVENT_MANSION_JOURNAL_STEP_2 ; ...then July 10 (2F)
+	const EVENT_MANSION_JOURNAL_STEP_3 ; ...then Feb. 6 (3F)
+	const EVENT_MANSION_JOURNALS_IN_ORDER ; ...then Sept. 1 (B1F): the appended page, arms the statue
+	const EVENT_MANSION_SEALED_LAB_OPEN ; B1F MEWTWO statue opened the stair to the SEALED LAB
+	const EVENT_BEAT_MEW ; SEALED LAB MEW caught/KO'd/fled (= its hide flag, like EVENT_BEAT_MEWTWO)
 
-; Unused: next 214 events
+; Unused: next 208 events
 
 	const_next 2560
 DEF NUM_EVENTS EQU const_value ; a00

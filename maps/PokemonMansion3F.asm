@@ -102,6 +102,7 @@ PokemonMansion3FIron:
 	itemball IRON
 
 PokemonMansion3FDiary:
+	scall PokemonMansionJournalTrackFeb6 ; MEW1: silent order tracking
 	jumptext PokemonMansion3FDiaryText
 
 PokemonMansion3FHiddenMaxRevive:

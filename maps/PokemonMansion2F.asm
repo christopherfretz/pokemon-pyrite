@@ -80,10 +80,15 @@ TrainerPokemonMansion2FBurglar:
 PokemonMansion2FCalcium:
 	itemball CALCIUM
 
+; MEW1: after the Kanto E4 the diaries also count the reading order
+; (PokemonMansionJournalTrack*, maps/PokemonMansionB1F.asm).  Silent flag
+; work only; the text box is Yellow's jumptext, unchanged.
 PokemonMansion2FDiary1:
+	scall PokemonMansionJournalTrackJuly5
 	jumptext PokemonMansion2FDiary1Text
 
 PokemonMansion2FDiary2:
+	scall PokemonMansionJournalTrackJuly10
 	jumptext PokemonMansion2FDiary2Text
 
 PokemonMansion2FBurglarSeenText:
