@@ -16,8 +16,10 @@ NPCTrades:
 	npctrade TRADE_DIALOGSET_HAPPY,     KRABBY,     VOLTORB,    "VOLTY",  $98, $88, PRZCUREBERRY, 29189, "TIM",    TRADE_GENDER_EITHER
 	npctrade TRADE_DIALOGSET_GIRL,      DRAGONAIR,  DODRIO,     "DORIS",  $77, $66, SMOKE_BALL,   00283, "EMY",    TRADE_GENDER_FEMALE
 	npctrade TRADE_DIALOGSET_NEWBIE,    HAUNTER,    XATU,       "PAUL",   $96, $86, MYSTERYBERRY, 15616, "CHRIS",  TRADE_GENDER_EITHER
-	; unused (Kanto hack, M7 10d): no map references NPC_TRADE_KIM any more -- Crystal's ROUTE 14 TEACHER Kim is deleted.  Kept for the index.
-	npctrade TRADE_DIALOGSET_GIRL,      CHANSEY,    AERODACTYL, "AEROY",  $96, $66, GOLD_BERRY,   26491, "KIM",    TRADE_GENDER_EITHER
+	; Kanto hack (A251): Crystal's ROUTE 14 TEACHER KIM was deleted in M7 10d; her row now pays for a foreign-OT
+	; PIKACHU, the only RAICHU route (the starter PIKACHU refuses the THUNDERSTONE, evolve.asm).  KIM stands in
+	; CHERRYGROVE's EVOLUTION SPEECH HOUSE (Johto act only) and wants the MAREEP of ROUTE 32.
+	npctrade TRADE_DIALOGSET_GIRL,      MAREEP,     PIKACHU,    "SPARKY", $96, $66, THUNDERSTONE, 26491, "KIM",    TRADE_GENDER_EITHER
 	npctrade TRADE_DIALOGSET_COLLECTOR, DUGTRIO,    MAGNETON,   "MAGGIE", $96, $66, METAL_COAT,   50082, "FOREST", TRADE_GENDER_EITHER
 	; Kanto hack: Yellow's TRADE_FOR_MILES, ROUTE_2_TRADE_HOUSE (docs/M2-PEWTER.md, 4f)
 	npctrade TRADE_DIALOGSET_CASUAL,    CLEFAIRY,   MR__MIME,   "MILES",  $96, $66, NO_ITEM,      25601, "MILES",  TRADE_GENDER_EITHER

@@ -7,7 +7,7 @@
 ;
 ; Deleted with Crystal's version: POKEFANM CARTER (11,15), BIRD KEEPER ROY
 ; (11,27), POKEFANM TREVOR (6,11) and TEACHER Kim (7,5), whose only script was
-; `trade NPC_TRADE_KIM` -- a Gen 2 in-game trade with no Yellow counterpart
+; `trade NPC_TRADE_KIM` -- a Gen 2 in-game trade with no Yellow counterpart (A251: KIM and her row now live in CHERRYGROVE, data/events/npc_trades.asm)
 ; (docs/M7-FUCHSIA.md 0.5).
 ;
 ; Object order below is Yellow's own (data/maps/objects/Route14.asm), and the

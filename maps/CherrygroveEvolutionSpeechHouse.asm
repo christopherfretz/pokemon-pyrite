@@ -1,6 +1,7 @@
 	object_const_def
 	const CHERRYGROVEEVOLUTIONSPEECHHOUSE_LASS
 	const CHERRYGROVEEVOLUTIONSPEECHHOUSE_YOUNGSTER
+	const CHERRYGROVEEVOLUTIONSPEECHHOUSE_KIM
 
 CherrygroveEvolutionSpeechHouse_MapScripts:
 	def_scene_scripts
@@ -17,6 +18,16 @@ CherrygroveEvolutionSpeechHouseYoungsterScript:
 CherrygroveEvolutionSpeechHouseLassScript:
 	opentext
 	writetext CherrygroveEvolutionSpeechHouseLassText
+	waitbutton
+	closetext
+	end
+
+; Kanto hack (A251): Crystal's ROUTE 14 TEACHER KIM, moved here with her trade
+; row retargeted (MAREEP for a foreign-OT PIKACHU, data/events/npc_trades.asm).
+CherrygroveEvolutionSpeechHouseKimScript:
+	faceplayer
+	opentext
+	trade NPC_TRADE_KIM
 	waitbutton
 	closetext
 	end
@@ -55,3 +66,4 @@ CherrygroveEvolutionSpeechHouse_MapEvents:
 	def_object_events
 	object_event  3,  5, SPRITE_LASS, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CherrygroveEvolutionSpeechHouseLassScript, -1
 	object_event  2,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CherrygroveEvolutionSpeechHouseYoungsterScript, -1
+	object_event  6,  4, SPRITE_TEACHER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CherrygroveEvolutionSpeechHouseKimScript, -1 ; Kanto hack (A251)
