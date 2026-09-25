@@ -37,8 +37,50 @@ SilphCo1FReceptionistCallback:
 	clearevent EVENT_SILPH_CO_1F_RECEPTIONIST_HIDDEN
 	endcallback
 
+; Kanto hack (A251): in the Johto act (ENGINE_POKEGEAR) the receptionist hands
+; out Crystal's SILPH CO. UP-GRADE souvenir once (Crystal's 1F OFFICER, whose
+; object is not on Yellow's lobby; his lines are kept verbatim).  The Kanto act
+; is untouched: she only ever says Yellow's welcome line there.
 SilphCo1FReceptionistScript:
+	checkflag ENGINE_POKEGEAR
+	iffalse .KantoAct
+	faceplayer
+	opentext
+	checkevent EVENT_GOT_UP_GRADE_SILPH_CO
+	iftrue .GotUpGrade
+	writetext SilphCo1FUpGradeText
+	promptbutton
+	verbosegiveitem UP_GRADE
+	iffalse .NoRoom
+	setevent EVENT_GOT_UP_GRADE_SILPH_CO
+.GotUpGrade:
+	writetext SilphCo1FGotUpGradeText
+	waitbutton
+.NoRoom:
+	closetext
+	end
+
+.KantoAct:
 	jumptextfaceplayer SilphCo1FReceptionistText
+
+SilphCo1FUpGradeText:
+	text "Welcome back to"
+	line "SILPH CO.!"
+
+	para "Since you came"
+	line "such a long way,"
+
+	para "have this neat"
+	line "little souvenir."
+	done
+
+SilphCo1FGotUpGradeText:
+	text "It's SILPH CO.'s"
+	line "latest product."
+
+	para "It's not for sale"
+	line "anywhere yet."
+	done
 
 SilphCo1FReceptionistText:
 	text "Welcome!"
