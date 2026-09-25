@@ -179,16 +179,12 @@ EvolveAfterBattle_MasterLoop:
 ; KINGDRA, PORYGON2) fires on level-up while the mon holds that item, which is
 ; consumed as a trade would.  A stone (wForceEvolution) never triggers it, and
 ; an itemless row (-1) stays link-only (those four have a Lv40 row first).
-; Johto act only (POKEGEAR_OBTAINED_F, as the PostE4GrassWildMons gate): wild
-; MAGNEMITE/SLOWPOKE/HORSEA/DRATINI can hold these items in the Kanto act, and
-; no species past #151 may appear before the Kanto E4.
+; Both acts (operator ruling 2026-09-25): a player-made Gen 2 evolution in the
+; Kanto act is fine; the no-Gen-2-before-E4 rule covers only what the game shows.
 .trade_held_item
 	ld a, [wForceEvolution]
 	and a
 	jp nz, .dont_evolve_2
-	ld a, [wPokegearFlags]
-	bit POKEGEAR_OBTAINED_F, a
-	jp z, .dont_evolve_2
 	ld a, [hli]
 	ld b, a
 	inc a
