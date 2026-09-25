@@ -120,7 +120,7 @@ EvolveAfterBattle_MasterLoop:
 	jp nz, .dont_evolve_2
 
 	inc hl
-	jr .proceed
+	jp .proceed ; Kanto hack (A251): out of jr range after .trade_held_item
 
 .happiness
 	ld a, [wTempMonHappiness]
@@ -151,7 +151,7 @@ EvolveAfterBattle_MasterLoop:
 .trade
 	ld a, [wLinkMode]
 	and a
-	jp z, .dont_evolve_2
+	jr z, .trade_held_item
 
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_2
@@ -165,6 +165,7 @@ EvolveAfterBattle_MasterLoop:
 	cp LINK_TIMECAPSULE
 	jp z, .dont_evolve_3
 
+.held_item_check
 	ld a, [wTempMonItem]
 	cp b
 	jp nz, .dont_evolve_3
@@ -172,6 +173,27 @@ EvolveAfterBattle_MasterLoop:
 	xor a
 	ld [wTempMonItem], a
 	jr .proceed
+
+; Kanto hack (A251): no link cable on one cartridge, so outside a link an
+; EVOLVE_TRADE row with a held item (POLITOED, SLOWKING, STEELIX, SCIZOR,
+; KINGDRA, PORYGON2) fires on level-up while the mon holds that item, which is
+; consumed as a trade would.  A stone (wForceEvolution) never triggers it, and
+; an itemless row (-1) stays link-only (those four have a Lv40 row first).
+; Johto act only (POKEGEAR_OBTAINED_F, as the PostE4GrassWildMons gate): wild
+; MAGNEMITE/SLOWPOKE/HORSEA/DRATINI can hold these items in the Kanto act, and
+; no species past #151 may appear before the Kanto E4.
+.trade_held_item
+	ld a, [wForceEvolution]
+	and a
+	jp nz, .dont_evolve_2
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_OBTAINED_F, a
+	jp z, .dont_evolve_2
+	ld a, [hli]
+	ld b, a
+	inc a
+	jp z, .dont_evolve_3
+	jr .held_item_check
 
 .item
 	ld a, [hli]

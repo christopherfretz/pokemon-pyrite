@@ -5,6 +5,8 @@ SECTION "Evolutions and Attacks", ROMX
 ;    * db EVOLVE_LEVEL, level, species
 ;    * db EVOLVE_ITEM, used item, species
 ;    * db EVOLVE_TRADE, held item (or -1 for none), species
+;      Kanto hack (A251): outside a link, an EVOLVE_TRADE row with a held item
+;      fires on level-up while the mon holds that item (item consumed).
 ;    * db EVOLVE_HAPPINESS, TR_* constant (ANYTIME, MORNDAY, NITE), species
 ;    * db EVOLVE_STAT, level, ATK_*_DEF constant (LT, GT, EQ), species
 ; - db 0 ; no more evolutions
@@ -834,6 +836,7 @@ AbraEvosAttacks:
 	db 0 ; no more level-up moves
 
 KadabraEvosAttacks:
+	db EVOLVE_LEVEL, 40, ALAKAZAM ; Kanto hack (A251): single-cartridge rule; the link-trade row below still works
 	db EVOLVE_TRADE, -1, ALAKAZAM
 	db 0 ; no more evolutions
 	db 1, TELEPORT
@@ -878,6 +881,7 @@ MachopEvosAttacks:
 	db 0 ; no more level-up moves
 
 MachokeEvosAttacks:
+	db EVOLVE_LEVEL, 40, MACHAMP ; Kanto hack (A251): single-cartridge rule; the link-trade row below still works
 	db EVOLVE_TRADE, -1, MACHAMP
 	db 0 ; no more evolutions
 	db 1, LOW_KICK
@@ -992,6 +996,7 @@ GeodudeEvosAttacks:
 	db 0 ; no more level-up moves
 
 GravelerEvosAttacks:
+	db EVOLVE_LEVEL, 40, GOLEM ; Kanto hack (A251): single-cartridge rule; the link-trade row below still works
 	db EVOLVE_TRADE, -1, GOLEM
 	db 0 ; no more evolutions
 	db 1, TACKLE
@@ -1055,8 +1060,8 @@ RapidashEvosAttacks:
 	db 0 ; no more level-up moves
 
 SlowpokeEvosAttacks:
+	db EVOLVE_TRADE, KINGS_ROCK, SLOWKING ; Kanto hack (A251): held KINGS_ROCK wins over the Lv37 SLOWBRO row (level-up while holding it, engine/pokemon/evolve.asm)
 	db EVOLVE_LEVEL, 37, SLOWBRO
-	db EVOLVE_TRADE, KINGS_ROCK, SLOWKING
 	db 0 ; no more evolutions
 	db 1, CURSE
 	db 1, TACKLE
@@ -1246,6 +1251,7 @@ GastlyEvosAttacks:
 	db 0 ; no more level-up moves
 
 HaunterEvosAttacks:
+	db EVOLVE_LEVEL, 40, GENGAR ; Kanto hack (A251): single-cartridge rule; the link-trade row below still works
 	db EVOLVE_TRADE, -1, GENGAR
 	db 0 ; no more evolutions
 	db 1, HYPNOSIS
