@@ -43,6 +43,27 @@ ElmsLabMoveElmCallback:
 	iftrue .Skip ; not SCENE_ELMSLAB_MEET_ELM
 	moveobject ELMSLAB_ELM, 3, 4
 .Skip:
+; Kanto hack (A251): once LANCE is beaten on MT.SILVER, the two starters the
+; player did not pick are back on the table, once.  The latch flag makes the
+; restock a one-shot: each ball's own hide flag (set by `disappear` when it is
+; taken) keeps it gone afterwards.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
+	iffalse .Done
+	checkevent EVENT_ELMS_LAB_STARTERS_RESTOCKED
+	iftrue .Done
+	setevent EVENT_ELMS_LAB_STARTERS_RESTOCKED
+	checkevent EVENT_GOT_CYNDAQUIL_FROM_ELM
+	iftrue .NoCyndaquil
+	clearevent EVENT_CYNDAQUIL_POKEBALL_IN_ELMS_LAB
+.NoCyndaquil:
+	checkevent EVENT_GOT_TOTODILE_FROM_ELM
+	iftrue .NoTotodile
+	clearevent EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB
+.NoTotodile:
+	checkevent EVENT_GOT_CHIKORITA_FROM_ELM
+	iftrue .Done
+	clearevent EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB
+.Done:
 	endcallback
 
 ; Kanto hack (M11 14a, D136/D138, Q1-Q3 defaults): no GSC intro.  ELM greets
@@ -193,7 +214,7 @@ LabTryToLeaveScript:
 
 CyndaquilPokeBallScript:
 	checkevent EVENT_GOT_A_POKEMON_FROM_ELM
-	iftrue LookAtElmPokeBallScript
+	iftrue .PostLance
 	turnobject ELMSLAB_ELM, DOWN
 	reanchormap
 	pokepic CYNDAQUIL
@@ -221,9 +242,22 @@ CyndaquilPokeBallScript:
 	applymovement PLAYER, AfterCyndaquilMovement
 	sjump ElmDirectionsScript
 
+; Kanto hack (A251): the post-LANCE offer (see ElmsLabMoveElmCallback).
+.PostLance:
+	checkevent EVENT_ELMS_LAB_STARTERS_RESTOCKED
+	iffalse LookAtElmPokeBallScript
+	setval CYNDAQUIL
+	scall ElmPostLanceOfferScript
+	iffalse ElmPostLanceDeclinedScript
+	scall ElmPostLanceReceivedScript
+	givepoke CYNDAQUIL, 5, BERRY
+	ifequal 2, ElmPostLanceBoxFullScript
+	disappear ELMSLAB_POKE_BALL1
+	sjump ElmPostLanceTakeCareScript
+
 TotodilePokeBallScript:
 	checkevent EVENT_GOT_A_POKEMON_FROM_ELM
-	iftrue LookAtElmPokeBallScript
+	iftrue .PostLance
 	turnobject ELMSLAB_ELM, DOWN
 	reanchormap
 	pokepic TOTODILE
@@ -249,9 +283,22 @@ TotodilePokeBallScript:
 	applymovement PLAYER, AfterTotodileMovement
 	sjump ElmDirectionsScript
 
+; Kanto hack (A251): the post-LANCE offer (see ElmsLabMoveElmCallback).
+.PostLance:
+	checkevent EVENT_ELMS_LAB_STARTERS_RESTOCKED
+	iffalse LookAtElmPokeBallScript
+	setval TOTODILE
+	scall ElmPostLanceOfferScript
+	iffalse ElmPostLanceDeclinedScript
+	scall ElmPostLanceReceivedScript
+	givepoke TOTODILE, 5, BERRY
+	ifequal 2, ElmPostLanceBoxFullScript
+	disappear ELMSLAB_POKE_BALL2
+	sjump ElmPostLanceTakeCareScript
+
 ChikoritaPokeBallScript:
 	checkevent EVENT_GOT_A_POKEMON_FROM_ELM
-	iftrue LookAtElmPokeBallScript
+	iftrue .PostLance
 	turnobject ELMSLAB_ELM, DOWN
 	reanchormap
 	pokepic CHIKORITA
@@ -276,6 +323,64 @@ ChikoritaPokeBallScript:
 	closetext
 	applymovement PLAYER, AfterChikoritaMovement
 	sjump ElmDirectionsScript
+
+; Kanto hack (A251): the post-LANCE offer (see ElmsLabMoveElmCallback).
+.PostLance:
+	checkevent EVENT_ELMS_LAB_STARTERS_RESTOCKED
+	iffalse LookAtElmPokeBallScript
+	setval CHIKORITA
+	scall ElmPostLanceOfferScript
+	iffalse ElmPostLanceDeclinedScript
+	scall ElmPostLanceReceivedScript
+	givepoke CHIKORITA, 5, BERRY
+	ifequal 2, ElmPostLanceBoxFullScript
+	disappear ELMSLAB_POKE_BALL3
+	sjump ElmPostLanceTakeCareScript
+
+; Kanto hack (A251): shared tail of the post-LANCE starter offer.  The ball
+; script loads the species into wScriptVar; pokepic/cry/getmonname read it.
+ElmPostLanceOfferScript:
+	getmonname STRING_BUFFER_3, USE_SCRIPT_VAR
+	turnobject ELMSLAB_ELM, DOWN
+	reanchormap
+	pokepic USE_SCRIPT_VAR
+	cry USE_SCRIPT_VAR
+	waitbutton
+	closepokepic
+	opentext
+	writetext ElmPostLanceOfferText
+	yesorno
+	end
+
+; Mirrors CeladonMansionRoofHouseEeveeBall: with a full party `givepoke`
+; prints its own BILL's PC line, so the received line is skipped.
+ElmPostLanceReceivedScript:
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, .ToBox
+	writetext ReceivedStarterText
+	playsound SFX_CAUGHT_MON
+	waitsfx
+	promptbutton
+.ToBox:
+	end
+
+ElmPostLanceDeclinedScript:
+	writetext ElmPostLanceDeclinedText
+	waitbutton
+	closetext
+	end
+
+ElmPostLanceBoxFullScript:
+	writetext ElmPostLanceBoxFullText
+	waitbutton
+	closetext
+	end
+
+ElmPostLanceTakeCareScript:
+	writetext ElmPostLanceTakeCareText
+	waitbutton
+	closetext
+	end
 
 DidntChooseStarterScript:
 	writetext DidntChooseStarterText
@@ -1043,6 +1148,44 @@ ElmDescribesMrPokemonText:
 	para "Too bad they're"
 	line "just rare and"
 	cont "not very useful…"
+	done
+
+; Kanto hack (A251): post-LANCE starter offer, in Crystal's ELM voice.
+ElmPostLanceOfferText:
+	text "ELM: <PLAY_G>, you"
+	line "beat LANCE on"
+	cont "MT.SILVER!"
+
+	para "This #MON still"
+	line "has no trainer."
+
+	para "It would be happy"
+	line "with someone as"
+	cont "strong as you."
+
+	para "Will you take"
+	line "@"
+	text_ram wStringBuffer3
+	text " too?"
+	done
+
+ElmPostLanceDeclinedText:
+	text "ELM: Oh… It'll"
+	line "be waiting here"
+
+	para "if you change"
+	line "your mind."
+	done
+
+ElmPostLanceBoxFullText:
+	text "ELM: Your PC BOX"
+	line "is full! Make some"
+	cont "room first."
+	done
+
+ElmPostLanceTakeCareText:
+	text "ELM: Take good"
+	line "care of it!"
 	done
 
 ElmPokeBallText:
