@@ -16,7 +16,7 @@ AzaleaTown_MapScripts:
 	def_scene_scripts
 	scene_script AzaleaTownNoop1Scene, SCENE_AZALEATOWN_NOOP
 	scene_script AzaleaTownNoop2Scene, SCENE_AZALEATOWN_RIVAL_BATTLE
-	scene_script AzaleaTownNoop3Scene, SCENE_AZALEATOWN_KURT_RETURNS_GS_BALL
+	scene_script AzaleaTownNoop3Scene, SCENE_AZALEATOWN_KURT_FOREST_IS_RESTLESS
 
 	def_callbacks
 	callback MAPCALLBACK_NEWMAP, AzaleaTownFlypointCallback
@@ -152,21 +152,18 @@ UnusedWoosterScript: ; unreferenced
 	closetext
 	end
 
+; Kanto hack (CEL1, docs/CEL1-CELEBI.md): vanilla handed the GS BALL back here
+; (verbosegiveitem GS_BALL = a second EXP.ALL in this hack). Now dialogue only;
+; Kurt's house script already set the restless flags before arming this scene.
 AzaleaTownCelebiScene:
 	applymovement PLAYER, AzaleaTownPlayerLeavesKurtsHouseMovement
 	opentext
 	writetext AzaleaTownKurtText1
 	promptbutton
 	turnobject AZALEATOWN_KURT_OUTSIDE, RIGHT
-	writetext AzaleaTownKurtText2
-	promptbutton
 	writetext AzaleaTownKurtText3
 	waitbutton
-	verbosegiveitem GS_BALL
 	turnobject AZALEATOWN_KURT_OUTSIDE, LEFT
-	setflag ENGINE_FOREST_IS_RESTLESS
-	clearevent EVENT_ILEX_FOREST_LASS
-	setevent EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	setscene SCENE_AZALEATOWN_NOOP
 	closetext
 	end
@@ -391,11 +388,6 @@ AzaleaTownKurtText1:
 	para "What is going on?"
 	done
 
-AzaleaTownKurtText2:
-	text "<PLAYER>, here's"
-	line "your GS BALL back!"
-	done
-
 AzaleaTownKurtText3:
 	text "Could you go see"
 	line "why ILEX FOREST is"
@@ -468,7 +460,7 @@ AzaleaTown_MapEvents:
 	def_coord_events
 	coord_event  5, 10, SCENE_AZALEATOWN_RIVAL_BATTLE, AzaleaTownRivalBattleScene1
 	coord_event  5, 11, SCENE_AZALEATOWN_RIVAL_BATTLE, AzaleaTownRivalBattleScene2
-	coord_event  9,  6, SCENE_AZALEATOWN_KURT_RETURNS_GS_BALL, AzaleaTownCelebiScene
+	coord_event  9,  6, SCENE_AZALEATOWN_KURT_FOREST_IS_RESTLESS, AzaleaTownCelebiScene
 
 	def_bg_events
 	bg_event 19,  9, BGEVENT_READ, AzaleaTownSign

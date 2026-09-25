@@ -40,8 +40,8 @@
 ; Yellow's EXP.ALL.  The GS BALL is unobtainable in this build (the Celebi event
 ; needs GS_BALL_AVAILABLE, set only by the mobile/VC BATTLETOWERACTION_GSBALL),
 ; and its item_attribute row was already KEY_ITEM / price 0 / CANT_SELECT |
-; CANT_TOSS, exactly what EXP.ALL wants.  `DEF GS_BALL EQU EXP_ALL` keeps the
-; three dead Celebi scripts compiling.
+; CANT_TOSS, exactly what EXP.ALL wants.  (The old `DEF GS_BALL EQU EXP_ALL`
+; alias is gone since CEL1.)
 ; M9 12m (docs/M9-CINNABAR.md D91) retired MACHINE_PART ($80) for Yellow's
 ; SECRET_KEY (the CINNABAR GYM door).  MACHINE_PART was Crystal's Kanto Power
 ; Plant errand item; nothing in this build hands it out (its hidden ball in
@@ -168,12 +168,11 @@
 	const RAGECANDYBAR ; 72
 	const EXP_ALL      ; 73 (was GS_BALL; Kanto hack M7 10e -- Yellow's EXP.ALL)
 ; Kanto hack (M7 10e, docs/M7-FUCHSIA.md D52): the GS BALL is unreachable in
-; Crystal outside the Japanese mobile/VC event (GS_BALL_AVAILABLE is only ever
-; set by BATTLETOWERACTION_GSBALL, which nothing in this build calls), so its id
-; carries Yellow's EXP.ALL.  The three dead Celebi scripts that still mention
-; GS_BALL (AzaleaTown, KurtsHouse, GoldenrodPokecenter1F) keep assembling
-; through this alias; they can never run.
-DEF GS_BALL EQU EXP_ALL
+; Crystal outside the Japanese mobile/VC event, so its id carries Yellow's
+; EXP.ALL.  CEL1 (docs/CEL1-CELEBI.md) removed every GS_BALL give/check/take
+; (AzaleaTown, KurtsHouse, GoldenrodPokecenter1F, IlexForest) and then this
+; file's `DEF GS_BALL EQU EXP_ALL` alias itself, so any future script naming
+; GS_BALL fails to assemble instead of silently touching the EXP.ALL.
 	const BLUE_CARD    ; 74
 	const MIRACLE_SEED ; 75
 	const THICK_CLUB   ; 76

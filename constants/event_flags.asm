@@ -198,8 +198,8 @@
 	const EVENT_BUGGING_KURT_TOO_MUCH
 	const EVENT_TALKED_TO_RUINS_COWARD
 	const EVENT_GOT_DRATINI
-	const EVENT_CAN_GIVE_GS_BALL_TO_KURT
-	const EVENT_GAVE_GS_BALL_TO_KURT
+	const_skip ; Kanto hack (CEL1): was EVENT_CAN_GIVE_GS_BALL_TO_KURT -- freed, the GS BALL chain is gone (GS_BALL $73 = EXP.ALL)
+	const EVENT_BEAT_CELEBI ; Kanto hack (CEL1): renamed in place, was EVENT_GAVE_GS_BALL_TO_KURT; ILEX SHRINE CELEBI caught/KO'd (a loss leaves it clear for a retry)
 	const EVENT_FOREST_IS_RESTLESS
 	const EVENT_ANSWERED_DRAGON_MASTER_QUIZ_WRONG
 ; Unused: next 6 events
@@ -519,7 +519,7 @@
 	const EVENT_MET_BUENA
 	const EVENT_GOT_ODD_EGG
 	const EVENT_BEAT_ZAPDOS ; Kanto hack (M10 13l): was a const_skip (unused) row; Yellow's flag of the same name; ZAPDOS (4,9)'s hide flag, set on win/catch/run
-	const EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
+	const_skip ; Kanto hack (CEL1): was EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER -- freed with the Goldenrod GS BALL scene
 ; Unused: next 167 events
 
 	const_next 1000

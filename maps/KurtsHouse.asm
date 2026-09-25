@@ -88,9 +88,13 @@ Kurt1:
 	iftrue .GiveHeavyBall
 	checkevent EVENT_GAVE_KURT_PNK_APRICORN
 	iftrue .GiveLoveBall
-	checkevent EVENT_CAN_GIVE_GS_BALL_TO_KURT
-	iftrue .CanGiveGSBallToKurt
-.NoGSBall:
+; Kanto hack (CEL1, docs/CEL1-CELEBI.md): the GS BALL chain is gone (GS_BALL
+; $73 is our EXP.ALL). After LANCE falls on MT.SILVER, Kurt hears of a strange
+; light at the ILEX FOREST SHRINE and rushes out -- the rest of vanilla's
+; Celebi chain (Azalea scene, Route 34 gate, shrine) then runs item-free.
+	checkevent EVENT_BEAT_LANCE_MT_SILVER
+	iftrue .CheckIlexLight
+.NoIlexLight:
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_2
 	iftrue .CheckApricorns
 	checkevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_3
@@ -259,47 +263,29 @@ Kurt1:
 	clearevent EVENT_GAVE_KURT_PNK_APRICORN
 	sjump ._ThatTurnedOutGreat
 
-.CanGiveGSBallToKurt:
-	checkevent EVENT_GAVE_GS_BALL_TO_KURT
-	iftrue .GaveGSBallToKurt
-	checkitem GS_BALL
-	iffalse .NoGSBall
-	writetext KurtsHouseKurtWhatIsThatText
-	waitbutton
-	closetext
-	setevent EVENT_GAVE_GS_BALL_TO_KURT
-	takeitem GS_BALL
-	setflag ENGINE_KURT_MAKING_BALLS
-	end
-
-.GaveGSBallToKurt:
-	checkflag ENGINE_KURT_MAKING_BALLS
-	iffalse .NotMakingBalls
-	writetext KurtsHouseKurtImCheckingItNowText
-	waitbutton
-	writetext KurtsHouseKurtAhHaISeeText
-	waitbutton
-	closetext
-	end
-
-.NotMakingBalls:
-	writetext KurtsHouseKurtThisBallStartedToShakeText
+.CheckIlexLight:
+	checkevent EVENT_BEAT_CELEBI
+	iftrue .NoIlexLight
+	checkevent EVENT_FOREST_IS_RESTLESS
+	iftrue .NoIlexLight
+	writetext KurtsHouseKurtStrangeLightText
 	waitbutton
 	closetext
 	setevent EVENT_FOREST_IS_RESTLESS
-	clearevent EVENT_CAN_GIVE_GS_BALL_TO_KURT
-	clearevent EVENT_GAVE_GS_BALL_TO_KURT
+	setflag ENGINE_FOREST_IS_RESTLESS
+	clearevent EVENT_ILEX_FOREST_LASS
+	setevent EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	special FadeOutMusic
 	pause 20
 	showemote EMOTE_SHOCK, KURTSHOUSE_KURT1, 30
 	readvar VAR_FACING
-	ifequal UP, .GSBallRunAround
+	ifequal UP, .IlexLightRunAround
 	turnobject PLAYER, DOWN
 	playsound SFX_FLY
 	applymovement KURTSHOUSE_KURT1, KurtsHouseKurtExitHouseMovement
 	sjump .KurtHasLeftTheBuilding
 
-.GSBallRunAround:
+.IlexLightRunAround:
 	turnobject PLAYER, DOWN
 	playsound SFX_FLY
 	applymovement KURTSHOUSE_KURT1, KurtsHouseKurtGoAroundPlayerThenExitHouseMovement
@@ -309,14 +295,12 @@ Kurt1:
 	clearevent EVENT_AZALEA_TOWN_KURT
 	waitsfx
 	special RestartMapMusic
-	setmapscene AZALEA_TOWN, SCENE_AZALEATOWN_KURT_RETURNS_GS_BALL
+	setmapscene AZALEA_TOWN, SCENE_AZALEATOWN_KURT_FOREST_IS_RESTLESS
 	end
 
 Kurt2:
 	faceplayer
 	opentext
-	checkevent EVENT_GAVE_GS_BALL_TO_KURT
-	iftrue KurtScript_ImCheckingItNow
 KurtMakingBallsScript:
 	checkevent EVENT_BUGGING_KURT_TOO_MUCH
 	iffalse Script_FirstTimeBuggingKurt
@@ -332,15 +316,6 @@ Script_FirstTimeBuggingKurt:
 	closetext
 	turnobject KURTSHOUSE_KURT2, UP
 	setevent EVENT_BUGGING_KURT_TOO_MUCH
-	end
-
-KurtScript_ImCheckingItNow:
-	writetext KurtsHouseKurtImCheckingItNowText
-	waitbutton
-	turnobject KURTSHOUSE_KURT2, UP
-	writetext KurtsHouseKurtAhHaISeeText
-	waitbutton
-	closetext
 	end
 
 KurtsGranddaughter1:
@@ -388,16 +363,7 @@ KurtsGranddaughter2:
 	faceplayer
 KurtsGranddaughter2Subscript:
 	opentext
-	checkevent EVENT_GAVE_GS_BALL_TO_KURT
-	iftrue .GSBall
 	writetext KurtsGranddaughterHelpText
-	waitbutton
-	closetext
-	turnobject KURTSHOUSE_TWIN2, RIGHT
-	end
-
-.GSBall:
-	writetext KurtsGranddaughterGSBallText
 	waitbutton
 	closetext
 	turnobject KURTSHOUSE_TWIN2, RIGHT
@@ -562,38 +528,18 @@ KurtsHouseKurtGranddaughterHelpingWorkFasterText:
 	line "work much faster."
 	done
 
-KurtsHouseKurtWhatIsThatText:
-	text "Wh-what is that?"
-
-	para "I've never seen"
-	line "one before."
-
-	para "It looks a lot"
-	line "like a # BALL,"
-
-	para "but it appears to"
-	line "be something else."
-
-	para "Let me check it"
-	line "for you."
-	done
-
-KurtsHouseKurtImCheckingItNowText:
-	text "I'm checking it"
-	line "now."
-	done
-
-KurtsHouseKurtAhHaISeeText:
-	text "Ah-ha! I see!"
-	line "So…"
-	done
-
-KurtsHouseKurtThisBallStartedToShakeText:
+KurtsHouseKurtStrangeLightText:
 	text "<PLAYER>!"
 
-	para "This BALL started"
-	line "to shake while I"
-	cont "was checking it."
+	para "Folks say a"
+	line "strange light was"
+
+	para "seen at the ILEX"
+	line "FOREST SHRINE."
+
+	para "That's the SHRINE"
+	line "of the forest's"
+	cont "protector…"
 
 	para "There must be"
 	line "something to this!"
@@ -642,14 +588,6 @@ KurtsGranddaughterHelpText:
 KurtsGranddaughterFunText:
 	text "It's fun to make"
 	line "BALLS!"
-	done
-
-KurtsGranddaughterGSBallText:
-	text "Grandpa's checking"
-	line "a BALL right now."
-
-	para "So I'm waiting"
-	line "till he's done."
 	done
 
 KurtsHouseSlowpokeText:

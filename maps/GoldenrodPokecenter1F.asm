@@ -7,76 +7,12 @@
 
 GoldenrodPokecenter1F_MapScripts:
 	def_scene_scripts
-	scene_const SCENE_GOLDENRODPOKECENTER1F_GS_BALL
+	scene_const SCENE_GOLDENRODPOKECENTER1F_NOOP ; Kanto hack (CEL1): was SCENE_GOLDENRODPOKECENTER1F_GS_BALL; its GS BALL gift scenes (verbosegiveitem GS_BALL = EXP.ALL) are deleted
 
 	def_callbacks
 
 GoldenrodPokecenter1FNurseScript:
 	jumpstd PokecenterNurseScript
-
-GoldenrodPokecenter1F_GSBallSceneLeft:
-	setval BATTLETOWERACTION_GSBALL
-	special BattleTowerAction
-	ifequal GS_BALL_AVAILABLE, .gsball
-	end
-
-.gsball
-	checkevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
-	iftrue .cancel
-	playsound SFX_EXIT_BUILDING
-	moveobject GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, 0, 7
-	disappear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	appear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	playmusic MUSIC_SHOW_ME_AROUND
-	applymovement GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, GoldenrodPokeCenter1FLinkReceptionistApproachPlayerAtLeftDoorwayTileMovement
-	turnobject PLAYER, UP
-	opentext
-	writetext GoldenrodPokeCenter1FLinkReceptionistPleaseAcceptGSBallText
-	waitbutton
-	verbosegiveitem GS_BALL
-	setevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
-	setevent EVENT_CAN_GIVE_GS_BALL_TO_KURT
-	writetext GoldenrodPokeCenter1FLinkReceptionistPleaseDoComeAgainText
-	waitbutton
-	closetext
-	applymovement GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, GoldenrodPokeCenter1FLinkReceptionistWalkToStairsFromLeftDoorwayTileMovement
-	special RestartMapMusic
-	disappear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	playsound SFX_EXIT_BUILDING
-.cancel
-	end
-
-GoldenrodPokecenter1F_GSBallSceneRight:
-	setval BATTLETOWERACTION_GSBALL
-	special BattleTowerAction
-	ifequal GS_BALL_AVAILABLE, .gsball
-	end
-
-.gsball
-	checkevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
-	iftrue .cancel
-	playsound SFX_EXIT_BUILDING
-	moveobject GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, 0, 7
-	disappear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	appear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	playmusic MUSIC_SHOW_ME_AROUND
-	applymovement GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, GoldenrodPokeCenter1FLinkReceptionistApproachPlayerAtRightDoorwayTileMovement
-	turnobject PLAYER, UP
-	opentext
-	writetext GoldenrodPokeCenter1FLinkReceptionistPleaseAcceptGSBallText
-	waitbutton
-	verbosegiveitem GS_BALL
-	setevent EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
-	setevent EVENT_CAN_GIVE_GS_BALL_TO_KURT
-	writetext GoldenrodPokeCenter1FLinkReceptionistPleaseDoComeAgainText
-	waitbutton
-	closetext
-	applymovement GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST, GoldenrodPokeCenter1FLinkReceptionistWalkToStairsFromRightDoorwayTileMovement
-	special RestartMapMusic
-	disappear GOLDENRODPOKECENTER1F_PCC_TRADE_CORNER_RECEPTIONIST
-	playsound SFX_EXIT_BUILDING
-.cancel
-	end
 
 GoldenrodPokecenter1FGameboyKidScript:
 	jumptextfaceplayer GoldenrodPokecenter1FGameboyKidText
@@ -117,38 +53,6 @@ GoldenrodPokecenter1FPokefanF:
 	waitbutton
 	closetext
 	end
-
-GoldenrodPokeCenter1FLinkReceptionistApproachPlayerAtLeftDoorwayTileMovement:
-	step UP
-	step RIGHT
-	step RIGHT
-	step RIGHT
-	turn_head DOWN
-	step_end
-
-GoldenrodPokeCenter1FLinkReceptionistWalkToStairsFromLeftDoorwayTileMovement:
-	step LEFT
-	step LEFT
-	step LEFT
-	step DOWN
-	step_end
-
-GoldenrodPokeCenter1FLinkReceptionistApproachPlayerAtRightDoorwayTileMovement:
-	step UP
-	step RIGHT
-	step RIGHT
-	step RIGHT
-	step RIGHT
-	turn_head DOWN
-	step_end
-
-GoldenrodPokeCenter1FLinkReceptionistWalkToStairsFromRightDoorwayTileMovement:
-	step LEFT
-	step LEFT
-	step LEFT
-	step LEFT
-	step DOWN
-	step_end
 
 GoldenrodPokecomCenterWelcomeToTradeCornerText: ; unreferenced
 	text "Hello! Welcome to"
@@ -715,23 +619,6 @@ GoldenrodPokecenter1FLassText:
 	line "the toughest."
 	done
 
-GoldenrodPokeCenter1FLinkReceptionistPleaseAcceptGSBallText:
-	text "<PLAYER>, isn't it?"
-
-	para "Congratulations!"
-
-	para "As a special deal,"
-	line "a GS BALL has been"
-	cont "sent just for you!"
-
-	para "Please accept it!"
-	done
-
-GoldenrodPokeCenter1FLinkReceptionistPleaseDoComeAgainText:
-	text "Please do come"
-	line "again!"
-	done
-
 GoldenrodPokecomCenterSignText: ; unreferenced
 	text "#COM CENTER"
 	line "1F INFORMATION"
@@ -812,8 +699,6 @@ GoldenrodPokecenter1F_MapEvents:
 	warp_event  0,  7, POKECENTER_2F, 1
 
 	def_coord_events
-	coord_event  3,  7, SCENE_GOLDENRODPOKECENTER1F_GS_BALL, GoldenrodPokecenter1F_GSBallSceneLeft
-	coord_event  4,  7, SCENE_GOLDENRODPOKECENTER1F_GS_BALL, GoldenrodPokecenter1F_GSBallSceneRight
 
 	def_bg_events
 

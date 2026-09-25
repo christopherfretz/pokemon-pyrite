@@ -426,13 +426,16 @@ IlexForestBoulder: ; unreferenced
 IlexForestSignpost:
 	jumptext IlexForestSignpostText
 
+; Kanto hack (CEL1, docs/CEL1-CELEBI.md): vanilla needed the GS BALL here
+; (checkitem/takeitem GS_BALL would now eat the player's EXP.ALL, $73). The
+; shrine now wakes once Kurt has sent the player (post-LANCE) and runs the
+; vanilla CELEBI cutscene into a one-time Lv80 battle. A catch or KO sets
+; EVENT_BEAT_CELEBI and ends the restlessness; a loss whites out with the
+; forest still restless, so the player can come back and try again.
 IlexForestShrineScript:
+	checkevent EVENT_BEAT_CELEBI
+	iftrue .DontDoCelebiEvent
 	checkevent EVENT_FOREST_IS_RESTLESS
-	iftrue .ForestIsRestless
-	sjump .DontDoCelebiEvent
-
-.ForestIsRestless:
-	checkitem GS_BALL
 	iftrue .AskCelebiEvent
 .DontDoCelebiEvent:
 	jumptext Text_IlexForestShrine
@@ -446,12 +449,7 @@ IlexForestShrineScript:
 	end
 
 .CelebiEvent:
-	takeitem GS_BALL
-	clearevent EVENT_FOREST_IS_RESTLESS
-	setevent EVENT_AZALEA_TOWN_KURT
-	disappear ILEXFOREST_LASS
-	clearevent EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
-	writetext Text_InsertGSBall
+	writetext Text_TouchShrineLight
 	waitbutton
 	closetext
 	pause 20
@@ -461,10 +459,16 @@ IlexForestShrineScript:
 	pause 30
 	turnobject PLAYER, DOWN
 	pause 20
-	clearflag ENGINE_FOREST_IS_RESTLESS
 	special CelebiShrineEvent
-	loadwildmon CELEBI, 30
+	loadwildmon CELEBI, 80
 	startbattle
+	ifequal LOSE, .LostToCelebi
+	setevent EVENT_BEAT_CELEBI
+	clearevent EVENT_FOREST_IS_RESTLESS
+	clearflag ENGINE_FOREST_IS_RESTLESS
+	setevent EVENT_AZALEA_TOWN_KURT
+	setevent EVENT_ILEX_FOREST_LASS
+	clearevent EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	reloadmapafterbattle
 	pause 20
 	special CheckCaughtCelebi
@@ -478,6 +482,10 @@ IlexForestShrineScript:
 	applymovement ILEXFOREST_KURT, IlexForestKurtStepsDownMovement
 	disappear ILEXFOREST_KURT
 .DidntCatchCelebi:
+	end
+
+.LostToCelebi:
+	reloadmapafterbattle
 	end
 
 MovementData_Farfetchd_Pos1_Pos2:
@@ -873,19 +881,17 @@ Text_ShrineCelebiEvent:
 
 	para "Oh? What is this?"
 
-	para "It's a hole."
-	line "It looks like the"
+	para "A strange light is"
+	line "glowing inside the"
+	cont "SHRINE."
 
-	para "GS BALL would fit"
-	line "inside it."
-
-	para "Want to put the GS"
-	line "BALL here?"
+	para "Want to reach out"
+	line "and touch it?"
 	done
 
-Text_InsertGSBall:
-	text "<PLAYER> put in the"
-	line "GS BALL."
+Text_TouchShrineLight:
+	text "<PLAYER> reached"
+	line "for the light…"
 	done
 
 Text_KurtCaughtCelebi:
