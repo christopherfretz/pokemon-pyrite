@@ -39,6 +39,14 @@ ClosePokepic::
 	call ApplyTilemap
 	call UpdateSprites
 	call LoadStandardFont
+; SS2: ApplyTilemap leaves hBGMapMode = 1. Stock Crystal only ever follows
+; closepokepic with opentext/closetext (ElmsLab), whose CloseText clears it; a
+; script that ENDS on closepokepic (SS.ANNE 2F storyteller, Route 15 gate
+; binoculars) returned to the overworld with VBlank still streaming the static
+; wTilemap/wAttrmap into the BG map, so the first steps drew the room shifted
+; and in the wrong palettes. Clear it here, as CloseText does.
+	xor a
+	ldh [hBGMapMode], a
 	ret
 
 PokepicMenuHeader:
