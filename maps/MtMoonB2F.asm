@@ -105,6 +105,42 @@ MtMoonB2FObjectsCallback:
 .HideBoth:
 	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+; Kanto hack (A251): in the Johto act (ENGINE_POKEGEAR) the fossil the player
+; did NOT take is back on its tile, once (MIGUEL left it behind).  Which one is
+; decided by, in order: the TOOK_ record the take scripts now keep; the bag;
+; the CINNABAR LAB machine.  A save that has none of those (a Kanto-act fossil
+; taken before A251 and already revived) gets both back and picks one.
+	checkflag ENGINE_POKEGEAR
+	iffalse .Done
+	checkevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	iftrue .Done
+	checkevent EVENT_MT_MOON_B2F_TOOK_HELIX
+	iftrue .ShowDome
+	checkevent EVENT_MT_MOON_B2F_TOOK_DOME
+	iftrue .ShowHelix
+	checkitem HELIX_FOSSIL
+	iftrue .ShowDome
+	checkitem DOME_FOSSIL
+	iftrue .ShowHelix
+	checkevent EVENT_GAVE_FOSSIL_TO_LAB
+	iffalse .ShowBoth
+	checkevent EVENT_LAB_FOSSIL_IS_HELIX
+	iftrue .ShowDome
+	checkevent EVENT_LAB_FOSSIL_IS_AMBER
+	iftrue .ShowBoth
+	sjump .ShowHelix ; the DOME is in the machine
+
+.ShowBoth:
+; SECOND_FOSSIL is set now, so whichever is taken the other goes (.PickedOne).
+	setevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	clearevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+.ShowDome:
+	clearevent EVENT_MT_MOON_B2F_DOME_FOSSIL
+	endcallback
+
+.ShowHelix:
+	clearevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+.Done:
 	endcallback
 
 TrainerSuperNerdMiguel:
@@ -250,6 +286,13 @@ MtMoonB2FDomeFossil:
 	verbosegiveitem DOME_FOSSIL
 	iffalse .NoRoom
 	closetext
+; Kanto hack (A251): the other fossil already gone means this is the Johto-act
+; second fossil -- no MIGUEL beat, just take it.
+	checkevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	iftrue .PickedOne
+	checkevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	iftrue .Second
+	setevent EVENT_MT_MOON_B2F_TOOK_DOME
 	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	disappear MTMOONB2F_DOME_FOSSIL
 	applymovement MTMOONB2F_MIGUEL, MtMoonB2FMiguelStepRight
@@ -258,6 +301,21 @@ MtMoonB2FDomeFossil:
 	waitbutton
 	closetext
 	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	disappear MTMOONB2F_HELIX_FOSSIL
+	end
+
+.Second:
+	setevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
+	disappear MTMOONB2F_DOME_FOSSIL
+	end
+
+.PickedOne:
+; both were shown (a save with no record of the first fossil): this one is the
+; second, so the other goes too.
+	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
+	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	disappear MTMOONB2F_DOME_FOSSIL
 	disappear MTMOONB2F_HELIX_FOSSIL
 	end
 
@@ -282,6 +340,13 @@ MtMoonB2FHelixFossil:
 	verbosegiveitem HELIX_FOSSIL
 	iffalse .NoRoom
 	closetext
+; Kanto hack (A251): the other fossil already gone means this is the Johto-act
+; second fossil -- no MIGUEL beat, just take it.
+	checkevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	iftrue .PickedOne
+	checkevent EVENT_MT_MOON_B2F_DOME_FOSSIL
+	iftrue .Second
+	setevent EVENT_MT_MOON_B2F_TOOK_HELIX
 	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
 	disappear MTMOONB2F_HELIX_FOSSIL
 	applymovement MTMOONB2F_MIGUEL, MtMoonB2FMiguelStepUp
@@ -291,6 +356,21 @@ MtMoonB2FHelixFossil:
 	closetext
 	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	disappear MTMOONB2F_DOME_FOSSIL
+	end
+
+.Second:
+	setevent EVENT_MT_MOON_B2F_SECOND_FOSSIL
+	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	disappear MTMOONB2F_HELIX_FOSSIL
+	end
+
+.PickedOne:
+; both were shown (a save with no record of the first fossil): this one is the
+; second, so the other goes too.
+	setevent EVENT_MT_MOON_B2F_DOME_FOSSIL
+	setevent EVENT_MT_MOON_B2F_HELIX_FOSSIL
+	disappear MTMOONB2F_DOME_FOSSIL
+	disappear MTMOONB2F_HELIX_FOSSIL
 	end
 
 .Declined:
