@@ -541,9 +541,13 @@
 
   function optionsHtml(list, blank) {
     var html = blank ? '<option value="0">' + blank + '</option>' : '';
+    var glitch = false;
     for (var i = 0; i < list.length; i++) {
+      // WEB6: glitch species (252 MISSINGNO.) sit last, in their own group
+      if (list[i].glitch && !glitch) { html += '<optgroup label="Glitch">'; glitch = true; }
       html += '<option value="' + list[i].id + '">' + esc(list[i].name) + '</option>';
     }
+    if (glitch) { html += '</optgroup>'; }
     return html;
   }
   function esc(s) {

@@ -762,7 +762,14 @@ def main():
     if len(species_names) < need("NUM_POKEMON"):
         sys.exit("gen_tables: %d species names < NUM_POKEMON %d"
                  % (len(species_names), need("NUM_POKEMON")))
-    species_names = species_names[:need("NUM_POKEMON")]
+    # WEB6: the row after CELEBI is species 252 MISSINGNO. (OMG1, the Old
+    # Man glitch).  Keep it, flagged, so a save holding one shows its name;
+    # it has no dex entry, so nothing here may treat it as a dex species.
+    num_species = need("NUM_POKEMON")
+    if (len(species_names) > num_species
+            and species_names[num_species] == "MISSINGNO."):
+        num_species += 1
+    species_names = species_names[:num_species]
     if len(move_names) < need("NUM_ATTACKS"):
         sys.exit("gen_tables: %d move names < NUM_ATTACKS %d"
                  % (len(move_names), need("NUM_ATTACKS")))
@@ -916,7 +923,9 @@ def main():
             "numTMs": num_tms, "numHMs": num_hms,
             "numTMHMTutor": need("NUM_TM_HM_TUTOR"),
         },
-        "species": [{"id": i + 1, "name": pretty(n)}
+        "species": [dict({"id": i + 1, "name": pretty(n)},
+                         **({"glitch": True}
+                            if i + 1 > need("NUM_POKEMON") else {}))
                     for i, n in enumerate(species_names)],
         "moves": [{"id": i + 1, "name": pretty(n)}
                   for i, n in enumerate(move_names)],
