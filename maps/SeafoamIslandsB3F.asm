@@ -100,10 +100,12 @@ SeafoamIslandsB3FCurrentNearSteps:
 
 ; SF2: surfing off the (15,7) steps onto (15,8) fires the current in vanilla
 ; Yellow (its default script polls the coordinate every frame), but GSC's
-; coord_event only fires after a WALKED step: UsedSurfScript's applymovement
-; lands with wEnabledPlayerEvents clear.  UsedSurfScript (engine/events/
-; overworld.asm) callasms this after every surf-on; on this map it queues a
-; mem script (RunMemScript is not gated) that re-checks the landing square.
+; coord_event only fires after a WALKED step, and UsedSurfScript's old
+; applymovement hop landed with wEnabledPlayerEvents clear, so UsedSurfScript
+; callasm'd this after every surf-on.  CS1: the hop is now a walked step (auto
+; input, SurfStartStep), the (15,8) coord_event fires on it by itself, and this
+; hook is UNREFERENCED.  Left in place only so no *_MapEvents block moves
+; (savestates); delete it next time this section is repacked anyway.
 SeafoamIslandsB3FSurfLanding::
 	ld a, [wMapGroup]
 	cp GROUP_SEAFOAM_ISLANDS_B3F

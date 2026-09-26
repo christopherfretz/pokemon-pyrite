@@ -602,14 +602,14 @@ TrainerWalkToPlayer:
 	ret
 
 SurfStartStep:
-	call InitMovementBuffer
-	call .GetMovementData
-	call AppendToMovementBuffer
-	ld a, movement_step_end
-	call AppendToMovementBuffer
-	ret
-
-.GetMovementData:
+; Kanto hack (CS1): pret's documented fix for "Surfing directly across a map
+; connection does not load the new map" (docs/bugs_and_glitches.md).  The
+; surf-on hop used to be a scripted slow_step (applymovement), which never runs
+; PlayerEvents' CheckMovingOffEdgeOfMap, so surfing off CINNABAR's east shore
+; at (19,13) landed at x=20 inside the connection strip and never loaded
+; ROUTE 20.  Instead press the facing direction for one frame of auto input:
+; the hop is a real walked step, as in Yellow (ItemUseSurfboard's simulated
+; joypad step, normal speed), so map connections AND coord events fire on it.
 	ld a, [wPlayerDirection]
 	srl a
 	srl a
@@ -618,14 +618,16 @@ SurfStartStep:
 	ld d, 0
 	ld hl, .movement_data
 	add hl, de
-	ld a, [hl]
-	ret
+	add hl, de
+	add hl, de
+	ld a, BANK(.movement_data)
+	jp StartAutoInput
 
 .movement_data
-	slow_step DOWN
-	slow_step UP
-	slow_step LEFT
-	slow_step RIGHT
+	db PAD_DOWN,  0, -1
+	db PAD_UP,    0, -1
+	db PAD_LEFT,  0, -1
+	db PAD_RIGHT, 0, -1
 
 FollowNotExact::
 	push bc

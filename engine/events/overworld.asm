@@ -408,7 +408,8 @@ SurfFromMenuScript:
 	special UpdateTimePals
 
 UsedSurfScript:
-; BUG: Surfing directly across a map connection does not load the new map (see docs/bugs_and_glitches.md)
+; Kanto hack (CS1): "Surfing directly across a map connection does not load the
+; new map" is fixed -- SurfStartStep now queues the hop as auto input.
 	writetext UsedSurfText ; "used SURF!"
 	waitbutton
 	closetext
@@ -420,13 +421,11 @@ UsedSurfScript:
 
 	special UpdatePlayerSprite
 	special PlayMapMusic
-; step into the water (slow_step DIR, step_end)
+; step into the water: one frame of auto input in the facing direction, run
+; after the script ends as a real walked step (CS1).  A walked step lands with
+; PlayerEvents armed, so Seafoam B3F's (15,8) current coord_event now fires on
+; the surf-on step by itself (SF2's SeafoamIslandsB3FSurfLanding hook retired).
 	special SurfStartStep
-	applymovement PLAYER, wMovementBuffer
-; SF2: a scripted step never re-arms coord events (wEnabledPlayerEvents is set
-; only when a walked step lands), so Seafoam B3F's (15,8) current -- which
-; Yellow fires on the surf-on step -- is queued from here instead.
-	callasm SeafoamIslandsB3FSurfLanding
 	end
 
 .stubbed_fn
