@@ -424,6 +424,11 @@ StatsScreen_InitUpperHalf:
 	ld a, [wBaseDexNo]
 	ld [wTextDecimalByte], a
 	ld [wCurSpecies], a
+	cp MISSINGNO ; Kanto hack (OMG1): No.000, as in Red/Blue
+	jr nz, .got_dex_no
+	xor a
+	ld [wTextDecimalByte], a
+.got_dex_no
 	hlcoord 8, 0
 	ld [hl], '№'
 	inc hl
@@ -830,6 +835,9 @@ OTString:
 	db "OT/@"
 
 StatsScreen_PlaceFrontpic:
+	ld a, [wCurPartySpecies]
+	cp MISSINGNO ; Kanto hack (OMG1): no picture, as in Red/Blue
+	jr z, .missingno
 	ld hl, wTempMonDVs
 	predef GetUnownLetter
 	call StatsScreen_GetAnimationParam
@@ -842,6 +850,12 @@ StatsScreen_PlaceFrontpic:
 	call .AnimateEgg
 	call SetDefaultBGPAndOBP
 	jp .StarterPikachuClip
+
+.missingno
+	hlcoord 0, 0
+	lb bc, 7, 7
+	call ClearBox
+	jp SetDefaultBGPAndOBP
 
 .no_cry
 	call .AnimateMon

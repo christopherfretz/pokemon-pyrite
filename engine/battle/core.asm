@@ -6575,13 +6575,9 @@ LoadEnemyMon:
 	ld bc, MON_NAME_LENGTH
 	call CopyBytes
 
-; Saw this mon
-	ld a, [wTempEnemyMonSpecies]
-	dec a
-	ld c, a
-	ld b, SET_FLAG
-	ld hl, wPokedexSeen
-	predef SmallFarFlagAction
+; Saw this mon (Kanto hack OMG1: MISSINGNO. hits the bag instead, and gets
+; its Gen 1 moveset)
+	farcall OMG_SawEnemyMon
 
 	ld hl, wEnemyMonStats
 	ld de, wEnemyStats
@@ -7366,8 +7362,8 @@ GiveExperiencePoints:
 	ld hl, MON_LEVEL
 	add hl, bc
 	ld a, [hl]
-	cp MAX_LEVEL
-	jp nc, .next_mon
+	; Kanto hack (OMG1): no MAX_LEVEL skip -- exp is already capped at
+	; Lv100's, so a Lv>100 mon (MISSINGNO.) drops to 100 here, as in Gen 1.
 	cp d
 	jp z, .next_mon
 ; <NICKNAME> grew to level ##!
@@ -7415,6 +7411,16 @@ GiveExperiencePoints:
 	ld a, [hl]
 	adc d
 	ld [hl], a
+	; Kanto hack (OMG1): a level drop can shrink max HP below the HP lost;
+	; clamp to 1 HP instead of wrapping (Gen 1 wraps).
+	jr c, .hp_ok
+	bit 7, d
+	jr z, .hp_ok
+	xor a
+	ld [hli], a
+	inc a
+	ld [hld], a
+.hp_ok
 	ld a, [wCurBattleMon]
 	ld d, a
 	ld a, [wCurPartyMon]
@@ -7494,6 +7500,11 @@ GiveExperiencePoints:
 	ld c, a
 	ld a, [wTempLevel]
 	ld b, a
+	; Kanto hack (OMG1): after a level drop, learn nothing (don't wrap b)
+	cp c
+	jr c, .level_loop
+	ld b, c
+	dec b
 
 .level_loop
 	inc b

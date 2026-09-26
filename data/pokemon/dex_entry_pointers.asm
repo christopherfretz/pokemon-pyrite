@@ -253,3 +253,4 @@ PokedexDataPointerTable:
 	dw HoOhPokedexEntry
 	dw CelebiPokedexEntry
 	assert_table_length NUM_POKEMON
+	dw CelebiPokedexEntry ; MISSINGNO (OMG1): never shown, the dex skips it

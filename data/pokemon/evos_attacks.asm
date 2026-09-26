@@ -3361,3 +3361,9 @@ CelebiEvosAttacks:
 	db 40, BATON_PASS
 	db 50, PERISH_SONG
 	db 0 ; no more level-up moves
+
+MissingnoEvosAttacks: ; OMG1 (the wild mon's moves are forced to WATER GUN x2 + SKY ATTACK)
+	db 0 ; no more evolutions
+	db 1, WATER_GUN
+	db 1, SKY_ATTACK
+	db 0 ; no more level-up moves

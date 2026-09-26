@@ -254,3 +254,4 @@ EvosAttacksPointers::
 	dw HoOhEvosAttacks
 	dw CelebiEvosAttacks
 	assert_table_length NUM_POKEMON
+	dw MissingnoEvosAttacks ; OMG1

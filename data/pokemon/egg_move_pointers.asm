@@ -252,3 +252,5 @@ EggMovePointers::
 	dw NoEggMoves
 	dw NoEggMoves
 	assert_table_length NUM_POKEMON
+; MISSINGNO (OMG1) has no row: EGG_NONE never breeds, and a row here would
+; shift "Map Scripts 32" (bank $1c) by 2 bytes.

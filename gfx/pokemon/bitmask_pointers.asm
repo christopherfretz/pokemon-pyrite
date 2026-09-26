@@ -252,3 +252,4 @@ BitmasksPointers:
 	dw HoOhBitmasks
 	dw CelebiBitmasks
 	assert_table_length NUM_POKEMON
+	dw MissingnoBitmasks ; OMG1

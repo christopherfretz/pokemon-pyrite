@@ -21,6 +21,16 @@ PlaceMenuItemQuantity:
 	ld [hl], '×'
 	inc hl
 	ld de, wMenuSelectionQuantity
+	; Kanto hack (OMG1): MISSINGNO.'s item x128 can push a stack past 99;
+	; show it as 99.  Only this row's display copy is clamped: the scrolling
+	; menu reloads wMenuSelectionQuantity from the list on A, so the real
+	; count is kept.  (PrintNum is a homecall, so de must not point at ROMX.)
+	ld a, [de]
+	cp MAX_ITEM_STACK + 1
+	jr c, .print
+	ld a, MAX_ITEM_STACK
+	ld [de], a
+.print
 	lb bc, 1, 2
 	call PrintNum
 

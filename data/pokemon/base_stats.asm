@@ -272,3 +272,5 @@ INCLUDE "data/pokemon/base_stats/lugia.asm"
 INCLUDE "data/pokemon/base_stats/ho_oh.asm"
 INCLUDE "data/pokemon/base_stats/celebi.asm"
 	assert_table_length NUM_POKEMON
+INCLUDE "data/pokemon/base_stats/missingno.asm" ; OMG1
+	assert_table_length MISSINGNO

@@ -252,3 +252,4 @@ AnimationPointers:
 	dw HoOhAnimation
 	dw CelebiAnimation
 	assert_table_length NUM_POKEMON
+	dw MissingnoAnimation ; OMG1

@@ -528,6 +528,8 @@ PokeBallEffect:
 	call ClearSprites
 
 	ld a, [wTempSpecies]
+	cp MISSINGNO ; Kanto hack (OMG1): no dex data, no dex flags
+	jr z, .skip_pokedex
 	dec a
 	call CheckCaughtMon
 

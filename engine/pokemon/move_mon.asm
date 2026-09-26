@@ -193,7 +193,7 @@ endr
 	call CheckCaughtMon
 	ld a, [wTempSpecies]
 	dec a
-	call SetSeenAndCaughtMon
+	call OMG_SetSeenAndCaughtMon ; Kanto hack (OMG1)
 	pop de
 
 	pop hl
@@ -448,7 +448,7 @@ AddTempmonToParty:
 	cp EGG
 	jr z, .egg
 	dec a
-	call SetSeenAndCaughtMon
+	call OMG_SetSeenAndCaughtMon ; Kanto hack (OMG1)
 	ld hl, wPartyMon1Happiness
 	ld a, [wPartyCount]
 	dec a
@@ -643,6 +643,17 @@ SendGetMonIntoFromBox:
 	predef CopyMonToTempMon
 	callfar CalcLevel
 	ld a, d
+	; Kanto hack (OMG1): Gen 1 recomputes the level from EXP with no cap, so a
+	; MISSINGNO. above 100 comes back out of the box at its stored level.
+	; Crystal's CalcLevel stops at MAX_LEVEL; keep an over-100 stored level.
+	ld hl, wTempMonLevel
+	cp [hl]
+	jr nc, .level_ok
+	ld a, [hl]
+	cp MAX_LEVEL + 1
+	jr nc, .level_ok
+	ld a, d
+.level_ok
 	ld [wCurPartyLevel], a
 	pop hl
 
@@ -1040,7 +1051,7 @@ SendMonIntoBox:
 	ld [de], a
 	ld a, [wCurPartySpecies]
 	dec a
-	call SetSeenAndCaughtMon
+	call OMG_SetSeenAndCaughtMon ; Kanto hack (OMG1)
 	ld a, [wCurPartySpecies]
 	cp UNOWN
 	jr nz, .not_unown
@@ -1820,3 +1831,10 @@ InitNickname:
 	ld hl, ExitAllMenus
 	rst FarCall
 	ret
+
+OMG_SetSeenAndCaughtMon:
+; Kanto hack (OMG1): MISSINGNO. is never seen or caught.  A banked wrapper so
+; ROM0 (the Home section) does not move.
+	cp MISSINGNO - 1
+	ret z
+	jp SetSeenAndCaughtMon

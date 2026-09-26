@@ -520,12 +520,12 @@ INCLUDE "gfx/pokemon/celebi/shiny.pal"
 
 	assert_table_length NUM_POKEMON + 1
 
-; 252
-	RGB 30, 26, 11
-	RGB 23, 16, 00
+; 252 MISSINGNO (OMG1): Yellow's PAL_MEWMON -- white/yellow/red/black
+	RGB 31, 31, 00
+	RGB 31, 01, 01
 ; 252 shiny
-	RGB 30, 26, 11
-	RGB 23, 16, 00
+	RGB 31, 31, 00
+	RGB 31, 01, 01
 
 INCBIN "gfx/pokemon/egg/front.gbcpal", middle_colors ; not normal.gbcpal
 INCLUDE "gfx/pokemon/egg/shiny.pal"

@@ -9,6 +9,9 @@ LoadWildMonData:
 	jr .done_copy
 
 .copy
+	push hl
+	call OMG_GrassLoaded ; Kanto hack (OMG1): a grass table clears the leak
+	pop hl
 	inc hl
 	inc hl
 	ld de, wMornEncounterRate
@@ -252,6 +255,8 @@ ApplyCleanseTagEffectOnEncounterRate::
 	ret
 
 ChooseWildEncounter:
+	call OMG_TryEncounter ; Kanto hack (OMG1): MISSINGNO. strip on Route 20
+	jp c, .startwildbattle
 	call LoadWildMonDataPointer
 	jp nc, .nowildbattle
 	call CheckEncounterRoamMon

@@ -255,6 +255,6 @@ PokemonPicPointers::
 	dba_pics HoOhFrontpic, HoOhBackpic
 	dba_pics CelebiFrontpic, CelebiBackpic
 	assert_table_length NUM_POKEMON
-	dba_pics ; unused
+	dba_pics MissingnoFrontpic, MissingnoFrontpic ; OMG1: back pic is built by GetMonBackpic
 	dba_pics EggPic ; Egg has no back sprite
 	assert_table_length EGG

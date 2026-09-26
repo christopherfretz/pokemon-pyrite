@@ -28,6 +28,14 @@ SelectQuantityToSell:
 	ret
 
 Toss_Sell_Loop:
+	; Kanto hack (OMG1): a stack past 99 (MISSINGNO.'s item x128) can be
+	; tossed/sold/deposited at most 99 at a time
+	ld a, [wItemQuantity]
+	cp MAX_ITEM_STACK + 1
+	jr c, .quantity_ok
+	ld a, MAX_ITEM_STACK
+	ld [wItemQuantity], a
+.quantity_ok
 	ld a, 1
 	ld [wItemQuantityChange], a
 .loop

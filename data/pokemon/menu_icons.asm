@@ -254,3 +254,4 @@ MonMenuIcons:
 	db ICON_HO_OH       ; HO_OH
 	db ICON_HUMANSHAPE  ; CELEBI
 	assert_table_length NUM_POKEMON
+	db ICON_BIRD        ; MISSINGNO (OMG1)

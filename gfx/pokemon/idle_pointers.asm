@@ -252,3 +252,4 @@ AnimationIdlePointers:
 	dw HoOhAnimationIdle
 	dw CelebiAnimationIdle
 	assert_table_length NUM_POKEMON
+	dw MissingnoAnimationIdle ; OMG1

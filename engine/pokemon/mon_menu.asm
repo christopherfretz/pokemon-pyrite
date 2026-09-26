@@ -1250,7 +1250,7 @@ PlaceMoveScreenLeftArrow:
 	jr z, .prev
 	cp EGG
 	jr z, .prev
-	cp NUM_POKEMON + 1
+	cp MISSINGNO + 1 ; Kanto hack (OMG1): MISSINGNO. is a real mon
 	jr c, .legal
 
 .prev
@@ -1283,7 +1283,7 @@ PlaceMoveScreenRightArrow:
 	jr z, .next
 	cp EGG
 	jr z, .next
-	cp NUM_POKEMON + 1
+	cp MISSINGNO + 1 ; Kanto hack (OMG1): MISSINGNO. is a real mon
 	jr c, .legal
 
 .next

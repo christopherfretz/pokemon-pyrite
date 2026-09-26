@@ -211,6 +211,8 @@ GetMonBackpic:
 	assert PokemonPicPointers == UnownPicPointers
 	ld hl, PokemonPicPointers
 	ld a, b
+	cp MISSINGNO ; Kanto hack (OMG1): garbage back pic, see missingno_pic.asm
+	jr z, .missingno
 	ld d, BANK(PokemonPicPointers)
 	cp UNOWN
 	jr nz, .ok
@@ -232,6 +234,7 @@ GetMonBackpic:
 	ld de, wDecompressScratch
 	pop af
 	call FarDecompress
+.decompressed
 	ld hl, wDecompressScratch
 	ld c, 6 * 6
 	call FixBackpicAlignment
@@ -243,6 +246,10 @@ GetMonBackpic:
 	pop af
 	ldh [rWBK], a
 	ret
+
+.missingno
+	farcall OMG_GarbageBackpic
+	jr .decompressed
 
 FixPicBank:
 ; This is a thing for some reason.

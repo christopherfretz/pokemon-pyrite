@@ -252,3 +252,4 @@ FramesPointers:
 	dw HoOhFrames
 	dw CelebiFrames
 	assert_table_length NUM_POKEMON
+	dw MissingnoFrames ; OMG1

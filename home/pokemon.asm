@@ -4,7 +4,7 @@ IsAPokemon::
 	jr z, .NotAPokemon
 	cp EGG
 	jr z, .Pokemon
-	cp NUM_POKEMON + 1
+	cp MISSINGNO + 1 ; Kanto hack (OMG1): MISSINGNO. is a real mon
 	jr c, .Pokemon
 
 .NotAPokemon:
@@ -192,7 +192,7 @@ endr
 GetCryIndex::
 	and a
 	jr z, .no
-	cp NUM_POKEMON + 1
+	cp MISSINGNO + 1 ; Kanto hack (OMG1): MISSINGNO. is a real mon
 	jr nc, .no
 
 	dec a

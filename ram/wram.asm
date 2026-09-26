@@ -3398,7 +3398,13 @@ wBillsHouseSceneID::                              db ; 6j
 wVermilionCitySceneID::                           db ; 7j
 wRoute23SceneID::                                 db ; M10 13e-1: badge checks passed, 0-7
 
-	ds 39
+	ds 26
+; Kanto hack (OMG1): the Red/Blue Old Man glitch (docs/OLD-MAN-GLITCH.md),
+; carved from the END of the same reserve so nothing after it moves.  Saved,
+; like Gen 1, so the leak survives save + reset.
+wOldManLeak::         ds 10 ; wPlayerName+1..+10 at the catch tutorial: 5 (level, Gen 1 index) pairs
+wOldManLeakStale::    db    ; nonzero: the leak is live (no grass table loaded since)
+wOldManLastGrassMap:: dw    ; map group, map number of the last grass/cave table (0 = none)
 ; Kanto hack (M12b-4): Yellow's saved Surfing Pikachu Hi-Score, evicted from the
 ; END of the scene-ID reserve (was ds 41) so nothing after it moves
 ; (docs/HOUSEKEEPING.md section 3).  The minigame runs with WRAM bank 5 mapped:

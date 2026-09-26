@@ -140,6 +140,7 @@ INCLUDE "engine/events/trainer_fly.asm"
 SECTION "Wild Mons", ROMX
 
 INCLUDE "engine/overworld/wildmons.asm"
+INCLUDE "engine/overworld/old_man_glitch.asm" ; Kanto hack (OMG1)
 
 
 SECTION "bankB", ROMX
@@ -802,6 +803,13 @@ SECTION "Yellow Intro", ROMX
 INCLUDE "engine/movie/intro_yellow.asm"
 REDEF AO EQUS "YIntro_"
 INCLUDE "engine/games/animated_objects.asm"
+
+
+SECTION "Missingno Pic", ROMX
+
+; Kanto hack (OMG1): must share a bank with other pics (FixPicBank maps
+; only the "Pics N" banks); pinned into Pics 18's bank in layout.link.
+INCLUDE "engine/gfx/missingno_pic.asm"
 
 
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]

@@ -24,6 +24,9 @@ CatchTutorial::
 ; hl: the catcher's name, shown in place of the player's.
 ; Back up your name to your Mom's name.
 	push hl
+	; Kanto hack (OMG1): as in Red/Blue, the real name leaks into the wild
+	; grass buffer (docs/OLD-MAN-GLITCH.md).  Oak's demo too, as in Yellow.
+	farcall OMG_ArmLeak
 	ld hl, wPlayerName
 	ld de, wMomsName
 	ld bc, NAME_LENGTH
