@@ -7,13 +7,28 @@ GetEmote2bpp:
 	ret
 
 _UpdatePlayerSprite::
+IF PIKA_BIKE_FOLLOWER
+; PB1 review: CloseText calls this on EVERY text box; only re-cover the
+; follower's tiles when the player's sprite really changed (mount, dismount,
+; forced mount/dismount), not on every close.
+	ld a, [wUsedSprites]
+	ld b, a
 	call GetPlayerSprite
+	ld a, [wUsedSprites]
+	cp b
+	push af
+ELSE
+	call GetPlayerSprite
+ENDC
 	ld a, [wUsedSprites]
 	ldh [hUsedSpriteIndex], a
 	ld a, [wUsedSprites + 1]
 	ldh [hUsedSpriteTile], a
 	call GetUsedSprite
-	call UpdateFollowerSprite
+IF PIKA_BIKE_FOLLOWER
+	pop af
+	call nz, UpdateFollowerSprite
+ENDC
 	ret
 
 UpdateFollowerSprite::
@@ -21,8 +36,9 @@ UpdateFollowerSprite::
 ; while the player rides, Yellow's walking sheet otherwise.  The sprite id in
 ; wUsedSprites / OBJECT_SPRITE stays SPRITE_PIKACHU_FOLLOWER (the per-frame
 ; vtile lookup keys on it); only the tiles change, exactly as slot 0 does for
-; the player.  Called after every player-sprite reload (mount/dismount,
-; CheckUpdatePlayerSprite) and, while riding, at the end of GetUsedSprites.
+; the player.  Called from _UpdatePlayerSprite when the player's sprite
+; changed (mount/dismount, CheckUpdatePlayerSprite); map loads get the right
+; sheet from GetUsedSprites' in-loop substitution instead.
 IF PIKA_BIKE_FOLLOWER
 	ld a, [wPikaFollowFlags]
 	bit FOLLOWER_ENABLED_F, a
@@ -679,6 +695,20 @@ GetUsedSprites:
 	ld a, [hli]
 	and a
 	jr z, .done
+IF PIKA_BIKE_FOLLOWER
+; PB1: while the player rides, the follower's list entry loads the bike sheet
+; instead of Yellow's walking sheet (same 12 tiles at FOLLOWER_VTILE).  Done
+; in-loop so there is a single load and no walking-sheet flash.  The id in
+; wUsedSprites itself stays SPRITE_PIKACHU_FOLLOWER.
+	cp SPRITE_PIKACHU_FOLLOWER
+	jr nz, .not_follower
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	ld a, SPRITE_PIKACHU_FOLLOWER
+	jr nz, .not_follower
+	ld a, SPRITE_PIKACHU_BIKE
+.not_follower
+ENDC
 	ldh [hUsedSpriteIndex], a
 
 	ld a, [hli]
@@ -701,14 +731,6 @@ GetUsedSprites:
 	jr nz, .loop
 
 .done
-IF PIKA_BIKE_FOLLOWER
-; PB1: the list just loaded Yellow's walking sheet into FOLLOWER_VTILE; re-cover
-; it with the bike sheet if the player is riding (warps AND connections both
-; end up here, so this is the one place to do it).
-	ld a, [wPlayerState]
-	cp PLAYER_BIKE
-	jp z, UpdateFollowerSprite
-ENDC
 	ret
 
 GetUsedSprite:
