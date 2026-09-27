@@ -28,11 +28,17 @@
  * advances it from emulated CPU ticks rather than the host clock, so on its
  * own it stops whenever the tab is closed or backgrounded.  The vendored core
  * is therefore our fork (christopherfretz/binjgb, branch pyrite-rtc), which
- * exports emulator_get/set_rtc_seconds_f64, and the page keeps the clock on
- * wall-clock time itself (CLK1): a tiny `clock:<title>` record {rtc, wall} is
- * written next to the battery mirror, and at boot, on returning to the tab and
- * every CLOCK_SYNC_MS the RTC is moved forward to rtc + (now - wall) - the
- * cartridge "kept ticking on the shelf".  Forward only; see syncClock().
+ * exports emulator_get/set_rtc_seconds_f64, and the page sets the clock
+ * itself (CLK1, re-ruled in CLK2): the game DISPLAYS RTC + the offset it keeps
+ * in wStartDay/Hour/Minute/Second (set by Oak's "what time is it?", restored
+ * on CONTINUE, nudged by Mom's DST switch), so the page reads that offset and
+ * sets the RTC to (local weekday/time - offset) mod 1 week - the congruent
+ * value nearest the current RTC, forwards or backwards - whenever it is off by
+ * more than CLOCK_SLACK_SEC.  That runs at boot (snapshot or battery), after a
+ * slot load or .sav import, when the tab comes back, every CLOCK_POLL_MS, and
+ * at once when the offset bytes change.  Result: the in-game clock and weekday
+ * read what the phone says.  The phone's local time is the only reference;
+ * the `clock:<title>` record is diagnostics.  See syncClock().
  * The .sav is untouched by all of this.
  *
  * We also snapshot a full save state ("resume") next to the battery save and
@@ -84,14 +90,17 @@
   /* A hung IndexedDB connection (iOS Safari after long backgrounding) must
      not swallow saves silently: every open/transaction gets a deadline. */
   var IDB_TIMEOUT_MS = 8000;
-  /* Wall-clock sync of the MBC3 RTC (CLK1).  The RTC is nudged forward when it
-     lags the wall-clock anchor by more than CLOCK_SLACK_SEC; checked every
-     CLOCK_SYNC_MS while the page is open.  The 9-bit day counter must never
+  /* Wall-clock sync of the MBC3 RTC (CLK1/CLK2).  The RTC is re-set when the
+     game's displayed time is off local time by more than CLOCK_SLACK_SEC;
+     checked every CLOCK_POLL_MS while the page is visible (four WRAM bytes and
+     one RTC read), and the diagnostic record is written every CLOCK_SYNC_MS.
+     The 9-bit day counter must never
      overflow (that sets day-carry, which the game treats as a dead clock and
      answers with a reset prompt), so long absences fold whole 140-day blocks
      out: 140 days = 20 weeks, the same fold the game's own FixDays does, so the
      weekday is preserved. */
   var CLOCK_SYNC_MS = 30000;
+  var CLOCK_POLL_MS = 1000;
   var CLOCK_SLACK_SEC = 2;
   var RTC_DAY_SEC = 86400;
   var RTC_FOLD_SEC = 140 * RTC_DAY_SEC;
@@ -526,55 +535,131 @@
     return !!mod._emulator_set_rtc_seconds_f64(emu, Math.max(sec, 0));
   }
 
-  /* clockAnchor {rtc, wall}: "the RTC read `rtc` at wall-clock time `wall`".
-     The clock should now read rtc + (now - wall).  lastRtcSeen is what the
-     previous sync read, so a game write that moves the clock BACKWARDS (the
-     game's own 140-day FixDays, or setting the time on a new game) is told
-     apart from lag and adopted instead of being undone. */
-  var clockAnchor = null;
-  var lastRtcSeen = -1;
+  /* Where the game keeps its clock offset.  Displayed time = RTC + wStartDay/
+     Hour/Minute/Second (FixTime, home/time.asm): the offset is what Oak's "what
+     time is it?" answer set (_InitTime), CONTINUE restores from the save, and
+     Mom's DST toggle nudges.  The addresses are found in the ROM itself - the
+     FixTime routine's `ld a, [wStartSecond] / [wStartMinute] / [wStartHour] /
+     [wStartDay]` operands - so a rebuild that moves WRAM, or a picked ROM, can
+     never make the page read the wrong bytes.  null = not found (then the RTC
+     alone is put on local time, i.e. offset 0 is assumed). */
+  var clockVars = null;
 
-  function clockTarget(now) {
-    return clockAnchor.rtc + Math.max(now - clockAnchor.wall, 0) / 1000;
+  function findClockVars(bytes) {
+    // F0 ss 4F FA <sec> 81 D6 3C 30 02 C6 3C E0 xx 3F  F0 mm 4F FA <min> 89 D6 3C 30 02 C6 3C E0 xx 3F
+    // F0 hh 4F FA <hour> 89 D6 18 30 02 C6 18 E0 xx 3F  F0 dd 4F FA <day> 89 EA <wCurDay>
+    var P = [0xf0, -1, 0x4f, 0xfa, -1, -1, 0x81, 0xd6, 0x3c, 0x30, 0x02, 0xc6, 0x3c, 0xe0, -1, 0x3f,
+             0xf0, -1, 0x4f, 0xfa, -1, -1, 0x89, 0xd6, 0x3c, 0x30, 0x02, 0xc6, 0x3c, 0xe0, -1, 0x3f,
+             0xf0, -1, 0x4f, 0xfa, -1, -1, 0x89, 0xd6, 0x18, 0x30, 0x02, 0xc6, 0x18, 0xe0, -1, 0x3f,
+             0xf0, -1, 0x4f, 0xfa, -1, -1, 0x89, 0xea, -1, -1];
+    var lim = Math.min(bytes.length, 0x4000) - P.length;   // home bank only
+    outer: for (var i = 0; i < lim; i++) {
+      for (var j = 0; j < P.length; j++) {
+        if (P[j] >= 0 && bytes[i + j] !== P[j]) { continue outer; }
+      }
+      var w = function (o) { return bytes[i + o] | (bytes[i + o + 1] << 8); };
+      var v = { sec: w(4), min: w(20), hour: w(36), day: w(52), curDay: w(56) };
+      var ok = [v.sec, v.min, v.hour, v.day, v.curDay].every(function (a) { return a >= 0xc000 && a < 0xe000; });
+      return ok ? v : null;
+    }
+    return null;
   }
 
-  /* Reconcile the RTC with the anchor.  Forward only: a lagging clock is moved
-     up to the target; a clock that is ahead (fast-forward, a game write) just
-     becomes the new anchor.  `restored` = a machine state was just loaded, so
-     a backwards step is the snapshot's age, not a game write. */
-  function syncClock(why, restored) {
+  /* WRAM by address, independent of the bank the game has switched in right
+     now: $c000-$cfff is bank 0, $d000-$dfff is read as bank 1 (where home code
+     keeps these variables).  binjgb lays WRAM out as 8 banks of $1000. */
+  function readWram(addr, bank) {
+    if (!emu || !mod._emulator_get_wram_ptr) { return -1; }
+    var off = addr < 0xd000 ? addr - 0xc000 : ((bank || 1) << 12) + (addr - 0xd000);
+    return mod.HEAPU8[mod._emulator_get_wram_ptr(emu) + off];
+  }
+  function writeWram(addr, val, bank) {
+    if (!emu || !mod._emulator_get_wram_ptr) { return false; }
+    var off = addr < 0xd000 ? addr - 0xc000 : ((bank || 1) << 12) + (addr - 0xd000);
+    mod.HEAPU8[mod._emulator_get_wram_ptr(emu) + off] = val & 0xff;
+    return true;
+  }
+
+  /* The offset {d, h, m, s} the game adds to the RTC, or null if it is not a
+     value the game could have written (WRAM before the intro clears it). */
+  function readClockOffset() {
+    if (!clockVars) { return { d: 0, h: 0, m: 0, s: 0, assumed: true }; }
+    var o = { d: readWram(clockVars.day), h: readWram(clockVars.hour),
+              m: readWram(clockVars.min), s: readWram(clockVars.sec) };
+    if (!(o.d >= 0 && o.d < 140 && o.h >= 0 && o.h < 24 && o.m >= 0 && o.m < 60 && o.s >= 0 && o.s < 60)) {
+      return null;
+    }
+    return o;
+  }
+  function offsetKey(o) { return o ? o.d + ':' + o.h + ':' + o.m + ':' + o.s : 'invalid'; }
+
+  var WEEK_SEC = 7 * RTC_DAY_SEC;
+  function mod7d(x) { return ((x % WEEK_SEC) + WEEK_SEC) % WEEK_SEC; }
+
+  /* Local wall-clock time as seconds into the week (Sunday 00:00 = 0, the
+     game's SUNDAY = 0 too), fractional. */
+  function localWeekSec(now) {
+    var d = new Date(now);
+    return d.getDay() * RTC_DAY_SEC + d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds() +
+      d.getMilliseconds() / 1000;
+  }
+
+  /* The RTC value that makes the game DISPLAY local time: congruent to
+     local - offset modulo a week, and of those the one closest to the current
+     RTC (so the day counter does not jump by weeks for nothing; never below 0). */
+  function clockTarget(cur, off, now) {
+    var base = mod7d(localWeekSec(now) - (off.d * RTC_DAY_SEC + off.h * 3600 + off.m * 60 + off.s));
+    var k = Math.round((cur - base) / WEEK_SEC);
+    var want = base + Math.max(k, 0) * WEEK_SEC;
+    return want;
+  }
+
+  var lastOffsetKey = null;
+  var lastClockInfo = null;   // for kfDebug / diagnostics
+  var clockAutoSync = true;   // kfDebug can hold it off to stage a skewed clock
+
+  /* CLK2: put the RTC where the game displays the phone's local time.  Called
+     at boot (snapshot or battery), after a slot load, when the tab comes back,
+     every CLOCK_POLL_MS (drift, fast-forward) and as soon as the game's offset
+     changes (CONTINUE, Oak's time prompt, Mom's DST toggle).  Moves either way:
+     real time is the only reference. */
+  function syncClock(why) {
     if (!started || !emu) { return; }
     var cur = getRtc();
-    if (cur < 0) { clockAnchor = null; return; }
+    if (cur < 0) { return; }
+    var off = readClockOffset();
+    lastOffsetKey = offsetKey(off);
+    if (!off) { lastClockInfo = { rtc: cur, offset: null, why: why }; return; }
     var now = Date.now();
-    if (!clockAnchor) {
-      clockAnchor = { rtc: cur, wall: now };
-    } else if (!restored && lastRtcSeen >= 0 && cur < lastRtcSeen - CLOCK_SLACK_SEC) {
-      console.info('clock: the game set its clock back ' + Math.round(lastRtcSeen - cur) + ' s; following it');
-      clockAnchor = { rtc: cur, wall: now };
-    } else {
-      var want = clockTarget(now);
-      if (cur < want - CLOCK_SLACK_SEC) {
-        if (setRtc(want)) {
-          console.info('clock: +' + Math.round(want - cur) + ' s (' + why + ')');
-          cur = getRtc();
-        }
-        // Re-anchor on what the core now reads so a fold (RTC_MAX_SEC) sticks.
-        clockAnchor = { rtc: cur, wall: now - (want - Math.floor(want)) * 1000 };
-      } else if (cur > want + CLOCK_SLACK_SEC) {
-        clockAnchor = { rtc: cur, wall: now };
+    var want = clockTarget(cur, off, now);
+    var info = { rtc: cur, target: want, offset: off, local: localWeekSec(now), why: why };
+    if (Math.abs(cur - want) > CLOCK_SLACK_SEC) {
+      if (setRtc(want)) {
+        var d = Math.round(want - cur);
+        console.info('clock: ' + (d >= 0 ? '+' : '') + d + ' s (' + why + '; offset ' + offsetKey(off) +
+          (off.assumed ? ' assumed' : '') + ')');
+        info.jump = d;
+        info.rtc = getRtc();
       }
     }
-    lastRtcSeen = cur;
+    lastClockInfo = info;
   }
 
-  /* The record persisted beside the battery mirror.  Sync first so a stale
-     core clock (tab was in the background) is never written as the truth. */
+  /* Cheap poll: re-sync at once if the game's offset changed, otherwise only
+     if the RTC drifted past the slack (syncClock checks that itself). */
+  function pollClock() {
+    if (!started || !emu || !clockAutoSync || document.visibilityState === 'hidden') { return; }
+    var k = offsetKey(readClockOffset());
+    syncClock(k !== lastOffsetKey ? 'offset ' + lastOffsetKey + ' -> ' + k : 'tick');
+  }
+
+  /* The record persisted beside the battery mirror.  Diagnostics only since
+     CLK2 (local time is the reference); nothing reads it back but the boot log. */
   function clockRecord() {
-    syncClock('flush');
-    if (!clockAnchor) { return null; }
-    var now = Date.now();
-    return { rtc: clockTarget(now), wall: now, title: romTitleKey, core: CORE_COMMIT };
+    if (clockAutoSync) { syncClock('flush'); }
+    var cur = getRtc();
+    if (cur < 0) { return null; }
+    return { rtc: cur, wall: Date.now(), offset: offsetKey(readClockOffset()), title: romTitleKey, core: CORE_COMMIT };
   }
 
   function writeClock() {
@@ -582,25 +667,14 @@
     return rec ? kvPut(clockKey(), rec) : Promise.resolve();
   }
 
-  /* At boot, after the snapshot (or the battery save) is in: the stored record
-     is at least as new as any snapshot (both are written by the same flush,
-     the record more often), so it wins either way.  No record yet (first run
-     with this core): anchor on whatever the core reads - no jump. */
+  /* At boot, after the snapshot (or the battery save) is in. */
   function applyStoredClock(rec) {
-    clockAnchor = null;
-    lastRtcSeen = -1;
-    if (getRtc() < 0) { return; }
-    if (rec && typeof rec.rtc === 'number' && typeof rec.wall === 'number' &&
-        isFinite(rec.rtc) && isFinite(rec.wall) && rec.rtc >= 0) {
-      clockAnchor = { rtc: rec.rtc, wall: rec.wall };
-      var cur = getRtc();
-      var want = clockTarget(Date.now());
-      if (Math.abs(cur - want) > CLOCK_SLACK_SEC && setRtc(want)) {
-        console.info('clock: restored to stored time + ' + Math.round((Date.now() - rec.wall) / 1000) + ' s away');
-      }
-      clockAnchor = { rtc: getRtc(), wall: Date.now() };
+    lastOffsetKey = null;
+    if (rec && typeof rec.rtc === 'number' && typeof rec.wall === 'number') {
+      console.info('clock: last record rtc ' + Math.round(rec.rtc) + ' at ' + new Date(rec.wall).toISOString() +
+        (rec.offset ? ' offset ' + rec.offset : ''));
     }
-    lastRtcSeen = -1;
+    syncClock('boot');
   }
 
   // -------------------------------------------------------------- audio ---
@@ -817,6 +891,8 @@
   function startWithRom(bytes, fromLabel, resume) {
     rom = bytes;
     romTitleKey = titleKeyOf(rom);
+    clockVars = findClockVars(rom);
+    if (!clockVars) { console.warn('clock: FixTime not found in this ROM; assuming a zero clock offset'); }
     lastSramSig = null;
     lastSaveSig = null;
     lastResumeWriteMs = 0;
@@ -1053,9 +1129,9 @@
 
   /* Accepted formats: raw cartridge RAM, or cartridge RAM followed by an RTC
      footer (VBA/mGBA/Gambatte write 44, 48 or a few other trailer lengths).
-     The footer is DROPPED - the RTC belongs to this page's "cartridge" (the
-     clock: record), not to the file - so an imported save keeps its progress
-     and the clock carries on from where this page's clock already is. */
+     The footer is DROPPED - this page sets the RTC from the phone's local
+     time (syncClock), not from the file - so an imported save keeps its
+     progress and shows local time once it is CONTINUEd. */
   function importSav(file) {
     if (!started) { say('Load a ROM first', true); return; }
     readFile(file).then(function (bytes) {
@@ -1123,7 +1199,7 @@
         return;
       }
       // The state carries the clock it was saved with; real time moved on.
-      syncClock('slot ' + n, true);
+      syncClock('slot ' + n);
       lastSramSig = null;
       lastSaveSig = null;
       extRamDirty = true;
@@ -1145,8 +1221,8 @@
   }
 
   /* Reset is a power cycle: keep the battery save, drop the machine state,
-     boot the cartridge from scratch.  The clock record survives, so the RTC
-     keeps real time across the power cycle, as a cartridge's would. */
+     boot the cartridge from scratch.  The boot sync puts the RTC back on
+     local time, as a cartridge's clock would have kept running. */
   function resetEmulator() {
     if (!started || !rom) { return; }
     say('Resetting...');
@@ -1360,8 +1436,10 @@
     if (started && emu) { installJoypad(); }   // drop the recorded-input log
   }, AUTOSAVE_MS);
 
-  // Emulation runs under full speed whenever rAF is throttled or the phone is
-  // busy; the RTC follows emulated time, so pull it back up to the wall clock.
+  // The RTC follows emulated time (slow when rAF is throttled, fast under
+  // fast-forward, and binjgb's latch drops a frame a second), and the game's
+  // offset changes on CONTINUE / the time prompt / DST: keep it on local time.
+  setInterval(pollClock, CLOCK_POLL_MS);
   setInterval(function () {
     if (!started || document.visibilityState === 'hidden') { return; }
     writeClock().catch(function (e) { console.warn('could not write the clock record', e); });
@@ -1377,7 +1455,7 @@
       stopLoop();
       if (audioCtx && audioCtx.suspend) { audioCtx.suspend().catch(function () { /* ignore */ }); }
     } else if (started && wantPlaying) {
-      // iOS freezes the page in the background; the cartridge clock did not.
+      // iOS freezes the page in the background; the phone's clock did not.
       syncClock('back to the tab');
       if (audioUnlocked && audioCtx && audioCtx.resume) { audioCtx.resume().catch(function () { /* ignore */ }); }
       startLoop();
@@ -1425,8 +1503,15 @@
     window.kfDebug = {
       rtc: getRtc,
       setRtc: function (s) { return setRtc(s); },
-      anchor: function () { return clockAnchor && { rtc: clockAnchor.rtc, wall: clockAnchor.wall }; },
       sync: function (why) { syncClock(why || 'debug'); return getRtc(); },
+      /* last sync: {rtc, target, offset {d,h,m,s}, local (s into the week), jump?, why} */
+      clockInfo: function () { return lastClockInfo; },
+      clockVars: function () { return clockVars; },
+      offset: readClockOffset,
+      localWeekSec: function () { return localWeekSec(Date.now()); },
+      autoSync: function (on) { clockAutoSync = !!on; return clockAutoSync; },
+      readWram: function (addr, bank) { return readWram(addr, bank); },
+      writeWram: function (addr, val, bank) { return writeWram(addr, val, bank); },
       flush: function () { return saveProgress(true); },
       readMem: function (addr) { return emu ? mod._emulator_read_mem(emu, addr) : -1; },
       running: function () { return started && rafToken !== null; },
