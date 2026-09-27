@@ -25,10 +25,19 @@
  * verbatim, so the file round-trips with Delta.
  *
  * The clock: binjgb keeps the RTC in its save state, not in the .sav, and
- * advances it from emulated CPU ticks rather than the host clock.  So we also
- * snapshot a full save state ("resume") next to the battery save and restore
- * it on the next visit, which is what keeps time of day continuous across
- * reloads.  It is keyed by ROM hash + core commit and is only ever an
+ * advances it from emulated CPU ticks rather than the host clock, so on its
+ * own it stops whenever the tab is closed or backgrounded.  The vendored core
+ * is therefore our fork (christopherfretz/binjgb, branch pyrite-rtc), which
+ * exports emulator_get/set_rtc_seconds_f64, and the page keeps the clock on
+ * wall-clock time itself (CLK1): a tiny `clock:<title>` record {rtc, wall} is
+ * written next to the battery mirror, and at boot, on returning to the tab and
+ * every CLOCK_SYNC_MS the RTC is moved forward to rtc + (now - wall) - the
+ * cartridge "kept ticking on the shelf".  Forward only; see syncClock().
+ * The .sav is untouched by all of this.
+ *
+ * We also snapshot a full save state ("resume") next to the battery save and
+ * restore it on the next visit, so you pick up mid-route instead of at your
+ * last SAVE.  It is keyed by ROM hash + core commit and is only ever an
  * optimisation: if anything about it does not match, we fall back to booting
  * the cartridge with the battery save, exactly as a real Game Boy would.
  *
@@ -39,7 +48,13 @@
   'use strict';
 
   var CORE_NAME = 'binjgb';
-  var CORE_COMMIT = 'c60e138da5a795ebb55e56b11b7e90024e41112c';
+  /* Upstream commit + our fork commit (vendor/binjgb/VERSION.txt).  Stamped on
+     every stored machine state. */
+  var CORE_COMMIT = 'c60e138da5a795ebb55e56b11b7e90024e41112c+pyrite-rtc@8fb6fda5550d';
+  /* Cores whose EmulatorState layout is identical to this one, so their states
+     still load: the pyrite-rtc commit adds two functions and touches no struct.
+     (The state size check below still guards against a real layout change.) */
+  var COMPAT_CORES = ['c60e138da5a795ebb55e56b11b7e90024e41112c'];
   var CORE_DIR = './vendor/binjgb/';
   var CORE_JS = CORE_DIR + 'binjgb.js';
   var DEFAULT_ROM = './kanto-first.gbc';
@@ -69,6 +84,18 @@
   /* A hung IndexedDB connection (iOS Safari after long backgrounding) must
      not swallow saves silently: every open/transaction gets a deadline. */
   var IDB_TIMEOUT_MS = 8000;
+  /* Wall-clock sync of the MBC3 RTC (CLK1).  The RTC is nudged forward when it
+     lags the wall-clock anchor by more than CLOCK_SLACK_SEC; checked every
+     CLOCK_SYNC_MS while the page is open.  The 9-bit day counter must never
+     overflow (that sets day-carry, which the game treats as a dead clock and
+     answers with a reset prompt), so long absences fold whole 140-day blocks
+     out: 140 days = 20 weeks, the same fold the game's own FixDays does, so the
+     weekday is preserved. */
+  var CLOCK_SYNC_MS = 30000;
+  var CLOCK_SLACK_SEC = 2;
+  var RTC_DAY_SEC = 86400;
+  var RTC_FOLD_SEC = 140 * RTC_DAY_SEC;
+  var RTC_MAX_SEC = 400 * RTC_DAY_SEC;
   var DEADZONE = 0.30;
 
   // binjgb constants (src/emulator.h, src/emscripten/wrapper.c).
@@ -313,7 +340,8 @@
       });
     }).then(function (m) {
       $('#corenote').textContent =
-        'Core: ' + CORE_NAME + ' ' + CORE_COMMIT.slice(0, 8) + ' (vendored), MIT. MBC3 RTC supported.';
+        'Core: ' + CORE_NAME + ' ' + CORE_COMMIT.slice(0, 8) + ' + pyrite-rtc ' + CORE_COMMIT.split('@')[1].slice(0, 7) +
+        ' (vendored), MIT. MBC3 RTC kept on real time.';
       return m;
     });
   }
@@ -380,6 +408,8 @@
   function batteryKey() { return 'battery:' + romTitleKey; }
   function resumeKey() { return 'resume:' + romTitleKey; }
   function slotKey(n) { return 'state:' + romTitleKey + ':' + n; }
+  function clockKey() { return 'clock:' + romTitleKey; }
+  function coreOk(core) { return core === CORE_COMMIT || COMPAT_CORES.indexOf(core) >= 0; }
 
   function sig(bytes) {
     // Cheap change detector (FNV-1a over the whole region).
@@ -478,6 +508,99 @@
   function measureSizes() {
     extRamSize = withFileData(mod._ext_ram_file_data_new(emu), function (v, p, size) { return size; }) || 0;
     stateSize = withFileData(mod._state_file_data_new(emu), function (v, p, size) { return size; }) || 0;
+  }
+
+  // --------------------------------------------------------------- clock ---
+
+  /* The MBC3 RTC as seconds (day*86400 + h*3600 + m*60 + s), or -1 when the
+     core or the cartridge has no RTC. */
+  function getRtc() {
+    if (!emu || !mod._emulator_get_rtc_seconds_f64) { return -1; }
+    return mod._emulator_get_rtc_seconds_f64(emu);
+  }
+
+  function setRtc(sec) {
+    if (!emu || !mod._emulator_set_rtc_seconds_f64) { return false; }
+    sec = Math.floor(sec);
+    while (sec >= RTC_MAX_SEC) { sec -= RTC_FOLD_SEC; }
+    return !!mod._emulator_set_rtc_seconds_f64(emu, Math.max(sec, 0));
+  }
+
+  /* clockAnchor {rtc, wall}: "the RTC read `rtc` at wall-clock time `wall`".
+     The clock should now read rtc + (now - wall).  lastRtcSeen is what the
+     previous sync read, so a game write that moves the clock BACKWARDS (the
+     game's own 140-day FixDays, or setting the time on a new game) is told
+     apart from lag and adopted instead of being undone. */
+  var clockAnchor = null;
+  var lastRtcSeen = -1;
+
+  function clockTarget(now) {
+    return clockAnchor.rtc + Math.max(now - clockAnchor.wall, 0) / 1000;
+  }
+
+  /* Reconcile the RTC with the anchor.  Forward only: a lagging clock is moved
+     up to the target; a clock that is ahead (fast-forward, a game write) just
+     becomes the new anchor.  `restored` = a machine state was just loaded, so
+     a backwards step is the snapshot's age, not a game write. */
+  function syncClock(why, restored) {
+    if (!started || !emu) { return; }
+    var cur = getRtc();
+    if (cur < 0) { clockAnchor = null; return; }
+    var now = Date.now();
+    if (!clockAnchor) {
+      clockAnchor = { rtc: cur, wall: now };
+    } else if (!restored && lastRtcSeen >= 0 && cur < lastRtcSeen - CLOCK_SLACK_SEC) {
+      console.info('clock: the game set its clock back ' + Math.round(lastRtcSeen - cur) + ' s; following it');
+      clockAnchor = { rtc: cur, wall: now };
+    } else {
+      var want = clockTarget(now);
+      if (cur < want - CLOCK_SLACK_SEC) {
+        if (setRtc(want)) {
+          console.info('clock: +' + Math.round(want - cur) + ' s (' + why + ')');
+          cur = getRtc();
+        }
+        // Re-anchor on what the core now reads so a fold (RTC_MAX_SEC) sticks.
+        clockAnchor = { rtc: cur, wall: now - (want - Math.floor(want)) * 1000 };
+      } else if (cur > want + CLOCK_SLACK_SEC) {
+        clockAnchor = { rtc: cur, wall: now };
+      }
+    }
+    lastRtcSeen = cur;
+  }
+
+  /* The record persisted beside the battery mirror.  Sync first so a stale
+     core clock (tab was in the background) is never written as the truth. */
+  function clockRecord() {
+    syncClock('flush');
+    if (!clockAnchor) { return null; }
+    var now = Date.now();
+    return { rtc: clockTarget(now), wall: now, title: romTitleKey, core: CORE_COMMIT };
+  }
+
+  function writeClock() {
+    var rec = clockRecord();
+    return rec ? kvPut(clockKey(), rec) : Promise.resolve();
+  }
+
+  /* At boot, after the snapshot (or the battery save) is in: the stored record
+     is at least as new as any snapshot (both are written by the same flush,
+     the record more often), so it wins either way.  No record yet (first run
+     with this core): anchor on whatever the core reads - no jump. */
+  function applyStoredClock(rec) {
+    clockAnchor = null;
+    lastRtcSeen = -1;
+    if (getRtc() < 0) { return; }
+    if (rec && typeof rec.rtc === 'number' && typeof rec.wall === 'number' &&
+        isFinite(rec.rtc) && isFinite(rec.wall) && rec.rtc >= 0) {
+      clockAnchor = { rtc: rec.rtc, wall: rec.wall };
+      var cur = getRtc();
+      var want = clockTarget(Date.now());
+      if (Math.abs(cur - want) > CLOCK_SLACK_SEC && setRtc(want)) {
+        console.info('clock: restored to stored time + ' + Math.round((Date.now() - rec.wall) / 1000) + ' s away');
+      }
+      clockAnchor = { rtc: getRtc(), wall: Date.now() };
+    }
+    lastRtcSeen = -1;
   }
 
   // -------------------------------------------------------------- audio ---
@@ -702,6 +825,7 @@
     framesSinceStart = 0;
     var wantResume = resume !== false;
     var poisoned = false;
+    var storedClock = null;
 
     return sha256(rom).then(function (digest) {
       romSha = digest;
@@ -728,11 +852,16 @@
         wantResume ? kvGet(resumeKey()).catch(function (e) {
           console.warn('could not read the resume snapshot', e);
           return null;
-        }) : null
+        }) : null,
+        kvGet(clockKey()).catch(function (e) {
+          console.warn('could not read the clock record', e);
+          return null;
+        })
       ]);
     }).then(function (got) {
       var battery = got[0];
       var entry = got[1];
+      storedClock = got[2];
       if (!(battery && battery.ram && battery.ram.length)) { battery = null; }
       var batteryRam = battery ? normalizeSram(new Uint8Array(battery.ram)) : null;
       var how = { mode: 'battery', stale: false };
@@ -740,7 +869,7 @@
 
       var usable = !poisoned && entry && entry.state &&
         entry.state.byteLength === stateSize &&
-        entry.core === CORE_COMMIT && entry.romSha === romSha;
+        coreOk(entry.core) && entry.romSha === romSha;
       var batteryNewer = !!(battery && entry && typeof battery.date === 'number' &&
         typeof entry.date === 'number' && battery.date > entry.date);
 
@@ -789,6 +918,9 @@
       }
       started = true;
       wantPlaying = true;
+      applyStoredClock(storedClock);
+      storedClock = null;
+      writeClock().catch(function (e) { console.warn('could not write the clock record', e); });
       fitScreen();
       refreshSlotLabels();
       pushJoypad(true);
@@ -863,6 +995,8 @@
       }));
     }
     if (!writes.length) { return Promise.resolve(false); }
+    var clock = clockRecord();
+    if (clock) { writes.push(kvPut(clockKey(), clock)); }
 
     return Promise.all(writes).then(function () {
       statusParts.save = 'saved ' + hhmm();
@@ -919,10 +1053,9 @@
 
   /* Accepted formats: raw cartridge RAM, or cartridge RAM followed by an RTC
      footer (VBA/mGBA/Gambatte write 44, 48 or a few other trailer lengths).
-     The footer is DROPPED - binjgb keeps its clock in its save state, not in
-     the .sav, and there is no supported way to push RTC registers into it - so
-     an imported save keeps its progress but starts the clock where this core's
-     clock already is. */
+     The footer is DROPPED - the RTC belongs to this page's "cartridge" (the
+     clock: record), not to the file - so an imported save keeps its progress
+     and the clock carries on from where this page's clock already is. */
   function importSav(file) {
     if (!started) { say('Load a ROM first', true); return; }
     readFile(file).then(function (bytes) {
@@ -974,7 +1107,7 @@
     if (!started) { return; }
     kvGet(slotKey(n)).then(function (entry) {
       if (!entry || !entry.state) { say('Slot ' + n + ' is empty', true); return; }
-      if (entry.core !== CORE_COMMIT || entry.state.byteLength !== stateSize) {
+      if (!coreOk(entry.core) || entry.state.byteLength !== stateSize) {
         say('Slot ' + n + ' was written by a different emulator core - cannot load it', true);
         return;
       }
@@ -989,6 +1122,8 @@
         say('Slot ' + n + ' would not load', true);
         return;
       }
+      // The state carries the clock it was saved with; real time moved on.
+      syncClock('slot ' + n, true);
       lastSramSig = null;
       lastSaveSig = null;
       extRamDirty = true;
@@ -1003,14 +1138,15 @@
       var el = document.querySelector('[data-slotinfo="' + n + '"]');
       kvGet(slotKey(n)).then(function (entry) {
         if (!entry || !entry.date) { el.textContent = 'empty'; return; }
-        var stale = entry.core !== CORE_COMMIT || (entry.romSha && romSha && entry.romSha !== romSha);
+        var stale = !coreOk(entry.core) || (entry.romSha && romSha && entry.romSha !== romSha);
         el.textContent = (stale ? 'stale (older build): ' : '') + new Date(entry.date).toLocaleString();
       }).catch(function () { el.textContent = 'empty'; });
     });
   }
 
-  /* Reset is a power cycle: keep the battery save, drop the machine state (and
-     with it the emulated clock), boot the cartridge from scratch. */
+  /* Reset is a power cycle: keep the battery save, drop the machine state,
+     boot the cartridge from scratch.  The clock record survives, so the RTC
+     keeps real time across the power cycle, as a cartridge's would. */
   function resetEmulator() {
     if (!started || !rom) { return; }
     say('Resetting...');
@@ -1224,6 +1360,13 @@
     if (started && emu) { installJoypad(); }   // drop the recorded-input log
   }, AUTOSAVE_MS);
 
+  // Emulation runs under full speed whenever rAF is throttled or the phone is
+  // busy; the RTC follows emulated time, so pull it back up to the wall clock.
+  setInterval(function () {
+    if (!started || document.visibilityState === 'hidden') { return; }
+    writeClock().catch(function (e) { console.warn('could not write the clock record', e); });
+  }, CLOCK_SYNC_MS);
+
   // A menu that is open when the emulator (re)starts shrinks #screenwrap, and
   // closing it fires no resize event — so refit when it toggles.
   $('#menu').addEventListener('toggle', function () { setTimeout(fitScreen, 0); });
@@ -1234,6 +1377,8 @@
       stopLoop();
       if (audioCtx && audioCtx.suspend) { audioCtx.suspend().catch(function () { /* ignore */ }); }
     } else if (started && wantPlaying) {
+      // iOS freezes the page in the background; the cartridge clock did not.
+      syncClock('back to the tab');
       if (audioUnlocked && audioCtx && audioCtx.resume) { audioCtx.resume().catch(function () { /* ignore */ }); }
       startLoop();
     }
@@ -1273,6 +1418,21 @@
   Array.prototype.forEach.call(document.querySelectorAll('[data-load]'), function (el) {
     el.addEventListener('click', function () { loadSlot(el.getAttribute('data-load')); });
   });
+
+  /* ?debug=1: a read-mostly handle for the headless clock test
+     (scripts/web_clock_check.py in the helper repo).  Never used by the page. */
+  if (/[?&]debug=1(&|$)/.test(window.location.search)) {
+    window.kfDebug = {
+      rtc: getRtc,
+      setRtc: function (s) { return setRtc(s); },
+      anchor: function () { return clockAnchor && { rtc: clockAnchor.rtc, wall: clockAnchor.wall }; },
+      sync: function (why) { syncClock(why || 'debug'); return getRtc(); },
+      flush: function () { return saveProgress(true); },
+      readMem: function (addr) { return emu ? mod._emulator_read_mem(emu, addr) : -1; },
+      running: function () { return started && rafToken !== null; },
+      core: CORE_COMMIT
+    };
+  }
 
   fitScreen();
   boot();

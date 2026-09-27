@@ -27,11 +27,13 @@ ROM source it plays. `make crystal` at the repo root builds `pokecrystal.gbc`.
 | `presets/*.sav`, `presets/manifest.json` | starting-point saves from the test harness |
 | `manifest.webmanifest`, `icon-192.png`, `icon-512.png` | PWA / add-to-home-screen |
 | `server.py` | optional minimal self-host server (stdlib only) |
-| `vendor/binjgb/binjgb.js` | the emulator core's emscripten loader, vendored (13 KB) |
-| `vendor/binjgb/binjgb.wasm` | the emulator core itself, vendored (86 KB) |
+| `vendor/binjgb/binjgb.js` | the emulator core's emscripten loader, prebuilt from the fork (13 KB) |
+| `vendor/binjgb/binjgb.wasm` | the emulator core itself, prebuilt from the fork (87 KB) |
+| `vendor/binjgb/build.sh` | rebuilds the two artefacts above from `vendor/binjgb-src` (Emscripten 5.0.7) |
+| `vendor/binjgb-src/` | **git submodule**: the binjgb fork, branch `pyrite-rtc` (only needed to rebuild) |
 | `vendor/binjgb/LICENSE` | binjgb's licence (MIT) |
 | `vendor/binjgb/LICENSE.gbstudio` | the extra MIT notice upstream ships beside `docs/` |
-| `vendor/binjgb/VERSION.txt` | upstream commit, SHA-256s and refresh recipe |
+| `vendor/binjgb/VERSION.txt` | upstream + fork commits, build flags, SHA-256s, refresh recipe |
 | `kanto-first.gbc` | **you add this** — never committed |
 
 ---
@@ -175,19 +177,21 @@ while it is red.
   - exactly 32 KB — raw cartridge RAM, used as-is;
   - **32 KB + a trailer** — VBA/mGBA/Gambatte and friends append an RTC footer
     (commonly 44 or 48 bytes, sometimes more). **The trailer is dropped**, with
-    a note in the status line saying how many bytes went. binjgb keeps its clock
-    inside its save *state*, not in the `.sav`, and exposes no way to push RTC
-    registers in from JavaScript, so an imported save keeps all your progress
-    but inherits this page's current clock rather than the source emulator's;
+    a note in the status line saying how many bytes went. The page keeps the
+    clock in its own record (below), not in the `.sav`, so an imported save
+    keeps all your progress but inherits this page's current clock rather than
+    the source emulator's;
   - shorter than 32 KB — zero-padded.
 
   After an import the cartridge is rebooted from the imported RAM, and the
   auto-resume snapshot (below) is discarded.
 - **3 save-state slots** (full machine state, not just SRAM) live in IndexedDB
   under **Menu**. They are a raw dump of binjgb's internal `EmulatorState`, so
-  they are tied to this browser, this page and this exact core build: each slot
-  is stamped with the core commit and a mismatched slot is refused rather than
-  loaded. They are not portable to Delta.
+  they are tied to this browser, this page and this core: each slot is stamped
+  with the core commit and a slot from a core with a different state layout is
+  refused rather than loaded (`COMPAT_CORES` in `app.js` lists the older cores
+  whose states are still loadable). They are not portable to Delta. Loading a
+  slot restores the game but not the time: the clock stays on real time.
 - **Reset** is a power cycle: it reboots the cartridge from the battery save and
   throws the machine state (and with it the emulated clock) away.
 
@@ -220,9 +224,31 @@ SAVE. Records written before `saveSig` existed are checked the slow way: the
 snapshot is restored, its cartridge RAM compared with the battery save's, and
 thrown away on the same rule.
 
-Caveat worth knowing: the clock only advances while the page is actually
-running. Close the tab for a week and the game will think a few minutes passed,
-not a week. Real hardware (and Delta) keep counting.
+### The clock keeps real time (CLK1)
+
+On its own, binjgb's clock only advances while the page is running, and
+under-speed frames (a throttled or busy phone) make it fall behind. The page
+therefore keeps the cartridge clock on the wall clock, through the RTC getter and
+setter our binjgb fork exports (`_emulator_get_rtc_seconds_f64` /
+`_emulator_set_rtc_seconds_f64`):
+
+- next to the battery mirror it stores `clock:<title>` = `{rtc, wall}`: the RTC
+  in seconds and the `Date.now()` it belongs to. It is written on every flush and
+  every 30 s;
+- at boot, whether from the resume snapshot or from the `.sav`, the RTC is set to
+  `rtc + (now - wall)`. With no record yet (first run, or storage cleared) the
+  clock is anchored where it is and not jumped;
+- when the tab comes back (`visibilitychange` → visible), the time it spent
+  hidden or frozen is added;
+- every 30 s, if the RTC has fallen behind real time, it is nudged forward;
+- it only ever moves the clock **forward**. When the game itself sets the clock
+  back (setting the time, or the 140-day wrap in `FixDays`), the page follows
+  the game rather than undoing it. It never sets the day-carry or halt bits,
+  which would trigger the game's clock-reset prompt; spans over 140 days are
+  folded the same way `FixDays` folds them.
+
+The `.sav` is untouched by all of this: still raw 32768 bytes, no footer.
+Delta, which keeps its own clock, reads it as before.
 
 ### Saves survive new builds
 
@@ -338,10 +364,15 @@ that you never have to think about a stale cached build on the phone.
 
 ## The emulator core
 
-**binjgb** (<https://github.com/binji/binjgb>), commit
-`c60e138da5a795ebb55e56b11b7e90024e41112c`, vendored under `vendor/binjgb/`.
-Full provenance — upstream paths, SHA-256s, build flags, refresh recipe — is in
-`vendor/binjgb/VERSION.txt`.
+**binjgb** (<https://github.com/binji/binjgb>), upstream commit
+`c60e138da5a795ebb55e56b11b7e90024e41112c`, built from our fork
+<https://github.com/christopherfretz/binjgb>, branch `pyrite-rtc` (commit
+`8fb6fda5550d`, which adds one change: an exported MBC3 RTC getter/setter). The
+fork is the submodule `vendor/binjgb-src`. The prebuilt `binjgb.js` and
+`binjgb.wasm` are committed under `vendor/binjgb/`, so running the page needs no
+toolchain. `vendor/binjgb/build.sh` reproduces them byte for byte with
+Emscripten 5.0.7. Full provenance (commits, build flags, SHA-256s, refresh
+recipe) is in `vendor/binjgb/VERSION.txt`.
 
 ### Why this core
 
@@ -371,8 +402,8 @@ commit before adopting it:
   carries the clock.
 
 Other properties that made it the right pick here: MIT rather than GPL; upstream
-**commits its prebuilt emscripten artefacts** under `docs/`, so vendoring needs
-no emscripten toolchain; the core is one 86 KB `.wasm` with no web workers; and
+**commits its prebuilt emscripten artefacts** under `docs/` (we now build our
+own from the fork, with the same toolchain version); the core is one 86 KB `.wasm` with no web workers; and
 the exported C API gives direct access to cartridge RAM and to a full machine
 state, which is what `.sav` export and the save slots are built on.
 
