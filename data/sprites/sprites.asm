@@ -132,4 +132,5 @@ OverworldSprites:
 	overworld_sprite SilphWorkerMSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BLUE
 	overworld_sprite SilphWorkerFSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	overworld_sprite SilphPresidentSpriteGFX, 12, STANDING_SPRITE, PAL_OW_BROWN
+	overworld_sprite PikachuBikeSpriteGFX, 12, WALKING_SPRITE, PAL_OW_YELLOW
 	assert_table_length NUM_OVERWORLD_SPRITES

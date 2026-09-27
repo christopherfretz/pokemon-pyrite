@@ -148,6 +148,7 @@
 ; Giovanni is interrogating on 11F.  Yellow's own 16x48 static, and the last
 ; face M8 buys -- $7e and $7f are all that is left below SPRITE_POKEMON ($80).
 	const SPRITE_SILPH_PRESIDENT    ; 7d (Yellow's SILPH CO. PRESIDENT)
+	const SPRITE_PIKACHU_BIKE       ; 7e (PB1: the follower's sheet while the player rides; docs/PB1-PIKA-BIKE.md)
 ; D58 asked for a fifth id, SPRITE_KOGA -- but Crystal already has one at $21
 ; (Crystal's ELITE FOUR KOGA, whose room is BRUNOS_ROOM since 13j), and FUCHSIA's gym leader is the same
 ; man.  FUCHSIA GYM reuses it in 10h; no new id is spent.
@@ -157,6 +158,10 @@ DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 ; sprite-GFX budget, so it can never be dropped on crowded maps. Its walking
 ; frames land at $ec-$f7, just below the emote tiles at $f8.
 DEF FOLLOWER_VTILE EQU $6c
+
+; PB1 (operator idea 2026-09-27): Pikachu rides its own bike behind the player instead of hiding while
+; the player is on the BICYCLE.  Knowing divergence from Yellow (which hides Pikachu); 0 restores Yellow's rule.
+DEF PIKA_BIKE_FOLLOWER EQU 1
 
 ; SpriteMons indexes (see data/sprites/sprite_mons.asm)
 	const_next $80

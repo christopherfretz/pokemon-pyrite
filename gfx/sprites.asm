@@ -111,6 +111,8 @@ SECTION "Sprites 3", ROMX
 
 ; Pikachu follower (Yellow's walking sheet; docs/FOLLOWER.md)
 PikachuSpriteGFX::             INCBIN "gfx/sprites/pikachu.2bpp"
+; PB1: Pikachu on its own bike (follower sheet while the player rides; docs/PB1-PIKA-BIKE.md)
+PikachuBikeSpriteGFX::         INCBIN "gfx/sprites/pikachu_bike.2bpp"
 
 ; Kanto hack: Yellow's young rival and Viridian's old man (gambler sheet)
 KantoRivalSpriteGFX::          INCBIN "gfx/sprites/kanto_rival.2bpp"

@@ -13,6 +13,33 @@ _UpdatePlayerSprite::
 	ld a, [wUsedSprites + 1]
 	ldh [hUsedSpriteTile], a
 	call GetUsedSprite
+	call UpdateFollowerSprite
+	ret
+
+UpdateFollowerSprite::
+; PB1: reload the Pikachu follower's GFX at FOLLOWER_VTILE -- the bike sheet
+; while the player rides, Yellow's walking sheet otherwise.  The sprite id in
+; wUsedSprites / OBJECT_SPRITE stays SPRITE_PIKACHU_FOLLOWER (the per-frame
+; vtile lookup keys on it); only the tiles change, exactly as slot 0 does for
+; the player.  Called after every player-sprite reload (mount/dismount,
+; CheckUpdatePlayerSprite) and, while riding, at the end of GetUsedSprites.
+IF PIKA_BIKE_FOLLOWER
+	ld a, [wPikaFollowFlags]
+	bit FOLLOWER_ENABLED_F, a
+	ret z
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	ld a, SPRITE_PIKACHU_BIKE
+	jr z, .got_sprite
+	ld a, SPRITE_PIKACHU_FOLLOWER
+.got_sprite
+	ldh [hUsedSpriteIndex], a
+	ld a, FOLLOWER_VTILE
+	ldh [hUsedSpriteTile], a
+	ld hl, wSpriteFlags
+	res SPRITES_VRAM_BANK_0_F, [hl] ; FOLLOWER_VTILE < $80: VRAM bank 1
+	call GetUsedSprite
+ENDC
 	ret
 
 LoadStandingSpritesGFX: ; mobile
@@ -674,6 +701,14 @@ GetUsedSprites:
 	jr nz, .loop
 
 .done
+IF PIKA_BIKE_FOLLOWER
+; PB1: the list just loaded Yellow's walking sheet into FOLLOWER_VTILE; re-cover
+; it with the bike sheet if the player is riding (warps AND connections both
+; end up here, so this is the one place to do it).
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	jp z, UpdateFollowerSprite
+ENDC
 	ret
 
 GetUsedSprite:

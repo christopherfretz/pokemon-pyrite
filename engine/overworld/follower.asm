@@ -20,7 +20,7 @@ MovementFunction_PikaFollower:
 	push bc
 	call IsStarterPikachuAliveInParty
 	pop bc
-	jr nc, .hide
+	jp nc, .hide
 
 ; J3 (docs/JIGGLYPUFF.md): the Pewter JIGGLYPUFF SONG put Pikachu to sleep.
 ; Yellow's wPikachuOverworldStateFlags bit 1 makes SpawnPikachu_ take its
@@ -36,7 +36,15 @@ MovementFunction_PikaFollower:
 ; player's tile so we re-emerge behind them on the first step afterwards.
 	ld a, [wPlayerState]
 	cp PLAYER_NORMAL
-	jr nz, .hide
+	jr z, .following
+IF PIKA_BIKE_FOLLOWER
+; PB1: on the BICYCLE Pikachu rides along on its own bike (the bike sheet is
+; swapped into FOLLOWER_VTILE by UpdateFollowerSprite; docs/PB1-PIKA-BIKE.md).
+	cp PLAYER_BIKE
+	jr z, .following
+ENDC
+	jp .hide
+.following
 
 ; Only move while the player is mid-step; the target is the tile they are
 ; leaving (their OBJECT_LAST_MAP_X/Y).
