@@ -899,10 +899,40 @@
     imageData = ctx2d.createImageData(SCREEN_W, SCREEN_H);
   }
 
-  function drawFrame() {
-    if (!ctx2d || !frameView) { return; }
+  /* VT1 (operator screenshot, 2026-09-28): walking past the Pokemon Center
+     tore it sideways - its lower tile rows lagged its upper ones.  The loop
+     runs the core for a wall-clock tick budget, which usually stops the CPU
+     mid-frame, and binjgb draws scanline by scanline into ONE buffer, so
+     copying it after the budget blitted the top of the new frame over the
+     bottom of the old one.  So the frame is captured at the core's own frame
+     boundary instead: run_until returns on EVENT_NEW_FRAME as LY reaches 144
+     (VBlank; or right after the display-off clear), when all 144 lines are
+     done.  The last capture of a rAF wins (fast-forward, catch-up). */
+  var frameCaptured = false;
+  var frameStats = null;     // ?debug=1 only: {captured, drawn, badLy}
+
+  function captureFrame() {
+    if (!imageData || !frameView) { return; }
     imageData.data.set(frameView);
+    frameCaptured = true;
+    if (frameStats) {
+      frameStats.captured++;
+      var ly = mod._emulator_read_mem(emu, 0xff44);
+      if (ly !== 144 && ly !== 0) { frameStats.badLy++; }   // 0 = display just switched off
+    }
+  }
+
+  /* Blit the last captured frame, once.  force: nothing captured yet (e.g. a
+     state just loaded) - copy the live buffer rather than show nothing. */
+  function drawFrame(force) {
+    if (!ctx2d || !frameView) { return; }
+    if (!frameCaptured) {
+      if (!force) { return; }
+      imageData.data.set(frameView);
+    }
     ctx2d.putImageData(imageData, 0, 0);
+    frameCaptured = false;
+    if (frameStats) { frameStats.drawn++; }
   }
 
   // ------------------------------------------------------------ run loop ---
@@ -917,7 +947,7 @@
     var newFrame = false;
     for (;;) {
       var event = mod._emulator_run_until_f64(emu, until);
-      if (event & EVENT_NEW_FRAME) { newFrame = true; }
+      if (event & EVENT_NEW_FRAME) { newFrame = true; captureFrame(); }
       if (event & EVENT_AUDIO_BUFFER_FULL) { pushAudio(); }
       if (event & EVENT_UNTIL_TICKS) { break; }
     }
@@ -1726,6 +1756,20 @@
       flush: function () { return saveProgress(true); },
       readMem: function (addr) { return emu ? mod._emulator_read_mem(emu, addr) : -1; },
       running: function () { return started && rafToken !== null; },
+      /* VT1: {captured, drawn, badLy}; canvasMatchesCapture() is true when the
+         canvas shows exactly the last frame captured at a frame boundary. */
+      frames: function () { frameStats = frameStats || { captured: 0, drawn: 0, badLy: 0 }; return frameStats; },
+      canvasMatchesCapture: function () {
+        var px = ctx2d.getImageData(0, 0, SCREEN_W, SCREEN_H).data;
+        var ref = imageData.data;
+        for (var i = 0; i < px.length; i++) { if (px[i] !== ref[i]) { return false; } }
+        return true;
+      },
+      liveEqualsCapture: function () {
+        var ref = imageData.data;
+        for (var i = 0; i < ref.length; i++) { if (frameView[i] !== ref[i]) { return false; } }
+        return true;
+      },
       audio: function () {
         return { state: audioCtx ? audioCtx.state : null, time: audioCtx ? audioCtx.currentTime : null,
           dead: audioDead, rekick: audioNeedsRekick, replaced: audioReplaced, unlocked: audioUnlocked,
