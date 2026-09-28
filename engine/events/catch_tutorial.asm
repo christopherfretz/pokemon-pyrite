@@ -109,6 +109,15 @@ OakCatchTutorial::
 	call CatchTutorial.RunTutorial
 	xor a
 	ld [wCatchTutorialCatcher], a
+; Kanto hack (PK1, docs/M2-INTRO.md): Oak hands the player THIS Pikachu in the
+; lab, so keep its DVs (shiny, gender) for the OAKS_LAB givepoke, which
+; GeneratePartyMonStats honours once (PK1_StarterDVsOrRandom).
+	ld a, [wEnemyMonDVs]
+	ld [wPK1StarterDVs], a
+	ld a, [wEnemyMonDVs + 1]
+	ld [wPK1StarterDVs + 1], a
+	ld a, PK1_STARTER_DVS_ARMED
+	ld [wPK1StarterDVsState], a
 	ret
 
 OldManCatchTutorial::

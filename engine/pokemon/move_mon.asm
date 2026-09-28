@@ -202,10 +202,7 @@ endr
 	and a
 	jr nz, .copywildmonDVs
 
-	call Random
-	ld b, a
-	call Random
-	ld c, a
+	call PK1_StarterDVsOrRandom ; Kanto hack (PK1): was Random x2 -> b, c
 .initializeDVs
 	ld a, b
 	ld [de], a
@@ -1838,3 +1835,31 @@ OMG_SetSeenAndCaughtMon:
 	cp MISSINGNO - 1
 	ret z
 	jp SetSeenAndCaughtMon
+
+PK1_StarterDVsOrRandom:
+; Kanto hack (PK1, docs/M2-INTRO.md "## PK1 findings").  Returns the DVs for a
+; freshly generated, non-battle PARTYMON in b (ATK/DEF) and c (SPD/SPC).
+; Normally two Random bytes, exactly as vanilla.  Only when OakCatchTutorial
+; has armed wPK1StarterDVsState AND the mon is a PIKACHU (the OAKS_LAB gift is
+; the first such mon generated after Oak's ROUTE 1 catch) it returns the DVs
+; of the Pikachu Oak caught, and disarms so it can never fire again.
+	ld a, [wPK1StarterDVsState]
+	cp PK1_STARTER_DVS_ARMED
+	jr nz, .random
+	ld a, [wCurPartySpecies]
+	cp PIKACHU
+	jr nz, .random
+	xor a
+	ld [wPK1StarterDVsState], a
+	ld a, [wPK1StarterDVs]
+	ld b, a
+	ld a, [wPK1StarterDVs + 1]
+	ld c, a
+	ret
+
+.random
+	call Random
+	ld b, a
+	call Random
+	ld c, a
+	ret

@@ -111,6 +111,10 @@ DEF SPDSPCDV_SHINY EQU $AA
 	const CATCHTUTORIAL_OLD_MAN      ; Viridian's old man, catches the mon
 	const CATCHTUTORIAL_OLD_MAN_FAIL ; Viridian's old man, the ball breaks free
 
+; wPK1StarterDVsState (Kanto hack PK1, docs/M2-INTRO.md): the only "armed" value.
+; A deliberately non-trivial pattern, never 0 -- the DV pair itself may be 0/0.
+DEF PK1_STARTER_DVS_ARMED EQU $a5
+
 ; BattleVarPairs indexes (see home/battle_vars.asm)
 	const_def
 	const BATTLE_VARS_SUBSTATUS1

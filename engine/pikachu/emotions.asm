@@ -1063,6 +1063,8 @@ InitStarterPikachuMood::
 ; callasm from the Oak's Lab gift.  Yellow's new-game setup seeds
 ; wPikachuHappiness = 90 (Decision D) and wPikachuMood = 128 (neutral); ours
 ; live in the starter's MON_HAPPINESS and wPikaMood.
+	xor a ; PK1 backstop: the Route 1 DV stash is spent (or never will be)
+	ld [wPK1StarterDVsState], a
 	ld a, PIKACHU_NEUTRAL_MOOD
 	ld [wPikaMood], a
 	ld c, 0

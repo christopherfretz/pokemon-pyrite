@@ -443,6 +443,7 @@ WRAM0
 	"Overworld Map"
 	align 4
 	"Video"
+	"PK1 Starter DVs"
 WRAMX 1
 	"WRAM 1"
 	"Miscellaneous WRAM 1"

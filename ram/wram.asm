@@ -2060,6 +2060,24 @@ SECTION "Conveyor Spin", WRAM0
 wConveyorDir:: db
 
 
+; Kanto hack (PK1, docs/M2-INTRO.md "## PK1 findings"): the gift PIKACHU is
+; the very PIKACHU PROF.OAK catches on ROUTE 1 in the intro, so it keeps that
+; mon's DVs (shininess, gender).  OakCatchTutorial stashes wEnemyMonDVs here
+; and sets the state byte to PK1_STARTER_DVS_ARMED; GeneratePartyMonStats
+; consumes it on the next non-battle PARTYMON PIKACHU (the OAK'S LAB givepoke)
+; and InitStarterPikachuMood clears it as a backstop.  UNSAVED WRAM0, outside
+; wPlayerData / wGameData, pinned in layout.link right after "Video" in the
+; free tail at $cfd8, so no existing label moves and no save changes shape.
+; Init's WRAM0 wipe zeroes it at boot and soft reset.  The window it must
+; survive (ROUTE 1 -> lab) is one script-locked cutscene; were a game ever
+; saved and continued inside it, the byte reads 0 and the gift simply rolls
+; random DVs, the pre-PK1 behaviour.
+SECTION "PK1 Starter DVs", WRAM0
+
+wPK1StarterDVs:: ds 2      ; ATK/DEF, SPD/SPC -- same order as MON_DVS
+wPK1StarterDVsState:: db   ; PK1_STARTER_DVS_ARMED, or anything else = unarmed
+
+
 SECTION "WRAM 1", WRAMX
 
 wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION
