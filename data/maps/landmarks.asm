@@ -148,7 +148,7 @@ IndigoPlateauName:   db "INDIGO<BSP>PLATEAU@"
 VictoryRoadName:     db "VICTORY<BSP>ROAD@"
 MtMoonName:          db "MT.MOON@"
 RockTunnelName:      db "ROCK TUNNEL@"
-LavRadioTowerName:   db "LAV<BSP>RADIO TOWER@"
+LavRadioTowerName:   db "#MON<BSP>TOWER@" ; Kanto hack (LT1): Yellow's TOWN MAP name (PokemonTowerName); the building is the POKeMON TOWER in both acts
 SilphCoName:         db "SILPH CO.@" ; unreferenced
 SafariZoneName:      db "SAFARI ZONE@"
 SeafoamIslandsName:  db "SEAFOAM<BSP>ISLANDS@"
@@ -208,6 +208,6 @@ SSAnneName:          db "S.S.ANNE@"
 ViridianForestName:  db "VIRIDIAN<BSP>FOREST@" ; unreferenced
 DiglettsCaveName:    db "DIGLETT'S<BSP>CAVE@"
 TohjoFallsName:      db "TOHJO FALLS@"
-UndergroundName:     db "UNDERGROUND@"
+UndergroundName:     db "UNDERGROUND<BSP>PATH@" ; Kanto hack (LT1): Yellow's TOWN MAP name (UndergroundPathName)
 BattleTowerName:     db "BATTLE<BSP>TOWER@"
 SpecialMapName:      db "SPECIAL@"

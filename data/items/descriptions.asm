@@ -766,8 +766,10 @@ LuckyEggDesc:
 	next "points. (HOLD)@"
 
 CardKeyDesc:
-	db   "Opens shutters in"
-	next "the RADIO TOWER.@"
+; Kanto hack (LT1): one item for SILPH CO. (Kanto act) and the RADIO TOWER
+; (Johto act), so the text names neither building.
+	db   "An electronic key"
+	next "for locked doors.@"
 
 ; Kanto hack (M9 12m, D91): Yellow's SECRET KEY, on the retired MACHINE_PART
 ; id.  Gen 1 has no item descriptions; this names what the key opens.
