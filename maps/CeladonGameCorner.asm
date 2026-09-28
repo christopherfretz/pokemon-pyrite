@@ -319,6 +319,11 @@ CeladonGameCornerRocketWalkDirectMovement:
 CeladonGameCornerShelfScript: ; BG2
 	jumpstd KantoMerchandiseShelfScript
 
+; GC1: Yellow's GameCornerPosterText sets wDoNotWaitForButtonPressAfterDisplayingText
+; -- the box closes by itself once the block is swapped, with no button press.
+; Never `waitbutton` after `refreshmap` here: refreshmap redraws the overworld
+; over the open text box, so the script would sit waiting for A behind an
+; invisible box (d-pad, START and SELECT all dead; the GC1 "soft-lock").
 CeladonGameCornerPosterScript:
 	opentext
 	writetext CeladonGameCornerPosterText
@@ -329,7 +334,6 @@ CeladonGameCornerPosterScript:
 	setevent EVENT_FOUND_ROCKET_HIDEOUT
 	changeblock 16, 4, $41 ; the staircase down to ROCKET HIDEOUT B1F
 	refreshmap
-	waitbutton
 	closetext
 	end
 
