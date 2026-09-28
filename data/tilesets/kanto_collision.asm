@@ -166,11 +166,13 @@
 ; Crystal has no equivalent of.  Yellow's tiles $2c/$30 are pixel-identical
 ; to Crystal's kanto $2c/$30, so this is a verbatim record copy, not new art.
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 9c
-; M5 8a (docs/M5-LAVENDER.md 1.5.1): A walk-through twin of kanto block $5c (the low fence/ledge corner).
-; Same art; Yellow's counterpart leaves the top-right quadrant plain FLOOR
-; where Crystal's $5c has a HOP_DOWN ledge, which would drop the player off
-; the north side of Lavender's town square.
-	tilecoll FLOOR, FLOOR, FLOOR, WALL ; 9d
+; M5 8a (docs/M5-LAVENDER.md 1.5.1): twin of kanto block $5c (the low fence/ledge corner, same art),
+; now used only by ROUTE 7 blocks (2,3) and (4,5) for Yellow overworld $5c.
+; LD1: collision is identical to $5c.  In Yellow the top-right square hops:
+; you stand on tile $39 facing ledge tile $36 (LedgeTiles), so it is
+; HOP_DOWN here; only the bottom-left ($3c) is the walk-through gap.  The
+; old FLOOR made (5,6) and (9,10) un-jumpable.
+	tilecoll FLOOR, HOP_DOWN, FLOOR, WALL ; 9d
 ; M5 8j (docs/M5-LAVENDER.md 3.6): ROUTE 8 gate, west door tile (1,9) -- block (0,4), bottom-right
 ; quadrant.  Twin of kanto $01 (plain grass), same art.
 	tilecoll FLOOR, FLOOR, FLOOR, LADDER ; 9e
@@ -193,12 +195,12 @@
 ; quadrants already match Yellow's Overworld_Coll exactly.
 	tilecoll FLOOR, WALL, FLOOR, LADDER ; a3
 ; M5 8k (docs/M5-LAVENDER.md 3.7): ROUTE 7 gate, west door tile (11,10) -- block (5,5), top-right
-; quadrant.  Twin of kanto $1a, whose top row is HOP_DOWN, HOP_DOWN in
-; Crystal but plain walkable tile $39 in Yellow (Gen 1 implements the
-; ledge hop outside the collision table).  The top-LEFT is therefore
-; FLOOR here, not HOP_DOWN: without it tile (10,10) is unstandable and
-; the gate's lower west door cannot be reached on foot.
-	tilecoll FLOOR, LADDER, WALL, WALL ; a4
+; quadrant.  Twin of kanto $1a.  LD1: the top-LEFT, (10,10), is HOP_DOWN as
+; in $1a -- Yellow hops there via LedgeTiles ($39 facing $36).  Ledge
+; collisions are walkable land in Crystal, so (10,10) stays standable and
+; the door reachable.  Yellow also hops from the door square (11,10);
+; one quadrant cannot be both LADDER and ledge, so that one is lost.
+	tilecoll HOP_DOWN, LADDER, WALL, WALL ; a4
 ; M6 9p (docs/M6-CELADON.md 2.1): CELADON CITY, the CELADON MANSION back door -- Yellow's warp_events
 ; (24,3) and (25,3), i.e. both bottom quadrants of block (12,1).  Twin of
 ; kanto $0a, the plain paved notch Yellow draws in the north tree line;
