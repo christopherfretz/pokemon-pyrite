@@ -681,18 +681,125 @@
 
   var audioCtx = null;
   var audioStartSec = 0;
+  var emuRate = 0;              // the rate the emulator was created with (samples are made at it)
+  var audioDead = false;        // the current context was caught with a frozen clock: replace it
+  var audioNeedsRekick = false; // back from the background: the next gesture replaces the context
+  var audioReplaced = 0;        // contexts replaced this session (shown on the Sound button)
+  var resumeFailed = false;     // a gesture's resume() left the context not running
+  var watchdogArmed = true;     // the stall watchdog may replace a context once per gesture/return
+  var stallClock = -1;          // ctx.currentTime at the last live push
+  var stallCount = 0;           // consecutive live pushes that saw that clock not move
+  var stallSinceMs = 0;         // wall-clock time of the first of them
+
+  /* AU2 (operator, 2026-09-28): on the phone the music died on EVERY return to
+     the tab, and taps did not bring it back, while Safari's speaker icon said
+     sound was playing - a context that reports 'running' but plays nothing.
+     The page cannot see that directly, so every transition is logged with a
+     timestamp and the Sound button shows the context's state (the operator
+     cannot read an iPhone's console). */
+  function audioLog(msg) {
+    console.info('[audio ' + new Date().toISOString().slice(11, 23) + '] ' + msg);
+  }
+
+  function updateSoundLabel() {
+    var el = $('#btn-mute');
+    if (!el) { return; }
+    var text = 'Sound: ' + (muted ? 'off' : 'on');
+    if (audioCtx) { text += ' · ctx ' + (audioDead ? 'dead' : audioCtx.state); }
+    if (audioReplaced) { text += ' · new ' + audioReplaced + '×'; }
+    el.textContent = text;
+  }
+
+  function resetStall() {
+    stallClock = -1;
+    stallCount = 0;
+    stallSinceMs = 0;
+  }
 
   function audioContext() {
     if (audioCtx) { return audioCtx; }
     var Ctor = window.AudioContext || window.webkitAudioContext;
     if (!Ctor) { return null; }
-    try { audioCtx = new Ctor(); } catch (e) { audioCtx = null; }
-    return audioCtx;
+    // Ask a replacement for the emulator's rate (older WebKit rejects the
+    // options bag; fall back to the default).
+    if (emuRate) {
+      try { audioCtx = new Ctor({ sampleRate: emuRate }); } catch (e) { audioCtx = null; }
+    }
+    if (!audioCtx) {
+      try { audioCtx = new Ctor(); } catch (e) { audioCtx = null; }
+    }
+    if (!audioCtx) { return null; }
+    var ctx = audioCtx;
+    var onState = function () {
+      if (ctx !== audioCtx) { return; }   // a replaced context's last words
+      audioLog('state -> ' + ctx.state);
+      updateSoundLabel();
+    };
+    if (ctx.addEventListener) { ctx.addEventListener('statechange', onState); } else { ctx.onstatechange = onState; }
+    audioLog('new context, ' + ctx.sampleRate + ' Hz, ' + ctx.state);
+    if (emuRate && ctx.sampleRate !== emuRate) {
+      console.warn('audio: new context at ' + ctx.sampleRate + ' Hz, emulator runs at ' + emuRate + ' (buffers are resampled)');
+    }
+    return ctx;
   }
 
   function sampleRate() {
     var ctx = audioContext();
     return ctx ? ctx.sampleRate : 48000;
+  }
+
+  /* Throw the context away and make a fresh one.  Inside a user gesture the
+     caller resumes it; outside one (the watchdog) it stays suspended on iOS
+     until the next tap's unlockAudio().  close() releases the old one - Safari
+     and Chrome cap how many contexts a page may hold. */
+  function replaceAudioContext(why) {
+    var old = audioCtx;
+    audioCtx = null;
+    if (old && old.close && old.state !== 'closed') {
+      try { old.close().catch(function () { /* ignore */ }); } catch (e) { /* ignore */ }
+    }
+    audioDead = false;
+    audioNeedsRekick = false;
+    resumeFailed = false;
+    audioStartSec = 0;
+    resetStall();
+    audioReplaced++;
+    var ctx = audioContext();
+    console.warn('audio: context replaced (' + why + '), now ' + (ctx ? ctx.state : 'none'));
+    updateSoundLabel();
+    return ctx;
+  }
+
+  /* The stall watchdog: on a live context the clock moves ~93 ms between two
+     pushes.  WebKit can hand a context back from the background 'running' with
+     a clock that never moves; every buffer is then scheduled against a frozen
+     now and none of them ever plays.  Ten stalled pushes spanning a real second
+     = dead.  Only live pushes count (muted / fast-forward / hidden skip this),
+     and a fresh schedule (audioStartSec === 0) starts a fresh count, so a
+     paused loop or a mute toggle never looks like a stall. */
+  function audioStalled(ctx) {
+    if (document.visibilityState !== 'visible') { resetStall(); return false; }
+    var t = ctx.currentTime;
+    var nowMs = Date.now();
+    if (stallClock < 0 || t !== stallClock) {
+      stallClock = t;
+      stallCount = 0;
+      stallSinceMs = nowMs;
+      return false;
+    }
+    stallCount++;
+    if (stallCount < 10 || nowMs - stallSinceMs < 1000) { return false; }
+    console.warn('audio: context says running but its clock is stuck at ' + t + ' s');
+    audioDead = true;
+    resetStall();
+    audioStartSec = 0;
+    if (watchdogArmed) {
+      watchdogArmed = false;        // once per gesture/return: no replacement churn
+      replaceAudioContext('clock stuck');
+    } else {
+      updateSoundLabel();           // the next gesture replaces it
+    }
+    return true;
   }
 
   /* binjgb's audio buffer is unsigned 8-bit stereo, interleaved, in the core's
@@ -701,8 +808,10 @@
      is the no-op stub. */
   function pushAudio() {
     var ctx = audioCtx;
-    if (!ctx || !audioUnlocked || muted || fastForward || !audioView) { return; }
-    if (ctx.state !== 'running') { audioStartSec = 0; return; }   // don't queue a backlog on a stopped context
+    if (!ctx || !audioUnlocked || muted || fastForward || !audioView || audioDead) { return; }
+    if (ctx.state !== 'running') { audioStartSec = 0; resetStall(); return; }   // don't queue a backlog on a stopped context
+    if (!audioStartSec) { resetStall(); }
+    if (audioStalled(ctx)) { return; }
     var nowSec = ctx.currentTime;
     var nowPlusLatency = nowSec + AUDIO_LATENCY_SEC;
     audioStartSec = audioStartSec || nowPlusLatency;
@@ -710,7 +819,9 @@
       audioStartSec = nowPlusLatency;   // we fell behind; resync
       return;
     }
-    var buffer = ctx.createBuffer(2, AUDIO_FRAMES, ctx.sampleRate);
+    // Made at the emulator's rate, not the context's: a replacement context
+    // at another rate then resamples instead of pitch-shifting.
+    var buffer = ctx.createBuffer(2, AUDIO_FRAMES, emuRate || ctx.sampleRate);
     var left = buffer.getChannelData(0);
     var right = buffer.getChannelData(1);
     for (var i = 0; i < AUDIO_FRAMES; i++) {
@@ -721,7 +832,7 @@
     src.buffer = buffer;
     src.connect(ctx.destination);
     src.start(audioStartSec);
-    audioStartSec += AUDIO_FRAMES / ctx.sampleRate;
+    audioStartSec += buffer.duration;
   }
 
   // ------------------------------------------------------------ emulator ---
@@ -747,7 +858,8 @@
     heap.fill(0);
     heap.set(bytes);
 
-    emu = mod._emulator_new_simple(romPtr, size, sampleRate(), AUDIO_FRAMES, CGB_COLOR_CURVE);
+    emuRate = sampleRate();
+    emu = mod._emulator_new_simple(romPtr, size, emuRate, AUDIO_FRAMES, CGB_COLOR_CURVE);
     if (!emu) {
       mod._free(romPtr); romPtr = 0;
       throw new Error('binjgb rejected this ROM (unsupported cartridge type?)');
@@ -1236,54 +1348,107 @@
 
   // -------------------------------------------------------------- audio ---
 
-  /* Called from every user gesture (tap, key).  The first call is the audio
-     unlock; later calls re-kick a context that stopped running behind our
-     back.  iOS Safari puts the AudioContext into "interrupted" (or closes it)
-     when the tab has been in the background for a while, and a resume() from
-     the visibilitychange handler is not a user gesture, so it is ignored -
-     the music then stayed dead until a reload (operator, 2026-09-27).  A
-     closed context is replaced; a new one normally has the same sample rate
-     as the one the emulator was created with (a mismatch only pitch-shifts
-     the sound until the next reload, and is logged). */
+  /* Called from every user gesture (tap, key; once unlocked, also every
+     touchend / pointerup / click on the page, because WebKit only counts some
+     of those as the activation a resume() needs).  The first call is the audio
+     unlock; later calls re-kick or replace a context that stopped playing
+     behind our back.
+     AU1 (2026-09-27) resumed a non-running context here and replaced a closed
+     one.  It did not help: the operator (2026-09-28) lost the music on EVERY
+     return to the tab, even after a second away, with Safari's speaker icon
+     still lit.  Hypothesis: our own suspend() on hidden followed by a
+     non-gesture resume() on visible - WebKit flips the state back to
+     'running' without reconnecting the output.  So the hidden handler no
+     longer suspends, and the first gesture after a return REPLACES the
+     context, whatever it claims: a running-but-silent context cannot be told
+     apart from a healthy one (its clock may even move), and a fresh context
+     resumed inside a gesture is the one thing iOS reliably plays.  The cost
+     elsewhere is a ~0.1 s gap on the first tap/key after a tab switch.
+     A context is also replaced here when it is closed, when the watchdog
+     caught its clock stuck, or when the last gesture's resume() left it not
+     running ('interrupted' on iOS). */
   function unlockAudio() {
     var first = !audioUnlocked;
     audioUnlocked = true;
     overlay.hidden = true;
+    watchdogArmed = true;
     var ctx = audioContext();
     if (!ctx) { return; }
-    if (ctx.state === 'closed') {
-      var oldRate = ctx.sampleRate;
-      audioCtx = null;
-      ctx = audioContext();
+    var why = null;
+    if (ctx.state === 'closed') { why = 'closed'; }
+    else if (audioDead) { why = 'clock stuck'; }
+    else if (audioNeedsRekick) { why = 'first tap after returning to the tab'; }
+    else if (resumeFailed && ctx.state !== 'running') { why = 'still ' + ctx.state + ' after a tap'; }
+    if (why) {
+      ctx = replaceAudioContext(why);
       if (!ctx) { return; }
-      if (ctx.sampleRate !== oldRate) { console.warn('audio: new context at ' + ctx.sampleRate + ' Hz, emulator runs at ' + oldRate); }
-      console.info('audio: context was closed; replaced');
     }
-    if (first || ctx.state !== 'running') {
+    if (first || why || ctx.state !== 'running') {
       audioStartSec = 0;
-      if (ctx.resume) { ctx.resume().catch(function () { /* ignore */ }); }
+      if (ctx.resume) {
+        var c = ctx;
+        c.resume().then(function () {
+          if (c !== audioCtx) { return; }
+          resumeFailed = c.state !== 'running';
+          if (resumeFailed) { audioLog('context ' + c.state + ' after a tap\'s resume()'); }
+          updateSoundLabel();
+        }).catch(function (e) {
+          if (c !== audioCtx) { return; }
+          resumeFailed = true;
+          audioLog('a tap\'s resume() was rejected: ' + e);
+        });
+      }
     }
+    updateSoundLabel();
   }
 
-  /* After the tab comes back: try a plain resume (works on desktop and when
-     iOS merely suspended us); if the context is still not running, the next
-     gesture's unlockAudio() does it.  Either way restart the audio schedule. */
+  /* After the tab comes back: restart the schedule, try a plain resume if the
+     context is not running (enough on desktop), and probe that its clock
+     moves; a context whose clock is stuck is replaced now.  Either way the
+     next gesture replaces it once more (audioNeedsRekick, see unlockAudio);
+     the probe does not clear that, because a moving clock does not prove
+     that anything is audible. */
   function resumeAudio() {
     audioStartSec = 0;
+    resetStall();
+    watchdogArmed = true;
     var ctx = audioCtx;
-    if (!audioUnlocked || !ctx) { return; }
-    if (ctx.state === 'closed') { unlockAudio(); return; }
-    if (ctx.resume) {
+    if (!audioUnlocked || !ctx) { updateSoundLabel(); return; }
+    audioNeedsRekick = true;
+    audioLog('back to the tab, context ' + ctx.state);
+    if (ctx.state === 'closed') { replaceAudioContext('closed while away'); audioNeedsRekick = true; return; }
+    var probe = function () {
+      if (ctx !== audioCtx || ctx.state !== 'running') { updateSoundLabel(); return; }
+      var t0 = ctx.currentTime;
+      setTimeout(function () {
+        if (ctx !== audioCtx || document.visibilityState !== 'visible' || ctx.state !== 'running') { return; }
+        if (ctx.currentTime === t0) {
+          console.warn('audio: back-to-tab probe: running but the clock is stuck at ' + t0 + ' s');
+          watchdogArmed = false;
+          replaceAudioContext('clock stuck after return');
+          audioNeedsRekick = true;
+        } else {
+          audioLog('back-to-tab probe: clock moved ' + t0.toFixed(3) + ' -> ' + ctx.currentTime.toFixed(3));
+        }
+      }, 400);
+    };
+    if (ctx.state !== 'running' && ctx.resume) {
       ctx.resume().then(function () {
-        if (ctx.state !== 'running') { console.info('audio: context ' + ctx.state + ' after resume; waiting for a tap'); }
-      }).catch(function () { /* ignore */ });
+        if (ctx !== audioCtx) { return; }
+        if (ctx.state !== 'running') { audioLog('context ' + ctx.state + ' after resume(); waiting for a tap'); }
+        probe();
+      }).catch(function (e) { audioLog('resume() on return rejected: ' + e); });
+    } else {
+      probe();
     }
+    updateSoundLabel();
   }
 
   function setMuted(next) {
     muted = next;
     audioStartSec = 0;
-    $('#btn-mute').textContent = 'Sound: ' + (muted ? 'off' : 'on');
+    resetStall();
+    updateSoundLabel();
   }
 
   function setFastForward(next) {
@@ -1489,7 +1654,11 @@
     if (document.visibilityState === 'hidden') {
       saveProgress(true);
       stopLoop();
-      if (audioCtx && audioCtx.suspend) { audioCtx.suspend().catch(function () { /* ignore */ }); }
+      // No audioCtx.suspend() any more (AU2, 2026-09-28): WebKit's non-gesture
+      // resume() of a page-suspended context came back 'running' but silent.
+      // iOS pauses the context itself; the stopped loop queues nothing.
+      audioStartSec = 0;
+      resetStall();
     } else if (started && wantPlaying) {
       // iOS freezes the page in the background; the phone's clock did not.
       syncClock('back to the tab');
@@ -1506,6 +1675,12 @@
   $('#tapstart').addEventListener('click', unlockAudio);
   overlay.addEventListener('pointerdown', function (e) { e.preventDefault(); unlockAudio(); });
   canvas.addEventListener('pointerdown', unlockAudio);
+  // Once unlocked, every gesture re-checks the audio (AU2): WebKit grants a
+  // resume() on touchend / pointerup / click / keydown, not on a touch's
+  // pointerdown, which is all the pad buttons listen to.
+  ['touchend', 'pointerup', 'click', 'keydown'].forEach(function (type) {
+    document.addEventListener(type, function () { if (audioUnlocked) { unlockAudio(); } }, true);
+  });
 
   $('#btn-mute').addEventListener('click', function () { setMuted(!muted); });
   $('#btn-ff').addEventListener('click', function () { setFastForward(!fastForward); });
@@ -1551,6 +1726,11 @@
       flush: function () { return saveProgress(true); },
       readMem: function (addr) { return emu ? mod._emulator_read_mem(emu, addr) : -1; },
       running: function () { return started && rafToken !== null; },
+      audio: function () {
+        return { state: audioCtx ? audioCtx.state : null, time: audioCtx ? audioCtx.currentTime : null,
+          dead: audioDead, rekick: audioNeedsRekick, replaced: audioReplaced, unlocked: audioUnlocked,
+          rate: audioCtx ? audioCtx.sampleRate : null, emuRate: emuRate, label: $('#btn-mute').textContent };
+      },
       core: CORE_COMMIT
     };
   }
