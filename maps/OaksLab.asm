@@ -66,6 +66,9 @@ OaksLabIntroScript:
 	promptbutton
 	playsound SFX_CAUGHT_MON
 	waitsfx
+; PK1: this givepoke consumes wPK1StarterDVs (the DVs of the PIKACHU Oak caught
+; on ROUTE 1) -- it must stay the FIRST non-battle PIKACHU added to the party
+; after OakCatchTutorial armed the stash (engine/pokemon/move_mon.asm).
 	givepoke PIKACHU, 5
 	setevent EVENT_GOT_STARTER_PIKACHU
 ; F3 (docs/PIKACHU-EMOTIONS.md A6 Decision D): Yellow starts the gift Pikachu at
