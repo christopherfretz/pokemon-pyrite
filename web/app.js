@@ -702,6 +702,7 @@
   function pushAudio() {
     var ctx = audioCtx;
     if (!ctx || !audioUnlocked || muted || fastForward || !audioView) { return; }
+    if (ctx.state !== 'running') { audioStartSec = 0; return; }   // don't queue a backlog on a stopped context
     var nowSec = ctx.currentTime;
     var nowPlusLatency = nowSec + AUDIO_LATENCY_SEC;
     audioStartSec = audioStartSec || nowPlusLatency;
@@ -1235,13 +1236,48 @@
 
   // -------------------------------------------------------------- audio ---
 
+  /* Called from every user gesture (tap, key).  The first call is the audio
+     unlock; later calls re-kick a context that stopped running behind our
+     back.  iOS Safari puts the AudioContext into "interrupted" (or closes it)
+     when the tab has been in the background for a while, and a resume() from
+     the visibilitychange handler is not a user gesture, so it is ignored -
+     the music then stayed dead until a reload (operator, 2026-09-27).  A
+     closed context is replaced; a new one normally has the same sample rate
+     as the one the emulator was created with (a mismatch only pitch-shifts
+     the sound until the next reload, and is logged). */
   function unlockAudio() {
-    if (audioUnlocked) { return; }
+    var first = !audioUnlocked;
     audioUnlocked = true;
     overlay.hidden = true;
-    audioStartSec = 0;
     var ctx = audioContext();
-    if (ctx && ctx.resume) { ctx.resume().catch(function () { /* ignore */ }); }
+    if (!ctx) { return; }
+    if (ctx.state === 'closed') {
+      var oldRate = ctx.sampleRate;
+      audioCtx = null;
+      ctx = audioContext();
+      if (!ctx) { return; }
+      if (ctx.sampleRate !== oldRate) { console.warn('audio: new context at ' + ctx.sampleRate + ' Hz, emulator runs at ' + oldRate); }
+      console.info('audio: context was closed; replaced');
+    }
+    if (first || ctx.state !== 'running') {
+      audioStartSec = 0;
+      if (ctx.resume) { ctx.resume().catch(function () { /* ignore */ }); }
+    }
+  }
+
+  /* After the tab comes back: try a plain resume (works on desktop and when
+     iOS merely suspended us); if the context is still not running, the next
+     gesture's unlockAudio() does it.  Either way restart the audio schedule. */
+  function resumeAudio() {
+    audioStartSec = 0;
+    var ctx = audioCtx;
+    if (!audioUnlocked || !ctx) { return; }
+    if (ctx.state === 'closed') { unlockAudio(); return; }
+    if (ctx.resume) {
+      ctx.resume().then(function () {
+        if (ctx.state !== 'running') { console.info('audio: context ' + ctx.state + ' after resume; waiting for a tap'); }
+      }).catch(function () { /* ignore */ });
+    }
   }
 
   function setMuted(next) {
@@ -1457,7 +1493,7 @@
     } else if (started && wantPlaying) {
       // iOS freezes the page in the background; the phone's clock did not.
       syncClock('back to the tab');
-      if (audioUnlocked && audioCtx && audioCtx.resume) { audioCtx.resume().catch(function () { /* ignore */ }); }
+      resumeAudio();
       startLoop();
     }
   });
