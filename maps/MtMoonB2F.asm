@@ -147,7 +147,10 @@ TrainerSuperNerdMiguel:
 	trainer SUPER_NERD, MIGUEL, EVENT_BEAT_SUPER_NERD_MIGUEL, SuperNerdMiguelSeenText, SuperNerdMiguelBeatenText, 1, .Script
 
 .Script:
-	endifjustbattled
+; MM1 (operator, 2026-09-29): Yellow chains "OK! I'll share!" straight into
+; "We'll each take one!" after the battle (_MtMoonB2FSuperNerdOkIllShareText
+; ends in `prompt`), so no endifjustbattled here -- the after-battle branch
+; runs at once as well as on a later talk.
 	opentext
 	checkevent EVENT_MT_MOON_B2F_DOME_FOSSIL
 	iftrue .TookAFossil
