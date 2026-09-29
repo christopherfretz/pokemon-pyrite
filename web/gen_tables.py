@@ -729,7 +729,34 @@ def main():
             "def": need("BASE_DEF"), "spd": need("BASE_SPD"),
             "sat": need("BASE_SAT"), "sdf": need("BASE_SDF"),
             "growthRate": need("BASE_GROWTH_RATE"),
+            "gender": need("BASE_GENDER"),
         },
+    }
+
+    # --- The player's shiny-hunt tracker (web/app.js, HT1) ------------------
+    # WRAM it polls a few bytes of: [bank, addr] straight from the .sym, so a
+    # rebuild that moves the battle variables moves the page with them.  The
+    # gender rule is GetGender's (engine/pokemon/mon_stats.asm).
+    def wram(name):
+        if name not in syms:
+            sys.exit("gen_tables: WRAM symbol %s missing" % name)
+        return list(syms[name])
+
+    hunt = {
+        "wBattleMode": wram("wBattleMode"),
+        "wBattleType": wram("wBattleType"),
+        "wEnemyMon": wram("wEnemyMon"),
+        "wEnemyMonSpecies": wram("wEnemyMonSpecies"),
+        "wEnemyMonDVs": wram("wEnemyMonDVs"),
+        "wEnemyMonLevel": wram("wEnemyMonLevel"),
+        "wildBattle": need("WILD_BATTLE"),
+        "trainerBattle": need("TRAINER_BATTLE"),
+        "battleTypes": {k[len("BATTLETYPE_"):]: v for k, v in K.items()
+                        if k.startswith("BATTLETYPE_")},
+        "gender": {k[len("GENDER_"):]: v for k, v in K.items()
+                   if k in ("GENDER_F0", "GENDER_F12_5", "GENDER_F25",
+                            "GENDER_F50", "GENDER_F75", "GENDER_F100",
+                            "GENDER_UNKNOWN")},
     }
 
     # The move table: the editor reads each move's PP straight out of the ROM
@@ -935,6 +962,7 @@ def main():
         "events": events,
         "badges": parse_badges(p("constants", "engine_flags.asm")),
         "charmap": charmap,
+        "hunt": hunt,
     }
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)

@@ -1148,6 +1148,7 @@
         : 'Running');
       if (!audioUnlocked) { overlay.hidden = false; }
       startLoop();
+      huntOnStart(fromLabel === 'reset' ? 'reset' : fromLabel === 'imported save' ? 'import' : null);
     }).catch(function (e) {
       fail('Emulator failed to start', e);
       if (e && typeof e === 'object') { e.kfReported = true; }
@@ -1245,8 +1246,8 @@
     });
   }
 
-  function download(name, bytes) {
-    var blob = new Blob([bytes], { type: 'application/octet-stream' });
+  function download(name, bytes, type) {
+    var blob = new Blob([bytes], { type: type || 'application/octet-stream' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -1343,6 +1344,8 @@
       }
       // The state carries the clock it was saved with; real time moved on.
       syncClock('slot ' + n);
+      huntRebaseline();
+      huntReset('slot');
       lastSramSig = null;
       lastSaveSig = null;
       extRamDirty = true;
@@ -1499,6 +1502,7 @@
     if (mask === lastMask && !force) { return; }
     lastMask = mask;
     if (!started || !emu) { return; }
+    huntSoftResetCheck(mask);
     mod._set_joyp_up(emu, joypad.UP ? 1 : 0);
     mod._set_joyp_down(emu, joypad.DOWN ? 1 : 0);
     mod._set_joyp_left(emu, joypad.LEFT ? 1 : 0);
@@ -1660,6 +1664,669 @@
     if (e.cancelable) { e.preventDefault(); }
   }, { passive: false });
 
+  // ---------------------------------------------------------------- hunt ---
+
+  /* HT1 (operator, 2026-09-28): a shiny-hunt tracker for a friend
+     soft-resetting the POKe FLUTE SNORLAX.  Everything is read out of the
+     running game; nothing is written to it.  Design notes: docs/WEB-HUNT.md in
+     the helper repo.
+
+     Encounter = a wild battle whose enemy mon has been generated.  wBattleMode
+     goes 0 -> WILD_BATTLE in the overworld script, but LoadEnemyMon (which
+     clears wEnemyMon and rolls the DVs) runs a second or so later, after the
+     transition.  So the edge only opens a pending battle; it is logged once
+     wEnemyMon has species + level, reads the same on two polls in a row, and
+     differs from what it held on the last poll before the edge (the previous
+     battle's leftovers).  After a boot / reset / slot load the detector
+     re-baselines instead of seeing an edge: a state that lands mid-battle is
+     only logged if its mon then changes (the snapshot was taken before
+     LoadEnemyMon), never on its own, and never if it is the mon logged last.
+
+     WRAM addresses and the BaseData layout come from tables.json (generated
+     from the .sym by gen_tables.py, the save editor's file); the tracker only
+     runs when that file was generated for the ROM that is loaded. */
+  var HUNT_POLL_MS = 250;
+  var HUNT_LOG_SHOW = 50;
+  var HUNT_KEEP = 20000;          // encounters kept per hunt (counters stay exact past it)
+  var HUNT_HISTORY_MAX = 30;      // archived hunt summaries
+  var HUNT_ARCHIVE_FULL = 5;      // archived hunts whose full log is kept
+  var HUNT_STALE_ACCEPT_MS = 10000;
+  var HUNT_SAVE_MS = 10000;
+  var SHINY_ODDS = 8192;
+  var SHINY_Q = (SHINY_ODDS - 1) / SHINY_ODDS;
+  var SHINY_MEDIAN = Math.ceil(Math.log(0.5) / Math.log(SHINY_Q));   // 5678: P(n) >= 50 %
+  var HUNT_PREFS_KEY = 'kfHunt:prefs';
+  var STAT_NAMES = ['ATK', 'DEF', 'SPD', 'SPC'];
+
+  var T = null;                 // tables.json, or null
+  var tablesErr = null;
+  var tablesPromise = null;
+  var hunt = null;              // the active hunt (full record) or null
+  var huntIndex = null;         // {v, active, history[]}
+  var huntTitle = null;         // romTitleKey the index belongs to
+  var huntPendingReset = null;  // 'page' until the first boot has been counted
+  var huntDirty = false;
+  var huntLastSave = 0;
+  var huntLastTick = 0;
+  var huntLastRender = 0;
+  var huntSoftHeld = false;
+  var hd = { base: true, prevMode: 0, idleSig: null, pending: null, seq: 0 };
+  var huntPrefs = { reveal: false, auto: true,
+    count: { reset: true, soft: true, slot: true, page: true, 'import': true } };
+
+  function ls(key, value) {           // localStorage, never fatal
+    try {
+      if (value === undefined) { return localStorage.getItem(key); }
+      if (value === null) { localStorage.removeItem(key); return null; }
+      localStorage.setItem(key, value);
+      return value;
+    } catch (e) { return null; }
+  }
+  function lsJson(key) {
+    var s = ls(key);
+    if (!s) { return null; }
+    try { return JSON.parse(s); } catch (e) { return null; }
+  }
+
+  (function loadPrefs() {
+    var p = lsJson(HUNT_PREFS_KEY);
+    if (!p) { return; }
+    huntPrefs.reveal = !!p.reveal;
+    if (typeof p.auto === 'boolean') { huntPrefs.auto = p.auto; }
+    if (p.count) {
+      Object.keys(huntPrefs.count).forEach(function (k) {
+        if (typeof p.count[k] === 'boolean') { huntPrefs.count[k] = p.count[k]; }
+      });
+    }
+  })();
+  function savePrefs() { ls(HUNT_PREFS_KEY, JSON.stringify(huntPrefs)); }
+
+  function loadTables() {
+    if (!tablesPromise) {
+      tablesPromise = fetch('./tables.json', { cache: 'no-store' }).then(function (r) {
+        if (!r.ok) { throw new Error('tables.json -> HTTP ' + r.status); }
+        return r.json();
+      }).then(function (t) {
+        if (!t || !t.hunt || !t.baseStats || t.baseStats.fields.gender === undefined) {
+          throw new Error('tables.json predates the hunt tracker');
+        }
+        T = t;
+        fillTargetSelect();
+        return t;
+      }).catch(function (e) {
+        tablesErr = e && e.message ? e.message : String(e);
+        console.warn('hunt: ' + tablesErr);
+        return null;
+      });
+    }
+    return tablesPromise;
+  }
+
+  /* The tracker runs only against the ROM its tables were generated for. */
+  function huntReady() {
+    return !!(T && romSha && T.rom && T.rom.sha256 === romSha && huntIndex);
+  }
+
+  function huntW(name) {
+    var a = T.hunt[name];
+    return readWram(a[1], a[0]);
+  }
+
+  function readEnemy() {
+    var base = T.hunt.wEnemyMon;
+    var len = T.hunt.wEnemyMonLevel[1] - base[1] + 1;
+    var b = [];
+    for (var i = 0; i < len; i++) { b.push(readWram(base[1] + i, base[0])); }
+    var dv = T.hunt.wEnemyMonDVs[1] - base[1];
+    return { species: b[0], level: b[len - 1], dv0: b[dv], dv1: b[dv + 1], sig: b.join(',') };
+  }
+
+  // --- DV maths (Gen 2) ---
+
+  function dvSplit(dv) {       // dv = byte0 << 8 | byte1
+    var atk = (dv >> 12) & 15, def = (dv >> 8) & 15, spd = (dv >> 4) & 15, spc = dv & 15;
+    return { atk: atk, def: def, spd: spd, spc: spc,
+      hp: ((atk & 1) << 3) | ((def & 1) << 2) | ((spd & 1) << 1) | (spc & 1) };
+  }
+  /* engine/battle/core.asm CheckShininess: DEF, SPD, SPC == 10 and ATK has bit 1. */
+  function shinyMatches(dv) {
+    var d = dvSplit(dv);
+    return ((d.atk & 2) ? 1 : 0) + (d.def === 10 ? 1 : 0) + (d.spd === 10 ? 1 : 0) + (d.spc === 10 ? 1 : 0);
+  }
+  function isShiny(dv) { return shinyMatches(dv) === 4; }
+
+  function genderRatio(species) {
+    var bs = T.baseStats;
+    if (!rom || species < 1 || species > bs.count) { return -1; }
+    return rom[bs.rom + (species - 1) * bs.stride + bs.fields.gender];
+  }
+  /* GetGender (engine/pokemon/mon_stats.asm): b = ATK DV << 4 | SPD DV; ratio
+     $FF genderless, 0 always male, $FE always female, else female iff b <= ratio. */
+  function genderOf(species, dv) {
+    var r = genderRatio(species);
+    if (r < 0 || r === 0xff) { return '-'; }
+    if (r === 0) { return 'M'; }
+    if (r === 0xfe) { return 'F'; }
+    var b = (((dv >> 12) & 15) << 4) | ((dv >> 4) & 15);
+    return b <= r ? 'F' : 'M';
+  }
+  function genderSym(g) { return g === 'M' ? '♂' : g === 'F' ? '♀' : '–'; }
+
+  function speciesName(id) {
+    if (!id) { return '?'; }
+    var s = T && T.species && T.species[id - 1];
+    return s ? s.name : '#' + id;
+  }
+  function hex2(v) { return (v < 16 ? '0' : '') + v.toString(16).toUpperCase(); }
+  function dvHex(dv) { return hex2((dv >> 8) & 255) + ' ' + hex2(dv & 255); }
+
+  // --- storage ---
+
+  function idxKey() { return 'kfHunt:' + huntTitle; }
+  function huntKey(id) { return 'kfHunt:' + huntTitle + ':' + id; }
+
+  function newHunt(target) {
+    var z = function () { var a = []; for (var i = 0; i < 16; i++) { a.push(0); } return a; };
+    return { v: 1, id: Date.now().toString(36), title: huntTitle, target: target || 0,
+      created: Date.now(), elapsedMs: 0, encounters: 0, other: 0, otherBy: {}, resets: 0,
+      resetsBy: {}, shinies: 0, firstShinyAt: 0, dvHist: [z(), z(), z(), z()], matchHist: [0, 0, 0, 0, 0],
+      best: -1, lastSig: null, log: [], actions: [] };
+  }
+
+  function huntAttach() {
+    if (!T || !romTitleKey || romSha !== (T.rom && T.rom.sha256)) { renderHunt(true); return; }
+    if (huntTitle !== romTitleKey || !huntIndex) {
+      huntTitle = romTitleKey;
+      huntIndex = lsJson(idxKey()) || { v: 1, active: null, history: [] };
+      hunt = huntIndex.active ? lsJson(huntKey(huntIndex.active)) : null;
+      if (!hunt && huntIndex.active) { huntIndex.active = null; }
+    }
+    renderHunt(true);
+  }
+
+  function huntSave(force) {
+    if (!huntIndex || !huntTitle) { return; }
+    if (!force && !huntDirty) { return; }
+    huntDirty = false;
+    huntLastSave = Date.now();
+    if (hunt) { ls(huntKey(hunt.id), JSON.stringify(hunt)); }
+    huntIndex.active = hunt ? hunt.id : null;
+    ls(idxKey(), JSON.stringify(huntIndex));
+  }
+  function huntTouch() { huntDirty = true; huntSave(true); }
+
+  function huntSummary(h) {
+    return { id: h.id, target: h.target, name: speciesName(h.target), created: h.created, ended: Date.now(),
+      encounters: h.encounters, other: h.other, resets: h.resets, elapsedMs: h.elapsedMs,
+      shinies: h.shinies, firstShinyAt: h.firstShinyAt };
+  }
+
+  function archiveHunt() {
+    if (!hunt) { return; }
+    if (hunt.encounters || hunt.other || hunt.resets) {
+      huntIndex.history.unshift(huntSummary(hunt));
+      huntSave(true);
+      // Keep the full logs of the last few archived hunts; drop older ones.
+      huntIndex.history.forEach(function (s, i) {
+        if (i >= HUNT_ARCHIVE_FULL) { ls(huntKey(s.id), null); }
+      });
+      huntIndex.history = huntIndex.history.slice(0, HUNT_HISTORY_MAX);
+    } else {
+      ls(huntKey(hunt.id), null);
+    }
+    hunt = null;
+    huntTouch();
+  }
+
+  function huntMsg(text) {
+    var el = $('#hunt-msg');
+    if (el) { el.textContent = text || ''; }
+  }
+
+  // --- counting ---
+
+  function pushAction(a) {
+    hunt.actions.push(a);
+    if (hunt.actions.length > 200) { hunt.actions.splice(0, hunt.actions.length - 200); }
+  }
+
+  /* why: reset | soft | slot | page | import | manual */
+  function huntReset(why) {
+    if (why !== 'manual' && !huntPrefs.count[why]) { return; }
+    if (!huntReady() || !hunt) { return; }
+    hunt.resets++;
+    hunt.resetsBy[why] = (hunt.resetsBy[why] || 0) + 1;
+    pushAction('r:' + why);
+    huntTouch();
+    renderHunt(true);
+  }
+
+  function logEncounter(e) {
+    var btype = huntW('wBattleType');
+    if (btype === T.hunt.battleTypes.TUTORIAL) { return; }   // a demo catch, not the player's encounter
+    var dv = (e.dv0 << 8) | e.dv1;
+    if (!hunt) {
+      if (!huntPrefs.auto) { return; }
+      hunt = newHunt(e.species);
+    }
+    if (!hunt.target) { hunt.target = e.species; }
+    var tgt = e.species === hunt.target;
+    var m = shinyMatches(dv);
+    var d = dvSplit(dv);
+    if (tgt) { hunt.encounters++; } else {
+      hunt.other++;
+      hunt.otherBy[e.species] = (hunt.otherBy[e.species] || 0) + 1;
+    }
+    hunt.dvHist[0][d.atk]++; hunt.dvHist[1][d.def]++; hunt.dvHist[2][d.spd]++; hunt.dvHist[3][d.spc]++;
+    hunt.matchHist[m]++;
+    if (m === 4) {
+      delete $('#hunt').dataset.dismissed;   // a new shiny brings the banner back
+      hunt.shinies++;
+      if (tgt && !hunt.firstShinyAt) { hunt.firstShinyAt = hunt.encounters; }
+    }
+    hunt.lastSig = e.sig;
+    // [time, species, level, dv, target encounter number (0 = off-target), battle type]
+    hunt.log.push([Date.now(), e.species, e.level, dv, tgt ? hunt.encounters : 0, btype]);
+    if (hunt.log.length > HUNT_KEEP) { hunt.log.splice(0, hunt.log.length - HUNT_KEEP); }
+    recomputeBest();
+    pushAction('e');
+    huntTouch();
+    showToast(e.species, dv, tgt ? hunt.encounters : 0);
+    renderHunt(true);
+  }
+
+  function recomputeBest() {
+    hunt.best = -1;
+    for (var i = 4; i >= 0; i--) { if (hunt.matchHist[i]) { hunt.best = i; break; } }
+  }
+
+  function huntUndo() {
+    if (!hunt || !hunt.actions.length) { huntMsg('Nothing to undo'); return; }
+    var a = hunt.actions.pop();
+    if (a.indexOf('r:') === 0) {
+      var why = a.slice(2);
+      hunt.resets = Math.max(0, hunt.resets - 1);
+      hunt.resetsBy[why] = Math.max(0, (hunt.resetsBy[why] || 0) - 1);
+      huntMsg('Undid a reset (' + why + ')');
+    } else if (a === 'e') {
+      var r = hunt.log.pop();
+      if (!r) { huntMsg('That encounter is no longer in the log'); huntTouch(); return; }
+      var dv = r[3], d = dvSplit(dv), m = shinyMatches(dv);
+      if (r[4]) { hunt.encounters = Math.max(0, hunt.encounters - 1); } else {
+        hunt.other = Math.max(0, hunt.other - 1);
+        hunt.otherBy[r[1]] = Math.max(0, (hunt.otherBy[r[1]] || 0) - 1);
+      }
+      hunt.dvHist[0][d.atk]--; hunt.dvHist[1][d.def]--; hunt.dvHist[2][d.spd]--; hunt.dvHist[3][d.spc]--;
+      hunt.matchHist[m]--;
+      if (m === 4) {
+        hunt.shinies = Math.max(0, hunt.shinies - 1);
+        if (r[4] && hunt.firstShinyAt === r[4]) { hunt.firstShinyAt = 0; }
+      }
+      recomputeBest();
+      // Undoing does not make the detector log the same battle again.
+      huntMsg('Undid encounter' + (r[4] ? ' #' + r[4] : ''));
+    }
+    huntTouch();
+    renderHunt(true);
+  }
+
+  // --- detector ---
+
+  function huntRebaseline() {
+    hd.base = true;
+    hd.pending = null;
+  }
+
+  /* Once per HUNT_POLL_MS: 1 byte (wBattleMode) + the 14-byte head of wEnemyMon. */
+  function huntPoll() {
+    if (!huntReady() || !started || !emu) { return; }
+    var now = Date.now();
+    var visible = document.visibilityState !== 'hidden';
+    if (hunt && visible && rafToken !== null) {
+      hunt.elapsedMs += Math.min(Math.max(now - (huntLastTick || now), 0), 1000);
+      huntDirty = true;
+    }
+    huntLastTick = now;
+    if (huntDirty && now - huntLastSave >= HUNT_SAVE_MS) { huntSave(false); }
+    if (visible && now - huntLastRender >= 1000) { renderHunt(false); }
+    if (!visible) { return; }
+
+    var mode = huntW('wBattleMode');
+    var wild = T.hunt.wildBattle;
+    var e;
+    if (hd.base) {
+      hd.base = false;
+      hd.prevMode = mode;
+      e = readEnemy();
+      if (mode === wild) {
+        if (!(hunt && e.sig === hunt.lastSig)) {
+          hd.pending = { seq: ++hd.seq, t0: now, idleSig: e.sig, strict: true, lastSig: null };
+        }
+      } else {
+        hd.idleSig = e.sig;
+      }
+      return;
+    }
+    if (mode !== hd.prevMode) {
+      if (mode === wild) {
+        hd.pending = { seq: ++hd.seq, t0: now, idleSig: hd.idleSig, strict: false, lastSig: null };
+      } else {
+        hd.pending = null;      // over (or reset) before the mon was generated
+      }
+      hd.prevMode = mode;
+    }
+    if (mode === 0) { hd.idleSig = readEnemy().sig; return; }
+    if (!hd.pending || mode !== wild) { return; }
+    e = readEnemy();
+    var loaded = e.species !== 0 && e.level !== 0;
+    var p = hd.pending;
+    if (loaded && e.sig === p.lastSig) {
+      var fresh = e.sig !== p.idleSig;
+      if (fresh || (!p.strict && now - p.t0 >= HUNT_STALE_ACCEPT_MS)) {
+        hd.pending = null;
+        logEncounter(e);
+        return;
+      }
+    }
+    p.lastSig = loaded ? e.sig : null;
+  }
+
+  /* Called from pushJoypad: A+B+START+SELECT is Crystal's soft reset
+     (home/joypad.asm), counted once per press. */
+  function huntSoftResetCheck(mask) {
+    var all = (mask & 0xf0) === 0xf0;
+    if (all && !huntSoftHeld) { huntReset('soft'); }
+    huntSoftHeld = all;
+  }
+
+  /* After every startWithRom: re-baseline; count the page load once. */
+  function huntOnStart(why) {
+    huntRebaseline();
+    loadTables().then(function () {
+      huntAttach();
+      var r = huntPendingReset || why;
+      huntPendingReset = null;
+      if (r) { huntReset(r); }
+    });
+  }
+
+  // --- rendering ---
+
+  var huntToastTimer = null;
+  function showToast(species, dv, n) {
+    var el = $('#hunt-toast');
+    if (!el) { return; }
+    var shiny = isShiny(dv);
+    clearTimeout(huntToastTimer);
+    el.classList.toggle('shiny', huntPrefs.reveal && shiny);
+    el.textContent = huntPrefs.reveal && shiny ? '✨ SHINY ' + speciesName(species) + '!'
+      : (n ? 'Encounter #' + n.toLocaleString() + ' logged' : speciesName(species) + ' logged');
+    el.hidden = false;
+    if (!(huntPrefs.reveal && shiny)) {
+      huntToastTimer = setTimeout(function () { el.hidden = true; }, 2500);
+    }
+  }
+
+  function fmtDur(ms) {
+    var s = Math.floor(ms / 1000);
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+    return h + ':' + ('0' + m).slice(-2) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  function pct(x, digits) {
+    var v = x * 100;
+    return (v >= 99.995 && x < 1 ? '99.99' : v.toFixed(digits === undefined ? 1 : digits)) + '%';
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function tile(label, value, sub) {
+    return '<div class="ht"><span>' + esc(label) + '</span><b>' + esc(value) + '</b>' +
+      (sub ? '<em>' + esc(sub) + '</em>' : '') + '</div>';
+  }
+  function dvCells(dv) {
+    var d = dvSplit(dv);
+    var ok = [(d.atk & 2) !== 0, d.def === 10, d.spd === 10, d.spc === 10];
+    return [d.atk, d.def, d.spd, d.spc].map(function (v, i) {
+      return '<span class="dv' + (ok[i] ? ' ok' : '') + '"><i>' + STAT_NAMES[i] + '</i>' + v + '</span>';
+    }).join('') + '<span class="dv"><i>HP</i>' + d.hp + '</span>';
+  }
+
+  function fillTargetSelect() {
+    var sel = $('#hunt-target');
+    if (!sel || !T || sel.options.length > 1) { return; }
+    T.species.forEach(function (s) {
+      if (s.glitch) { return; }
+      var o = document.createElement('option');
+      o.value = String(s.id);
+      o.textContent = s.name;
+      sel.appendChild(o);
+    });
+  }
+
+  function renderHunt(force) {
+    var box = $('#hunt');
+    if (!box) { return; }
+    huntLastRender = Date.now();
+    var sum = $('#hunt-sum');
+    var off = $('#hunt-off');
+    var ready = huntReady();
+    if (!ready) {
+      off.hidden = false;
+      off.textContent = tablesErr ? 'Hunt tracker unavailable: ' + tablesErr
+        : T && romSha && T.rom.sha256 !== romSha
+          ? 'Hunt tracker unavailable: tables.json was generated for ROM ' + T.rom.sha256.slice(0, 8) +
+            ', this is ' + romSha.slice(0, 8) + '.'
+          : 'Waiting for the game to start…';
+      sum.textContent = '';
+      return;
+    }
+    off.hidden = true;
+    var h = hunt;
+    sum.textContent = h ? (h.target ? speciesName(h.target) + ' · ' : '') + h.encounters.toLocaleString() +
+      ' enc · ' + h.resets.toLocaleString() + ' resets' : 'off';
+    if (!box.open && !force) { return; }
+
+    var sel = $('#hunt-target');
+    if (document.activeElement !== sel) { sel.value = h && h.target ? String(h.target) : ''; }
+    var reveal = huntPrefs.reveal;
+    var rb = $('#hunt-reveal');
+    rb.textContent = reveal ? 'Hide DVs' : 'Show DVs';
+    rb.setAttribute('aria-pressed', reveal ? 'true' : 'false');
+    $('#hunt-spoil').hidden = !reveal;
+    $('#hunt-hidden').hidden = reveal;
+    $('#hunt-undo').disabled = !(h && h.actions.length);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-count]'), function (c) {
+      c.checked = !!huntPrefs.count[c.getAttribute('data-count')];
+    });
+    $('#hunt-auto').checked = huntPrefs.auto;
+
+    var n = h ? h.encounters : 0;
+    var hrs = h ? h.elapsedMs / 3600000 : 0;
+    var rate = hrs > 0.002 ? n / hrs : 0;
+    var p = 1 - Math.pow(SHINY_Q, n);
+    var tiles = [
+      tile('Encounters', n.toLocaleString(), h && h.other ? '+' + h.other + ' other' : ''),
+      tile('Resets', h ? h.resets.toLocaleString() : '0'),
+      tile('Time', fmtDur(h ? h.elapsedMs : 0), 'tab visible'),
+      tile('Per hour', rate ? rate.toFixed(rate < 10 ? 1 : 0) : '–', 'encounters'),
+      tile('P(shiny by now)', pct(p, n && p < 0.1 ? 2 : 1), '1 − (8191/8192)^n'),
+      tile('Of 8,192', pct(n / SHINY_ODDS), 'expected'),
+      tile('Of median', pct(n / SHINY_MEDIAN), SHINY_MEDIAN.toLocaleString() + ' = 50%'),
+      tile('Dry odds', pct(1 - p, 1), 'P(none in n)')
+    ];
+    if (reveal) {
+      tiles.push(tile('Shinies', h ? String(h.shinies) : '0', h && h.firstShinyAt ? 'first at #' + h.firstShinyAt : ''));
+    }
+    $('#hunt-stats').innerHTML = tiles.join('');
+    $('#hunt-meter-p').style.width = Math.min(100, n / SHINY_ODDS * 100).toFixed(2) + '%';
+    var eta = '';
+    if (rate > 0 && n < SHINY_MEDIAN) {
+      eta = ' At ' + rate.toFixed(0) + '/h the median is ' + fmtDur((SHINY_MEDIAN - n) / rate * 3600000) +
+        ' away, 8,192 ' + fmtDur((SHINY_ODDS - n) / rate * 3600000) + '.';
+    }
+    $('#hunt-odds').textContent = (h && h.target ? 'Hunting ' + speciesName(h.target) + '. ' : 'No hunt yet: the next wild encounter starts one. ') +
+      'Each encounter is 1/8,192 regardless of the past.' + eta;
+
+    var banner = $('#hunt-banner');
+    var lastRec = h && h.log.length ? h.log[h.log.length - 1] : null;
+    var shinyNow = lastRec && isShiny(lastRec[3]);
+    banner.hidden = !(reveal && shinyNow && !box.dataset.dismissed);
+    if (!banner.hidden) {
+      banner.textContent = '✨ SHINY ' + speciesName(lastRec[1]) + '! ' +
+        (lastRec[4] ? 'Encounter #' + lastRec[4].toLocaleString() + ' · P ' + pct(1 - Math.pow(SHINY_Q, lastRec[4]), 2) : '');
+    }
+
+    if (!reveal) { renderHistory(); return; }
+    $('#hunt-last').innerHTML = lastRec
+      ? '<div class="hl-head"><b>' + esc(speciesName(lastRec[1])) + '</b> L' + lastRec[2] + ' ' +
+        genderSym(genderOf(lastRec[1], lastRec[3])) + ' <code>' + dvHex(lastRec[3]) + '</code> <strong class="' +
+        (shinyNow ? 'yes' : 'no') + '">' + (shinyNow ? '✨ SHINY' : 'not shiny') + '</strong></div>' +
+        '<div class="dvs">' + dvCells(lastRec[3]) + '</div>'
+      : '<p class="note">No encounter yet.</p>';
+    var mh = h ? h.matchHist : [0, 0, 0, 0, 0];
+    $('#hunt-best').innerHTML = h && h.best >= 0
+      ? '<p><b>' + h.best + '/4</b> shiny conditions (ATK bit 1, DEF 10, SPD 10, SPC 10).</p>' +
+        '<div class="mh">' + mh.map(function (c, i) { return '<span><i>' + i + '/4</i>' + c + '</span>'; }).join('') + '</div>'
+      : '<p class="note">No encounter yet.</p>';
+    var hist = '';
+    for (var s = 0; s < 4; s++) {
+      var col = h ? h.dvHist[s] : [];
+      var max = Math.max.apply(null, col.concat([1]));
+      hist += '<div class="hh"><b>' + STAT_NAMES[s] + '</b><div class="hh-cells">';
+      for (var v = 0; v < 16; v++) {
+        var c = col[v] || 0;
+        var tgt = s === 0 ? (v & 2) !== 0 : v === 10;
+        hist += '<span class="' + (tgt ? 'ok' : '') + '" style="--f:' + (c / max).toFixed(3) + '"><i>' +
+          v.toString(16).toUpperCase() + '</i>' + c + '</span>';
+      }
+      hist += '</div></div>';
+    }
+    $('#hunt-hist').innerHTML = hist;
+    var rows = h ? h.log.slice(-HUNT_LOG_SHOW).reverse() : [];
+    $('#hunt-log-n').textContent = h ? '(last ' + rows.length + ' of ' + h.log.length.toLocaleString() + ')' : '';
+    $('#hunt-log').innerHTML = rows.map(function (r) {
+      var sh = isShiny(r[3]);
+      return '<li class="' + (sh ? 'yes' : '') + '"><b>' + (r[4] ? '#' + r[4] : '–') + '</b>' +
+        '<span>' + esc(speciesName(r[1])) + ' ' + genderSym(genderOf(r[1], r[3])) + '</span>' +
+        '<code>' + dvHex(r[3]) + '</code><span>' + (sh ? '✨' : shinyMatches(r[3]) + '/4') + '</span>' +
+        '<time>' + new Date(r[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+        '</time></li>';
+    }).join('');
+    renderHistory();
+  }
+
+  function renderHistory() {
+    var el = $('#hunt-history');
+    if (!el || !huntIndex) { return; }
+    el.innerHTML = huntIndex.history.length ? huntIndex.history.map(function (s) {
+      return '<li><b>' + esc(s.name || '?') + '</b> ' + (s.encounters || 0).toLocaleString() + ' enc, ' +
+        (s.resets || 0).toLocaleString() + ' resets, ' + fmtDur(s.elapsedMs || 0) +
+        (huntPrefs.reveal && s.shinies ? ', ✨×' + s.shinies + (s.firstShinyAt ? ' (first #' + s.firstShinyAt + ')' : '') : '') +
+        ' <em>' + new Date(s.created).toLocaleDateString() + '</em></li>';
+    }).join('') : '<li class="note">None yet.</li>';
+  }
+
+  // --- export ---
+
+  function huntCsv() {
+    var head = 'n_target,time_iso,species_id,species,level,dv_hex,atk,def,spd,spc,hp,gender,shiny,matches,battle_type,target\n';
+    return head + (hunt ? hunt.log : []).map(function (r) {
+      var d = dvSplit(r[3]);
+      return [r[4] || '', new Date(r[0]).toISOString(), r[1], speciesName(r[1]), r[2],
+        dvHex(r[3]).replace(' ', ''), d.atk, d.def, d.spd, d.spc, d.hp, genderOf(r[1], r[3]),
+        isShiny(r[3]) ? 1 : 0, shinyMatches(r[3]), r[5] === undefined ? '' : r[5], r[4] ? 1 : 0].join(',');
+    }).join('\n') + '\n';
+  }
+  function huntJson() {
+    return JSON.stringify({ format: 'kanto-first-hunt/1', exported: new Date().toISOString(), romSha: romSha,
+      logColumns: ['time_ms', 'species', 'level', 'dv', 'n_target', 'battle_type'],
+      hunt: hunt, history: huntIndex ? huntIndex.history : [] }, null, 1);
+  }
+  function huntFileName(ext) {
+    var nm = hunt && hunt.target ? speciesName(hunt.target).toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'hunt';
+    return 'kanto-first-' + nm + '-' + new Date().toISOString().slice(0, 10) + '.' + ext;
+  }
+
+  // --- wiring ---
+
+  $('#hunt').addEventListener('toggle', function () { renderHunt(true); setTimeout(fitScreen, 0); });
+  Array.prototype.forEach.call(document.querySelectorAll('#hunt details'), function (d) {
+    d.addEventListener('toggle', function () { setTimeout(fitScreen, 0); });
+  });
+  $('#hunt-reveal').addEventListener('click', function () {
+    huntPrefs.reveal = !huntPrefs.reveal;
+    savePrefs();
+    renderHunt(true);
+  });
+  $('#hunt-banner').addEventListener('click', function () { $('#hunt').dataset.dismissed = '1'; renderHunt(true); });
+  $('#hunt-toast').addEventListener('click', function () { $('#hunt-toast').hidden = true; });
+  $('#hunt-plus').addEventListener('click', function () {
+    if (!huntReady()) { return; }
+    if (!hunt) { hunt = newHunt(0); }
+    huntReset('manual');
+    huntMsg('+1 reset');
+  });
+  $('#hunt-undo').addEventListener('click', huntUndo);
+  $('#hunt-target').addEventListener('change', function (e) {
+    if (!huntReady()) { return; }
+    var id = parseInt(e.target.value, 10) || 0;
+    if (!hunt) { hunt = newHunt(id); } else if (hunt.target !== id) {
+      if ((hunt.encounters || hunt.other) && !window.confirm('Change the target to ' + speciesName(id) +
+          '? Encounters already counted stay counted for this hunt.')) {
+        e.target.value = hunt.target ? String(hunt.target) : '';
+        return;
+      }
+      hunt.target = id;
+    }
+    huntTouch();
+    renderHunt(true);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-count]'), function (c) {
+    c.addEventListener('change', function () { huntPrefs.count[c.getAttribute('data-count')] = c.checked; savePrefs(); });
+  });
+  $('#hunt-auto').addEventListener('change', function (e) { huntPrefs.auto = e.target.checked; savePrefs(); });
+  $('#hunt-new').addEventListener('click', function () {
+    if (!huntReady()) { return; }
+    if (hunt && (hunt.encounters || hunt.resets || hunt.other) &&
+        !window.confirm('Archive this hunt and start a new one?')) { return; }
+    archiveHunt();
+    hunt = newHunt(0);
+    delete $('#hunt').dataset.dismissed;
+    huntTouch();
+    huntMsg('New hunt started: the next wild encounter sets the target (or pick one above).');
+    renderHunt(true);
+  });
+  $('#hunt-clear').addEventListener('click', function () {
+    if (!huntReady() || !hunt) { return; }
+    if (!window.confirm('Reset every counter of this hunt to zero? This cannot be undone.')) { return; }
+    var target = hunt.target;
+    ls(huntKey(hunt.id), null);
+    hunt = newHunt(target);
+    delete $('#hunt').dataset.dismissed;
+    huntTouch();
+    huntMsg('Stats reset.');
+    renderHunt(true);
+  });
+  $('#hunt-csv').addEventListener('click', function () {
+    if (!huntReady()) { return; }
+    download(huntFileName('csv'), new TextEncoder().encode(huntCsv()), 'text/csv');
+  });
+  $('#hunt-json').addEventListener('click', function () {
+    if (!huntReady()) { return; }
+    download(huntFileName('json'), new TextEncoder().encode(huntJson()), 'application/json');
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { huntSave(true); } else { huntLastTick = Date.now(); }
+  });
+  window.addEventListener('pagehide', function () { huntSave(true); });
+
+  huntPendingReset = huntPrefs.count.page ? 'page' : null;
+  loadTables();
+  setInterval(huntPoll, HUNT_POLL_MS);
+
   // ----------------------------------------------------------- lifecycle --
 
   setInterval(function () {
@@ -1775,7 +2442,21 @@
           dead: audioDead, rekick: audioNeedsRekick, replaced: audioReplaced, unlocked: audioUnlocked,
           rate: audioCtx ? audioCtx.sampleRate : null, emuRate: emuRate, label: $('#btn-mute').textContent };
       },
-      core: CORE_COMMIT
+      core: CORE_COMMIT,
+      /* HT1: the shiny-hunt tracker. */
+      hunt: {
+        poll: function () { huntPoll(); return hd.pending ? hd.pending.seq : 0; },
+        state: function () { return { hunt: hunt, index: huntIndex, prefs: huntPrefs, ready: huntReady(),
+          detector: { prevMode: hd.prevMode, pending: hd.pending, base: hd.base } }; },
+        csv: function () { return huntCsv(); },
+        json: function () { return huntJson(); },
+        gender: function (sp, dv) { return genderOf(sp, dv); },
+        shiny: function (dv) { return isShiny(dv); },
+        median: SHINY_MEDIAN,
+        reset: function (why) { huntReset(why || 'manual'); return hunt ? hunt.resets : 0; },
+        undo: huntUndo,
+        pause: function (on) { if (on) { stopLoop(); } else { startLoop(); } return rafToken !== null; }
+      }
     };
   }
 

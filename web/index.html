@@ -23,6 +23,7 @@
   <div id="screenwrap">
     <div id="screen">
       <canvas id="canvas" width="160" height="144"></canvas>
+      <div id="hunt-toast" hidden></div>
       <div id="overlay" hidden><button id="tapstart" type="button">Tap to start</button></div>
     </div>
   </div>
@@ -79,6 +80,71 @@
         <button id="btn-rom" type="button">Load ROM file&hellip;</button>
         <input id="file-rom" type="file" accept=".gbc,.gb,application/octet-stream" hidden>
       </div>
+
+      <!-- HT1: shiny-hunt tracker.  Collapsed by default; app.js fills it. -->
+      <section id="hunt-section" aria-labelledby="hunt-heading">
+        <details id="hunt">
+          <summary><h3 id="hunt-heading">Shiny hunt</h3><span id="hunt-sum"></span></summary>
+          <div class="hunt-body">
+            <p id="hunt-off" class="note" hidden></p>
+            <button id="hunt-banner" class="hunt-banner" type="button" hidden></button>
+
+            <label class="hunt-target">Target
+              <select id="hunt-target"><option value="">Auto (first wild encounter)</option></select>
+            </label>
+
+            <div id="hunt-stats" class="hunt-stats"></div>
+            <div class="hunt-meter" aria-hidden="true"><div id="hunt-meter-p"></div><i class="m50"></i><i class="m100"></i></div>
+            <p id="hunt-odds" class="hunt-odds"></p>
+
+            <div id="hunt-spoil" class="hunt-spoil">
+              <h4>Last encounter</h4>
+              <div id="hunt-last" class="hunt-last"></div>
+              <h4>Closest to shiny</h4>
+              <div id="hunt-best" class="hunt-best"></div>
+              <details class="hunt-sub">
+                <summary>DV distribution</summary>
+                <div id="hunt-hist" class="hunt-hist"></div>
+              </details>
+              <details class="hunt-sub">
+                <summary>Encounter log <span id="hunt-log-n"></span></summary>
+                <ol id="hunt-log" class="hunt-log"></ol>
+              </details>
+            </div>
+            <p id="hunt-hidden" class="note">DVs and verdicts are hidden so the in-game sparkle stays the reveal.</p>
+
+            <details class="hunt-sub">
+              <summary>Options, export, history</summary>
+              <fieldset class="hunt-opts">
+                <legend>Count a reset on</legend>
+                <label><input type="checkbox" data-count="reset"> Reset button</label>
+                <label><input type="checkbox" data-count="soft"> In-game soft reset (A+B+START+SELECT)</label>
+                <label><input type="checkbox" data-count="slot"> Slot load</label>
+                <label><input type="checkbox" data-count="page"> Page load / reload</label>
+                <label><input type="checkbox" data-count="import"> .sav import</label>
+                <label><input type="checkbox" id="hunt-auto"> Start a hunt automatically on the first wild encounter</label>
+              </fieldset>
+              <div class="hunt-row">
+                <button id="hunt-csv" type="button">Export CSV</button>
+                <button id="hunt-json" type="button">Export JSON</button>
+              </div>
+              <div class="hunt-row">
+                <button id="hunt-new" type="button">New hunt</button>
+                <button id="hunt-clear" type="button">Reset stats</button>
+              </div>
+              <h4>Past hunts</h4>
+              <ol id="hunt-history" class="hunt-history"></ol>
+            </details>
+
+            <div class="hunt-actions">
+              <button id="hunt-plus" type="button">+1 reset</button>
+              <button id="hunt-undo" type="button">Undo</button>
+              <button id="hunt-reveal" type="button" aria-pressed="false">Show DVs</button>
+            </div>
+            <p id="hunt-msg" class="hunt-msg" role="status"></p>
+          </div>
+        </details>
+      </section>
 
       <p class="note">
         <strong>Saves live in this browser.</strong> The in-game save is kept in IndexedDB for

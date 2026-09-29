@@ -266,6 +266,167 @@ kbd {
   padding: 2px 4px;
 }
 
+/* ---------- shiny hunt (HT1) ----------
+   Phone-first: one column, 44px tap targets, nothing wider than the menu.
+   It lives inside #menu's own scroll box, so opening it never changes the
+   menu's height (capped above) and never moves the screen or the pad. */
+
+#hunt-toast {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  max-width: 92%;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(11, 13, 16, .82);
+  border: 1px solid var(--edge);
+  color: var(--ink);
+  font: 600 12px/1.3 system-ui, sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: auto;
+  z-index: 2;
+}
+#hunt-toast.shiny { background: #b8860b; border-color: #ffd54a; color: #fff; }
+
+#hunt-section { margin: 4px 0 10px; border: 1px solid var(--edge); border-radius: 9px; background: var(--bg); }
+#hunt > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 12px;
+  cursor: pointer;
+  list-style: none;
+}
+#hunt > summary::-webkit-details-marker { display: none; }
+#hunt > summary::before { content: '\25B8'; color: var(--dim); font-size: 12px; }
+#hunt[open] > summary::before { content: '\25BE'; }
+#hunt-heading { margin: 0; font-size: 14px; font-weight: 700; }
+#hunt-sum {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+  font: 600 12px/1.3 ui-monospace, Menlo, monospace;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hunt-body { padding: 0 12px 0; font-size: 13px; }
+.hunt-body h4 { margin: 12px 0 6px; font-size: 12px; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; }
+.hunt-body button, .hunt-body select {
+  font: 600 14px/1.1 system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.hunt-body button:active { background: var(--accent); border-color: var(--accent); }
+.hunt-body button:disabled { opacity: .45; }
+.hunt-target { display: flex; align-items: center; gap: 10px; margin: 2px 0 10px; color: var(--dim); font-size: 13px; }
+.hunt-target select { flex: 1 1 auto; min-width: 0; font-size: 16px; /* 16px: iOS zooms smaller selects */ }
+
+.hunt-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 5px; }
+.ht { background: var(--panel-2); border: 1px solid var(--edge); border-radius: 8px; padding: 4px 7px; min-width: 0; }
+.ht > span { display: block; font-size: 11px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ht > b { display: block; font: 700 17px/1.25 ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; }
+.ht > em { display: block; font-style: normal; font-size: 10px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.hunt-meter { position: relative; height: 10px; margin: 10px 0 4px; background: var(--panel-2); border: 1px solid var(--edge); border-radius: 5px; overflow: hidden; }
+#hunt-meter-p { height: 100%; width: 0; background: var(--accent); }
+.hunt-meter i { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); opacity: .6; }
+.hunt-meter .m50 { left: 69.3%; }   /* 5678 / 8192 */
+.hunt-meter .m100 { right: 0; }
+.hunt-odds { margin: 4px 0 6px; font-size: 12px; line-height: 1.45; color: var(--dim); }
+
+.hunt-banner {
+  display: block;
+  width: 100%;
+  margin: 0 0 10px;
+  background: #b8860b !important;
+  border-color: #ffd54a !important;
+  color: #fff !important;
+  font-size: 16px !important;
+}
+.hunt-banner[hidden] { display: none; }
+
+.hunt-last .hl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-size: 15px; }
+.hunt-last code, .hunt-log code { font: 600 14px/1.2 ui-monospace, Menlo, monospace; color: var(--ink); }
+.hunt-last strong.yes, .hunt-log li.yes { color: #ffd54a; }
+.hunt-last strong.no { color: var(--dim); font-weight: 600; }
+.dvs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 6px; }
+.dv, .mh > span {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 4px 0; border: 1px solid var(--edge); border-radius: 7px; background: var(--panel-2);
+  font: 700 17px/1.2 ui-monospace, Menlo, monospace;
+}
+.dv i, .mh i { font: 600 10px/1.2 system-ui, sans-serif; font-style: normal; color: var(--dim); }
+.dv.ok { border-color: #ffd54a; color: #ffd54a; }
+.hunt-best p { margin: 0 0 6px; font-size: 13px; }
+.mh { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.mh > span { font-size: 14px; }
+
+.hunt-sub { margin: 10px 0 0; border-top: 1px solid var(--edge); }
+.hunt-sub > summary { min-height: 44px; display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--ink); font-weight: 600; }
+.hunt-sub > summary span { color: var(--dim); font-weight: 500; font-size: 12px; }
+
+/* 4 stats x 16 values: 8 per row on a phone, 16 when there is room; never scrolls sideways. */
+.hh { margin: 0 0 8px; }
+.hh > b { display: block; font-size: 11px; color: var(--dim); margin-bottom: 3px; }
+.hh-cells { display: grid; grid-template-columns: repeat(auto-fill, minmax(36px, 1fr)); gap: 3px; }
+.hh-cells > span {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 2px 0;
+  border: 1px solid var(--edge); border-radius: 5px;
+  font: 700 13px/1.2 ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums;
+  background: linear-gradient(to top, rgba(200, 69, 47, .55) calc(var(--f, 0) * 100%), var(--panel-2) 0);
+}
+.hh-cells > span i { font: 600 10px/1.2 ui-monospace, Menlo, monospace; font-style: normal; color: var(--dim); }
+.hh-cells > span.ok { border-color: #ffd54a; }
+
+.hunt-log { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.hunt-log li {
+  display: grid;
+  grid-template-columns: 3.6em minmax(0, 1fr) auto 2.2em auto;
+  gap: 6px; align-items: baseline;
+  padding: 5px 0; border-bottom: 1px solid var(--edge);
+  font-size: 13px; font-variant-numeric: tabular-nums;
+}
+.hunt-log li span:first-of-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hunt-log time { color: var(--dim); font-size: 11px; }
+
+.hunt-opts { border: 0; margin: 0; padding: 0; }
+.hunt-opts legend { padding: 0; margin: 4px 0; font-size: 12px; color: var(--dim); }
+.hunt-opts label { display: flex; align-items: center; gap: 10px; min-height: 40px; font-size: 13px; }
+.hunt-opts input { width: 22px; height: 22px; flex: 0 0 auto; accent-color: var(--accent); }
+.hunt-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.hunt-history { margin: 0; padding-left: 20px; font-size: 12.5px; }
+.hunt-history li { margin: 4px 0; }
+.hunt-history em { font-style: normal; color: var(--dim); }
+
+/* The thumb row: sticks to the bottom of the menu's scroll box while the hunt is open. */
+.hunt-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.3fr;
+  gap: 8px;
+  margin: 10px -12px 0;
+  padding: 8px 12px calc(8px + var(--safe-b));
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+}
+.hunt-actions button { min-height: 48px; font-size: 15px; }
+#hunt-reveal[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.hunt-msg { min-height: 1.2em; margin: 4px 0 8px; font-size: 12px; color: var(--dim); }
+
 /* ---------- landscape ---------- */
 
 @media (orientation: landscape) {
