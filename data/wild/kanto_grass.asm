@@ -1576,7 +1576,7 @@ KantoGrassWildMons:
 	db 12, ODDISH
 	db 12, BELLSPROUT
 	db 13, PIDGEY
-	db 14, ODDISH
+	db 12, ABRA ; AB1: Red/Blue's Route 24 ABRA, in for the fun of it (operator, 2026-09-30); replaces Yellow's duplicate L14 ODDISH slot
 	db 14, BELLSPROUT
 	db 13, VENONAT
 	db 17, PIDGEOTTO
@@ -1584,7 +1584,7 @@ KantoGrassWildMons:
 	db 12, ODDISH
 	db 12, BELLSPROUT
 	db 13, PIDGEY
-	db 14, ODDISH
+	db 12, ABRA ; AB1: Red/Blue's Route 24 ABRA, in for the fun of it (operator, 2026-09-30); replaces Yellow's duplicate L14 ODDISH slot
 	db 14, BELLSPROUT
 	db 13, VENONAT
 	db 17, PIDGEOTTO
@@ -1592,7 +1592,7 @@ KantoGrassWildMons:
 	db 12, ODDISH
 	db 12, BELLSPROUT
 	db 13, PIDGEY
-	db 14, ODDISH
+	db 12, ABRA ; AB1: Red/Blue's Route 24 ABRA, in for the fun of it (operator, 2026-09-30); replaces Yellow's duplicate L14 ODDISH slot
 	db 14, BELLSPROUT
 	db 13, VENONAT
 	db 17, PIDGEOTTO
