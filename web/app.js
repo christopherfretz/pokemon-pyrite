@@ -1711,7 +1711,7 @@
   var huntLastRender = 0;
   var huntSoftHeld = false;
   var hd = { base: true, prevMode: 0, idleSig: null, pending: null, seq: 0 };
-  var huntPrefs = { reveal: false, auto: true,
+  var huntPrefs = { reveal: false, auto: true, toast: true,   // toast: the 'Encounter #n logged' pop-up over the screen (operator, 2026-09-30: optional)
     count: { reset: true, soft: true, slot: true, page: true, 'import': true } };
 
   function ls(key, value) {           // localStorage, never fatal
@@ -1733,6 +1733,7 @@
     if (!p) { return; }
     huntPrefs.reveal = !!p.reveal;
     if (typeof p.auto === 'boolean') { huntPrefs.auto = p.auto; }
+    if (typeof p.toast === 'boolean') { huntPrefs.toast = p.toast; }
     if (p.count) {
       Object.keys(huntPrefs.count).forEach(function (k) {
         if (typeof p.count[k] === 'boolean') { huntPrefs.count[k] = p.count[k]; }
@@ -2058,6 +2059,8 @@
     if (!el) { return; }
     var shiny = isShiny(dv);
     clearTimeout(huntToastTimer);
+    // Pop-up off: stay silent, except for a revealed shiny (that one is the point).
+    if (!huntPrefs.toast && !(huntPrefs.reveal && shiny)) { el.hidden = true; return; }
     el.classList.toggle('shiny', huntPrefs.reveal && shiny);
     el.textContent = huntPrefs.reveal && shiny ? '✨ SHINY ' + speciesName(species) + '!'
       : (n ? 'Encounter #' + n.toLocaleString() + ' logged' : speciesName(species) + ' logged');
@@ -2141,6 +2144,7 @@
       c.checked = !!huntPrefs.count[c.getAttribute('data-count')];
     });
     $('#hunt-auto').checked = huntPrefs.auto;
+    $('#hunt-toast-on').checked = huntPrefs.toast;
 
     var n = h ? h.encounters : 0;
     var hrs = h ? h.elapsedMs / 3600000 : 0;
@@ -2287,6 +2291,7 @@
     c.addEventListener('change', function () { huntPrefs.count[c.getAttribute('data-count')] = c.checked; savePrefs(); });
   });
   $('#hunt-auto').addEventListener('change', function (e) { huntPrefs.auto = e.target.checked; savePrefs(); });
+  $('#hunt-toast-on').addEventListener('change', function (e) { huntPrefs.toast = e.target.checked; if (!huntPrefs.toast) { $('#hunt-toast').hidden = true; } savePrefs(); });
   $('#hunt-new').addEventListener('click', function () {
     if (!huntReady()) { return; }
     if (hunt && (hunt.encounters || hunt.resets || hunt.other) &&
