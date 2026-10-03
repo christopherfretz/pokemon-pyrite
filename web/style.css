@@ -343,6 +343,7 @@ kbd {
 .hunt-meter .m50 { left: 69.3%; }   /* 5678 / 8192 */
 .hunt-meter .m100 { right: 0; }
 .hunt-odds { margin: 4px 0 6px; font-size: 12px; line-height: 1.45; color: var(--dim); }
+.hunt-seednote { margin: 0 0 6px; font-size: 11.5px; line-height: 1.4; color: var(--dim); }   /* RN2 */
 
 .hunt-banner {
   display: block;

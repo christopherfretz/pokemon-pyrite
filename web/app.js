@@ -545,6 +545,55 @@
      alone is put on local time, i.e. offset 0 is assumed). */
   var clockVars = null;
 
+  /* RN2: a fresh RNG seed after anything that restores or re-creates the
+     machine.  The game's RNG state is two HRAM bytes (hRandomAdd/hRandomSub)
+     stepped by rDIV.  A state slot restores them bit for bit and a power-on
+     zeroes them, so after a slot load the DVs are a pure function of the
+     player's frame timing: a load-and-press-A loop repeats the same few DV
+     pairs (RN1, docs/RN1-RNG.md in the helper repo).  Real hardware never
+     restores a state, so we write two crypto bytes into them after a slot
+     load, a resume-snapshot restore, and 30 frames into every power-on (boot,
+     Reset, .sav import - after Init has zeroed HRAM).  The ROM is untouched.
+     Off (Shiny hunt > Options) = never stir: deterministic emulator behaviour.
+     The addresses come from Random's own bytes in the home bank, like
+     findClockVars, so a picked ROM or a rebuild that moves HRAM still works:
+       ldh a,[rDIV] / ld b,a / ldh a,[hRandomAdd] / adc b / ldh [hRandomAdd],a
+       ldh a,[rDIV] / ld b,a / ldh a,[hRandomSub] / sbc b / ldh [hRandomSub],a
+     (the first hit is VBlank's inline copy of that step, same two bytes).
+     null = not found: stirring is disabled (logged once per ROM). */
+  var rngVars = null;
+  var rngStirs = { count: 0, last: null };
+  var pendingStir = null;     // {at: emulator ticks, why} - the power-on stir
+  var STIR_BOOT_FRAMES = 30;
+  var TICKS_PER_FRAME = 70224;
+
+  function findRngVars(bytes) {
+    var lim = Math.min(bytes.length, 0x4000) - 16;   // home bank only
+    for (var i = 0; i < lim; i++) {
+      if (bytes[i] === 0xf0 && bytes[i + 1] === 0x04 && bytes[i + 2] === 0x47 && bytes[i + 3] === 0xf0 &&
+          bytes[i + 5] === 0x88 && bytes[i + 6] === 0xe0 && bytes[i + 7] === bytes[i + 4] &&
+          bytes[i + 8] === 0xf0 && bytes[i + 9] === 0x04 && bytes[i + 10] === 0x47 && bytes[i + 11] === 0xf0 &&
+          bytes[i + 13] === 0x98 && bytes[i + 14] === 0xe0 && bytes[i + 15] === bytes[i + 12] &&
+          bytes[i + 4] >= 0x80 && bytes[i + 12] >= 0x80 && bytes[i + 4] !== bytes[i + 12]) {
+        return { add: 0xff00 | bytes[i + 4], sub: 0xff00 | bytes[i + 12], at: i };
+      }
+    }
+    return null;
+  }
+
+  function stirRng(why) {
+    if (!emu || !rngVars || !huntPrefs.seed) { return false; }
+    if (!(window.crypto && window.crypto.getRandomValues)) { return false; }
+    var r = new Uint8Array(2);
+    window.crypto.getRandomValues(r);
+    mod._emulator_write_mem(emu, rngVars.add, r[0]);
+    mod._emulator_write_mem(emu, rngVars.sub, r[1]);
+    rngStirs.count++;
+    rngStirs.last = why;
+    console.info('rng: fresh seed (' + why + ')');
+    return true;
+  }
+
   function findClockVars(bytes) {
     // F0 ss 4F FA <sec> 81 D6 3C 30 02 C6 3C E0 xx 3F  F0 mm 4F FA <min> 89 D6 3C 30 02 C6 3C E0 xx 3F
     // F0 hh 4F FA <hour> 89 D6 18 30 02 C6 18 E0 xx 3F  F0 dd 4F FA <day> 89 EA <wCurDay>
@@ -974,6 +1023,11 @@
       // Survived long enough that the restored state is clearly not poison.
       if (framesSinceStart === 30) { ss(RESUME_GUARD, null); }
     }
+    if (pendingStir && ticks() >= pendingStir.at) {
+      var why = pendingStir.why;
+      pendingStir = null;
+      stirRng(why);
+    }
   }
 
   function startLoop() {
@@ -1036,6 +1090,9 @@
     romTitleKey = titleKeyOf(rom);
     clockVars = findClockVars(rom);
     if (!clockVars) { console.warn('clock: FixTime not found in this ROM; assuming a zero clock offset'); }
+    rngVars = findRngVars(rom);
+    if (!rngVars) { console.warn('rng: Random not found in this ROM; the fresh-seed option does nothing'); }
+    pendingStir = null;
     lastSramSig = null;
     lastSaveSig = null;
     lastResumeWriteMs = 0;
@@ -1147,6 +1204,14 @@
         : how.stale ? 'Booted from your last SAVE - the resume snapshot was older'
         : 'Running');
       if (!audioUnlocked) { overlay.hidden = false; }
+      // RN2: a restored snapshot keeps its HRAM, so seed it now; a power-on
+      // runs Init first (it zeroes HRAM), so seed 30 frames in.
+      if (how.mode === 'resume') {
+        stirRng('resume snapshot');
+      } else {
+        pendingStir = { at: ticks() + STIR_BOOT_FRAMES * TICKS_PER_FRAME,
+          why: fromLabel === 'reset' ? 'reset' : fromLabel === 'imported save' ? '.sav import' : 'boot' };
+      }
       startLoop();
       huntOnStart(fromLabel === 'reset' ? 'reset' : fromLabel === 'imported save' ? 'import' : null);
     }).catch(function (e) {
@@ -1344,6 +1409,8 @@
       }
       // The state carries the clock it was saved with; real time moved on.
       syncClock('slot ' + n);
+      pendingStir = null;     // a slot loaded inside the first 30 frames
+      stirRng('slot ' + n);
       huntRebaseline();
       huntReset('slot');
       lastSramSig = null;
@@ -1712,6 +1779,7 @@
   var huntSoftHeld = false;
   var hd = { base: true, prevMode: 0, idleSig: null, pending: null, seq: 0 };
   var huntPrefs = { reveal: false, auto: true, toast: true,   // toast: the 'Encounter #n logged' pop-up over the screen (operator, 2026-09-30: optional)
+    seed: true,   // seed: RN2 fresh RNG seed on slot load / resume / power-on (stirRng)
     count: { reset: true, soft: true, slot: true, page: true, 'import': true } };
 
   function ls(key, value) {           // localStorage, never fatal
@@ -1734,6 +1802,7 @@
     huntPrefs.reveal = !!p.reveal;
     if (typeof p.auto === 'boolean') { huntPrefs.auto = p.auto; }
     if (typeof p.toast === 'boolean') { huntPrefs.toast = p.toast; }
+    if (typeof p.seed === 'boolean') { huntPrefs.seed = p.seed; }
     if (p.count) {
       Object.keys(huntPrefs.count).forEach(function (k) {
         if (typeof p.count[k] === 'boolean') { huntPrefs.count[k] = p.count[k]; }
@@ -2145,6 +2214,10 @@
     });
     $('#hunt-auto').checked = huntPrefs.auto;
     $('#hunt-toast-on').checked = huntPrefs.toast;
+    $('#hunt-seed-on').checked = huntPrefs.seed;
+    $('#hunt-seed-note').textContent = huntPrefs.seed
+      ? 'Odds assume independent rolls: true with the fresh-seed option on (Options).'
+      : 'Fresh seed is off: a slot-load loop repeats the same few DV pairs (see histogram), so these odds overstate it.';
 
     var n = h ? h.encounters : 0;
     var hrs = h ? h.elapsedMs / 3600000 : 0;
@@ -2292,6 +2365,8 @@
   });
   $('#hunt-auto').addEventListener('change', function (e) { huntPrefs.auto = e.target.checked; savePrefs(); });
   $('#hunt-toast-on').addEventListener('change', function (e) { huntPrefs.toast = e.target.checked; if (!huntPrefs.toast) { $('#hunt-toast').hidden = true; } savePrefs(); });
+  $('#hunt-seed-on').checked = huntPrefs.seed;   // also right when the tracker itself is off (no tables)
+  $('#hunt-seed-on').addEventListener('change', function (e) { huntPrefs.seed = e.target.checked; savePrefs(); renderHunt(true); });
   $('#hunt-new').addEventListener('click', function () {
     if (!huntReady()) { return; }
     if (hunt && (hunt.encounters || hunt.resets || hunt.other) &&
@@ -2448,6 +2523,12 @@
           rate: audioCtx ? audioCtx.sampleRate : null, emuRate: emuRate, label: $('#btn-mute').textContent };
       },
       core: CORE_COMMIT,
+      /* RN2: the fresh-seed stir. */
+      rng: {
+        vars: function () { return rngVars; },
+        stirs: function () { return { count: rngStirs.count, last: rngStirs.last, pending: pendingStir }; },
+        read: function () { return rngVars && emu ? [mod._emulator_read_mem(emu, rngVars.add), mod._emulator_read_mem(emu, rngVars.sub)] : null; }
+      },
       /* HT1: the shiny-hunt tracker. */
       hunt: {
         poll: function () { huntPoll(); return hd.pending ? hd.pending.seq : 0; },
