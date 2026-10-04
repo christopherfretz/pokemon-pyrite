@@ -6273,14 +6273,13 @@ LoadEnemyMon:
 
 ; If it hasn't, we need to initialize the DVs
 ; (HP is initialized at the end of the battle)
+; RN3: rolled through .RollDVs like every other wild DV pair.
 	call GetRoamMonDVs
+	call .RollDVs ; bc = DVs; hl preserved
 	inc hl
-	call BattleRandom
+	ld a, c
 	ld [hld], a
-	ld c, a
-	call BattleRandom
-	ld [hl], a
-	ld b, a
+	ld [hl], b
 ; We're done with DVs
 	jr .UpdateDVs
 
@@ -6298,10 +6297,7 @@ LoadEnemyMon:
 
 .GenerateDVs:
 ; Generate new random DVs
-	call BattleRandom
-	ld b, a
-	call BattleRandom
-	ld c, a
+	call .RollDVs
 
 .UpdateDVs:
 ; Input DVs in register bc
@@ -6585,6 +6581,44 @@ LoadEnemyMon:
 	call CopyBytes
 
 ; BUG: PRZ and BRN stat reductions don't apply to switched Pokémon (see docs/bugs_and_glitches.md)
+	ret
+
+.RollDVs:
+; RN3 (docs/RN1-RNG.md): wild DVs in bc.  Vanilla took two back-to-back
+; BattleRandom bytes, so c = b - rDIV - carry: the pair was one byte of entropy
+; plus a DIV-gated offset, and a state-load hunt saw nothing like 1/8192.
+; Roll the same two numbers (RNG consumption unchanged), then run the full
+; 16-bit generator state (b, c) = (hRandomAdd, hRandomSub) through a 4-round
+; Feistel network, a bijection on 65,536 pairs:
+;   c += rlc(b) ^ b;  b ^= swap(c) + c;  c += rlc3(b) ^ b;  b ^= swap(c) + c
+; A uniform generator state at the roll gives a uniform pair (shiny 1/8192);
+; a near-linear state (no reseed: hRandomAdd + hRandomSub drifts slowly) comes
+; out scrambled.  Forced-shiny battles never get here; the Unown/Magikarp
+; re-rolls jump back to .GenerateDVs and draw two fresh numbers each time.
+; Clobbers a, f, b, c only (hl is live in the roamer path).
+	call BattleRandom
+	call BattleRandom
+	ld c, a
+	ldh a, [hRandomAdd]
+	ld b, a
+	rlca
+	xor b
+	add c
+	ld c, a
+	swap a
+	add c
+	xor b
+	ld b, a
+	rlca
+	rlca
+	rlca
+	xor b
+	add c
+	ld c, a
+	swap a
+	add c
+	xor b
+	ld b, a
 	ret
 
 CheckSleepingTreeMon:
