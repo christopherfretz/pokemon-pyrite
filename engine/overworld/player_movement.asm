@@ -686,10 +686,25 @@ ENDM
 ; Find an object struct with coordinates equal to d,e
 	ld bc, wObjectStructs ; redundant
 	farcall IsNPCAtCoord
-	jr nc, .no_npc
+	jr nc, .check_parked_follower
 	call .CheckStrengthBoulder
 	jr c, .no_bump
 
+	xor a ; bump
+	ret
+
+.check_parked_follower
+; BH2 (docs/M3-CERULEAN.md "BH2 findings"): IsNPCAtCoord skips the Pikachu
+; follower so the player can walk through a FOLLOWING Pikachu, but Yellow's
+; CollisionCheckOnLand bumps the player into a PARKED one
+; (CheckPikachuFollowingPlayer nz: Bill's house, the Fan Club, asleep in the
+; Pewter Center -- our wPikaAsleep), B button or not.  hMapObjectIndex is 0
+; (the player), which IsFollowerAtCoord does not skip.
+	ld a, [wPikaAsleep]
+	and a
+	jr z, .no_npc
+	farcall IsFollowerAtCoord
+	jr nc, .no_npc
 	xor a ; bump
 	ret
 

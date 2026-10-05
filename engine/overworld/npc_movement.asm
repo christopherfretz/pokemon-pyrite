@@ -284,7 +284,9 @@ IsFollowerAtCoord:
 ; colliding with Pikachu (slot 15): every other sprite's CanWalkOntoTile is
 ; blocked by it.  Without this a wanderer could step onto Pikachu's tile and
 ; A would talk to Pikachu instead (TryObjectEvent checks CheckFacingFollower
-; first).  d, e = map coords.  Carry if the follower's destination or current
+; first).  BH2: the player's own step also calls this, but only while Pikachu
+; is parked (wPikaAsleep), as Yellow does.
+; d, e = map coords.  Carry if the follower's destination or current
 ; tile is (d, e).  Keeps bc, de.
 	ldh a, [hMapObjectIndex]
 	cp FOLLOWER_OBJECT

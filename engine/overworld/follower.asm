@@ -841,7 +841,8 @@ FanClubPikachuWalk::
 .park
 ; Yellow's DisablePikachuFollowingPlayer.  That is the same bit as the Pewter
 ; JIGGLYPUFF sleep in Yellow (home/pikachu.asm:47 is one `bit 1`), so it is our
-; wPikaAsleep: Pikachu stands still and is walk-through until the player talks
+; wPikaAsleep: Pikachu stands still and is solid (BH2: Yellow's CollisionCheckOnLand
+; bumps the player into a parked Pikachu) until the player talks
 ; to it (emotion 30's CHECKLAVENDERTOWER subcommand clears it again) or the map
 ; reloads.
 	ld a, TRUE
