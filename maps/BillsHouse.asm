@@ -266,7 +266,15 @@ BillsHousePCScript:
 ; DOWN (his object_event tile), DelayFrames 8, then walks out DOWN, RIGHT x3,
 ; DOWN to (4,4).  Script7/8: the player is shoved RIGHT x3 from the chair to
 ; (4,5), faces UP, BILL faces DOWN, and the S.S. TICKET text runs.
+; BH2 nit (review 2026-10-05): a game saved in here on a pre-BH1 build keeps
+; its saved object list on Continue (LoadMapAttributes_SkipObjects), so BILL 1
+; would still be at the old (6,2) with STANDING_LEFT and walk out of the room
+; (then turn back LEFT once the script ends).  Pin him to Yellow's pod tile and
+; movement first; all three writes are no-ops on a current save.
+	moveobject BILLSHOUSE_BILL_1, 1, 2
+	loadmem wMapObjects + (BILLSHOUSE_BILL_1 - 1) * MAPOBJECT_LENGTH + MAPOBJECT_MOVEMENT, SPRITEMOVEDATA_STANDING_DOWN ; consts start at 2, slots at 1
 	appear BILLSHOUSE_BILL_1
+	turnobject BILLSHOUSE_BILL_1, DOWN
 	pause 8
 ; PE1: Yellow's BillsHouseScript5 -- a parked Pikachu looks LEFT, gets the
 ; EXCLAMATION_BUBBLE and plays emotion 27.  With Pikachu following, Yellow shows
