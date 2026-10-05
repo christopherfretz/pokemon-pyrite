@@ -14,7 +14,7 @@
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 09
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 0a
 	tilecoll WALL, FLOOR, FLOOR, FLOOR ; 0b
-	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 0c
+	tilecoll FLOOR, FLOOR, WARP_CARPET_DOWN, WARP_CARPET_DOWN ; 0c  ; warp override: BILL's house exit mat (BH1)
 	tilecoll WALL, WALL, WALL, WALL ; 0d
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 0e
 	tilecoll FLOOR, FLOOR, FLOOR, FLOOR ; 0f

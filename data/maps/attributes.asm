@@ -624,7 +624,7 @@ ENDM
 	map_attributes Route10Pokecenter1F, ROUTE_10_POKECENTER_1F, $00
 	map_attributes Route10Pokecenter2FBeta, ROUTE_10_POKECENTER_2F_BETA, $00
 	map_attributes PowerPlant, POWER_PLANT, $00
-	map_attributes BillsHouse, BILLS_HOUSE, $00
+	map_attributes BillsHouse, BILLS_HOUSE, $0d ; BH1: Yellow's border block (INTERIOR $0d, solid black)
 	map_attributes AzaleaPokecenter1F, AZALEA_POKECENTER_1F, $00
 	map_attributes CharcoalKiln, CHARCOAL_KILN, $00
 	map_attributes AzaleaMart, AZALEA_MART, $00

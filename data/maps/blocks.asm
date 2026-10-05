@@ -1048,9 +1048,10 @@ FuchsiaGoodRodHouse_Blocks:
 	INCBIN "maps/FuchsiaGoodRodHouse.blk"
 
 ; Kanto hack: Bill's House (docs/M3-CERULEAN.md, 6j).  Split out of the shared
-; House1 alias group above: Bill's cutscene needs a cell-separator console and
-; a bank of machines along the north wall, which House1's living room has not
-; got.  Re-cut from TILESET_HOUSE metatiles only (no new graphics).
+; House1 alias group above.  BH1: now Yellow's own BillsHouse.blk byte for byte
+; on TILESET_KANTO_INTERIOR (Yellow's INTERIOR, ported for SILPH CO. 11F) --
+; the two-pod TELEPORTER and the cell-separator console; checked by
+; scripts/kanto_interior_blk.py --check.
 BillsHouse_Blocks:
 	INCBIN "maps/BillsHouse.blk"
 

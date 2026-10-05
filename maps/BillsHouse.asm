@@ -15,26 +15,23 @@
 ; Kanto's and deliberately does not set EVENT_MET_BILL, which in Crystal is
 ; BillsFamilysHouse's object-hide flag and gates the Pokecenter 2F PC speech.
 ;
-; MAP: hack/maps/BillsHouse.blk is new (6j), split out of the shared House1
-; alias group in data/maps/blocks.asm.  Yellow's interior has a wall-sized
-; TELEPORTER that TILESET_HOUSE simply has not got, and porting its ~30 8x8
-; tiles into house.2bpp was not worth it, so the room is re-cut from existing
-; TILESET_HOUSE metatiles: $10 PC desk (the cell-separator console, PC quadrant
-; at map (2,1)) and 3x $2c machine bank across the rest of the north wall
-; (N1e: block (0,0) was $04 bookshelf, whose COLL_BOOKSHELF quadrants gave
-; Crystal's MagazineBookshelfScript inside Bill's Sea Cottage -- see the N1.1
-; audit note G-5), open floor, and House1's own bottom row ($06 / $0b door /
-; $0f / $07) so the two door tiles stay at (2,7) and (3,7) and Route 25's
-; warp is unchanged.  Walkable floor is y=2..7 (x=0 and x=7 are walls on the
-; bottom row only).  Yellow's choreography is adapted to it 1:1 in shape:
-;   Yellow                              here
-;   BILL-as-#MON  (6,5)                 (6,5)          same tile
-;   walks UP,UP,UP into the pod         UP,UP,UP  -> (6,2), under the machine
-;   (or RIGHT,UP,UP,LEFT,UP round you)  same five steps
-;   PC at (1,4), player stands (1,5)    PC at (2,1), player stands (2,2)
-;   BILL pops out, player shoved RIGHT  player shoved RIGHT x3 -> (5,2)
-;     x3, they end up face to face      BILL 1 at (6,2), facing LEFT
-;   BILL 2 replaces him at (6,5)        same
+; MAP (BH1, operator report 2026-10-05): hack/maps/BillsHouse.blk is Yellow's
+; own BillsHouse.blk byte for byte, on TILESET_KANTO_INTERIOR (Yellow's INTERIOR
+; tileset, ported wholesale for SILPH CO. 11F in M8 11b), so the two-pod
+; TELEPORTER, the console and the PC chair are Yellow's tiles and collision.
+; (6j had re-cut the room from TILESET_HOUSE furniture, which has no pods, so
+; BILL walked UP x3 into a bookshelf.)  The only collision override is the exit
+; mat, block $0c -> WARP_CARPET_DOWN (scripts/kanto_interior_blk.py).  Every
+; coordinate below is Yellow's (vendor/pokeyellow/data/maps/objects/
+; BillsHouse.asm, scripts/BillsHouse.asm):
+;   BILL-as-#MON at (6,5) walks UP x3 into the right pod at (6,2), or
+;     RIGHT,UP,UP,LEFT,UP round a player standing on (6,4) facing DOWN
+;   PC hidden event at (1,4), facing UP; the player stands on the chair (1,5)
+;   BILL 1 pops out of the LEFT pod at (1,2) (Yellow's BillsHouseScript5
+;     SetSpritePosition1; its object data says (4,4), which is only where he
+;     ends up), walks DOWN,RIGHT,RIGHT,RIGHT,DOWN to (4,4); the player is then
+;     shoved RIGHT x3 to (4,5), faces UP, BILL faces DOWN
+;   BILL 2 replaces him at (6,5) on later visits
 ;
 ; SCENE/FLAG MACHINE (docs/PORTING.md 3.4): Yellow drives this with
 ; wBillsHouseCurScript plus a persistent ShowObject/HideObject toggle table,
@@ -57,16 +54,70 @@
 
 BillsHouse_MapScripts:
 	def_scene_scripts
-	scene_script BillsHouseNoopScene, SCENE_BILLSHOUSE_BILL_IS_A_POKEMON
-	scene_script BillsHouseNoopScene, SCENE_BILLSHOUSE_FINISHED
+	scene_script BillsHouseHealScene, SCENE_BILLSHOUSE_BILL_IS_A_POKEMON
+	scene_script BillsHouseHealScene, SCENE_BILLSHOUSE_FINISHED
 
 	def_callbacks
 	callback MAPCALLBACK_OBJECTS, BillsHouseObjectsCallback
 
-BillsHouseNoopScene:
+BillsHouseHealScene:
+	callasm BillsHouseHealStaleBlocks
+	iffalse .done
+	refreshmap
+.done
 	end
 
-; Both scenes are no-ops.  The stored scene is recomputed below on every load
+; BH1 save compatibility.  A game saved INSIDE this house on a build before BH1
+; carries the old room's block ids in wScreenSave (the 6x5 blocks round the
+; player are part of the saved map data), and MapSetupScript_Continue writes
+; them back over the freshly loaded .blk (LoadConnectionBlockData).  On the new
+; tileset those ids are wrong art and wrong collision, and the exit mat is not a
+; warp, so the player is stuck.  This map never edits its own blocks
+; (no changeblock), so any difference from the ROM .blk is stale: reload the
+; blocks, re-buffer wScreenSave so the next save is clean, and redraw.  Costs a
+; 16-byte compare per overworld frame in this one room.
+BillsHouseHealStaleBlocks:
+	xor a
+	ld [wScriptVar], a
+	ld hl, wOverworldMapBlocks + (BILLS_HOUSE_WIDTH + 6) * 3 + 3
+	ld a, [wMapBlocksPointer]
+	ld e, a
+	ld a, [wMapBlocksPointer + 1]
+	ld d, a
+	ld c, BILLS_HOUSE_HEIGHT
+.row
+	ld b, BILLS_HOUSE_WIDTH
+.col
+	push hl
+	ld h, d
+	ld l, e
+	ld a, [wMapBlocksBank]
+	call GetFarByte
+	pop hl
+	cp [hl]
+	jr nz, .heal
+	inc de
+	inc hl
+	dec b
+	jr nz, .col
+	ld a, l
+	add 6
+	ld l, a
+	jr nc, .next
+	inc h
+.next
+	dec c
+	jr nz, .row
+	ret
+
+.heal
+	call LoadBlockData
+	call BufferScreen
+	ld a, TRUE
+	ld [wScriptVar], a
+	ret
+
+; Both scenes run only the heal above.  The stored scene is recomputed below on every load
 ; so a white-out or a save/reload can never desync it from the objects, and
 ; SCENE_BILLSHOUSE_BILL_IS_A_POKEMON arms the Pikachu coord_event (PE1).
 BillsHousePikachuSceneScript:
@@ -211,17 +262,30 @@ BillsHousePCScript:
 	waitsfx
 	pause 32
 	special RestartMapMusic
-; BILL steps out of the far end of the machine at (6,2) already facing LEFT
-; (SPRITEMOVEDATA_STANDING_LEFT), and the player is shoved three tiles east to
-; (5,2) so the two of them end up nose to nose, as in Yellow.
+; Yellow's BillsHouseScript5: BILL appears in the LEFT pod at (1,2) facing
+; DOWN (his object_event tile), DelayFrames 8, then walks out DOWN, RIGHT x3,
+; DOWN to (4,4).  Script7/8: the player is shoved RIGHT x3 from the chair to
+; (4,5), faces UP, BILL faces DOWN, and the S.S. TICKET text runs.
 	appear BILLSHOUSE_BILL_1
+	pause 8
 ; PE1: Yellow's BillsHouseScript5 -- a parked Pikachu looks LEFT, gets the
 ; EXCLAMATION_BUBBLE and plays emotion 27.  With Pikachu following, Yellow shows
 ; no bubble at all (the old stand-in "!" over the player is gone).
 	special BillsHousePikachuSurprised
+	applymovement BILLSHOUSE_BILL_1, BillsHouseBillExitMachine
 	applymovement PLAYER, BillsHousePlayerStepAside
+	turnobject PLAYER, UP
+	turnobject BILLSHOUSE_BILL_1, DOWN
 	setevent EVENT_USED_CELL_SEPARATOR_ON_BILL
 	sjump BillsHouseBillThanks
+
+BillsHouseBillExitMachine:
+	step DOWN
+	step RIGHT
+	step RIGHT
+	step RIGHT
+	step DOWN
+	step_end
 
 ; Yellow's forced walk is a simulated joypad (RLE_1e219 = PAD_RIGHT x3).  GSC's
 ; equivalent is applymovement PLAYER, which used to FREEZE the Pikachu follower
@@ -388,9 +452,9 @@ BillsHouse_MapEvents:
 	coord_event  3,  6, SCENE_BILLSHOUSE_BILL_IS_A_POKEMON, BillsHousePikachuSceneScript
 
 	def_bg_events
-	bg_event  2,  1, BGEVENT_UP, BillsHousePCScript
+	bg_event  1,  4, BGEVENT_UP, BillsHousePCScript ; Yellow's hidden_event 1, 4, SPRITE_FACING_UP
 
 	def_object_events
 	object_event  6,  5, SPRITE_MONSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, BillsHouseBillPokemonScript, EVENT_BILLS_HOUSE_BILL_POKEMON_HIDDEN
-	object_event  6,  2, SPRITE_BILL, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BillsHouseBillScript, EVENT_BILLS_HOUSE_BILL_1_HIDDEN
+	object_event  1,  2, SPRITE_BILL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BillsHouseBillScript, EVENT_BILLS_HOUSE_BILL_1_HIDDEN
 	object_event  6,  5, SPRITE_BILL, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, BillsHouseBill2Script, EVENT_BILLS_HOUSE_BILL_2_HIDDEN
