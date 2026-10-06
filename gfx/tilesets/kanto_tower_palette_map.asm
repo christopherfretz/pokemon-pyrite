@@ -15,9 +15,16 @@
 ;          cabinets of blocks $2d and $3b; $20 $21 $23 $30 $31 $33, the desk
 ;          and its drawers, block $2c; and $28 $29 $38 $39 $48 $49, the tall
 ;          double doors of block $43.
+;          CA1 (2026-10-05): and the gravestones, $05 $06 $15 $16.  The
+;          colour audit found them the last big GRAY object in the tower.
+;          Crystal's only graveyard room, the SOUL HOUSE, draws its
+;          headstones BROWN on a tan plinth, so these copy it.  On 1F/2F
+;          (INDOOR set) BROWN's colour 0 is a slightly darker cream, so each
+;          stone sits on a faint tan square exactly like Crystal's; on
+;          3F-7F (DUNGEON, PALETTE_DAY set) colour 0 matches GRAY's and the
+;          stones sit straight on the floor.
 ;   GRAY   everything else -- the diagonally hatched floor ($01), the black
-;          walls and their lips ($09 $0a $19 $1a $11), the gravestones
-;          ($05 $06 $15 $16), the staircases ($03 $04 $13 $14 $0b $0c $1b $1c),
+;          walls and their lips ($09 $0a $19 $1a $11), the staircases ($03 $04 $13 $14 $0b $0c $1b $1c),
 ;          the chequered and white-tiled floors ($10 $1f $22 $33), the window
 ;          and doorway frames ($2a-$2e $3a-$3c), the counter ($02 $12) and the
 ;          solid border tile $47 of block $00.
@@ -26,9 +33,9 @@
 ; any block; they get GRAY so the rows stay readable.
 ;
 ; Both VRAM banks get identical rows, as Crystal's own tower_palette_map.asm does.
-	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN
+	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN, BROWN, BROWN
 	tilepal 0, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
-	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN
+	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN, BROWN, BROWN
 	tilepal 0, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 0, BROWN, BROWN, GRAY, BROWN, GRAY, GRAY, GRAY, GREEN
 	tilepal 0, BROWN, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN
@@ -43,9 +50,9 @@ rept 16
 	db $ff
 endr
 
-	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN
+	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN, BROWN, BROWN
 	tilepal 1, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
-	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN
+	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, BROWN, BROWN, BROWN
 	tilepal 1, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 1, BROWN, BROWN, GRAY, BROWN, GRAY, GRAY, GRAY, GREEN
 	tilepal 1, BROWN, BROWN, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN
