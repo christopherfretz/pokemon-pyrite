@@ -8,6 +8,18 @@
 ; pulled out.  Roles read off the blockset (128 blocks,
 ; data/tilesets/kanto_facility_metatiles.bin):
 ;
+;   ROOF   $01 -- the checker floor (CA1, 2026-10-05).  It used to be GRAY,
+;          which left all 21 FACILITY maps reading as uncoloured; Crystal's
+;          own FACILITY maps (Silph 1F, the Rocket base, the Power Plant)
+;          all lay a pale-blue checker, so the floor now does too.  $01 is
+;          the only tile in the set that carries the checker (no wall, desk
+;          or arrow tile shares its pixels), so there is no tile-edge seam.
+;          ROOF rather than WATER on purpose: indoors the two are nearly the
+;          same light blue (17,19,31 vs 15,16,31), but the MANSION and the
+;          POWER PLANT are DUNGEON maps on the PALETTE_DAY outdoor set, where
+;          WATER is the saturated sea blue (8,12,31) and ROOF is a pale cyan
+;          -- the closest that set gets to Crystal's facility floor.  Both
+;          keep colour 0 equal to GRAY's, so the white squares do not move.
 ;   GREEN  $05 $06 $15 $16 -- the fronds of the potted palm, block $0b (and
 ;          its neighbours $09 $0c-$0f).  The palm is the only greenery in the
 ;          hideout and the one splash of colour a player sees down there.
@@ -16,7 +28,7 @@
 ;          places in blocks $1d $26 $35 and friends.  Crystal tints its own
 ;          machine banks (lab, Radio Tower) blue the same way, and it makes the
 ;          Rocket terminals read as equipment rather than as more wall.
-;   GRAY   everything else -- the plain floor ($01 $11), the panelled and
+;   GRAY   everything else -- the solid dark fill ($11), the panelled and
 ;          riveted walls ($2a $2b $2c $3a $32 $52), the doorways ($43 $58),
 ;          the lift doors, the stairs, the counter tile ($12), the white
 ;          shrub clumps ($22 $26 $36 $52-$54) that only SILPH CO and the
@@ -34,7 +46,7 @@
 ;
 ; Both VRAM banks get identical rows, as Crystal's own facility_palette_map.asm
 ; does.
-	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
+	tilepal 0, GRAY, ROOF, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
 	tilepal 0, GRAY, WATER, WATER, GRAY, GRAY, GRAY, GRAY, BROWN
 	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
 	tilepal 0, GRAY, WATER, WATER, GRAY, GRAY, GRAY, GRAY, BROWN
@@ -51,7 +63,7 @@ rept 16
 	db $ff
 endr
 
-	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
+	tilepal 1, GRAY, ROOF, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
 	tilepal 1, GRAY, WATER, WATER, GRAY, GRAY, GRAY, GRAY, BROWN
 	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, BROWN
 	tilepal 1, GRAY, WATER, WATER, GRAY, GRAY, GRAY, GRAY, BROWN
