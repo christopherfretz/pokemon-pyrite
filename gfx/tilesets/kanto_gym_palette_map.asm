@@ -19,14 +19,21 @@
 ;          $07 $08 $17 $18 -- the round shrubs (blocks $06-$13).
 ;          $2c-$2f -- the tree/planter tops of blocks $34-$3f.
 ;          $40 $41 $50 $51 -- the potted plants (blocks $3c/$3d/$3f).
-;   GRAY   everything else: the plank floor ($10 $11), the black partition
+;   BROWN  $10 $11 -- the plank floor (CA1, 2026-10-05).  It was GRAY, which
+;          the colour audit found left VIRIDIAN GYM reading as an uncoloured
+;          room.  Crystal paints wooden floors BROWN, and our own SHIP map
+;          already does the same for the S.S. Anne's plank deck, so the dojo
+;          boards follow.  $11 is the open planks and $10 the plank row
+;          under a partition, with its stippled shadow on top; neither holds
+;          any wall pixels, so no seam.
+;   GRAY   everything else: the black partition
 ;          walls ($0f $24-$27 $35 $3e $42), the RHYDON statues on their plinths
 ;          ($02 $12 $13 $22 $23 $32 $33 $38), the landing markers ($3f), the
 ;          E4/HoF furniture ($45-$4b $52-$5f) -- 13f-13j colour those rooms.
 
 	tilepal 0, GRAY, GRAY, GRAY, GREEN, WATER, GRAY, RED, GREEN
 	tilepal 0, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
-	tilepal 0, GRAY, GRAY, GRAY, GRAY, WATER, GRAY, RED, GREEN
+	tilepal 0, BROWN, BROWN, GRAY, GRAY, WATER, GRAY, RED, GREEN
 	tilepal 0, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 0, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 0, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, GREEN, GREEN
@@ -43,7 +50,7 @@ endr
 
 	tilepal 1, GRAY, GRAY, GRAY, GREEN, WATER, GRAY, RED, GREEN
 	tilepal 1, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
-	tilepal 1, GRAY, GRAY, GRAY, GRAY, WATER, GRAY, RED, GREEN
+	tilepal 1, BROWN, BROWN, GRAY, GRAY, WATER, GRAY, RED, GREEN
 	tilepal 1, GREEN, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 1, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, GRAY
 	tilepal 1, GRAY, GRAY, GRAY, GRAY, GREEN, GREEN, GREEN, GREEN
