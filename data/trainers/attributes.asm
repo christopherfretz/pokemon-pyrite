@@ -98,20 +98,20 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Brock
-	db HYPER_POTION, NO_ITEM ; items
+; Brock -- Kanto hack (TI1): Yellow's BROCK AI uses FULL HEAL whenever his mon has a status (up to 5; Crystal caps at 2)
+	db FULL_HEAL, FULL_HEAL ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Misty
-	db FULL_HEAL, NO_ITEM ; items
+; Misty -- Kanto hack (TI1): Yellow's MISTY AI uses 1 X DEFEND
+	db X_DEFEND, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Lt Surge
-	db HYPER_POTION, NO_ITEM ; items
+; Lt Surge -- Kanto hack (TI1): Yellow's LT_SURGE AI uses 1 X SPEED
+	db X_SPEED, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -122,8 +122,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_SETUP | AI_TYPES | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Erika
-	db HYPER_POTION, NO_ITEM ; items
+; Erika -- Kanto hack (TI1): Yellow's ERIKA AI uses 1 SUPER POTION
+	db SUPER_POTION, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -152,8 +152,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_CAUTIOUS | AI_STATUS
 	dw CONTEXT_USE | SWITCH_OFTEN
 
-; Koga_Leader
-	db FULL_HEAL, FULL_RESTORE ; items
+; Koga_Leader -- Kanto hack (TI1): Yellow's KOGA AI uses 2 X ATTACKs
+	db X_ATTACK, X_ATTACK ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -206,8 +206,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_OPPORTUNIST | AI_AGGRESSIVE | AI_STATUS
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Sabrina
-	db HYPER_POTION, NO_ITEM ; items
+; Sabrina -- Kanto hack (TI1): Yellow's SABRINA AI uses 1 X DEFEND
+	db X_DEFEND, NO_ITEM ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
@@ -272,8 +272,8 @@ TrainerClassAttributes:
 	dw AI_BASIC | AI_TYPES | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
 
-; Blaine
-	db MAX_POTION, FULL_HEAL ; items
+; Blaine -- Kanto hack (TI1, overrides D126's 'keep Crystal'): Yellow's BLAINE AI uses 2 SUPER POTIONs
+	db SUPER_POTION, SUPER_POTION ; items
 	db 25 ; base reward
 	dw AI_BASIC | AI_SETUP | AI_SMART | AI_AGGRESSIVE | AI_CAUTIOUS | AI_STATUS | AI_RISKY
 	dw CONTEXT_USE | SWITCH_SOMETIMES
