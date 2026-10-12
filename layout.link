@@ -388,6 +388,11 @@ ROMX $77
 	"bank77"
 	"Pokégear GFX"
 	"European Mail"
+	; Kanto hack (CH1b): Yellow's HOUSE tileset for CERULEAN's trashed house
+	; ($70c bytes).  CH1 left it floating and rgblink bin-packed it into bank
+	; $01's tail, the engine bank kept for code; $77 had $dca free.  Appended
+	; last so nothing already in $77 moves.
+	"Tileset Data 16"
 ROMX $78
 	"Debug Room"
 	"Tileset Data 8"

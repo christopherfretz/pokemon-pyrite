@@ -173,6 +173,7 @@ MapSetupScript_Continue:
 	mapsetup DisableLCD
 	mapsetup InitSound
 	mapsetup LoadMapAttributes_SkipObjects
+	mapsetup RefreshMapObjectScripts ; CH1b: saved NPC script addresses -> this ROM's
 	mapsetup GetMapScreenCoords
 	mapsetup HandleContinueMap
 	mapsetup LoadBlockData

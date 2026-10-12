@@ -315,6 +315,7 @@ INCLUDE "engine/events/engine_flags.asm"
 INCLUDE "engine/overworld/variables.asm"
 INCLUDE "data/text/battle.asm"
 INCLUDE "engine/debug/color_picker.asm"
+INCLUDE "engine/overworld/refresh_map_object_scripts.asm"
 
 
 SECTION "bank21", ROMX

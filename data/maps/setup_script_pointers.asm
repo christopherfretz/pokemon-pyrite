@@ -60,3 +60,4 @@ MapSetupCommands:
 	add_mapsetup InitMapNameSign ; 2d
 	add_mapsetup SpawnFollower ; 2e
 	add_mapsetup RefreshConnectionSprites ; 2f
+	add_mapsetup RefreshMapObjectScripts ; 30 (CH1b: Continue only)

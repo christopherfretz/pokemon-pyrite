@@ -535,8 +535,9 @@ INCLUDE "data/tilesets/kanto_cave_collision.asm"
 
 SECTION "Tileset Data 16", ROMX
 
-; Floating (not in layout.link): ~1.8 KB, and "Tileset Data 15"'s bank $78
-; had only $5bf bytes left after the cave.
+; Pinned to bank $77 in layout.link (CH1b): ~1.8 KB, "Tileset Data 15"'s
+; bank $78 had only $5bf bytes left after the cave, and left floating it
+; landed in bank $01, the engine's bank.
 ;
 ; Yellow's HOUSE tileset, ported wholesale by CH1 (docs/M3-CERULEAN.md
 ; "## CH1 findings") for CERULEAN's trashed house, the ransacked room with the
