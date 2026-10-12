@@ -138,6 +138,10 @@ INCLUDE "gfx/tilesets/kanto_lab_palette_map.asm"
 TilesetKantoBeachHousePalMap:
 INCLUDE "gfx/tilesets/kanto_beach_house_palette_map.asm"
 
+; Kanto hack: Yellow's HOUSE tileset, CERULEAN's trashed house (CH1).
+TilesetKantoHousePalMap:
+INCLUDE "gfx/tilesets/kanto_house_palette_map.asm"
+
 ; Kanto hack: Yellow's GYM (= DOJO) tileset, VIRIDIAN GYM (M10 13a).
 TilesetKantoGymPalMap:
 INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"

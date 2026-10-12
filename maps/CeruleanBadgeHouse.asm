@@ -4,13 +4,14 @@
 ; data/maps/objects/CeruleanBadgeHouse.asm, text/CeruleanBadgeHouse.asm +
 ; text/CeruleanBadgeHouse_2.asm; docs/M3-CERULEAN.md 3.9 and "6k findings").
 ;
-; 6a laid in the geometry: warp 1 is the gap in the back wall at OUR interior
-; (2,0) -- Yellow's own badge house puts its back door at (2,0) too, so unlike
-; the trashed house nothing had to move -- and warps 2/3 are the front door.
-; The room is `House1Hole.blk`, SHARED with CERULEAN_TRASHED_HOUSE
-; (hack/data/maps/blocks.asm), so it is deliberately left alone here: re-cutting
-; a proper TILESET_HOUSE back door would need a new metatile and would move the
-; trashed house's Rocket hole with it.
+; 6a laid in the geometry: warp 1 is the back door at (2,0), warps 2/3 the
+; front door.  CH1 (docs/M3-CERULEAN.md "## CH1 findings") replaced 6a's shared
+; House1Hole.blk room with Yellow's own: `map_header ..., SHIP`, and its .blk is
+; byte-identical to FUCHSIA_GOOD_ROD_HOUSE's, so this is that room on
+; TILESET_SHIP -- block $09's LADDER is the real door in the back wall at (2,0),
+; block $1b the front door.  The man was already at Yellow's (5,3).  Saves made
+; in here before CH1 are healed by CeruleanPassHouseHealStaleBlocks
+; (maps/CeruleanTrashedHouse.asm).
 ;
 ; The man is Yellow's `SPRITE_MIDDLE_AGED_MAN` at (5,3) facing RIGHT ->
 ; SPRITE_POKEFAN_M (survey 2).
@@ -34,8 +35,21 @@
 
 CeruleanBadgeHouse_MapScripts:
 	def_scene_scripts
+	scene_script CeruleanBadgeHouseHealScene ; scene 0, the only one
 
 	def_callbacks
+	callback MAPCALLBACK_CMDQUEUE, CeruleanBadgeHouseSceneCallback
+
+CeruleanBadgeHouseSceneCallback:
+	callasm CeruleanPassHouseFindScene ; see CeruleanTrashedHouse.asm
+	endcallback
+
+CeruleanBadgeHouseHealScene:
+	callasm CeruleanPassHouseHealStaleBlocks
+	iffalse .done
+	refreshmap
+.done
+	end
 
 CeruleanBadgeHouseMiddleAgedManScript:
 	faceplayer
@@ -246,7 +260,7 @@ CeruleanBadgeHouse_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
-	warp_event  2,  0, CERULEAN_CITY, 10 ; gap in the back wall (Yellow: 2, 0 too)
+	warp_event  2,  0, CERULEAN_CITY, 10 ; back door (Yellow: 2, 0 too)
 	warp_event  2,  7, CERULEAN_CITY, 9
 	warp_event  3,  7, CERULEAN_CITY, 9
 

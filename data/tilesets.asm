@@ -74,4 +74,6 @@ Tilesets::
 	tileset TilesetKantoBeachHouse
 ; CT1: Yellow's CAVERN, every Kanto cave (docs/CT1-KANTO-CAVE.md).
 	tileset TilesetKantoCave
+; CH1: Yellow's HOUSE, CERULEAN's trashed house (docs/M3-CERULEAN.md).
+	tileset TilesetKantoHouse
 	assert_table_length NUM_TILESETS + 1

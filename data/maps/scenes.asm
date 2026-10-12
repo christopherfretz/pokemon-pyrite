@@ -97,4 +97,6 @@ MapScenes::
 	scene_var BILLS_HOUSE,                                 wBillsHouseSceneID
 	scene_var VERMILION_CITY,                              wVermilionCitySceneID
 	scene_var ROUTE_23,                                    wRoute23SceneID ; M10 13e-1
+	scene_var CERULEAN_TRASHED_HOUSE,                      wCeruleanTrashedHouseSceneID ; CH1
+	scene_var CERULEAN_BADGE_HOUSE,                        wCeruleanBadgeHouseSceneID ; CH1
 	db -1 ; end

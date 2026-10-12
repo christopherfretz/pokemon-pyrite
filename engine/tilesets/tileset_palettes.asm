@@ -8,6 +8,8 @@ LoadSpecialMapPalette:
 	jr z, .ice_path
 	cp TILESET_HOUSE
 	jr z, .house
+	cp TILESET_KANTO_HOUSE ; CH1: Yellow's HOUSE art, Crystal's house colours
+	jr z, .house
 	cp TILESET_RADIO_TOWER
 	jr z, .radio_tower
 	cp TILESET_MANSION

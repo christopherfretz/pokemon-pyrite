@@ -1023,14 +1023,23 @@ Museum2F_Blocks:
 
 
 ; Kanto hack: Cerulean (docs/M3-CERULEAN.md, 6a).  Route 24 grew 10x9 ->
-; 10x18 and no longer fits in "Map Blocks 1".  House1Hole is House1 with a
-; hole in the back wall for the two pass-through houses.
+; 10x18 and no longer fits in "Map Blocks 1".
 Route24_Blocks:
 	INCBIN "maps/Route24.blk"
 
+; CH1 (docs/M3-CERULEAN.md "## CH1 findings"): the two pass-through houses are
+; Yellow's own rooms, byte for byte (scripts/kanto_house_blk.py), each with its
+; own INCBIN.  6a's shared House1Hole.blk placeholder is retired.
+;   * the trashed house on TILESET_KANTO_HOUSE (Yellow's HOUSE): block $1f's
+;     top-right LADDER is the hole in the back wall at (3,0);
+;   * the badge house on TILESET_SHIP: the same bytes as FUCHSIA_GOOD_ROD_HOUSE
+;     below (Yellow draws both rooms identically), block $09's LADDER is the
+;     back door at (2,0).
 CeruleanTrashedHouse_Blocks:
+	INCBIN "maps/CeruleanTrashedHouse.blk"
+
 CeruleanBadgeHouse_Blocks:
-	INCBIN "maps/House1Hole.blk"
+	INCBIN "maps/CeruleanBadgeHouse.blk"
 
 ; Kanto hack (docs/M7-FUCHSIA.md, 10f/10g): FUCHSIA's GOOD ROD HOUSE is a
 ; pass-through house in Yellow too -- its back door at (2,0) is the only way
@@ -1039,11 +1048,10 @@ CeruleanBadgeHouse_Blocks:
 ; Yellow's bytes verbatim: block $09 puts a LADDER at (2,0) and $1b the front
 ; door at (2,7)/(3,7).  10f's House1Hole placeholder is retired.
 ;
-; ⚠ The two CERULEAN labels above KEEP House1Hole and now INCBIN it themselves:
-; they used to fall through to this INCBIN, so repointing this one at the SHIP
-; room silently took Cerulean's trashed house and badge house with it and walled
-; up the hole at their (2,0) -- which is the only way to Cerulean's south road.
-; Never let an alias group end on a label that is about to get its own blk.
+; ⚠ The two CERULEAN labels above used to fall through to this INCBIN, so
+; repointing it at the SHIP room once silently took Cerulean's trashed house and
+; badge house with it.  Never let an alias group end on a label that is about
+; to get its own blk.
 FuchsiaGoodRodHouse_Blocks:
 	INCBIN "maps/FuchsiaGoodRodHouse.blk"
 
