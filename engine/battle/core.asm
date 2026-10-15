@@ -4821,6 +4821,11 @@ PrintPlayerHUD:
 	inc de
 	ld a, [hl]
 	ld [de], a
+	; GF2: the party mon's gender bits too (CaughtLevel = DVs + 8)
+	ld bc, MON_CAUGHTLEVEL - (MON_DVS + 1)
+	add hl, bc
+	ld a, [hl]
+	ld [wTempMonCaughtLevel], a
 	ld hl, wBattleMonLevel
 	ld de, wTempMonLevel
 	ld bc, wTempMonStructEnd - wTempMonLevel
@@ -4899,22 +4904,7 @@ DrawEnemyHUD:
 	ld l, c
 	dec hl
 
-	ld hl, wEnemyMonDVs
-	ld de, wTempMonDVs
-	ld a, [wEnemySubStatus5]
-	bit SUBSTATUS_TRANSFORMED, a
-	jr z, .ok
-	ld hl, wEnemyBackupDVs
-.ok
-	ld a, [hli]
-	ld [de], a
-	inc de
-	ld a, [hl]
-	ld [de], a
-
-	ld a, TEMPMON
-	ld [wMonType], a
-	callfar GetGender
+	callfar GetEnemyMonGender ; GF2: DVs (backup if transformed) + rolled gender
 	ld a, ' '
 	jr c, .got_gender
 	ld a, '♂'
@@ -6423,14 +6413,13 @@ LoadEnemyMon:
 	xor a
 
 .UpdateStatus:
-	ld hl, wEnemyMonStatus
-	ld [hli], a
+	ld [wEnemyMonStatus], a
 
-; Unused byte
-	xor a
-	ld [hli], a
+; Unused byte: GF2 keeps the wild mon's rolled gender here (0 = unset)
+	farcall RollWildGender
 
 ; Full HP..
+	ld hl, wEnemyMonHP
 	ld a, [wEnemyMonMaxHP]
 	ld [hli], a
 	ld a, [wEnemyMonMaxHP + 1]

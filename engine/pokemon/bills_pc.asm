@@ -1157,6 +1157,7 @@ endr
 	inc de
 	ld a, [hl]
 	ld [de], a
+	call .CopyCaughtLevel
 	call CloseSRAM
 	ret
 
@@ -1183,6 +1184,7 @@ endr
 	inc de
 	ld a, [hl]
 	ld [de], a
+	call .CopyCaughtLevel
 	ret
 
 .sBox
@@ -1212,8 +1214,17 @@ endr
 	inc de
 	ld a, [hl]
 	ld [de], a
+	call .CopyCaughtLevel
 
 	call CloseSRAM
+	ret
+
+.CopyCaughtLevel:
+; GF2: hl = DVs + 1; copy the caught-level byte (explicit gender bits) too
+	ld bc, MON_CAUGHTLEVEL - (MON_DVS + 1)
+	add hl, bc
+	ld a, [hl]
+	ld [wTempMonCaughtLevel], a
 	ret
 
 BillsPC_RefreshTextboxes:

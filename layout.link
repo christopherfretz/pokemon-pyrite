@@ -489,6 +489,7 @@ SRAM $01
 	"SRAM Hall of Fame"
 	"SRAM Crystal Data"
 	"SRAM Battle Tower"
+	"SRAM Gender Marker"
 SRAM $02
 	"Boxes 1-7"
 SRAM $03

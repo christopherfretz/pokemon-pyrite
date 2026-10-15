@@ -101,7 +101,10 @@ ReadCaughtData:
 	ld [wSeerCaughtData], a
 	ld a, [hld]
 	ld [wSeerCaughtGender], a
-	or [hl]
+	ld b, a
+	ld a, [hl]
+	and CAUGHT_LEVEL_MASK ; GF2: bits 7-6 are the mon's gender, not caught data
+	or b
 	jr z, .error
 
 	ld a, SEERACTION_TRADED
@@ -179,31 +182,10 @@ GetCaughtLevel:
 	db "???@"
 
 GetCaughtTime:
-	ld a, [wSeerCaughtData]
-	and CAUGHT_TIME_MASK
-	jr z, .none
-
-	rlca
-	rlca
-	dec a
-	ld hl, .times
-	call GetNthString
-	ld d, h
-	ld e, l
-	ld hl, wSeerTimeOfDay
-	call CopyName2
-	and a
-	ret
-
-.none
+; GF2: bits 7-6 of the caught data hold the mon's gender now, and the time of
+; day is no longer recorded, so always take vanilla's "no time" answer.
 	ld de, wSeerTimeOfDay
-	call UnknownCaughtData
-	ret
-
-.times
-	db "Morning@"
-	db "Day@"
-	db "Night@"
+	jp UnknownCaughtData
 
 UnknownCaughtData:
 	ld hl, .unknown

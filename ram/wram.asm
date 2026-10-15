@@ -3655,7 +3655,12 @@ wPartyMon{d:n}Nickname:: ds MON_NAME_LENGTH
 endr
 wPartyMonNicknamesEnd::
 
-	ds 22
+; GF2: party/Day-Care/egg/contest gender-bit migration marker. This padding
+; was zero in every pre-GF2 save, and it is saved with wPokemonData (also by
+; SaveAfterLinkTrade), so the marker always travels with the mons it covers.
+wGenderFieldMigrated:: ds 2 ; GENDER_MIGRATED_MAGIC_1, _2 once migrated
+
+	ds 20
 
 wPokedexCaught:: flag_array NUM_POKEMON
 wEndPokedexCaught::

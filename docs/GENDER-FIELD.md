@@ -437,3 +437,278 @@ to cfretz244 and Jonathan.
 4. **Poké Seer loss accepted** ("much better than any of the alternatives").
 
 Status: research only. GF2/GF3 are NOT scheduled: cfretz244 wants **Jonathan's sign-off** as well, then a between-hunts window.
+
+---
+
+## GF2 findings (implemented 2026-10-15, on top of pyrite f6a731c)
+
+GF2 is the engine change and the save migration. GF3 covers the remaining generation points (see "Deferred" below).
+Approved by cfretz244 and Jonathan on 2026-10-15. Because the change touches existing saves, cfretz244 asked for a
+higher bar on save integrity. That bar is `scripts/gf2_save_integrity.py` in the context repo, and its output is
+quoted at the end of this section.
+
+### Encoding (option A, as planned in §3.3)
+
+Bits 7-6 of a Pokémon's `CaughtLevel` byte (struct offset `MON_CAUGHTLEVEL` = 29):
+
+| bits 7-6 | meaning |
+|---|---|
+| `%00`, `%01` | **unset**. The gender comes from the DVs, exactly as before GF2. `%01` is never written, and is read as unset. |
+| `%10` | explicit male |
+| `%11` | explicit female |
+
+- Only mixed-ratio species (F12_5 … F75) read the bits. Genderless, F0 and F100 species ignore them entirely, so a
+  stray bit there cannot change anything.
+- The level sits in bits 5-0 and is **clamped to 63**. This fixes the §3.4 latent bug: a level-64+ catch (Lv70
+  MEWTWO, Lv70 Johto legendaries, Mt. Silver) used to overflow into bits 7-6.
+- In battle, the wild Pokémon's rolled gender is stored in `wEnemyMonStatus + 1` (the battle struct's unused byte),
+  with the same encoding.
+- Constants are in `constants/pokemon_data_constants.asm`: `CAUGHT_GENDER_EXPLICIT(_F)`, `CAUGHT_GENDER_FEMALE(_F)`,
+  `CAUGHT_GENDER_BITS`, `CAUGHT_LEVEL_MAX`, `GENDER_MIGRATED_MAGIC_1/2` = `$C7,$5A`.
+
+### What changed, and where it lives
+
+**Readers**
+- `GetGender` (`engine/pokemon/mon_stats.asm`, bank $14 = #20). For party, box and temp Pokémon it reads the byte at
+  `DVs + 8`. For `WILDMON` it reads `wEnemyMonStatus + 1`. An explicit gender wins; otherwise it falls back to the DV
+  rule.
+- The new `GetEnemyMonGender` gives the battle HUD and Attract the enemy's gender. It uses the backup DVs while the
+  enemy is transformed, plus the rolled byte, so a stale `wTempMonCaughtLevel` can never leak in.
+- Everything that builds a temporary Pokémon from DVs alone now also copies or clears the CaughtLevel byte:
+  - Day-Care compatibility (`breeding.asm`) and the Day-Care man's text (`daycare.asm`) copy it.
+  - The egg's gender for inheritance (`breeding.asm`) clears it, because the egg has no explicit gender yet.
+  - Hall of Fame (`halloffame.asm`) clears it: HoF entries keep only DVs, so the gender stays DV-derived until GF3.
+  - Bill's PC (`bills_pc.asm`) and the printer (`printer.asm`) copy it.
+- The Poké Seer (`poke_seer.asm`) masks bits 7-6 out of the caught level it reports, and always gives vanilla's
+  "unknown time" answer (ruling 4).
+- The player's own battle HUD (`core.asm`) copies the party Pokémon's CaughtLevel byte into its TEMPMON.
+
+**Generation (wild only in GF2)**
+- `RollWildGender` (bank $14, 54 B) is farcalled from `LoadEnemyMon` (bank $0F) right after the status byte. It
+  makes one `Random` call and takes `r = swap(hRandomSub) xor hRandomAdd` (see RNG below for why it isn't the
+  plain return value). The Pokémon is female iff `r <= ratio`, so F12_5 is 32/256 = 1/8, F50 1/2 and F75 3/4.
+- The roll is left unset (`%00`, DV-derived as before) for:
+  - trainer Pokémon, and anything `LoadEnemyMon` builds outside a wild battle (gifts through GivePoke);
+  - the catch tutorial and roamers, because a roamer's struct has nowhere to keep a roll between encounters;
+  - genderless, F0 and F100 species.
+- The forced-shiny red GYARADOS rolls (ruling 2).
+- Catching: `TryAddMonToParty` and `SendMonIntoBox` (`move_mon.asm`) write the rolled bits into the new Pokémon's
+  CaughtLevel byte. `SetCaughtData`/`SetBoxMonCaughtData` (`caught_data.asm`) keep an explicit gender that is
+  already there, turn a non-explicit `%01` into `%00`, and add the level, clamped.
+- After a successful throw, `PokeBallEffect` re-runs `LoadEnemyMon` (vanilla, for a transformed DITTO). GF2 saves
+  and restores the rolled byte around that call, so whatever is caught (party, box or contest Pokémon) keeps the
+  gender shown in battle.
+- Hatching: `SetEggMonCaughtData` keeps the bits, so an egg hatches with the gender it carries. Eggs from the
+  Day-Care get unset bits in GF2.
+
+**Migration** (`engine/pokemon/gender_migration.asm`, bank $20 = #32, 198 B)
+
+A legacy save's time-of-day bits (`%01` MORN, `%10` DAY, `%11` NITE) would read as genders. On Continue, every stored
+Pokémon has them cleared to `%00`, which gives exactly the DV gender it already had. There is one marker per
+container, and each marker travels with the data it covers:
+
+| Marker | Where | Covers | Written |
+|---|---|---|---|
+| `wGenderFieldMigrated` (2 B, `$C7,$5A`) | WRAMX 1 `$DE88`, in what was the zero padding at the end of `wPokemonData`. It is saved and checksummed with the party, so its battery bytes are at `sPokemonData`+offset (+`$2A12` primary, +`$1C12` backup). | party ×6, both Day-Care Pokémon, the Day-Care egg, the contest Pokémon | by `MigrateGenderField` after the party pass, and by `NewGame` (`SetGenderFieldPartyMarker`) |
+| `sGenderFieldMigrated` (2 B, `$C7,$5A`) | SRAM bank 1 `$BE58`, previously unused (zero) space with no checksum. It has its own `"SRAM Gender Marker"` section, so `sBox`, `sBackup*` and Boxes 1-14 do not move. | `sBox` plus Boxes 1-14 in banks 2-3 (all 20 slots, stale ones included), edited in place | **last**, after every box is clean, by `MigrateGenderField`; also by `ErasePreviousSave` (`SetGenderFieldBoxMarker`) for a new file |
+
+- `Continue` (`intro_menu.asm`) farcalls `MigrateGenderField` once the save is loaded and before `JumpRoamMons`,
+  which is before anything can be saved.
+- Either pass only clears bits and only runs while its marker is unset, so a power cut mid-pass just repeats it.
+- The WRAM party pass re-runs on every Continue until the player saves. That is harmless, because nothing explicit can
+  exist in that container before its marker is saved.
+
+**Deviations from §5.2, and why**
+1. The migration is a direct farcall from `Continue`, not a map-setup command, so it runs before any map script or
+   roamer code.
+2. The party marker is 2 bytes of `wPokemonData`'s padding, not an event flag. It sits inside `wPokemonData`, so it
+   is saved by every path that saves the party, including `SaveAfterLinkTrade`, which does not save the event flags.
+
+**Bytes and banks.** Free space is from `TOTAL EMPTY` in `pokecrystal.map`, before → after:
+
+| bank | Δ free | what |
+|---|---|---|
+| #1 ($01) | −12 | `Continue` / `NewGame` farcalls (`intro_menu.asm`) |
+| #3 ($03) | −15 | catch: `PokeBallEffect` (`item_effects.asm`), `TryAddMonToParty` / `SendMonIntoBox` (`move_mon.asm`) copy the rolled bits |
+| #5 ($05) | −40 | Day-Care / breeding temp-mon copies (`daycare.asm`, `breeding.asm`), `ErasePreviousSave` farcall (`save.asm`) |
+| #13 ($0D) | +26 | Attract calls `GetEnemyMonGender` instead of building a TEMPMON inline |
+| #15 ($0F) | +12 | the same in `core.asm` (HUD); `LoadEnemyMon`'s roll is one farcall |
+| #19 ($13) | +33 | Poké Seer time-of-day code removed, minus the `SetCaughtData` / `SetBoxMonCaughtData` keep-and-clamp |
+| #20 ($14) | −113 | `GetGender` explicit path, `GetEnemyMonGender`, `RollWildGender` (54 B), `CopyMonToTempMon` |
+| #32 ($20) | −198 | `gender_migration.asm` ($6562-$6627, exactly 198 B) |
+| #33 ($21) | −12 | printer and Hall of Fame temp-mon copies |
+| #56 ($38) | −18 | Bill's PC temp-mon copies |
+| SRAM 1 | −2 | `sGenderFieldMigrated` |
+| WRAM | 0 | the 2-byte marker reuses existing padding (`ds 22` → marker + `ds 20`) |
+
+Net ROM: −337 B. There is no new code in $01 or $0F beyond farcalls, and no SRAM or WRAM symbol moved. The
+integrity suite's T0 compares all 11,417 SRAM/`wPlayerData`/`wPokemonData` symbols: 0 moved.
+
+### Edge cases (deliberate, tested where marked)
+- **Backup restore** (T4a). Both builds take the same path. An unmigrated backup party is migrated, and boxes already
+  migrated keep their explicit bits, because their marker is set. A hybrid restore is tested too.
+- **CHANGE BOX power cut, frames 130-160** (T4b). Frames 141-144 take the primary path and 145-152 the backup path.
+  No cut forges an explicit gender, and in every cut battery the box marker is set.
+- **Downgrade then upgrade** (T5). A GF2 save loads in an older build with no checksum failure; the older build shows
+  DV genders. Saving it there and coming back restores every explicit gender.
+  - Not a bug, but a known limit: a Pokémon **caught while downgraded** gets the old build's time bits, and the
+    markers are already set, so on return it reads as a fixed (stable, but arbitrary) gender. The release note says
+    not to downgrade.
+- **Same-ID new game over an unmigrated file**. `ErasePreviousSave` sets the box marker and `NewGame` sets the party
+  marker, so a new file is never migrated.
+- **Link trades**. The CaughtLevel byte travels with the struct. A trade partner on an older build reads DV genders
+  and sends back time bits; GF3 decides whether to mask incoming link Pokémon.
+- **Corrupt input** (T6):
+  - bit 6 without bit 7 reads as unset (DV gender);
+  - bit 7 on genderless, F0 or F100 is ignored;
+  - garbage in either marker (`c700`, `005a`, `5ac7`, `ffff`, `c75b`, plus a random 20-byte tail) runs the pass and
+    gives DV genders;
+  - only one of the two markers set migrates only the other container.
+- **Hall of Fame** stays DV-derived until GF3 adds the bit (ruling 3, option (b)).
+
+### RNG (F5: does the gender roll correlate with shininess?)
+
+**Short answer: no, gender does not correlate with shininess, and it never did. But the first version of the
+roll had a different flaw, which F5 found, so the shipped roll is a fixed version.**
+
+**Method.** The ROUTE 12 SNORLAX reload hunt from RN3 (`scripts/rn1_reset_dvs.py`; SNORLAX is F12_5).
+- Each "DIV phase" `k` presses A `k` frames later.
+- At each phase, all 65,536 `(hRandomAdd, hRandomSub)` seeds are set at the frame before the DV roll. For each seed
+  the harness records the DVs and the byte `RollWildGender` stores. The roll lands one frame after the DVs, because
+  `LoadEnemyMon` spans a VBlank.
+- A roll has to be fair on **two** axes, not just on average:
+  1. over seeds at one button timing (the hunter presses on the same frame, the RNG state differs);
+  2. over timings at one seed (the RNG state is fixed, the press drifts by a frame or two).
+
+**First roll: `r` = `Random`'s return value (`hRandomSub`).** Its average was right and it showed no shiny
+correlation. Over phases 0-3 × 65,536 seeds:
+- 33 shiny seeds, 6 of them female (4.5 ± 2.0 expected);
+- the DV-nibble chi-square p-values were 0.97 / 0.72 / 0.46 / 0.98.
+
+It still failed both axes. The DV roll a frame earlier had already consumed the RNG state, so at a fixed phase
+`hRandomSub` took only a few values in its top 3 bits, whatever the seed.
+- Phases 0-3 gave 0.118 / 0.049 / 0.250 / 0.125 female.
+- In a 64-phase sweep, **8 of 64 phases could never roll a female** and others rolled 1/4.
+- Per seed across 64 phases, 145 of 1,024 random seeds never rolled female. With fair coins, about 0.2 would be
+  expected.
+- F50 and F75 species swung the same way, from 25% to 70% female depending on the frame.
+
+**Candidates, scored offline.** Raw `(b, c, roll, hRandomAdd, hRandomSub)` were captured at
+`RollWildGender.store` for 64 phases × 1,536 seeds: 1,024 random seeds plus `add` ∈ {$00, $AA} × all 256 `sub`.
+Binomial sd is 0.010 per phase and 0.041 per seed.
+
+| roll byte `r` | per-phase rate (axis 1): min-max, sd | per-seed rate over 64 phases (axis 2): sd, seeds never female | DV-nibble p (Atk/Def/Spd/Spc) |
+|---|---|---|---|
+| `sub` (first roll) | 0.000-0.238, 0.073 | 0.081, 145/1024 | 0.40 / 0.21 / 0.079 / 0.44 |
+| `add` | 0.027-0.203, 0.056 | 0.075, 110/1024 | 0.042 / 0.27 / 0.12 / 0.094 |
+| `add xor sub` | 0.076-0.161, 0.026 | 0.111, 178/1024 | 0.02 / 0.45 / 0.033 / 0.0014 |
+| `add + sub` | 0.126-0.133, 0.001 | 0.329, 870/1024 | 0.022 / 0.66 / 0.25 / 0.89 |
+| `add - sub` | 0.075-0.167, 0.025 | 0.082, 128/1024 | 0.018 / 0.78 / 0.59 / 0.00016 |
+| **`swap(sub) xor add`** | **0.104-0.157, 0.011** | **0.043, 0/1024** | **0.31 / 0.30 / 0.14 / 0.33** |
+
+- `add + sub` is nearly conserved by `Random` (`add += DIV+carry`, `sub -= DIV+carry`). It is perfect on axis 1
+  and blind to timing on axis 2, where 85% of seeds can never get a female.
+- `swap(sub) xor add` is at binomial spread on both axes, and it stays there at F25, F50 and F75 too:
+  - per-phase sd 0.011-0.012 against a binomial 0.014-0.016;
+  - per-seed sd 0.053-0.055 against 0.054-0.062;
+  - no seed always or never female.
+- Why it works: the swapped low nibble of `sub` varies with each frame's `DIV`, and xor-ing in `add` decorrelates
+  seeds. The cost is 6 more bytes in bank $14 and no extra `Random` call, so the NPC/encounter RNG stream is
+  unchanged.
+
+**Shipped roll, `swap(hRandomSub) xor hRandomAdd`, re-verified on the rebuilt ROM.** These numbers come from
+`gf2_gender.py` (F5), not the offline capture:
+- Full enumeration, phases 0-3 × 65,536 seeds: female 0.1246 / 0.1268 / 0.1249 / 0.1236, and 32,760/262,144 =
+  0.1250 pooled. Every seed rolled an explicit gender.
+- **Shiny seeds: 33, of which 3 are female** (4.1 ± 1.9 expected at 1/8). SPD/SPC = $AA seeds: 121/1,053 = 0.1149
+  female against 0.1250 for the rest (z = −0.99).
+- DV-nibble independence, chi-square over 16 values: p = Atk 0.013, Def 0.94, Spd 0.98, Spc 0.90, all above the 0.001
+  bar.
+  - The Atk value is the lowest of four tests. It is not a structural dependence: its per-value rates span only
+    0.120-0.132.
+- 64-phase sweep, 1,024 seeds per phase:
+  - axis 1: per-phase rate 0.113-0.140 (mean 0.1270, sd 0.0072 against a binomial 0.0103), with no phase outside
+    1/8 ± 1/16;
+  - axis 2: per-seed rate across the 64 phases 0.016-0.297, sd 0.0452 against a binomial 0.0413, and **0 of 1,024
+    seeds never roll female** (0.2 expected).
+
+The brief's criterion was "fix the roll if it correlates with shininess". The roll never correlated with shininess.
+It was changed anyway because the first roll made a female shiny unreachable at some timings. On a cartridge, the
+frame you press on is the hunt, so that was a real flaw.
+
+### Harness (context repo; `tools/venv/bin/python`)
+- `scripts/gf2_gender.py`. Each check prints PASS/FAIL, and the script exits 0 only if all pass. It covers:
+  - F1: a BU-era Continue;
+  - F2: at least 256 wild F12_5 encounters, plus MASTER BALL catches against the opposite DVs and a Lv70 catch into
+    `sBox`;
+  - F3: the real Lv70 MEWTWO;
+  - F4: hatching;
+  - F5: the RNG enumeration and the two-axis phase sweep above.
+- `scripts/gf2_save_integrity.py` (T0-T6) runs OLD (ea5a211) against NEW on the 58 presets and 3 stress fixtures of
+  290 Pokémon each.
+  - The stress fixtures cover every caught-time pattern, a full party with an egg, the Day-Care, the egg and contest
+    Pokémon, and all 15 boxes.
+  - Both builds are pinned to the same frame at `DelayFrame` after `JumpRoamMons`, and the pin zeroes the RNG, DIV,
+    the clock and the dead stack. After that, the two builds' RAM differs only in GF2 bytes, so any other SRAM
+    difference after a SAVE is a real finding, not timing noise.
+  - The classifier is strict. A byte may differ only if it is:
+    - a CaughtLevel byte whose bits 7-6 were cleared (bits 5-0 identical);
+    - one of the 2 marker bytes, holding exactly the magic;
+    - a checksum that is valid for its data.
+  - The primary and backup regions are both checked.
+- `scripts/gf2_lib.py` holds the shared helpers. `scripts/dex_obtainability.py` still reports 251/251.
+
+### Deferred to GF3
+- The tutorial PIKACHU roll, copied to the starter (ruling 1).
+- Gift Pokémon (GivePoke), `GiveEgg`, the Odd Egg (ruling 2), and the Day-Care egg roll at egg creation.
+- Roamers: they need a stored roll.
+- The Hall of Fame female bit (ruling 3, option (b)).
+- Masking incoming link and Time Capsule Pokémon.
+- The web editor and hunt tracker (§5.5).
+
+Until GF3, every one of these is **unset**, so it keeps the DV gender it would have had before GF2. Nothing breaks.
+
+### Save compatibility statement
+
+**A save from build ≤ f6a731c loads in GF2, and every Pokémon's gender is unchanged.** After Continue and a SAVE, the
+battery is byte-identical to the same file saved by the old build, except for:
+
+1. the CaughtLevel bytes of Pokémon caught in the DAY or NITE (and MORN, `%01`): bits 7-6 cleared, level bits
+   identical;
+2. the 2-byte box marker at `sGenderFieldMigrated` (SRAM bank 1, `$BE58`);
+3. the 2-byte party marker inside `sPokemonData`, in primary and backup;
+4. the two save checksums that cover it, in primary and backup.
+
+`scripts/gf2_save_integrity.py`:
+
+```
+PASS  T0 11417 SRAM/wPlayerData/wPokemonData symbols: 0 moved or removed
+PASS  T0 base gender ratios identical in OLD and NEW (251 species)
+PASS  T1 58/58 presets: 116 bytes differ NEW vs OLD after Continue, 684 after Continue+SAVE; + 3/3 stress fixtures: 797 / 1437 in all; all classified  -- 0 unclassified
+PASS  T2 1012 mons: OLD GetGender before == NEW GetGender after == DV rule  -- 0 mismatches
+PASS  T3 61 files: 2nd and 3rd Continue change 0 bytes (box pass 0x, WRAM party pass re-runs since unsaved), Continue of the NEW-saved file changes 0 bytes and runs 0 passes, re-SAVE leaves every CaughtLevel/marker byte as is  -- 0 files failed
+PASS  T4a(i) unmigrated save, primary checksum broken: both builds restore the backup; 310 genders OLD==NEW; saved diff 251 bytes, all classified; markers set  -- path old=backup new=backup bad=[] unc=[] markers=((199, 90), (199, 90, 199, 90, 199, 90))
+PASS  T4a(ii) hybrid restore (migrated boxes + explicit box3/1, unmigrated backup party): 310 genders as expected (explicit kept, legacy party = DV), passes(box,party)=(0, 1)  -- path=backup bad=[] marker=(199, 90)
+PASS  T4b 31 power cuts (frames 130-160): no forged explicit gender, every RATTATA copy explicit F, every other mon = DV gender, box marker set in every cut battery, no pass re-run
+PASS  T5a NEW save with 4 explicit-gender catches loads in the OLD build: path=primary (no checksum failure), OLD shows the DV genders  -- ok=True bad=[] expl=['box1/1', 'party2', 'party3', 'sBox/1']
+PASS  T5b saved again in OLD, reloaded in NEW: explicit bytes unchanged by OLD, 4 explicit genders back (box1/1=F,party2=F,party3=M,sBox/1=F), all other mons as in OLD, no migration pass  -- changed=[] bad=[] others=[] passes=(0, 0)
+PASS  T6 (a) bit 6 set, bit 7 clear on 320 bytes of a migrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(0, 0)
+PASS  T6 (b) bit 7 set on 135 genderless/F0/F100 mons -> fixed gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(0, 0)
+PASS  T6 (c) garbage markers c700 + random 20-byte tail on an unmigrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 1)
+PASS  T6 (c) garbage markers 005a + random 20-byte tail on an unmigrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 1)
+PASS  T6 (c) garbage markers 5ac7 + random 20-byte tail on an unmigrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 1)
+PASS  T6 (c) garbage markers ffff + random 20-byte tail on an unmigrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 1)
+PASS  T6 (c) garbage markers c75b + random 20-byte tail on an unmigrated file -> DV gender: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 1)
+PASS  T6 (d1) party marker set + explicit party bits, legacy boxes + no box marker: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(15, 0)
+PASS  T6 (d2) box marker set + explicit box bits, legacy party + no party marker: 310 mons checked, Continue+SAVE+Continue ok, passes(box,party)=(0, 1)
+SUMMARY 19/19 checks passed (102 s)
+```
+
+Per preset, a Continue alone changes 2 bytes, the box marker, because the box pass edits the battery in place. A
+Continue plus SAVE changes 10-16 bytes:
+- the party marker and the `sGameData` checksum, ×2 each for primary and backup;
+- the box marker;
+- 2 bytes per party or Day-Care Pokémon caught in the DAY or NITE, primary and backup.
+
+The 116 / 684 totals are over all 58 presets. The three 290-Pokémon stress fixtures add the rest of the
+797 / 1437. Every one of those bytes is classified.

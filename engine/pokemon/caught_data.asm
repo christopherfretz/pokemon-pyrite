@@ -166,12 +166,23 @@ SetCaughtData:
 	ld hl, wPartyMon1CaughtLevel
 	call GetPartyLocation
 SetBoxmonOrEggmonCaughtData:
-	ld a, [wTimeOfDay]
-	inc a
-	rrca
-	rrca
+; GF2 (docs/GENDER-FIELD.md): bits 7-6 of the CaughtLevel byte are the mon's
+; gender, no longer the time of day.  Keep an explicit gender already in [hl]
+; (TryAddMonToParty/SendMonIntoBox copy the wild roll there; a hatching egg
+; carries its own), turn a non-explicit %01 into %00, and store the level in
+; bits 5-0, clamped to 63: a Lv64+ catch used to spill into bits 7-6.
+	ld a, [hl]
+	and CAUGHT_GENDER_BITS
+	bit CAUGHT_GENDER_EXPLICIT_F, a
+	jr nz, .got_gender
+	xor a
+.got_gender
 	ld b, a
 	ld a, [wCurPartyLevel]
+	cp CAUGHT_LEVEL_MAX + 1
+	jr c, .got_level
+	ld a, CAUGHT_LEVEL_MAX
+.got_level
 	or b
 	ld [hli], a
 	ld a, [wMapGroup]

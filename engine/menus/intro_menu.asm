@@ -66,6 +66,7 @@ NewGame:
 	call PlayerProfileSetup
 	call OakSpeech
 	call InitializeWorld
+	farcall SetGenderFieldPartyMarker ; GF2: a new file needs no migration
 
 	ld a, LANDMARK_PALLET_TOWN ; yellowcrystal: new game starts in Pallet Town
 	ld [wPrevLandmark], a
@@ -371,6 +372,7 @@ Continue:
 	call ClearTilemap
 	ld c, 20
 	call DelayFrames
+	farcall MigrateGenderField ; GF2: legacy time-of-day bits -> unset gender
 	farcall JumpRoamMons
 	farcall CopyMysteryGiftReceivedDecorationsToPC
 	farcall ClockContinue

@@ -296,9 +296,14 @@ endr
 	ld [de], a
 	inc de
 	; CaughtData/CaughtTime/CaughtLevel
+	; GF2: the wild mon's rolled gender goes in bits 7-6 now, so the naming
+	; screen already shows it; SetCaughtData keeps them and adds the level.
+	ld a, [wEnemyMonStatus + 1]
+	and CAUGHT_GENDER_BITS
 	ld [de], a
 	inc de
 	; CaughtGender/CaughtLocation
+	xor a
 	ld [de], a
 	inc de
 
@@ -312,8 +317,9 @@ endr
 	ld a, [hli]
 	ld [de], a
 	inc de
-	; Copy EnemyMonUnused
-	ld a, [hli]
+	; Unused (GF2: was a copy of wEnemyMonStatus + 1, which now holds the gender)
+	xor a
+	inc hl
 	ld [de], a
 	inc de
 	; Copy wEnemyMonHP
@@ -1038,11 +1044,17 @@ SendMonIntoBox:
 	ld [de], a
 	inc de
 	xor a
+	ld [de], a ; PokerusStatus
+	inc de
+	; GF2: CaughtLevel bits 7-6 = the wild mon's rolled gender (0 outside a wild
+	; battle: GivePoke's LoadEnemyMon leaves it unset); SetBoxMonCaughtData
+	; keeps them and adds the level.
+	ld a, [wEnemyMonStatus + 1]
+	and CAUGHT_GENDER_BITS
 	ld [de], a
 	inc de
-	ld [de], a
-	inc de
-	ld [de], a
+	xor a
+	ld [de], a ; CaughtGender/CaughtLocation
 	inc de
 	ld a, [wCurPartyLevel]
 	ld [de], a

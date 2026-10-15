@@ -402,3 +402,11 @@ s7_a001:: db
 sMobileAdapterStatus2:: db
 
 ENDSECTION
+
+
+SECTION "SRAM Gender Marker", SRAM
+
+; GF2: box gender-bit migration marker (sBox + Boxes 1-14). This space was
+; unused (zero) in every pre-GF2 save and is not covered by any checksum.
+; Written last by MigrateGenderField, and by ErasePreviousSave for new files.
+sGenderFieldMigrated:: ds 2 ; GENDER_MIGRATED_MAGIC_1, _2 once migrated

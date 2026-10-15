@@ -560,6 +560,8 @@ DayCare_InitBreeding:
 	ld [wTempMonDVs], a
 	ld a, [wBreedMon1DVs + 1]
 	ld [wTempMonDVs + 1], a
+	ld a, [wBreedMon1CaughtLevel] ; GF2: explicit gender bits
+	ld [wTempMonCaughtLevel], a
 	ld a, [wBreedMon1Species]
 	ld [wCurPartySpecies], a
 	ld a, TEMPMON
@@ -649,6 +651,8 @@ DayCare_InitBreeding:
 	call Random
 	ld [hld], a
 	ld [wTempMonDVs + 1], a
+	xor a ; GF2: the egg has no explicit gender yet (GF3 rolls it), so its
+	ld [wTempMonCaughtLevel], a ; DV-derived gender drives the inheritance below
 	ld de, wBreedMon1DVs
 	ld a, [wBreedMon1Species]
 	cp DITTO

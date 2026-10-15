@@ -841,6 +841,10 @@ Printer_GetMonGender:
 	inc de
 	ld a, [hli]
 	ld [de], a
+	ld bc, MON_CAUGHTLEVEL - (MON_DVS + 2) ; GF2: explicit gender bits
+	add hl, bc
+	ld a, [hl]
+	ld [wTempMonCaughtLevel], a
 	ld a, [wWhichBoxMonToPrint]
 	ld [wCurPartyMon], a
 	ld a, TEMPMON

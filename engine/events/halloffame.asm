@@ -492,6 +492,8 @@ DisplayHOFMon:
 	call GetBasePokemonName
 	hlcoord 7, 13
 	call PlaceString
+	xor a ; GF2: hof_mon keeps only the DVs, so derive the gender from them
+	ld [wTempMonCaughtLevel], a ; (GF3 stores a gender bit in the entry)
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender

@@ -117,8 +117,25 @@ DEF REDMON_STRUCT_LENGTH EQU 44
 
 ; caught data
 
-DEF CAUGHT_TIME_MASK  EQU %11000000
+DEF CAUGHT_TIME_MASK  EQU %11000000 ; legacy (pre-GF2) meaning of bits 7-6; see below
 DEF CAUGHT_LEVEL_MASK EQU %00111111
+
+; GF2 (docs/GENDER-FIELD.md): bits 7-6 of the CaughtLevel byte are the Pokemon's
+; own gender, no longer the time of day.  %0x = unset (derive from the DVs, as
+; before), %10 = explicit male, %11 = explicit female.  Only mixed-ratio species
+; read them; genderless, F0 and F100 species ignore them.  In battle the wild
+; mon's rolled gender lives in wEnemyMonStatus + 1 with the same encoding.
+; Not to be confused with CAUGHT_GENDER_MASK below (the OT's gender).
+DEF CAUGHT_GENDER_EXPLICIT_F EQU 7
+DEF CAUGHT_GENDER_FEMALE_F   EQU 6
+DEF CAUGHT_GENDER_EXPLICIT   EQU 1 << CAUGHT_GENDER_EXPLICIT_F
+DEF CAUGHT_GENDER_FEMALE     EQU 1 << CAUGHT_GENDER_FEMALE_F
+DEF CAUGHT_GENDER_BITS       EQU CAUGHT_GENDER_EXPLICIT | CAUGHT_GENDER_FEMALE
+DEF CAUGHT_LEVEL_MAX         EQU CAUGHT_LEVEL_MASK ; 63: higher levels are clamped
+
+; GF2 migration markers (wGenderFieldMigrated, sGenderFieldMigrated)
+DEF GENDER_MIGRATED_MAGIC_1 EQU $C7
+DEF GENDER_MIGRATED_MAGIC_2 EQU $5A
 
 DEF CAUGHT_GENDER_MASK   EQU %10000000
 DEF CAUGHT_LOCATION_MASK EQU %01111111

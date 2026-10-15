@@ -359,6 +359,7 @@ SavingDontTurnOffThePower:
 
 ErasePreviousSave:
 	call EraseBoxes
+	farcall SetGenderFieldBoxMarker ; GF2: erased boxes need no migration
 	call EraseHallOfFame
 	call EraseLinkBattleStats
 	call EraseMysteryGift

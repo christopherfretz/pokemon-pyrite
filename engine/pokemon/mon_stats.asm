@@ -121,6 +121,27 @@ PrintTempMonStats:
 	next "SPEED"
 	next "@"
 
+GetEnemyMonGender:
+; GF2: gender of the active enemy mon (battle HUD, Attract).  Builds a TEMPMON
+; from wEnemyMonDVs (wEnemyBackupDVs while transformed, so a Transform does not
+; change it) plus the rolled gender byte wEnemyMonStatus + 1, so no stale
+; wTempMonCaughtLevel can leak in.  Same return values as GetGender.
+	ld hl, wEnemyMonDVs
+	ld a, [wEnemySubStatus5]
+	bit SUBSTATUS_TRANSFORMED, a
+	jr z, .got_dvs
+	ld hl, wEnemyBackupDVs
+.got_dvs
+	ld a, [hli]
+	ld [wTempMonDVs], a
+	ld a, [hl]
+	ld [wTempMonDVs + 1], a
+	ld a, [wEnemyMonStatus + 1]
+	ld [wTempMonCaughtLevel], a
+	ld a, TEMPMON
+	ld [wMonType], a
+	; fallthrough
+
 GetGender:
 ; Return the gender of a given monster (wCurPartyMon/wCurOTMon/wCurWildMon).
 ; When calling this function, a should be set to an appropriate wMonType value.
@@ -130,8 +151,10 @@ GetGender:
 ; a = 0: f = nc|z;  female
 ;        f = c:  genderless
 
-; This is determined by comparing the Attack and Speed DVs
-; with the species' gender ratio.
+; GF2: for a mixed-ratio species, an explicit gender in bits 7-6 of the
+; struct's CaughtLevel byte (wEnemyMonStatus + 1 for WILDMON) wins; otherwise
+; it is determined by comparing the Attack and Speed DVs with the species'
+; gender ratio, exactly as before.
 
 ; Figure out what type of monster struct we're looking at.
 
@@ -189,6 +212,21 @@ GetGender:
 	or b
 	ld b, a
 
+; GF2: c = the gender byte, read while SRAM is still open for a sBoxMon.
+; party/box/temp structs: CaughtLevel = DVs + 8; WILDMON: wEnemyMonStatus + 1.
+	ld a, [wMonType]
+	cp WILDMON
+	ld a, MON_CAUGHTLEVEL - (MON_DVS + 1)
+	jr c, .got_gender_offset
+	ld a, (wEnemyMonStatus + 1) - (wEnemyMonDVs + 1)
+.got_gender_offset
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ld c, [hl]
+
 ; Close SRAM if we were dealing with a sBoxMon.
 	ld a, [wMonType]
 	cp BOXMON
@@ -217,6 +255,14 @@ GetGender:
 	cp GENDER_F100
 	jr z, .Female
 
+; GF2: an explicit gender overrides the DVs.
+	bit CAUGHT_GENDER_EXPLICIT_F, c
+	jr z, .from_dvs
+	bit CAUGHT_GENDER_FEMALE_F, c
+	jr nz, .Female
+	jr .Male
+
+.from_dvs
 ; Values below the ratio are male, and vice versa.
 	cp b
 	jr c, .Male
@@ -232,6 +278,55 @@ GetGender:
 
 .Genderless:
 	scf
+	ret
+
+RollWildGender:
+; GF2: roll the gender of the wild mon LoadEnemyMon just built and store it in
+; wEnemyMonStatus + 1 (the battle struct's unused byte): %10 male, %11 female.
+; One roll byte r; female iff r <= the species' gender ratio, so F12_5
+; (ratio 31) is female 32/256 = 1/8 of the time, F50 (127) 1/2, F75 (191) 3/4.
+; r is not Random's return value (hRandomSub) itself but swap(hRandomSub) xor
+; hRandomAdd after the call: the DV roll a frame earlier already consumed the
+; RNG, and at a fixed button timing hRandomSub here takes only a few top-3-bit
+; values for every seed (1 in 8 DIV phases could never give an F12_5 female,
+; others gave 1/4).  The swapped low nibble varies with the frame's DIV and
+; the add byte decorrelates seeds, so r is ~uniform both over seeds at one
+; timing and over timings at one seed (docs/GENDER-FIELD.md, GF2 findings, F5).
+; Unset (%00, derive from the DVs) for trainer mons, gifts built through
+; LoadEnemyMon outside battle, the catch tutorial, roamers (their struct has
+; no room to keep a roll between encounters) and genderless/F0/F100 species.
+; The forced-shiny red GYARADOS rolls like any other wild mon.
+; wBaseGender is the enemy species' (LoadEnemyMon called GetBaseData).
+	ld a, [wBattleMode]
+	cp WILD_BATTLE
+	jr nz, .unset
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
+	jr z, .unset
+	cp BATTLETYPE_ROAMING
+	jr z, .unset
+	ld a, [wBaseGender]
+	and a ; GENDER_F0
+	jr z, .unset
+	cp GENDER_F100
+	jr nc, .unset ; GENDER_F100 or GENDER_UNKNOWN
+	ld b, a
+	call Random ; a = hRandomSub
+	swap a
+	ld c, a
+	ldh a, [hRandomAdd]
+	xor c
+	ld c, a ; r = swap(hRandomSub) ^ hRandomAdd
+	ld a, b
+	cp c ; nc iff r <= ratio
+	ld a, CAUGHT_GENDER_EXPLICIT
+	jr c, .store
+	or CAUGHT_GENDER_FEMALE
+	jr .store
+.unset
+	xor a
+.store
+	ld [wEnemyMonStatus + 1], a
 	ret
 
 ListMovePP:
