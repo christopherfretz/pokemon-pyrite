@@ -1851,8 +1851,13 @@
 
   /* GF2/GF3 (docs/GENDER-FIELD.md): RollWildGender stores the wild mon's
      explicit gender in wEnemyMonStatus + 1 right after the level, so the read
-     (and the "settled" signature) runs through that byte when the tables have
-     it.  Older tables.json: up to the level, gender from the DVs as before. */
+     runs through that byte when the tables have it.  Older tables.json: up to
+     the level, gender from the DVs as before.
+     GF3b: the "settled" signature is built from the encounter's identity bytes
+     only (species, DVs, level, gender byte).  Battle state that the fight
+     itself changes (PP, the status byte, moves via Mimic) is left out, so a
+     page reloaded mid-battle does not log the same mon again once it is put
+     to sleep, paralysed or uses a move. */
   function readEnemy() {
     var base = T.hunt.wEnemyMon;
     var lv = T.hunt.wEnemyMonLevel[1] - base[1];
@@ -1861,8 +1866,10 @@
     var b = [];
     for (var i = 0; i < len; i++) { b.push(readWram(base[1] + i, base[0])); }
     var dv = T.hunt.wEnemyMonDVs[1] - base[1];
+    var id = [b[0], b[dv], b[dv + 1], b[lv]];
+    if (gi >= 0) { id.push(b[gi]); }
     return { species: b[0], level: b[lv], dv0: b[dv], dv1: b[dv + 1],
-      gbits: gi >= 0 ? b[gi] : 0, sig: b.join(',') };
+      gbits: gi >= 0 ? b[gi] : 0, sig: id.join(',') };
   }
 
   // --- DV maths (Gen 2) ---
@@ -2337,7 +2344,7 @@
   }
   function huntJson() {
     return JSON.stringify({ format: 'kanto-first-hunt/1', exported: new Date().toISOString(), romSha: romSha,
-      logColumns: ['time_ms', 'species', 'level', 'dv', 'n_target', 'battle_type'],
+      logColumns: ['time_ms', 'species', 'level', 'dv', 'n_target', 'battle_type', 'gender_byte'],
       hunt: hunt, history: huntIndex ? huntIndex.history : [] }, null, 1);
   }
   function huntFileName(ext) {

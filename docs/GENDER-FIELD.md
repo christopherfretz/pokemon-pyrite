@@ -906,10 +906,50 @@ $01 is unchanged: the GiveShuckle and NewGame call sites swap one farcall target
 ### Deferred / known limits
 - **Pyrite-to-pyrite trades** lose a rolled gender: the receiver masks it, because a vanilla partner cannot be told
   apart. Link battles do show it (`LinkEnemyMonGender`).
-- **Mixed-build link battles**: a vanilla Gen 2 opponent's time bits read as an explicit gender on the pyrite side's
-  HUD. This is cosmetic and nobody links this ROM today. Outgoing pyrite mons look like a time of day to a vanilla
-  partner's Poké Seer.
+- **Mixed-build link battles are not just cosmetic: they can desync.** Against any non-GF3 build (vanilla Crystal,
+  pre-GF2 or GF2 pyrite) the two Game Boys can disagree about a mon's gender: the GF3 side uses the explicit gender
+  (`LinkEnemyMonGender`), the other side reads the DV gender, and a vanilla opponent's time bits read as an explicit
+  gender on the pyrite side. If a mixed-ratio mon whose explicit and DV genders differ uses or receives **Attract**, the
+  move can succeed on one Game Boy and fail on the other. From then on the "in love" 50% roll in `CheckTurn` (and its
+  enemy twin) consumes `Random` on one side only, the two battle RNGs diverge and the link battle desyncs. The HUD
+  symbol mismatch is the visible part of the same disagreement. Only GF3-vs-GF3 is consistent. Nobody link-battles
+  this ROM today and the web player has no link cable, so this is documented, not fixed; a fix would need a version
+  handshake. Save data is never affected (link battles do not save the opponent). Outgoing pyrite mons look like a
+  time of day to a vanilla partner's Poké Seer.
 - **NPC in-game trades** keep their DV gender (`npc_trade.asm` still uses `SetGiftPartyMonCaughtData`). Their OT
   gender tables already fix what the player sees.
 - **Mobile paths** (Battle Tower uploads, mobile trades) were not touched.
 - The **save editor** edits only the party. Boxes are migrated by the game's next Continue.
+
+## GF3b findings
+
+Small follow-up to the read-only review `REVIEW-GF3` (context repo). It covers the LOW findings and the web INFO item.
+No engine or save-format change.
+
+- **L-1 (doc):** the "Deferred / known limits" bullet on mixed-build link battles was wrong to call them cosmetic, and
+  now says why. Against any non-GF3 build, Attract can succeed on one Game Boy and fail on the other. The "in love"
+  roll then consumes `Random` on one side only, and the battle desyncs. Only GF3-vs-GF3 is consistent. The bullet
+  records this without fixing it, because a fix needs a version handshake and nobody links this ROM.
+- **L-2 (web tracker):** `readEnemy` still reads through the gender byte. Its "settled" signature now uses only the
+  encounter's identity bytes: species, the two DV bytes, level, and the gender byte when the tables have it. PP, the
+  status byte, held item and moves are no longer part of it.
+  - **Before:** suppose the mon was put to sleep, the page was reloaded mid-battle, and the mon was then paralysed or
+    spent PP. The same encounter was logged a second time.
+  - **After:** the load-time signature equals the logged `lastSig`, so no strict pending is armed.
+  - **Stored data:** IndexedDB/localStorage keys and the row format are unchanged, and the 7th log column stays.
+  - **Saved `lastSig` from an older page:** a persisted `lastSig` in the old format simply never matches. At worst that
+    arms a strict pending that can no longer fire, because the identity bytes do not change mid-battle.
+- **I-6:** the JSON export's `logColumns` now lists the 7th column, `gender_byte`.
+- **Harness:** `scripts/gf2_save_integrity.py` T5a again asserts that the OLD build shows the DV gender for every
+  explicit mon. This is checked against the harness's `dv_gender` model. It also requires at least 4 of those mons to
+  have an explicit gender opposite to their DVs, so the check can tell a DV read from an explicit one.
+
+**Checks (ROM fc6e458, app.js edited; `web/sw.js` regenerated with `web/gen_sw.py` only, no `make`):**
+- `gf2_save_integrity.py`: 24/24. The T5a line reads "OLD shows the DV gender for all 5 (5 of them explicitly the
+  opposite)", with `badold=[]`.
+- `web_offline_check.py`: 39 PASS, 0 FAIL.
+- `web_layout_check.py`: scale 5/7/2/2 and no pill overlap at any viewport.
+- `playtest/ht1/hunt_check.py`, plus a scratch step 3c: puts the logged mon to sleep, slot-loads mid-battle (the same
+  rebaseline path as a page load), then paralyses it and drops its PP.
+  - New `app.js`: 44/44, still 2 encounters.
+  - The pre-GF3b `app.js`, same script: 3c fails with 3 encounters, a duplicate. 4 to 4e then fail as knock-ons.
