@@ -97,6 +97,17 @@ MigrateGenderField::
 		dba sBox{d:n}
 	endr
 
+NewGameGenderField::
+; GF3 (GF2 review L1): NewGame.  A new file's party needs no migration, but
+; its boxes may not be new: a New Game whose random trainer ID equals the
+; existing save's (1 in 65,536) never reaches ErasePreviousSave, so the old
+; file's boxes are kept, time-of-day bits and all.  Run the box half now,
+; before the new file can box a mon with a rolled gender that a later
+; Continue would clear.  On a migrated file it is a no-op; on an unmigrated
+; one it is the exact in-place edit the next Continue would make.
+	call SetGenderFieldPartyMarker
+	jp MigrateGenderField.party_done
+
 SetGenderFieldBoxMarker::
 ; ErasePreviousSave: a freshly erased file's boxes need no migration.
 	ld a, BANK(sGenderFieldMigrated)

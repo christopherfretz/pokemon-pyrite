@@ -337,6 +337,64 @@
     return rom[bs.rom + (species - 1) * bs.stride + bs.fields[key]];
   }
 
+  /* GF2/GF3 gender (docs/GENDER-FIELD.md, engine/pokemon/mon_stats.asm
+     GetGender).  Ratio $FF genderless, 0 always male, $FE always female.
+     For a mixed ratio, bits 7-6 of the CaughtLevel byte (P.mon.caughtData)
+     are the gender when bit 7 is set (%10 male, %11 female); otherwise it
+     comes from the DVs: female iff (ATK DV << 4 | SPD DV) <= ratio.  Bits
+     5-0 are the caught level and are never touched here. */
+  function gfield() { return T.genderField || { explicit: 0x80, female: 0x40, bits: 0xc0, levelMask: 0x3f }; }
+  function genderRatio(species) { return species ? baseStat(species, 'gender') : 0xff; }
+  function isMixedRatio(r) { return r > 0 && r < 0xfe; }
+  function dvGender(mon, r) {
+    var b = (mon[P.mon.dvs] & 0xf0) | ((mon[P.mon.dvs + 1] >> 4) & 0x0f);
+    return b <= r ? 'F' : 'M';
+  }
+  /* {g: 'M' | 'F' | '-', explicit: bool} -- what the game shows. */
+  function monGender(mon) {
+    var r = genderRatio(mon[P.mon.species]);
+    if (r === 0xff) { return { g: '-', explicit: false }; }
+    if (r === 0) { return { g: 'M', explicit: false }; }
+    if (r === 0xfe) { return { g: 'F', explicit: false }; }
+    var f = gfield(), c = mon[P.mon.caughtData];
+    if (c & f.explicit) { return { g: (c & f.female) ? 'F' : 'M', explicit: true }; }
+    return { g: dvGender(mon, r), explicit: false };
+  }
+  /* g: 'M' / 'F' explicit, '' = clear the bits (gender from the DVs). */
+  function setMonGender(mon, g) {
+    var f = gfield(), c = mon[P.mon.caughtData] & f.levelMask;
+    if (g === 'M') { c |= f.explicit; } else if (g === 'F') { c |= f.explicit | f.female; }
+    mon[P.mon.caughtData] = c;
+  }
+  /* What the game's gift/egg roll does (GenderBitsForSpecies): female with
+     probability (ratio + 1) / 256 for a mixed ratio; otherwise no bits. */
+  function rollGender(mon) {
+    var r = genderRatio(mon[P.mon.species]);
+    if (!isMixedRatio(r)) { setMonGender(mon, ''); return; }
+    setMonGender(mon, Math.floor(Math.random() * 256) <= r ? 'F' : 'M');
+  }
+  /* A save no GF2+ build has Continued yet still holds time-of-day bits in
+     bits 7-6 (vanilla Gen 2's caught time), and the game clears them on its
+     next Continue unless wGenderFieldMigrated holds the magic -- which would
+     also wipe a gender set here.  So, on load, do exactly what
+     MigrateGenderField's party half does (engine/pokemon/gender_migration.asm):
+     clear the bits in all 6 party structs, both Day-Care mons, the Day-Care
+     egg and the contest mon, then set the marker.  Only `sav` in memory
+     changes; nothing is written until Apply / Download.  The boxes keep their
+     own marker (sGenderFieldMigrated) and are left to the game. */
+  function migrateGenderParty() {
+    var f = gfield(), o = off('wGenderFieldMigrated');
+    if (!f.magic || (sav[o] === f.magic[0] && sav[o + 1] === f.magic[1])) { return false; }
+    var mons = off('wPartyMons');
+    for (var i = 0; i < P.length; i++) { sav[mons + i * P.stride + P.mon.caughtData] &= f.levelMask; }
+    ['wBreedMon1CaughtLevel', 'wBreedMon2CaughtLevel', 'wEggMonCaughtLevel',
+      'wContestMonCaughtLevel'].forEach(function (n) { sav[off(n)] &= f.levelMask; });
+    sav[o] = f.magic[0];
+    sav[o + 1] = f.magic[1];
+    return true;
+  }
+  function genderSym(g) { return g === 'M' ? '\u2642' : g === 'F' ? '\u2640' : '\u2013'; }
+
   function sqrtIndex(v) {
     // GetSquareRoot: the index of the first square that is not lower than v.
     var n = T.limits.numSquareRoots;
@@ -440,10 +498,12 @@
     mon[P.mon.happiness] = T.limits.baseHappiness;
     mon[P.mon.id] = sav[off('wPlayerID')];
     mon[P.mon.id + 1] = sav[off('wPlayerID') + 1];
+    rollGender(mon);                   // GF3: as a gift would (all-15 DVs say male)
     return mon;
   }
 
   function readParty() {
+    migrateGenderParty();               // GF3: before any gender is shown or set
     party = [];
     var count = rd8('wPartyCount');
     var mons = off('wPartyMons'), ots = off('wPartyMonOTs'), nicks = off('wPartyMonNicknames');
@@ -748,6 +808,8 @@
     });
     card.appendChild(field('Nickname', nick));
 
+    card.appendChild(genderField(slot));
+
     var moves = el('div', 'moves');
     for (var m = 0; m < P.numMoves; m++) {
       (function (m) {
@@ -796,6 +858,31 @@
     });
     card.appendChild(btn);
     return card;
+  }
+
+  /* GF3: the gender a mixed-ratio species can be given; the others show it.
+     "as DVs" clears the explicit bits, as every mon caught before GF2 has. */
+  function genderField(slot) {
+    var mon = slot.mon;
+    var r = genderRatio(mon[P.mon.species]);
+    var cur = monGender(mon);
+    if (!isMixedRatio(r)) {
+      return field('Gender', el('span', 'gender', genderSym(cur.g) +
+        (cur.g === '-' ? ' (genderless)' : ' (always)')));
+    }
+    var sel = el('select');
+    var dvg = dvGender(mon, r);
+    sel.innerHTML = '<option value="M">\u2642 male</option>' +
+      '<option value="F">\u2640 female</option>' +
+      '<option value="">as DVs (' + genderSym(dvg) + ')</option>';
+    sel.value = cur.explicit ? cur.g : '';
+    sel.addEventListener('change', function () {
+      setMonGender(mon, sel.value);
+      writeParty();
+      renderParty();
+      markDirty();
+    });
+    return field('Gender', sel);
   }
 
   function compactMoves(slot) {

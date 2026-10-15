@@ -255,3 +255,162 @@ SetEggMonCaughtData:
 	pop af
 	ld [wCurPartyLevel], a
 	ret
+
+; GF3 (docs/GENDER-FIELD.md, "GF3 findings"): the explicit gender for mons that
+; are not caught in a wild battle -- gifts, eggs, the Day-Care's egg, the Odd
+; Egg -- and for a link opponent's mons.  Wild battles roll in RollWildGender.
+
+DayCareEggGender:
+; DayCare_InitBreeding (bank $05): roll the egg's gender (wCurPartySpecies =
+; the egg species) into wTempMonCaughtLevel and wEggMonCaughtLevel.  A
+; wrapper because farcall does not return a (ReturnFarCall reloads it).
+; Preserves bc, de and hl.
+	call GenderBitsForCurPartySpecies
+	ld [wTempMonCaughtLevel], a
+	ld [wEggMonCaughtLevel], a
+	ret
+
+GenderBitsForCurPartySpecies:
+	ld a, [wCurPartySpecies]
+GenderBitsForSpecies:
+; a = species -> a = CaughtLevel bits 7-6: %10 male / %11 female, rolled with
+; RollWildGender's formula for a mixed-ratio species; 0 (derive from the DVs,
+; which the species' ratio decides anyway) for genderless, F0 and F100 ones.
+; Reads the ratio straight from BaseData, so the loaded base data and
+; wCurSpecies are untouched.  Preserves bc, de and hl.
+	push hl
+	push de
+	push bc
+	dec a
+	ld hl, BaseData + BASE_GENDER
+	ld bc, BASE_DATA_SIZE
+	call AddNTimes
+	ld a, BANK(BaseData)
+	call GetFarByte
+	and a ; GENDER_F0
+	jr z, .unset
+	cp GENDER_F100
+	jr nc, .unset ; GENDER_F100 or GENDER_UNKNOWN
+	ld b, a
+	call Random ; a = hRandomSub
+	swap a
+	ld c, a
+	ldh a, [hRandomAdd]
+	xor c
+	ld c, a ; r = swap(hRandomSub) ^ hRandomAdd
+	ld a, b
+	cp c ; nc iff r <= ratio
+	ld a, CAUGHT_GENDER_EXPLICIT
+	jr c, .done
+	or CAUGHT_GENDER_FEMALE
+	jr .done
+.unset
+	xor a
+.done
+	pop bc
+	pop de
+	pop hl
+	ret
+
+GivenMonGenderBits:
+; a = the gender bits for a GivePoke/GiveShuckle mon of species wCurPartySpecies.
+; The OAK'S LAB PIKACHU (PK1_StarterDVsOrRandom left the state pending) takes
+; the gender Oak's tutorial PIKACHU rolled; everything else rolls.
+; Preserves bc, de and hl.
+	ld a, [wCurPartySpecies]
+	cp PIKACHU
+	jr nz, GenderBitsForSpecies
+	ld a, [wPK1StarterDVsState]
+	cp PK1_STARTER_GENDER_PENDING
+	ld a, PIKACHU
+	jr nz, GenderBitsForSpecies
+	xor a
+	ld [wPK1StarterDVsState], a
+	ld a, [wPK1StarterGender]
+	ret
+
+SetGivenPartyMonCaughtData:
+; GivePoke's SetCaughtData, with the gender rolled first (SetCaughtData keeps an
+; explicit gender), so the nickname prompt that follows already shows it.
+	ld a, [wPartyCount]
+	dec a
+	ld hl, wPartyMon1CaughtLevel
+	call GetPartyLocation
+	call GivenMonGenderBits
+	ld [hl], a
+	jp SetBoxmonOrEggmonCaughtData
+
+SetGivenBoxMonCaughtData:
+; GivePoke's SetBoxMonCaughtData, with the gender rolled first.
+	call GivenMonGenderBits
+	ld b, a
+	ld a, BANK(sBoxMon1CaughtLevel)
+	call OpenSRAM
+	ld hl, sBoxMon1CaughtLevel
+	ld [hl], b
+	call SetBoxmonOrEggmonCaughtData
+	jp CloseSRAM
+
+SetGiftPartyMonCaughtDataRolled:
+; SetGiftPartyMonCaughtData (b = the OT gender flag) plus a rolled gender in the
+; CaughtLevel byte, whose level stays 0 ("unknown"), as for every gift.
+	call SetGiftPartyMonCaughtData ; hl -> CaughtLocation
+	dec hl
+	call GivenMonGenderBits
+	ld [hl], a
+	ret
+
+SetGiftBoxMonCaughtDataRolled:
+; SetGiftBoxMonCaughtData (b = the OT gender flag) plus a rolled gender.
+	call SetGiftBoxMonCaughtData
+	call GivenMonGenderBits
+	ld b, a
+	ld a, BANK(sBoxMon1CaughtLevel)
+	call OpenSRAM
+	ld a, b
+	ld [sBoxMon1CaughtLevel], a
+	jp CloseSRAM
+
+GiveEggGender:
+; GiveEgg (the giveegg script command): roll the gender of the egg it just put
+; last in the party.  Its species is wCurPartySpecies (GiveEgg restored it).
+	ld a, [wPartyCount]
+	dec a
+	ld hl, wPartyMon1CaughtLevel
+	call GetPartyLocation
+	call GenderBitsForCurPartySpecies
+	ld b, a
+	ld a, [hl]
+	and CAUGHT_LEVEL_MASK
+	or b
+	ld [hl], a
+	ret
+
+OddEggGender:
+; _GiveOddEgg: roll the gender of the Odd Egg in wOddEgg before it joins the
+; party.  Its DVs (and so its shininess) stay the table's.
+	ld a, [wOddEggSpecies]
+	call GenderBitsForSpecies
+	ld b, a
+	ld a, [wOddEggCaughtLevel]
+	and CAUGHT_LEVEL_MASK
+	or b
+	ld [wOddEggCaughtLevel], a
+	ret
+
+LinkEnemyMonGender:
+; InitEnemyMon (link and Battle Tower battles): the enemy's gender byte is the
+; OT party mon's explicit gender, so that a pyrite opponent's mon has the same
+; gender on both Game Boys (Attract, the HUD).  Anything but %10/%11 is %00:
+; derive it from the DVs, as before (Battle Tower data has 0 there).
+	ld a, [wCurPartyMon]
+	ld hl, wOTPartyMon1CaughtLevel
+	call GetPartyLocation
+	ld a, [hl]
+	and CAUGHT_GENDER_BITS
+	bit CAUGHT_GENDER_EXPLICIT_F, a
+	jr nz, .got_gender
+	xor a
+.got_gender
+	ld [wEnemyMonStatus + 1], a
+	ret

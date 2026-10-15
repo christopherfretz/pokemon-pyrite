@@ -626,6 +626,10 @@ def main():
         # party
         "wPartyCount", "wPartySpecies", "wPartyEnd", "wPartyMons",
         "wPartyMonOTs", "wPartyMonNicknames",
+        # GF2/GF3 gender field: the party-side migration marker and the other
+        # wPokemonData CaughtLevel bytes MigrateGenderField's party half clears
+        "wGenderFieldMigrated", "wBreedMon1CaughtLevel", "wBreedMon2CaughtLevel",
+        "wEggMonCaughtLevel", "wContestMonCaughtLevel",
     ]
     # object_struct (macros/ram.asm) members the editor has to re-initialise
     # for the player and the Pikachu follower when it moves a save to another
@@ -658,6 +662,11 @@ def main():
         "wVisitedSpawns": (need("NUM_SPAWNS") + 7) // 8,
         "wCurBox": 1,
         "wScreenSave": need("SCREEN_META_WIDTH") * need("SCREEN_META_HEIGHT"),
+        "wGenderFieldMigrated": 2,
+        "wBreedMon1CaughtLevel": 1,
+        "wBreedMon2CaughtLevel": 1,
+        "wEggMonCaughtLevel": 1,
+        "wContestMonCaughtLevel": 1,
     }
     fields = {}
     for n in field_names:
@@ -749,6 +758,10 @@ def main():
         "wEnemyMonSpecies": wram("wEnemyMonSpecies"),
         "wEnemyMonDVs": wram("wEnemyMonDVs"),
         "wEnemyMonLevel": wram("wEnemyMonLevel"),
+        # GF2/GF3: RollWildGender's explicit gender lives in the battle
+        # struct's unused byte, wEnemyMonStatus + 1 (docs/GENDER-FIELD.md).
+        "wEnemyMonGender": [wram("wEnemyMonStatus")[0],
+                            wram("wEnemyMonStatus")[1] + 1],
         "wildBattle": need("WILD_BATTLE"),
         "trainerBattle": need("TRAINER_BATTLE"),
         "battleTypes": {k[len("BATTLETYPE_"):]: v for k, v in K.items()
@@ -757,6 +770,17 @@ def main():
                    if k in ("GENDER_F0", "GENDER_F12_5", "GENDER_F25",
                             "GENDER_F50", "GENDER_F75", "GENDER_F100",
                             "GENDER_UNKNOWN")},
+    }
+
+    # GF2/GF3 explicit gender (docs/GENDER-FIELD.md): bits 7-6 of a mon's
+    # CaughtLevel byte (party.mon.caughtData), %10 male / %11 female, else
+    # derived from the DVs; bits 5-0 are the caught level.
+    gender_field = {
+        "explicit": need("CAUGHT_GENDER_EXPLICIT"),
+        "female": need("CAUGHT_GENDER_FEMALE"),
+        "bits": need("CAUGHT_GENDER_BITS"),
+        "levelMask": need("CAUGHT_LEVEL_MASK"),
+        "magic": [need("GENDER_MIGRATED_MAGIC_1"), need("GENDER_MIGRATED_MAGIC_2")],
     }
 
     # The move table: the editor reads each move's PP straight out of the ROM
@@ -930,6 +954,7 @@ def main():
         "party": party,
         "objects": objects,
         "baseStats": base_stats,
+        "genderField": gender_field,
         "moveStats": move_stats,
         "growthRates": growth,
         "limits": {

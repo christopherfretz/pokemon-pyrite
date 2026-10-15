@@ -2076,6 +2076,10 @@ SECTION "PK1 Starter DVs", WRAM0
 
 wPK1StarterDVs:: ds 2      ; ATK/DEF, SPD/SPC -- same order as MON_DVS
 wPK1StarterDVsState:: db   ; PK1_STARTER_DVS_ARMED, or anything else = unarmed
+; GF3 (docs/GENDER-FIELD.md): the tutorial PIKACHU's rolled gender bits
+; (wEnemyMonStatus + 1), handed to the gift when the state byte reads
+; PK1_STARTER_GENDER_PENDING.  The free tail at $cfdb: nothing moves.
+wPK1StarterGender:: db
 
 
 SECTION "WRAM 1", WRAMX
@@ -3656,7 +3660,9 @@ endr
 wPartyMonNicknamesEnd::
 
 ; GF2: party/Day-Care/egg/contest gender-bit migration marker. This padding
-; was zero in every pre-GF2 save, and it is saved with wPokemonData (also by
+; was unused before GF2 (WRAM is cleared at power-on, so it is normally $0000;
+; only exactly C7 5A, 1 in 65,536, would read as migrated), and it is saved
+; with wPokemonData (also by
 ; SaveAfterLinkTrade), so the marker always travels with the mons it covers.
 wGenderFieldMigrated:: ds 2 ; GENDER_MIGRATED_MAGIC_1, _2 once migrated
 

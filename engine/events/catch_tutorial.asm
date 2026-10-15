@@ -116,6 +116,8 @@ OakCatchTutorial::
 	ld [wPK1StarterDVs], a
 	ld a, [wEnemyMonDVs + 1]
 	ld [wPK1StarterDVs + 1], a
+	ld a, [wEnemyMonStatus + 1] ; GF3: and its rolled gender
+	ld [wPK1StarterGender], a
 	ld a, PK1_STARTER_DVS_ARMED
 	ld [wPK1StarterDVsState], a
 	ret

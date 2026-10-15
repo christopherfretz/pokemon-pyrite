@@ -87,6 +87,7 @@ _GiveOddEgg:
 	ld [wMobileMonNicknamePointer], a
 	ld a, HIGH(wOddEggName)
 	ld [wMobileMonNicknamePointer + 1], a
+	farcall OddEggGender ; GF3: roll the gender bits, keep the table's DVs
 	farcall AddMobileMonToParty
 	ret
 

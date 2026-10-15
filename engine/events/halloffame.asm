@@ -198,9 +198,15 @@ GetHallOfFameParty:
 	ld [de], a
 	inc de
 
-	ld hl, MON_LEVEL
+; GF3 (docs/GENDER-FIELD.md): bit 7 of the level = this mon's explicit gender
+; is not the one its DVs give (mixed ratio only); a hof_mon has no other room.
+	ld hl, MON_SPECIES
 	add hl, bc
 	ld a, [hl]
+	call HOF_GenderFlipBit
+	ld hl, MON_LEVEL
+	add hl, bc
+	or [hl]
 	ld [de], a
 	inc de
 
@@ -226,6 +232,94 @@ GetHallOfFameParty:
 .done
 	ld a, -1
 	ld [de], a
+	ret
+
+HOF_GetGenderRatio:
+; GF3: a = species -> a = its BASE_GENDER ratio.  Preserves bc, de and hl.
+	push hl
+	push bc
+	dec a
+	ld hl, BaseData + BASE_GENDER
+	ld bc, BASE_DATA_SIZE
+	call AddNTimes
+	ld a, BANK(BaseData)
+	call GetFarByte
+	pop bc
+	pop hl
+	ret
+
+HOF_GenderFlipBit:
+; GF3: bc = a party struct, a = its species -> a = HOF_LEVEL_GENDER_FLIP when
+; it has a mixed gender ratio and an explicit gender other than the one its
+; DVs give (GetGender's DV rule: female iff the DV byte <= the ratio), else 0.
+; Entries written before GF3 have the bit clear: "as the DVs say", which is
+; exactly what they always showed.  Preserves bc and de; clobbers hl.
+	push de
+	call HOF_GetGenderRatio
+	ld d, a
+	ld e, 0
+	and a ; GENDER_F0
+	jr z, .done
+	cp GENDER_F100
+	jr nc, .done ; GENDER_F100 or GENDER_UNKNOWN
+	ld hl, MON_CAUGHTLEVEL
+	add hl, bc
+	ld a, [hl]
+	bit CAUGHT_GENDER_EXPLICIT_F, a
+	jr z, .done
+	and CAUGHT_GENDER_FEMALE
+	ld e, a ; the explicit gender: CAUGHT_GENDER_FEMALE or 0
+	ld hl, MON_DVS
+	add hl, bc
+	ld a, [hli]
+	ld h, [hl]
+	and $f0 ; Attack DV
+	ld l, a
+	ld a, h
+	swap a
+	and $f ; Speed DV
+	or l
+	cp d ; the DVs say female iff c or z
+	ld a, CAUGHT_GENDER_FEMALE
+	jr c, .dv_gender
+	jr z, .dv_gender
+	xor a
+.dv_gender
+	xor e
+	ld e, 0
+	jr z, .done
+	ld e, HOF_LEVEL_GENDER_FLIP
+.done
+	ld a, e
+	pop de
+	ret
+
+HOF_DecodeLevelGender:
+; GF3: split the hof_mon level byte in wTempMonLevel (species wCurPartySpecies,
+; DVs in wTempMonDVs) into the level and wTempMonCaughtLevel for GetGender.
+; Mixed ratio with bit 7 set: the level loses it and the gender is explicitly
+; the one the DVs do not give.  Otherwise wTempMonCaughtLevel = %00 (from the
+; DVs / the species) and the byte is the level as stored.  Clobbers hl.
+	xor a
+	ld [wTempMonCaughtLevel], a
+	ld hl, wTempMonLevel
+	ld a, [wCurPartySpecies]
+	call HOF_GetGenderRatio
+	and a ; GENDER_F0
+	ret z
+	cp GENDER_F100
+	ret nc ; GENDER_F100 or GENDER_UNKNOWN
+	bit HOF_LEVEL_GENDER_FLIP_F, [hl]
+	ret z
+	res HOF_LEVEL_GENDER_FLIP_F, [hl]
+	ld a, TEMPMON
+	ld [wMonType], a
+	farcall GetGender ; the DV gender (wTempMonCaughtLevel is %00): z = female
+	ld a, CAUGHT_GENDER_BITS ; the DVs say male: explicitly female
+	jr nz, .store
+	ld a, CAUGHT_GENDER_EXPLICIT ; the DVs say female: explicitly male
+.store
+	ld [wTempMonCaughtLevel], a
 	ret
 
 AnimateHOFMonEntrance:
@@ -492,8 +586,7 @@ DisplayHOFMon:
 	call GetBasePokemonName
 	hlcoord 7, 13
 	call PlaceString
-	xor a ; GF2: hof_mon keeps only the DVs, so derive the gender from them
-	ld [wTempMonCaughtLevel], a ; (GF3 stores a gender bit in the entry)
+	call HOF_DecodeLevelGender ; GF3: level bit 7 -> wTempMonCaughtLevel
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender

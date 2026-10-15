@@ -16,7 +16,7 @@ GiveShuckle:
 
 ; Caught data.
 	ld b, CAUGHT_BY_UNKNOWN
-	farcall SetGiftPartyMonCaughtData
+	farcall SetGiftPartyMonCaughtDataRolled ; GF3: + a rolled gender
 
 ; Holding a Berry.
 	ld bc, PARTYMON_STRUCT_LENGTH

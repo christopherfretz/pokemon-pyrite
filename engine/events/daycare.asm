@@ -651,8 +651,11 @@ DayCare_InitBreeding:
 	call Random
 	ld [hld], a
 	ld [wTempMonDVs + 1], a
-	xor a ; GF2: the egg has no explicit gender yet (GF3 rolls it), so its
-	ld [wTempMonCaughtLevel], a ; DV-derived gender drives the inheritance below
+; GF3 (docs/GENDER-FIELD.md): roll the egg's gender first; the stored
+; gender, not the fresh DVs, then picks the DV donor below.
+	push hl
+	farcall DayCareEggGender ; -> wTempMonCaughtLevel, wEggMonCaughtLevel
+	pop hl
 	ld de, wBreedMon1DVs
 	ld a, [wBreedMon1Species]
 	cp DITTO
@@ -717,9 +720,9 @@ DayCare_InitBreeding:
 	ld hl, wEggMonHappiness
 	ld [hli], a
 	xor a
-	ld [hli], a
-	ld [hli], a
-	ld [hl], a
+	ld [hli], a ; PokerusStatus
+	inc hl ; GF3: keep the CaughtLevel byte (the rolled gender)
+	ld [hl], a ; CaughtLocation
 	ld a, [wCurPartyLevel]
 	ld [wEggMonLevel], a
 	ret

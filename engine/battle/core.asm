@@ -4128,6 +4128,7 @@ InitEnemyMon:
 	inc de
 	dec b
 	jr nz, .loop
+	farcall LinkEnemyMonGender ; GF3: the OT's explicit gender, as it sees it
 	ld a, [wCurPartyMon]
 	ld [wCurOTMon], a
 	ret

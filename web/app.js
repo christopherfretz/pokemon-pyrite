@@ -1849,13 +1849,20 @@
     return readWram(a[1], a[0]);
   }
 
+  /* GF2/GF3 (docs/GENDER-FIELD.md): RollWildGender stores the wild mon's
+     explicit gender in wEnemyMonStatus + 1 right after the level, so the read
+     (and the "settled" signature) runs through that byte when the tables have
+     it.  Older tables.json: up to the level, gender from the DVs as before. */
   function readEnemy() {
     var base = T.hunt.wEnemyMon;
-    var len = T.hunt.wEnemyMonLevel[1] - base[1] + 1;
+    var lv = T.hunt.wEnemyMonLevel[1] - base[1];
+    var gi = T.hunt.wEnemyMonGender ? T.hunt.wEnemyMonGender[1] - base[1] : -1;
+    var len = Math.max(lv, gi) + 1;
     var b = [];
     for (var i = 0; i < len; i++) { b.push(readWram(base[1] + i, base[0])); }
     var dv = T.hunt.wEnemyMonDVs[1] - base[1];
-    return { species: b[0], level: b[len - 1], dv0: b[dv], dv1: b[dv + 1], sig: b.join(',') };
+    return { species: b[0], level: b[lv], dv0: b[dv], dv1: b[dv + 1],
+      gbits: gi >= 0 ? b[gi] : 0, sig: b.join(',') };
   }
 
   // --- DV maths (Gen 2) ---
@@ -1878,12 +1885,16 @@
     return rom[bs.rom + (species - 1) * bs.stride + bs.fields.gender];
   }
   /* GetGender (engine/pokemon/mon_stats.asm): b = ATK DV << 4 | SPD DV; ratio
-     $FF genderless, 0 always male, $FE always female, else female iff b <= ratio. */
-  function genderOf(species, dv) {
+     $FF genderless, 0 always male, $FE always female.  For a mixed ratio an
+     explicit gender wins (GF2/GF3, docs/GENDER-FIELD.md: gbits = the gender
+     byte, %10 male / %11 female; anything else, or a record logged before it
+     was kept, = undefined); otherwise female iff b <= ratio. */
+  function genderOf(species, dv, gbits) {
     var r = genderRatio(species);
     if (r < 0 || r === 0xff) { return '-'; }
     if (r === 0) { return 'M'; }
     if (r === 0xfe) { return 'F'; }
+    if (gbits & 0x80) { return (gbits & 0x40) ? 'F' : 'M'; }
     var b = (((dv >> 12) & 15) << 4) | ((dv >> 4) & 15);
     return b <= r ? 'F' : 'M';
   }
@@ -2002,8 +2013,9 @@
       if (tgt && !hunt.firstShinyAt) { hunt.firstShinyAt = hunt.encounters; }
     }
     hunt.lastSig = e.sig;
-    // [time, species, level, dv, target encounter number (0 = off-target), battle type]
-    hunt.log.push([Date.now(), e.species, e.level, dv, tgt ? hunt.encounters : 0, btype]);
+    // [time, species, level, dv, target encounter number (0 = off-target), battle type,
+    //  gender byte (GF3; absent on records logged before it)]
+    hunt.log.push([Date.now(), e.species, e.level, dv, tgt ? hunt.encounters : 0, btype, e.gbits]);
     if (hunt.log.length > HUNT_KEEP) { hunt.log.splice(0, hunt.log.length - HUNT_KEEP); }
     recomputeBest();
     pushAction('e');
@@ -2265,7 +2277,7 @@
     if (!reveal) { renderHistory(); return; }
     $('#hunt-last').innerHTML = lastRec
       ? '<div class="hl-head"><b>' + esc(speciesName(lastRec[1])) + '</b> L' + lastRec[2] + ' ' +
-        genderSym(genderOf(lastRec[1], lastRec[3])) + ' <code>' + dvHex(lastRec[3]) + '</code> <strong class="' +
+        genderSym(genderOf(lastRec[1], lastRec[3], lastRec[6])) + ' <code>' + dvHex(lastRec[3]) + '</code> <strong class="' +
         (shinyNow ? 'yes' : 'no') + '">' + (shinyNow ? '✨ SHINY' : 'not shiny') + '</strong></div>' +
         '<div class="dvs">' + dvCells(lastRec[3]) + '</div>'
       : '<p class="note">No encounter yet.</p>';
@@ -2293,7 +2305,7 @@
     $('#hunt-log').innerHTML = rows.map(function (r) {
       var sh = isShiny(r[3]);
       return '<li class="' + (sh ? 'yes' : '') + '"><b>' + (r[4] ? '#' + r[4] : '–') + '</b>' +
-        '<span>' + esc(speciesName(r[1])) + ' ' + genderSym(genderOf(r[1], r[3])) + '</span>' +
+        '<span>' + esc(speciesName(r[1])) + ' ' + genderSym(genderOf(r[1], r[3], r[6])) + '</span>' +
         '<code>' + dvHex(r[3]) + '</code><span>' + (sh ? '✨' : shinyMatches(r[3]) + '/4') + '</span>' +
         '<time>' + new Date(r[0]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
         '</time></li>';
@@ -2319,7 +2331,7 @@
     return head + (hunt ? hunt.log : []).map(function (r) {
       var d = dvSplit(r[3]);
       return [r[4] || '', new Date(r[0]).toISOString(), r[1], speciesName(r[1]), r[2],
-        dvHex(r[3]).replace(' ', ''), d.atk, d.def, d.spd, d.spc, d.hp, genderOf(r[1], r[3]),
+        dvHex(r[3]).replace(' ', ''), d.atk, d.def, d.spd, d.spc, d.hp, genderOf(r[1], r[3], r[6]),
         isShiny(r[3]) ? 1 : 0, shinyMatches(r[3]), r[5] === undefined ? '' : r[5], r[4] ? 1 : 0].join(',');
     }).join('\n') + '\n';
   }
@@ -2545,7 +2557,7 @@
           detector: { prevMode: hd.prevMode, pending: hd.pending, base: hd.base } }; },
         csv: function () { return huntCsv(); },
         json: function () { return huntJson(); },
-        gender: function (sp, dv) { return genderOf(sp, dv); },
+        gender: function (sp, dv, gbits) { return genderOf(sp, dv, gbits); },
         shiny: function (dv) { return isShiny(dv); },
         median: SHINY_MEDIAN,
         reset: function (why) { huntReset(why || 'manual'); return hunt ? hunt.resets : 0; },

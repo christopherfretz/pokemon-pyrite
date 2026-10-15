@@ -66,7 +66,7 @@ NewGame:
 	call PlayerProfileSetup
 	call OakSpeech
 	call InitializeWorld
-	farcall SetGenderFieldPartyMarker ; GF2: a new file needs no migration
+	farcall NewGameGenderField ; GF2/GF3: party marker + box pass (same-ID new game)
 
 	ld a, LANDMARK_PALLET_TOWN ; yellowcrystal: new game starts in Pallet Town
 	ld [wPrevLandmark], a

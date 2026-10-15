@@ -293,18 +293,21 @@ RollWildGender:
 ; the add byte decorrelates seeds, so r is ~uniform both over seeds at one
 ; timing and over timings at one seed (docs/GENDER-FIELD.md, GF2 findings, F5).
 ; Unset (%00, derive from the DVs) for trainer mons, gifts built through
-; LoadEnemyMon outside battle, the catch tutorial, roamers (their struct has
-; no room to keep a roll between encounters) and genderless/F0/F100 species.
-; The forced-shiny red GYARADOS rolls like any other wild mon.
+; LoadEnemyMon outside battle (GF3 rolls those at the caught-data step),
+; roamers (their struct has no room to keep a roll between encounters) and
+; genderless/F0/F100 species.  The forced-shiny red GYARADOS rolls like any
+; other wild mon; so, since GF3, do both catch tutorials (Oak's PIKACHU's roll
+; is the gift PIKACHU's gender: OakCatchTutorial, GivenMonGenderBits).
 ; wBaseGender is the enemy species' (LoadEnemyMon called GetBaseData).
 	ld a, [wBattleMode]
 	cp WILD_BATTLE
 	jr nz, .unset
 	ld a, [wBattleType]
 	cp BATTLETYPE_TUTORIAL
-	jr z, .unset
+	jr z, .roll ; GF3: rolls; OakCatchTutorial hands it to the gift PIKACHU
 	cp BATTLETYPE_ROAMING
 	jr z, .unset
+.roll
 	ld a, [wBaseGender]
 	and a ; GENDER_F0
 	jr z, .unset

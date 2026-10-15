@@ -1233,6 +1233,7 @@ GiveEgg::
 	xor a
 	ld [hli], a
 	ld [hl], a
+	farcall GiveEggGender ; GF3: roll the egg's gender (docs/GENDER-FIELD.md)
 	and a
 	ret
 
@@ -1751,7 +1752,7 @@ GivePoke::
 	ld [hli], a
 	ld [hl], LOW(RANDY_OT_ID)
 	pop bc
-	farcall SetGiftPartyMonCaughtData
+	farcall SetGiftPartyMonCaughtDataRolled ; GF3: + a rolled gender
 	jr .skip_nickname
 
 .send_to_box
@@ -1775,7 +1776,7 @@ GivePoke::
 	call Random
 	ld [hl], a
 	call CloseSRAM
-	farcall SetGiftBoxMonCaughtData
+	farcall SetGiftBoxMonCaughtDataRolled ; GF3: + a rolled gender
 	jr .skip_nickname
 
 .wildmon
@@ -1786,11 +1787,11 @@ GivePoke::
 	ld a, b
 	and a
 	jr z, .party
-	farcall SetBoxMonCaughtData
+	farcall SetGivenBoxMonCaughtData ; GF3: rolls the gender first
 	jr .set_caught_data
 
 .party
-	farcall SetCaughtData
+	farcall SetGivenPartyMonCaughtData ; GF3: rolls the gender first
 .set_caught_data
 	farcall GiveANickname_YesNo
 	pop de
@@ -1861,7 +1862,7 @@ PK1_StarterDVsOrRandom:
 	ld a, [wCurPartySpecies]
 	cp PIKACHU
 	jr nz, .random
-	xor a
+	ld a, PK1_STARTER_GENDER_PENDING ; GF3: GivenMonGenderBits owes the gender
 	ld [wPK1StarterDVsState], a
 	ld a, [wPK1StarterDVs]
 	ld b, a

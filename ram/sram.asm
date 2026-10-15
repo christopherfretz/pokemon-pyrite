@@ -406,7 +406,10 @@ ENDSECTION
 
 SECTION "SRAM Gender Marker", SRAM
 
-; GF2: box gender-bit migration marker (sBox + Boxes 1-14). This space was
-; unused (zero) in every pre-GF2 save and is not covered by any checksum.
+; GF2: box gender-bit migration marker (sBox + Boxes 1-14). Unused before GF2
+; and not covered by any checksum: in an old save it holds whatever the
+; battery came up with ($00, $FF or random). Any value but exactly
+; GENDER_MIGRATED_MAGIC_1, _2 (C7 5A, a 1-in-65,536 chance) reads as "not
+; migrated", which is the safe direction.
 ; Written last by MigrateGenderField, and by ErasePreviousSave for new files.
 sGenderFieldMigrated:: ds 2 ; GENDER_MIGRATED_MAGIC_1, _2 once migrated

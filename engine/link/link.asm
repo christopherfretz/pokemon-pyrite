@@ -1991,6 +1991,11 @@ LinkTrade:
 	ld de, wTempMonSpecies
 	ld bc, PARTYMON_STRUCT_LENGTH
 	call CopyBytes
+; GF3 (docs/GENDER-FIELD.md): bits 7-6 of an incoming mon's CaughtLevel may be
+; a vanilla Gen 2 time of day; drop them so its gender comes from its DVs.
+	ld a, [wTempMonCaughtLevel]
+	and CAUGHT_LEVEL_MASK
+	ld [wTempMonCaughtLevel], a
 	predef AddTempmonToParty
 	ld a, [wPartyCount]
 	dec a

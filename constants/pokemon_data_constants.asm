@@ -166,6 +166,11 @@ DEF BOXLIST_SIZE EQU _RS
 
 ; hall of fame
 ; hof_mon: species, id, dvs, level, nicknames
+; GF3 (docs/GENDER-FIELD.md): for a mixed-ratio species, bit 7 of the level
+; byte is set when the mon's explicit gender is the opposite of the one its
+; DVs give (clear: as the DVs say, which every pre-GF3 entry means).
+DEF HOF_LEVEL_GENDER_FLIP_F EQU 7
+DEF HOF_LEVEL_GENDER_FLIP   EQU 1 << HOF_LEVEL_GENDER_FLIP_F
 DEF HOF_MON_LENGTH EQU 1 + 2 + 2 + 1 + (MON_NAME_LENGTH - 1) ; $10
 ; hall_of_fame: win count, party, terminator
 DEF HOF_LENGTH EQU 1 + HOF_MON_LENGTH * PARTY_LENGTH + 1 ; $62
