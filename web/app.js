@@ -47,7 +47,14 @@
  * optimisation: if anything about it does not match, we fall back to booting
  * the cartridge with the battery save, exactly as a real Game Boy would.
  *
- * No service worker on purpose: the ROM must always be the freshly hosted one.
+ * Offline (PW1): offline.js registers a generated service worker (sw.js,
+ * from sw.template.js) that precaches this page, the core, the ROM and
+ * tables.json as ONE versioned bundle per build, so the page launches with no
+ * network.  A newly hosted build is fetched in the background and only goes
+ * live when the player taps "Update ready - reload" (kfBeforeUpdate below
+ * flushes the save first).  The worker never touches the storage described
+ * above; the fetches below are unchanged and are simply answered from the
+ * bundle when a worker controls the page.
  * No navigator.vibrate() anywhere: haptics stay off.
  */
 (function () {
@@ -2444,6 +2451,8 @@
     }
   });
   window.addEventListener('pagehide', function () { saveProgress(true); });
+  // PW1: offline.js awaits this (at most 3 s) before activating a new build.
+  window.kfBeforeUpdate = function () { return saveProgress(true); };
   // Page Lifecycle: a frozen tab may be discarded without another event.
   document.addEventListener('freeze', function () { saveProgress(true); });
 

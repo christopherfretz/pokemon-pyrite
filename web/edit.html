@@ -21,6 +21,8 @@
 <header id="ehead">
   <a class="back" href="./index.html">&larr; Back to game</a>
   <h1>Save editor</h1>
+  <span id="offline-status" class="offline-status">Offline: checking&hellip;</span>
+  <button id="btn-update" class="update-btn" type="button" hidden>Update ready &ndash; reload</button>
 </header>
 
 <div id="status" role="status">Loading&hellip;</div>
@@ -142,5 +144,6 @@
 </div>
 
 <script src="./edit.js"></script>
+<script src="./offline.js"></script>
 </body>
 </html>

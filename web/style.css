@@ -256,6 +256,16 @@ body {
 .slot > span { width: 52px; color: var(--dim); }
 .slot > em { font-style: normal; font-size: 11px; color: var(--dim); }
 
+/* PW1: offline status line + "Update ready" (offline.js) */
+.row.offline { align-items: center; }
+.offline-status { font-size: 11.5px; color: var(--dim); }
+.row #btn-update { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.update-badge { color: var(--ink); text-transform: none; letter-spacing: 0; }
+body.editor .update-btn {
+  font: 600 12px/1 system-ui, sans-serif; color: var(--ink); background: var(--accent);
+  border: 1px solid var(--accent); border-radius: 7px; padding: 8px 10px;
+}
+
 .note { font-size: 11.5px; line-height: 1.5; color: var(--dim); margin: 8px 0 0; }
 .note strong { color: var(--ink); }
 kbd {

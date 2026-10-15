@@ -78,7 +78,9 @@ all: crystal
 # The browser save editor (web/edit.html) reads web/tables.json: SRAM offsets,
 # name tables and the ROM sha, all derived from this build.  The deployed site
 # runs `make crystal` and nothing else, so tables.json has to be part of it.
-crystal:         pokecrystal.gbc web/tables.json
+# web/sw.js is the player's offline service worker, stamped with this build
+# (web/gen_sw.py); the deploy's `make crystal` regenerates it the same way.
+crystal:         pokecrystal.gbc web/tables.json web/sw.js
 crystal11:       pokecrystal11.gbc
 crystal_au:      pokecrystal_au.gbc
 crystal_debug:   pokecrystal_debug.gbc
@@ -117,6 +119,7 @@ tidy:
 	      $(pokecrystal11_debug_obj) \
 	      build_rev.txt \
 	      web/tables.json \
+	      web/sw.js \
 	      rgbdscheck.o
 	$(MAKE) clean -C tools/
 
@@ -205,6 +208,18 @@ web/tables.json: web/gen_tables.py pokecrystal.gbc pokecrystal.sym \
                  data/pokemon/names.asm data/moves/names.asm \
                  engine/math/get_square_root.asm
 	$(PYTHON) web/gen_tables.py --root . --out $@
+
+# The offline bundle: every file the service worker precaches (gen_sw.py
+# BUNDLE) plus the preset saves it verifies on first use.  build_rev.txt is
+# rewritten only when HEAD moves (see above), so a second run is a no-op.
+SW_BUNDLE := web/index.html web/app.js web/offline.js web/style.css \
+             web/manifest.webmanifest web/icon-192.png web/icon-512.png \
+             web/vendor/binjgb/binjgb.js web/vendor/binjgb/binjgb.wasm \
+             web/edit.html web/edit.js web/presets/manifest.json \
+             $(wildcard web/presets/*.sav)
+web/sw.js: web/gen_sw.py web/sw.template.js pokecrystal.gbc web/tables.json \
+           build_rev.txt $(SW_BUNDLE)
+	$(PYTHON) web/gen_sw.py --root . --out $@
 
 # pokecrystal.sym is a side effect of the link rule above.
 pokecrystal.sym: pokecrystal.gbc

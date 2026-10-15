@@ -51,7 +51,7 @@
   </div>
 
   <details id="menu">
-    <summary>Menu &amp; saves</summary>
+    <summary>Menu &amp; saves<span id="update-badge" class="update-badge" hidden> &middot; update ready</span></summary>
     <div class="menu-body">
 
       <div class="row">
@@ -68,6 +68,12 @@
 
       <div class="row">
         <a id="btn-edit" class="btnlink" href="./edit.html">Edit save&hellip;</a>
+      </div>
+
+      <!-- PW1: offline bundle status + the opt-in update (offline.js). -->
+      <div class="row offline">
+        <span id="offline-status" class="offline-status">Offline: checking&hellip;</span>
+        <button id="btn-update" type="button" hidden>Update ready &ndash; reload</button>
       </div>
 
       <div class="slots">
@@ -155,6 +161,8 @@
         deletes site storage after <strong>7 days without visiting</strong> &mdash; add this page
         to your Home Screen and open it regularly, and use <em>Export .sav</em> before a long
         break. The exported file is raw cartridge RAM: it imports straight into Delta.
+        On iOS a Home Screen app keeps <strong>its own</strong> saves, separate from the Safari tab:
+        carry a save across once with <em>Export .sav</em> here and <em>Import .sav</em> there.
       </p>
       <p class="note">
         Keyboard: arrows move, <kbd>Z</kbd>/<kbd>A</kbd> = A, <kbd>X</kbd>/<kbd>S</kbd> = B,
@@ -168,5 +176,6 @@
 </div>
 
 <script src="./app.js"></script>
+<script src="./offline.js"></script>
 </body>
 </html>

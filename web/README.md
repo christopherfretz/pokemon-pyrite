@@ -5,8 +5,11 @@ hack in a phone browser: touch controls, sound, battery saves that persist, a
 working **MBC3 real-time clock** (so day/night and time-gated events behave),
 and `.sav` export/import that round-trips with Delta.
 
-No build step, no framework, no bundler, no service worker. Copy the folder to
-any static host, drop the ROM next to `index.html`, done.
+No framework, no bundler. Copy the folder to any static host, drop the ROM
+next to `index.html`, done. The one generated file is `sw.js`, the offline
+service worker that `make crystal` stamps with the build (see
+[Offline / home-screen app](#offline--home-screen-app)); without it the page
+simply runs online-only, exactly as before.
 
 This folder lives in the public ROM-source repo
 <https://github.com/christopherfretz/pokemon-pyrite> under `web/`, next to the
@@ -20,6 +23,10 @@ ROM source it plays. `make crystal` at the repo root builds `pokecrystal.gbc`.
 | --- | --- |
 | `index.html` | the page |
 | `app.js` | all the logic (core loading, ROM loading, input, saves) |
+| `offline.js` | registers `sw.js`, drives the menu's "Offline:" line and the "Update ready" button (player **and** editor) |
+| `sw.template.js` | the offline service worker's source |
+| `gen_sw.py` | stamps `sw.template.js` with the build into `sw.js` — run by `make crystal` |
+| `sw.js` | **derived, git-ignored** — the service worker the page registers |
 | `style.css` | portrait + landscape layouts (player **and** editor) |
 | `edit.html`, `edit.js` | the save editor (see below) |
 | `gen_tables.py` | generates `tables.json` from the build — run by `make crystal` |
@@ -93,7 +100,9 @@ restart, not a code edit. Same for `tables.json` and `edit.js` — **the server
 caches file contents, so restart it after any edit** or you will test the old
 build.)
 The page and the ROM are sent `Cache-Control: no-store`, so a phone always gets
-the freshly hosted build. It refuses to start if the ROM is missing.
+the freshly hosted build (from the network; once the service worker is active,
+from its bundle until you tap "Update ready"). `sw.js` is sent
+`Cache-Control: no-cache` so every update check revalidates it. It refuses to start if the ROM is missing.
 
 TLS, authentication and public exposure are the host's job — put it behind a
 reverse proxy (Caddy, nginx, a Cloudflare Tunnel) rather than binding it to
@@ -265,7 +274,8 @@ different matter: those are matched on the exact ROM hash and core commit.)
   includes your in-game save. Two mitigations, use both: **add the page to your
   Home Screen** (Share → Add to Home Screen; storage for an installed web app is
   treated more durably and the 7-day cap does not apply), and **Export .sav**
-  before any long break.
+  before any long break. Note that on iOS the Home-Screen app has **its own
+  storage**, separate from the Safari tab — see "Carry your save over" below.
 - Private/incognito windows, "Clear website data", and Low Storage cleanups all
   wipe the save. The export file is the only copy you control.
 - Storage is per-origin: the save on `example.com` is invisible to
@@ -354,11 +364,88 @@ artefact, and the editor says so on the page.
 with safe-area insets, so Home-Screen launch is fullscreen with no notch
 clipping.
 
-**There is deliberately no service worker.** A service worker would cache the
-ROM and the page, which is exactly wrong here: the ROM must always be the
-freshly hosted build. The trade-off is that the page needs a network connection
-to start (the core is a small local file, so only the ROM really matters), and
-that you never have to think about a stale cached build on the phone.
+It also launches with **no network** once the service worker has cached the
+build — next section.
+
+---
+
+## Offline / home-screen app
+
+### How it works
+
+`make crystal` runs `gen_sw.py`, which writes `sw.js` from `sw.template.js`
+stamped with `BUILD_REV`, the ROM's SHA-256 and the SHA-256 of every file in
+the **bundle**: `index.html`, `app.js`, `offline.js`, `style.css`,
+`manifest.webmanifest`, both icons, `vendor/binjgb/binjgb.js` + `.wasm`,
+`kanto-first.gbc`, `tables.json`, `edit.html`, `edit.js`,
+`presets/manifest.json`. Any change to any of them changes `sw.js`, which is
+how the browser notices a new build.
+
+- **Install** fetches the whole bundle (bypassing the HTTP cache), checks every
+  file against its stamped hash, and only then writes it into one cache named
+  `kf-<version>`. A non-2xx answer or a hash mismatch (say, `sw.js` from one
+  build and a ROM from another) fails the install: a half or mixed bundle can
+  never go live, the previous one keeps working.
+- **Fetch**: page, core, ROM and tables come from the active bundle first and
+  the network only if something is missing. Preset `.sav` files are not
+  precached (1.9 MB); each one is cached the first time the editor loads it,
+  and only if its bytes match the stamp.
+- **Activate** deletes every other `kf-*` cache. The worker never touches
+  IndexedDB or localStorage — your saves are stored exactly as before.
+- **Updates are opt-in.** Every launch and every return to the tab asks the
+  host for a newer `sw.js`. A new build downloads in the background; the menu
+  then shows **Update ready – reload (build xxxxxxx)** (and "· update ready" on
+  the menu bar). Nothing changes until you tap it: the page flushes your save,
+  switches to the new bundle and reloads once. Never mid-game on its own.
+- The menu's **Offline:** line says `ready ✓ (build xxxxxxx)` when the whole
+  bundle for that build is on the device, `caching…` while it downloads,
+  `unavailable` when there is no worker (unsupported browser, plain `http://`
+  on a non-localhost host, or `sw.js` missing / failed to install).
+
+### Install it on an iPhone
+
+1. Open the site in **Safari**, online.
+2. Share → **Add to Home Screen**.
+3. Launch it **from the new icon, still online**, open *Menu & saves* and wait
+   until it says **Offline: ready ✓**. (The icon's copy has its own cache and
+   its own storage — the ✓ in the Safari tab does not count.)
+4. Test before you rely on it: airplane mode on, close the app (swipe it away),
+   launch from the icon. It should start straight into the game.
+
+### Carry your save over (one time)
+
+On iOS a Home-Screen web app has **separate storage** from the Safari tab, so
+it starts with no save. Move it once:
+
+1. In the **Safari tab**: Menu → **Export .sav** (and, if you use the shiny-hunt
+   tracker, Shiny hunt → Options → **Export JSON**). Save to Files.
+2. In the **Home-Screen app**: Menu → **Import .sav** and pick that file.
+3. From then on play in the app (or keep exporting/importing between them —
+   they never sync on their own). The Safari tab's save is left untouched.
+
+### Host requirements
+
+- `sw.js` must be served from the same directory as `index.html` (it controls
+  that directory and everything below it), as JavaScript, over **HTTPS**
+  (or `localhost`). Prefer `Cache-Control: no-cache` (what `server.py` sends);
+  `no-store` also works. A long `max-age` would delay updates — the page asks
+  with `updateViaCache: 'none'`, which modern browsers honour, but don't rely
+  on it.
+- Regenerate it with every deploy: `make crystal` does. If you host the ROM
+  under a different name or from a different build than the one `make` saw,
+  the hash check refuses the bundle and the page stays online-only
+  (`Offline: unavailable (download failed: …)`).
+
+### Forcing a refresh
+
+- Normal case: open the app online, wait a few seconds, tap **Update ready**.
+- If it seems stuck: close the app fully and relaunch it — a waiting build also
+  goes live when no page is using the old one.
+- Last resort, desktop: DevTools → Application → Service Workers → Unregister,
+  and Storage → Cache storage → delete `kf-*`. On iOS: delete the Home-Screen
+  icon and add it again (**this can delete that app's saves too — export
+  first**). Never "Clear website data" for the Safari tab unless you have
+  exported your save.
 
 ---
 
@@ -489,6 +576,12 @@ any kind** (no `node`, `deno`, `bun`, `qjs`, `d8`). So:
 
 **Verified, by running it:**
 
+- (PW1, later) offline launch + opt-in updates: `scripts/web_offline_check.py`
+  in the helper repo drives headless Chromium through install → airplane mode
+  (offline AND server stopped) → boot + resume from the bundle → a drifted
+  bundle refused → an update shown, applied only on the tap → old `kf-*` cache
+  gone, and snapshots IndexedDB + localStorage around every step (the worker
+  changes nothing). Not yet run on a real iPhone.
 - `server.py` compiles, and serving it live with
   `python3 web/server.py --rom pokecrystal.gbc` on a loopback port returns
   **200 with the right `Content-Type` for all 13 allowlisted paths** — including
