@@ -425,3 +425,15 @@ to cfretz244 and Jonathan.
 2. Do the Odd Egg and the red GYARADOS roll?
 3. Is option (a) acceptable for the Hall of Fame?
 4. Is it acceptable that the Poké Seer can no longer tell the time a Pokémon was caught?
+
+---
+
+## Rulings (cfretz244, 2026-10-15)
+
+1. **Starter PIKACHU copies the tutorial Pikachu's rolled gender** (one extra byte from `wEnemyMonStatus+1`), so the
+   Pikachu seen in Oak's tutorial battle is the one handed over, as in Yellow. Default; the operator has not objected.
+2. **Odd Egg and red GYARADOS both roll** (operator: "why would they not roll?").
+3. **Hall of Fame: option (b)** — bit 7 of the HoF entry's Level byte = "female, explicit", masked on display.
+4. **Poké Seer loss accepted** ("much better than any of the alternatives").
+
+Status: research only. GF2/GF3 are NOT scheduled; the operator and Jonathan will pick a between-hunts window first.
