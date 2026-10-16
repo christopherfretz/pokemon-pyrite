@@ -27,7 +27,7 @@ gaps the review listed.
 | F2 | MEDIUM | **fixed** | `tracked_ips` overflow **evicts the least-recently-used rate window** instead of answering HTTP 503, so a key flood can't lock anyone out. Windows are an LRU `OrderedDict`, so admission costs O(1). The residual is that an attacker with more than 10,000 keys can also evict its own windows. At that scale the global caps are what bind: 64 sockets, 32 codes and the F5 failed-join ceiling. **IPv6 is keyed by /56** (`IPV6_PREFIX`): an ISP delegates a /56 or /48 to one home, so a /64 key gave one subscriber 256+ keys, and a free tunnel-broker /48 gave 65,536; at /56 that /48 is 256 keys. **`waiting_per_ip` 2** (4029): 8 keys can no longer hold all 32 codes. The 64 sockets for 3 h vector is unchanged. It needs 16 keys, it is bounded by `idle_s`/`lifetime_s`, and its byte value is now ~0 (F1). |
 | F3 | MEDIUM (deploy) | **mitigated, still a deploy precondition** | `TRUSTED_PROXIES` (module level; `None` = any loopback, the default) or `Relay(trusted_proxies=...)`; the standalone relay also takes `--trusted-proxy`. `client_ip` logs **one line per kind of rate-key source** (never the address): `rate key: CF-Connecting-IP from a trusted proxy (per-client caps work); trusted proxies: loopback (default)` in the good case. If an untrusted peer sends the header, it logs **once**: `... CF-Connecting-IP from an untrusted peer IGNORED, so every client behind that proxy shares one key and per-IP caps act as global caps (set TRUSTED_PROXIES)`. Loopback spoofing by co-tenant processes is a topology question; see the deploy precondition below. |
 | F4 | LOW | **fixed** | `_create` and `_join` re-check `state == "control"` under the relay lock. A socket that `_end`/`_drop` already moved to `closing` is neither registered as waiting nor paired, and its join does not consume the code. |
-| F5 | LOW | **fixed** | A **relay-wide failed-join ceiling**, `join_failures_min` 60. Once 60 joins have failed across all clients in the last 60 s, every join gets the same neutral 4002 without a lookup. That bounds guessing however many addresses an attacker has: at most 60 guesses/min against ≤ 32 live codes out of 2^30 is ~1.8×10⁻⁶ per minute. The cost is that correct codes are refused while it is tripped. 3 words stay sufficient with this ceiling plus the LK1e Accept step. |
+| F5 | LOW | **fixed** | A **relay-wide failed-join ceiling**, `join_failures_min` 60. Once 60 joins have failed across all clients in the last 60 s, every join gets 4029 "too many attempts" without a lookup (4002 until the second review's G1: a real player must not be told the code was wrong). That bounds guessing however many addresses an attacker has: at most 60 guesses/min against ≤ 32 live codes out of 2^30 is ~1.8×10⁻⁶ per minute. The cost is that correct codes are refused while it is tripped. 3 words stay sufficient with this ceiling plus the LK1e Accept step. |
 | F6 | LOW | **deferred (server.py)** | The pre-upgrade header timeout is per read in `server.py`, which this change may not edit. Behind Cloudflare the edge buffers the request, so the origin never sees a trickle. Follow-up: a total pre-upgrade deadline in `server.py` (or count pre-upgrade connections). |
 | F7 | LOW | **fixed (relay side)** | Every refusal (upgrade refused, join refused, global ceiling, socket closed with no room, rate windows evicted) is **tallied and logged once per `LOG_EVERY_S` (60 s) per reason**, e.g. `join refused x37 in 60s`. No code, payload or IP, as before. The relay's log volume is now O(reasons) per minute. The tally is flushed by the housekeeper and on `stop()`; the standalone relay maps SIGTERM to a clean stop. Room events (`created`/`paired`/`closed`) stay one line each, because they are bounded by the create caps. **Remaining:** `server.py`'s `log_link` still prints `- "GET /link"` per attempt (follow-up). |
 | F8 | INFO | **doc fix** | The "no write queue" claim should read "no **user-space** queue". The kernel send buffer and cloudflared are the real queue, and memory is bounded by the byte bucket (F1). Wording below. |
@@ -42,7 +42,7 @@ gaps the review listed.
 | `bytes_per_s` / `byte_burst` | 512 B/s / 16384 B | bandwidth: the frame bucket alone allowed 20 × 4 KiB/s per socket, ~42 Mbit/s each way at the socket cap, an anonymous pipe through the host's uplink (F1). Payload bytes of every client frame, control and pings included | 4003, peer 4000 |
 | `room_bytes` | 8 MiB (8388608) | a room used as a bulk pipe for its 3 h lifetime (F1); payload bytes forwarded, both directions | 4006 both |
 | `waiting_per_ip` | 2 | 8 keys × 4 sockets holding all 32 pending codes (F2) | 4029 |
-| `join_failures_min` | 60 | code guessing from many addresses (F5); failed joins relay-wide per 60 s | 4002 (neutral, no lookup) |
+| `join_failures_min` | 60 | code guessing from many addresses (F5); failed joins relay-wide per 60 s | 4029 (no lookup; G1) |
 | `tracked_ips` (changed) | 10000 | memory held by per-IP rate windows | **least-recently-used window evicted** (was HTTP 503) |
 
 Module settings (not caps; `server.py` can set them before it creates the `Relay`):
@@ -121,7 +121,7 @@ These apply once LK1e's edits to the file have landed. Wording is given as find 
 | bytes per room (both directions, lifetime) | 8 MiB | close 4006 both |
 | binary frames after pairing | refused (link.js sends only JSON text) | close 1003 |
 | pending codes per client IP | 2 | close 4029 |
-| failed joins, all clients | 60/min, then every join refused unlooked-up | close 4002 |
+| failed joins, all clients | 60/min, then every join refused unlooked-up | close 4029 |
 ```
 
 Also in §4.3:
@@ -194,7 +194,7 @@ Also in §4.3:
 
 **Status (LK1 pre-deploy follow-up):** 1-3 are done in `server.py` (`--link-trusted-proxy`; no
 per-attempt `/link` log line; a 15 s total request-line + header budget, 1.5 x `handshake_s`, with
-tests in `HeaderDeadline` and `ServerFlags`). 4 landed in LK1e. 5 is step 3 of the deploy list in
+tests in `HeaderDeadline` and `ServerFlags`). 4 landed in LK1e except pong coalescing (second review G2, INFO: a ping flood trips the flooder's own frame bucket first). 5 is step 3 of the deploy list in
 LK1-LINK.md, and the edits in the previous section are applied there.
 
 1. **`server.py`:** a `--link-trusted-proxy IP_OR_CIDR` flag (repeatable) that sets

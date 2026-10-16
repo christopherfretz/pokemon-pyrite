@@ -1010,9 +1010,9 @@ class Admission(Base):
             c = self.ws(ip="198.51.100.%d" % (30 + i))
             c.join("nope-nope-nope")
             self.assertEqual(c.expect_close(), 4002)
-        c = self.ws(ip="198.51.100.99")     # a fresh key, the right code: still the neutral 4002
-        c.join(real)
-        self.assertEqual(c.expect_close(), 4002)
+        c = self.ws(ip="198.51.100.99")     # a fresh key, the right code: refused as "too many
+        c.join(real)                         # attempts" (4029, review G1), never "code refused"
+        self.assertEqual(c.expect_close(), 4029)
         self.assertIn(real, self.site.relay.waiting)   # not consumed, not looked up
         self.site.clock.t += 60.1            # the window slides
         d = self.ws(ip="198.51.100.100")

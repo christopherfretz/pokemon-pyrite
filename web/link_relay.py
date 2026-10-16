@@ -99,9 +99,12 @@ CAPS = {
     "joins_per_ip_min": 12,
     # Code guessing across ALL clients (review F5): once this many joins have
     # failed relay-wide in the last 60 s, every join is refused with the same
-    # neutral 4002 without looking the code up. This bounds guessing no matter
-    # how many addresses an attacker has (an IPv6 /48 is 256 rate keys). The
-    # cost: while it is tripped, correct codes are refused too. (close 4002)
+    # 4029 ("too many attempts") without looking the code up. This bounds
+    # guessing no matter how many addresses an attacker has (an IPv6 /48 is
+    # 256 rate keys). The cost: while it is tripped, correct codes are refused
+    # too -- so the answer is 4029, not 4002, or a real player would be told
+    # their code was wrong (second review G1). It leaks nothing about the code:
+    # the ceiling trips before any lookup. (close 4029)
     "join_failures_min": 60,
     # A pending code lives this long, in seconds; then the creator is closed. (close 4001)
     "code_ttl": 120,
@@ -663,7 +666,7 @@ class Relay(object):
                 if not self._hit("join", b.ip, self.caps["joins_per_ip_min"], now):
                     why = 4029
                 elif len(fails) >= self.caps["join_failures_min"]:
-                    why = 4002   # relay-wide ceiling (review F5): same neutral answer, no lookup
+                    why = 4029   # relay-wide ceiling (review F5, G1): "too many attempts", no lookup
                     self._tally_locked("join refused (relay-wide failure ceiling)")
                 elif a is None or a.state != "waiting" or now >= a.code_exp:
                     why = 4002   # one neutral answer for wrong, expired, used, malformed

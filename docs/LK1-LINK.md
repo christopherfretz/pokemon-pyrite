@@ -14,6 +14,11 @@ does not reopen them.
 - **What changed because of it:** [`docs/LK1D-REVIEW-FIXES.md`](LK1D-REVIEW-FIXES.md) (per-finding
   status, new caps, measured play against them). The `server.py` remainder (F3 flag, F6, F7) landed
   in the LK1 pre-deploy follow-up; see *LK1d findings → Deploying* for the final deploy steps.
+- **Second review (read of the fix diff, `docs/REVIEW-LK1D-2.md`, private):** "clear to deploy, provided deploy
+  step 2 is confirmed". F1-F9 verified closed with its own attack client; G1 LOW (the join ceiling answered 4002
+  "code refused", so a real player under an attack was told their code was wrong — now 4029 "too many attempts");
+  G2 INFO pong coalescing in link.js not done (a ping flood trips the sender's own frame bucket first); G3/G4 INFO
+  rate-key and logging edge cases, recorded in the review; G5 the held queue cannot bypass stage checks.
 
 ## Executive summary
 
@@ -587,7 +592,7 @@ table, with cap names, is in *LK1d findings*. Differences from the plan are mark
 | bytes per room (both directions, lifetime) | 8 MiB | close 4006 both |
 | binary frames after pairing | refused (link.js sends only JSON text) | close 1003 |
 | pending codes per client IP | 2 | close 4029 |
-| failed joins, all clients | 60/min, then every join refused unlooked-up | close 4002 |
+| failed joins, all clients | 60/min, then every join refused unlooked-up | close 4029 ("too many attempts", second review G1) |
 | room creations per client IP | 6/min | close 4029 † (create happens after the upgrade, so it cannot be an HTTP 429) |
 | join attempts per client IP | 12/min | close 4029 † |
 | pending codes, all IPs † | 32 | close 4013 |
@@ -1681,7 +1686,7 @@ All in `CAPS` (`web/link_relay.py:54-102`); every one can be overridden with
 | `bytes_per_s` / `byte_burst` | 512 B/s / 16384 B | bandwidth: the frame bucket alone allowed 20 × 4 KiB/s per socket, ~42 Mbit/s each way at the socket cap, an anonymous pipe through the host's uplink (F1). Payload bytes of every client frame, control and pings included | 4003, peer 4000 |
 | `room_bytes` | 8 MiB (8388608) | a room used as a bulk pipe for its 3 h lifetime (F1); payload bytes forwarded, both directions | 4006 both |
 | `waiting_per_ip` | 2 | 8 keys × 4 sockets holding all 32 pending codes (F2) | 4029 |
-| `join_failures_min` | 60 | code guessing from many addresses (F5); failed joins relay-wide per 60 s | 4002 (neutral, no lookup) |
+| `join_failures_min` | 60 | code guessing from many addresses (F5); failed joins relay-wide per 60 s | 4029 ("too many attempts", no lookup; was 4002 until second review G1) |
 | `sockets` | 64 | thread and FD exhaustion (one thread per link socket) | HTTP 503 |
 | `sockets_per_ip` | 4 | one IP holding many sockets | HTTP 429 |
 | `upgrades_per_ip_min` | 30 | connect/upgrade/drop loops | HTTP 429 |
@@ -1877,7 +1882,9 @@ Final instructions (LK1 pre-deploy follow-up, 2026-10-16). Follow them in order.
 7. **Rate-key check (F3 deploy precondition).** Right after the smoke test (its connections are the
    first real ones), stderr **must** show
    `link: rate key: CF-Connecting-IP from a trusted proxy (per-client caps work)`.
-   If it shows `… CF-Connecting-IP from an untrusted peer IGNORED …` or `rate key: TCP peer …`, the
+   If that line is **absent**, or it shows `… CF-Connecting-IP from an untrusted peer IGNORED …`, the
+   relay is not seeing the real client address (a plain `curl` to localhost also logs one `rate key: TCP peer`
+   line, so that line alone is not an alarm). In either misconfigured case the
    deploy is misconfigured: every player shares one set of caps (two rooms in total). Find the
    address cloudflared connects from, restart with `--link-trusted-proxy <that address>`, and repeat
    steps 6-7.
