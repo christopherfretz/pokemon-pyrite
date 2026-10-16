@@ -10,12 +10,15 @@ What this module does, and nothing more:
     no extensions, no subprotocols) and writes unmasked server frames;
   * parses ONE small JSON control frame per socket, `{"op":"create"}` or
     `{"op":"join","code":"w-w-w"}`, and pairs a joiner with a waiting creator;
-  * after pairing, copies every data frame from one socket to the other, unchanged
-    and unread (it never parses, stores or logs a payload);
+  * after pairing, copies every TEXT frame from one socket to the other, unchanged
+    and unread (it never parses, stores or logs a payload); the link protocol
+    (web/link.js) is JSON text only, so a binary frame after pairing is refused;
   * enforces every cap in CAPS below and closes with a code from CLOSE.
 
-It never logs a code, a payload or an IP address. It keeps no state that outlives a
-room. Standard library only.
+It never logs a code, a payload or an IP address. Refusals are counted and logged as
+one summary line per reason per minute (LOG_EVERY_S), not one line per event. It
+keeps no state that outlives a room, except per-client rate windows (pruned 60 s
+after a client's last event). Standard library only.
 
 Threads: each WebSocket runs on the thread the HTTP server gave its connection
 (ThreadingHTTPServer: one per connection). That thread is the only reader of its
@@ -41,6 +44,7 @@ import os
 import re
 import secrets
 import select
+import signal
 import socket
 import struct
 import sys
@@ -61,6 +65,21 @@ CAPS = {
     # frames included. 20/s sustained, 60 in a burst. (close 4003)
     "frames_per_s": 20,
     "frame_burst": 60,
+    # Bandwidth (review F1): a second token bucket, in payload bytes, over every
+    # frame a client sends. The frame bucket alone allowed 20 x 4 KiB/s per
+    # socket (~42 Mbit/s each way at the socket cap): an anonymous pipe through
+    # the host's uplink. Real play measured in docs/LK1D-REVIEW-FIXES.md: a
+    # whole trade is ~6 KB per side (29 B/s average, 1.6 KB in the busiest
+    # second, biggest message 1,477 bytes), so 512 B/s is ~17x the average and
+    # the 16 KiB burst ~10x the busiest second, while an abuser gets 1/160 of
+    # the old rate. (close 4003)
+    "bytes_per_s": 512,
+    "byte_burst": 16384,
+    # Total payload bytes one room may forward, both directions, over its whole
+    # life (review F1). Back-to-back trades for the full 3 h lifetime at the
+    # measured rate come to ~0.63 MB (13x headroom); a pipe that could move
+    # ~1.7 GB over a room's life before now stops at 8 MiB. (close 4006, both)
+    "room_bytes": 8 << 20,
     # Thread and FD exhaustion: each link socket holds one thread, so this also
     # bounds link threads. Global cap / per client IP. (HTTP 503 / 429)
     "sockets": 64,
@@ -72,9 +91,18 @@ CAPS = {
     # Pending codes held in memory at once, across all IPs; also bounds the
     # odds of a guessed code hitting a live room. (close 4013)
     "waiting": 32,
+    # Pending codes per client IP (review F2): without it 8 keys x 4 sockets
+    # could hold all 32 codes and lock every creator out. (close 4029)
+    "waiting_per_ip": 2,
     # Code guessing: join attempts per client IP, counted whether or not the
     # code exists. (close 4029)
     "joins_per_ip_min": 12,
+    # Code guessing across ALL clients (review F5): once this many joins have
+    # failed relay-wide in the last 60 s, every join is refused with the same
+    # neutral 4002 without looking the code up. This bounds guessing no matter
+    # how many addresses an attacker has (an IPv6 /48 is 256 rate keys). The
+    # cost: while it is tripped, correct codes are refused too. (close 4002)
+    "join_failures_min": 60,
     # A pending code lives this long, in seconds; then the creator is closed. (close 4001)
     "code_ttl": 120,
     # A socket must send its control frame within this many seconds of the
@@ -98,16 +126,37 @@ CAPS = {
     "close_wait_s": 2,
     # Oversized upgrade requests. http.server already caps 100 headers of 64 KiB. (HTTP 431)
     "header_bytes": 8192,
-    # Memory held by per-IP rate windows. Past this, new IPs get HTTP 503.
+    # Memory held by per-IP rate windows. Past this, the least recently used
+    # key's windows are forgotten to make room (review F2: refusing new keys
+    # turned a memory guard into a lockout for everyone).
     "tracked_ips": 10000,
 }
+
+# How refusals are logged (review F7): counted per reason, one summary line per
+# reason every LOG_EVERY_S seconds, never one line per event.
+LOG_EVERY_S = 60
+
+# Peers whose CF-Connecting-IP header is believed (review F3). None means any
+# loopback address (127.0.0.0/8, ::1): cloudflared on the same host or network
+# namespace. Otherwise a sequence of addresses or CIDR networks, e.g.
+# ("172.17.0.1",). server.py may set this before it creates the Relay (a future
+# --link-trusted-proxy flag), or pass Relay(trusted_proxies=...). From any other
+# peer the header is ignored and the TCP peer address is the rate key; the relay
+# logs once which key source it sees, so a deploy can check it.
+TRUSTED_PROXIES = None
+
+# IPv6 clients are keyed by this prefix (review F2). ISPs delegate a /56 (often a
+# /48) to one home, so a /64 key let one subscriber present 256+ "different IPs";
+# a free tunnel-broker /48 was 65,536 keys at /64 and is 256 at /56. One home
+# behind a /56 shares one set of per-IP caps, like an IPv4 NAT.
+IPV6_PREFIX = 56
 
 # Close codes the relay sends. The client (link_transport.js) maps them to text.
 CLOSE = {
     1000: "normal",
     1001: "relay shutting down",
     1002: "protocol error",
-    1003: "fragmented frame",
+    1003: "unsupported frame (fragmented, or binary after pairing)",
     1007: "invalid UTF-8 in a text frame",
     1008: "bad control message",
     1009: "frame too big",
@@ -117,7 +166,7 @@ CLOSE = {
     4003: "too many messages",
     4004: "peer too slow",
     4005: "idle",
-    4006: "room lifetime reached",
+    4006: "room lifetime or data cap reached",
     4007: "no pong",
     4008: "no control frame in time",
     4013: "relay busy",
@@ -132,7 +181,8 @@ OP_CONT, OP_TEXT, OP_BIN, OP_CLOSE, OP_PING, OP_PONG = 0, 1, 2, 8, 9, 10
 
 
 def load_words(path=WORDS_FILE):
-    words = open(path, encoding="ascii").read().split()
+    with open(path, encoding="ascii") as f:
+        words = f.read().split()
     if len(words) != 1024 or len(set(words)) != 1024 or not all(
         re.fullmatch(r"[a-z]{4,8}", w) for w in words
     ):
@@ -173,6 +223,30 @@ def _tokens(value):
     return [t.strip().lower() for t in value.split(",") if t.strip()]
 
 
+def _parse_ip(text):
+    """An ipaddress object, or None if `text` is not exactly one IP address."""
+    try:
+        return ipaddress.ip_address(text.strip())
+    except (ValueError, AttributeError):
+        return None
+
+
+def _close_payload_ok(data):
+    """RFC 6455 5.5.1 / 7.4: empty, or a 2-byte valid code plus a UTF-8 reason (review F9)."""
+    if not data:
+        return True
+    if len(data) < 2:
+        return False
+    code = struct.unpack("!H", data[:2])[0]
+    if not (1000 <= code <= 1003 or 1007 <= code <= 1014 or 3000 <= code <= 4999):
+        return False
+    try:
+        data[2:].decode("utf-8")
+    except UnicodeDecodeError:
+        return False
+    return True
+
+
 class _Fail(Exception):
     """The client broke the protocol; close with .code."""
 
@@ -203,14 +277,15 @@ class _Conn(object):
         self.last_ping = now
         self.last_pong = now
         self.close_by = 0.0
-        self.tokens = 0.0
+        self.tokens = 0.0           # frame bucket
+        self.btokens = 0.0          # byte bucket
         self.tokens_t = now
         self.dead = False           # set once the socket has been shut down
 
 
 class Relay(object):
     def __init__(self, origins=DEFAULT_ORIGINS, caps=None, clock=time.monotonic, log=None,
-                 autotick=True, words=None):
+                 autotick=True, words=None, trusted_proxies=None):
         self.caps = dict(CAPS)
         for name, value in (caps or {}).items():
             if name not in CAPS:
@@ -226,7 +301,15 @@ class Relay(object):
         self.conns = set()          # every upgraded, not yet dropped _Conn
         self.per_ip = collections.Counter()
         self.waiting = {}           # code -> creator _Conn
-        self.windows = {}           # ip -> {kind: deque of clock() times}, kind in up/create/join
+        # ip -> {kind: deque of clock() times}, kind in up/create/join; LRU order
+        self.windows = collections.OrderedDict()
+        self.join_fails = collections.deque()   # clock() times of failed joins, all clients
+        self.tally = collections.Counter()      # refusal line -> count since the last summary
+        self.tally_t0 = 0.0
+        tp = TRUSTED_PROXIES if trusted_proxies is None else trusted_proxies
+        self.trusted = None if tp is None else tuple(
+            ipaddress.ip_network(p.strip(), strict=False) for p in tp)
+        self.key_sources = set()    # rate-key sources already logged (review F3)
         self.autotick = autotick
         self._stop = threading.Event()
         self._ticker = None
@@ -248,6 +331,7 @@ class Relay(object):
         for c in conns:
             self._end(c, 1001)
             self._kill(c)
+        self.flush_log(force=True)
 
     def snapshot(self):
         with self.lock:
@@ -288,32 +372,65 @@ class Relay(object):
             status, ("Error",))[0]), "Content-Type: text/plain", "Content-Length: %d" % len(body),
             "Connection: close"]
         head.extend(extra)
+        self._tally("upgrade refused %d %s" % (status, why))   # counted before the client can see it
         try:
             h.wfile.write(("\r\n".join(head) + "\r\n\r\n").encode("ascii") + body)
         except OSError:
             pass
-        self.log("upgrade refused %d %s" % (status, why))
 
     def client_ip(self, h):
-        """Rate-limit key. CF-Connecting-IP is trusted only from a loopback peer
-        (the tunnel). IPv6 is keyed by its /64."""
+        """Rate-limit key. CF-Connecting-IP is believed only from a trusted proxy
+        (TRUSTED_PROXIES; default loopback, i.e. the tunnel), and only as exactly one
+        valid address. IPv6 is keyed by its /IPV6_PREFIX (56). Logs, once per kind,
+        which key source it sees (never the address)."""
         peer = h.client_address[0]
-        ip = peer
-        try:
-            if ipaddress.ip_address(peer).is_loopback:
-                fwd = h.headers.get_all("CF-Connecting-IP") or []
-                if len(fwd) == 1:
-                    ipaddress.ip_address(fwd[0].strip())
-                    ip = fwd[0].strip()
-        except ValueError:
-            ip = peer
-        try:
-            addr = ipaddress.ip_address(ip)
-            if addr.version == 6:
-                return str(ipaddress.ip_network(ip + "/64", strict=False))
-        except ValueError:
-            pass
-        return ip
+        fwd = h.headers.get_all("CF-Connecting-IP") or []
+        if self._trusted(peer):
+            ip = _parse_ip(fwd[0]) if len(fwd) == 1 else None
+            if ip is not None:
+                src = "header"
+            else:
+                src = "trusted-bad-header" if fwd else "trusted-no-header"
+                ip = _parse_ip(peer)
+        else:
+            src = "untrusted-header" if fwd else "peer"
+            ip = _parse_ip(peer)
+        self._note_source(src)
+        if ip is None:
+            return str(peer)
+        if ip.version == 6:
+            if ip.ipv4_mapped is not None:
+                return str(ip.ipv4_mapped)
+            bits = 128 - IPV6_PREFIX
+            return str(ipaddress.IPv6Network(((int(ip) >> bits) << bits, IPV6_PREFIX)))
+        return str(ip)
+
+    def _trusted(self, peer):
+        ip = _parse_ip(peer)
+        if ip is None:
+            return False
+        if ip.version == 6 and ip.ipv4_mapped is not None:
+            ip = ip.ipv4_mapped
+        if self.trusted is None:
+            return ip.is_loopback
+        return any(ip.version == n.version and ip in n for n in self.trusted)
+
+    def _note_source(self, src):
+        """One line per kind of rate-key source, the first time it is seen (review F3)."""
+        with self.lock:
+            if src in self.key_sources:
+                return
+            self.key_sources.add(src)
+        proxies = "loopback (default)" if self.trusted is None else "%d configured" % len(self.trusted)
+        self.log("rate key: %s; trusted proxies: %s" % ({
+            "header": "CF-Connecting-IP from a trusted proxy (per-client caps work)",
+            "trusted-no-header": "TCP peer (a trusted proxy sent no CF-Connecting-IP)",
+            "trusted-bad-header": "TCP peer (a trusted proxy sent a repeated or invalid CF-Connecting-IP)",
+            "peer": "TCP peer (no CF-Connecting-IP)",
+            "untrusted-header": "TCP peer; CF-Connecting-IP from an untrusted peer IGNORED, so every "
+                                "client behind that proxy shares one key and per-IP caps act as "
+                                "global caps (set TRUSTED_PROXIES)",
+        }[src], proxies))
 
     def _upgrade(self, h):
         hd = h.headers
@@ -338,9 +455,7 @@ class Relay(object):
         ip = self.client_ip(h)
         now = self.clock()
         with self.lock:
-            if ip not in self.windows and len(self.windows) >= self.caps["tracked_ips"]:
-                why = (503, "busy")
-            elif not self._hit("up", ip, self.caps["upgrades_per_ip_min"], now):
+            if not self._hit("up", ip, self.caps["upgrades_per_ip_min"], now):
                 why = (429, "upgrade rate")
             elif self.per_ip[ip] >= self.caps["sockets_per_ip"]:
                 why = (429, "sockets per ip")
@@ -350,6 +465,7 @@ class Relay(object):
                 why = None
                 c = _Conn(h.connection, h.rfile, ip, now)
                 c.tokens = self.caps["frame_burst"]
+                c.btokens = self.caps["byte_burst"]
                 self.conns.add(c)
                 self.per_ip[ip] += 1
         if why:
@@ -367,13 +483,26 @@ class Relay(object):
 
     def _hit(self, kind, ip, limit, now):
         """Sliding 60 s window. Records the attempt; False if over `limit`. Holds self.lock."""
-        q = self.windows.setdefault(ip, {}).setdefault(kind, collections.deque())
+        q = self._window(ip).setdefault(kind, collections.deque())
         while q and q[0] <= now - 60:
             q.popleft()
         if len(q) >= limit:
             return False
         q.append(now)
         return True
+
+    def _window(self, ip):
+        """The rate windows of `ip`, most recently used last. A new key in a full
+        table evicts the least recently used key (review F2). Holds self.lock."""
+        w = self.windows.get(ip)
+        if w is not None:
+            self.windows.move_to_end(ip)
+            return w
+        while self.windows and len(self.windows) >= self.caps["tracked_ips"]:
+            self.windows.popitem(last=False)
+            self._tally_locked("rate windows evicted (tracked_ips full)")
+        w = self.windows[ip] = {}
+        return w
 
     # ---------------------------------------------------------------- reading
     def _recv(self, c, n):
@@ -430,10 +559,10 @@ class Relay(object):
                 if op == OP_CLOSE:
                     return                           # the client answered our close
                 continue                             # drop anything else until it does
-            if op == OP_CLOSE:
-                self._end(c, 1000, 4000)             # the client is leaving: answer, end the room
+            if op == OP_CLOSE:                       # the client is leaving: answer, end the room
+                self._end(c, 1000 if _close_payload_ok(data) else 1002, 4000)
                 return
-            if not self._take_token(c):
+            if not self._take_token(c, len(data)):
                 self._end(c, 4003, 4000)
                 continue
             if op == OP_PING:
@@ -445,6 +574,8 @@ class Relay(object):
                 self._control(c, op, data)
             elif c.state == "waiting":
                 self._end(c, 1008)                   # nothing to forward to yet
+            elif op != OP_TEXT:
+                self._end(c, 1003, 4000)             # the link protocol is text only (review F1)
             else:
                 self._forward(c, op, data)
 
@@ -457,15 +588,18 @@ class Relay(object):
         except (OSError, ValueError):
             pass
 
-    def _take_token(self, c):
+    def _take_token(self, c, nbytes):
+        """Charge one frame of `nbytes` payload to both buckets; False if either is short."""
         now = self.clock()
         with self.lock:
-            c.tokens = min(self.caps["frame_burst"],
-                           c.tokens + (now - c.tokens_t) * self.caps["frames_per_s"])
+            dt = now - c.tokens_t
+            c.tokens = min(self.caps["frame_burst"], c.tokens + dt * self.caps["frames_per_s"])
+            c.btokens = min(self.caps["byte_burst"], c.btokens + dt * self.caps["bytes_per_s"])
             c.tokens_t = now
-            if c.tokens < 1:
+            if c.tokens < 1 or c.btokens < nbytes:
                 return False
             c.tokens -= 1
+            c.btokens -= nbytes
             return True
 
     # ---------------------------------------------------------------- control plane
@@ -490,7 +624,11 @@ class Relay(object):
     def _create(self, c):
         now = self.clock()
         with self.lock:
+            if c.state != "control":
+                return       # ended since _serve looked (review F4): never revive a closing socket
             if not self._hit("create", c.ip, self.caps["creates_per_ip_min"], now):
+                why = 4029
+            elif sum(1 for w in self.waiting.values() if w.ip == c.ip) >= self.caps["waiting_per_ip"]:
                 why = 4029
             elif len(self.waiting) >= self.caps["waiting"]:
                 why = 4013
@@ -501,7 +639,7 @@ class Relay(object):
                     code = "-".join(secrets.choice(self.words) for _ in range(3))
                 self.waiting[code] = c
                 c.code, c.state, c.code_exp = code, "waiting", now + self.caps["code_ttl"]
-                c.room = {"t0": now, "paired_t": None, "logged": False}
+                c.room = {"t0": now, "paired_t": None, "logged": False, "bytes": 0}
                 n = len(self.waiting)
         if why:
             return self._end(c, why)
@@ -516,11 +654,21 @@ class Relay(object):
         now = self.clock()
         with b.wlock:   # nothing reaches b before its "paired" message
             with self.lock:
+                if b.state != "control":
+                    return   # ended since _serve looked (review F4): never revive a closing socket
                 a = self.waiting.get(code) if code else None
+                fails = self.join_fails
+                while fails and fails[0] <= now - 60:
+                    fails.popleft()
                 if not self._hit("join", b.ip, self.caps["joins_per_ip_min"], now):
                     why = 4029
+                elif len(fails) >= self.caps["join_failures_min"]:
+                    why = 4002   # relay-wide ceiling (review F5): same neutral answer, no lookup
+                    self._tally_locked("join refused (relay-wide failure ceiling)")
                 elif a is None or a.state != "waiting" or now >= a.code_exp:
                     why = 4002   # one neutral answer for wrong, expired, used, malformed
+                    fails.append(now)
+                    self._tally_locked("join refused")
                 else:
                     why = None
                     del self.waiting[code]           # a code is single-use
@@ -534,8 +682,6 @@ class Relay(object):
                 ok_b = self._write_locked(b, encode_frame(OP_TEXT, b'{"op":"paired","role":"b"}'),
                                           self.caps["write_s"])
         if why:
-            if why == 4002:
-                self.log("join refused")
             return self._end(b, why)
         self.log("room paired")
         if not ok_b or not self._write(a, encode_frame(OP_TEXT, b'{"op":"paired","role":"a"}'),
@@ -546,8 +692,13 @@ class Relay(object):
         with self.lock:
             c.last_data = self.clock()
             peer = c.peer if c.state == "paired" else None
+            if peer is not None:
+                c.room["bytes"] += len(data)
+                full = c.room["bytes"] > self.caps["room_bytes"]
         if peer is None:
             return
+        if full:
+            return self._end(c, 4006, 4006)   # room data cap (review F1): nothing forwarded
         if not self._write(peer, encode_frame(op, data), self.caps["write_s"]):
             self._end(c, 4004, 4004)
 
@@ -632,7 +783,8 @@ class Relay(object):
         """The one log line for a room's end (or a socket that never had one). Holds self.lock."""
         room = c.room
         if room is None:
-            return "socket closed %d (no room)" % code
+            self._tally_locked("socket closed %d (no room)" % code)
+            return None
         if room["logged"]:
             return None
         room["logged"] = True
@@ -702,6 +854,30 @@ class Relay(object):
                     self._write_locked(c, encode_frame(OP_PING), 0)
                 finally:
                     c.wlock.release()
+        self.flush_log()
+
+    # ---------------------------------------------------------------- logging
+    def _tally(self, line):
+        with self.lock:
+            self._tally_locked(line)
+
+    def _tally_locked(self, line):
+        """Count one refusal; `line` is a fixed string (no code, payload or IP). Holds self.lock."""
+        if not self.tally:
+            self.tally_t0 = self.clock()
+        self.tally[line] += 1
+
+    def flush_log(self, force=False):
+        """One summary line per refusal reason, at most every LOG_EVERY_S (review F7)."""
+        with self.lock:
+            now = self.clock()
+            if not self.tally or (not force and now - self.tally_t0 < LOG_EVERY_S):
+                return
+            items = sorted(self.tally.items())
+            self.tally.clear()
+            span = max(0, int(now - self.tally_t0))
+        for line, n in items:
+            self.log("%s x%d in %ds" % (line, n, span))
 
 
 # ---------------------------------------------------------------------- standalone
@@ -741,8 +917,14 @@ def main(argv=None):
     ap.add_argument("--origin", action="append", default=[],
                     help="allowed Origin (repeatable); default %s" % DEFAULT_ORIGINS[0])
     ap.add_argument("--cap", action="append", default=[], metavar="NAME=VALUE")
+    ap.add_argument("--trusted-proxy", action="append", default=[], metavar="IP_OR_CIDR",
+                    help="peer allowed to set CF-Connecting-IP (repeatable); "
+                         "default any loopback address")
     args = ap.parse_args(argv)
-    relay = Relay(args.origin or DEFAULT_ORIGINS, parse_caps(args.cap)).start()
+    relay = Relay(args.origin or DEFAULT_ORIGINS, parse_caps(args.cap),
+                  trusted_proxies=args.trusted_proxy or None).start()
+    # SIGTERM stops like ^C, so the last refusal summary is flushed.
+    signal.signal(signal.SIGTERM, signal.default_int_handler)
     _Handler.relay = relay
     _Handler.timeout = relay.caps["handshake_s"]
     server = http.server.ThreadingHTTPServer((args.host, args.port), _Handler)

@@ -225,6 +225,23 @@ def wait_for(pred, timeout=5.0):
     return pred()
 
 
+class FakeHandler(object):
+    """Just enough of a BaseHTTPRequestHandler for Relay.client_ip."""
+
+    def __init__(self, peer, *cf_ips):
+        self.client_address = (peer, 1)
+        raw = "".join("CF-Connecting-IP: %s\r\n" % v for v in cf_ips) + "\r\n"
+        self.headers = http.client.parse_headers(io.BytesIO(raw.encode()))
+
+
+def conn_in(relay, state):
+    """The relay's one _Conn in `state` (tests drive the relay's methods directly)."""
+    with relay.lock:
+        found = [c for c in relay.conns if c.state == state]
+    assert len(found) == 1, found
+    return found[0]
+
+
 class Base(unittest.TestCase):
     caps = None
     quiet = True
@@ -361,8 +378,8 @@ class Framing(Base):
 
     def test_oversize_1009_before_payload(self):
         a, b, _ = self.pair()
-        a.frame(2, b"\0" * 4096)
-        self.assertEqual(b.recv(), (2, b"\0" * 4096))
+        a.text("x" * 4096)
+        self.assertEqual(b.recv(), (1, b"x" * 4096))
         # header claims 4097 bytes; the relay refuses without waiting for the payload
         a.raw(struct.pack("!BBH", 0x82, 0xFE, 4097) + b"mask")
         self.assertEqual(a.expect_close(), 1009)
@@ -407,12 +424,12 @@ class Rooms(Base):
     def test_pair_and_forward_both_ways(self):
         a, b, code = self.pair()
         self.assertRegex(code, r"^[a-z]{4,8}-[a-z]{4,8}-[a-z]{4,8}$")
-        for size in (0, 1, 125, 126, 4095, 4096):
-            blob = os.urandom(size)
-            a.frame(2, blob)
-            self.assertEqual(b.recv(), (2, blob))
-            b.frame(2, blob)
-            self.assertEqual(a.recv(), (2, blob))
+        for size in (0, 1, 125, 126, 4095):
+            blob = base64.b64encode(os.urandom(size))[:size]
+            a.frame(1, blob)
+            self.assertEqual(b.recv(), (1, blob))
+            b.frame(1, blob)
+            self.assertEqual(a.recv(), (1, blob))
         a.text('{"type":"hello","name":"ALPHA"}')
         self.assertEqual(b.recv(), (1, b'{"type":"hello","name":"ALPHA"}'))
         b.text("é ✓ not json")
@@ -498,19 +515,27 @@ class Rooms(Base):
         self.assertEqual(c.expect_close(), 4029)
 
     def test_client_ip_key(self):
-        # CF-Connecting-IP only from a loopback peer (the tunnel); IPv6 keyed by /64
-        class H(object):
-            pass
-        h = H()
-        h.client_address = ("192.0.2.1", 1)
-        h.headers = http.client.parse_headers(io.BytesIO(b"CF-Connecting-IP: 10.0.0.1\r\n\r\n"))
-        self.assertEqual(self.site.relay.client_ip(h), "192.0.2.1")
-        h.client_address = ("127.0.0.1", 1)
-        self.assertEqual(self.site.relay.client_ip(h), "10.0.0.1")
-        h.headers = http.client.parse_headers(io.BytesIO(b"CF-Connecting-IP: 2001:db8::1:2\r\n\r\n"))
-        self.assertEqual(self.site.relay.client_ip(h), "2001:db8::/64")
-        h.headers = http.client.parse_headers(io.BytesIO(b"CF-Connecting-IP: junk\r\n\r\n"))
-        self.assertEqual(self.site.relay.client_ip(h), "127.0.0.1")
+        # CF-Connecting-IP only from a trusted (default: loopback) peer; IPv6 keyed by /56
+        relay = self.site.relay
+
+        def key(peer, *hdrs):
+            h = FakeHandler(peer, *hdrs)
+            return relay.client_ip(h)
+        self.assertEqual(key("192.0.2.1", "10.0.0.1"), "192.0.2.1")        # untrusted peer
+        self.assertEqual(key("127.0.0.1", "10.0.0.1"), "10.0.0.1")
+        self.assertEqual(key("127.0.0.1", "2001:db8::1:2"), "2001:db8::/56")
+        self.assertEqual(key("127.0.0.1", "junk"), "127.0.0.1")
+        self.assertEqual(key("127.0.0.1", ""), "127.0.0.1")                  # empty header
+        self.assertEqual(key("127.0.0.1", "10.0.0.1", "10.0.0.2"), "127.0.0.1")   # two headers
+        self.assertEqual(key("127.0.0.1", " ::ffff:198.51.100.4 "), "198.51.100.4")   # v4-mapped
+        self.assertEqual(key("127.0.0.1", "fe80::1%eth0"), "fe80::/56")      # scoped
+        self.assertEqual(key("::ffff:127.0.0.1", "10.0.0.1"), "10.0.0.1")    # dual-stack loopback
+        self.assertEqual(key("::1", "10.0.0.1"), "10.0.0.1")
+        self.assertEqual(key("2001:db8:aa:bb::7"), "2001:db8:aa::/56")       # raw IPv6 peer
+        # /64 rotation inside one /56 is one key; the next /56 is another
+        keys = {key("127.0.0.1", "2001:db8:1:%x::1" % i) for i in range(256)}
+        self.assertEqual(keys, {"2001:db8:1::/56"})
+        self.assertEqual(key("127.0.0.1", "2001:db8:1:100::1"), "2001:db8:1:100::/56")
 
     def test_closing_one_side_closes_other(self):
         a, b, _ = self.pair()
@@ -648,7 +673,8 @@ class Lifetime(Base):
 
 
 class SlowReader(Base):
-    caps = {"write_s": 0.5, "frames_per_s": 10 ** 6, "frame_burst": 10 ** 6}
+    caps = {"write_s": 0.5, "frames_per_s": 10 ** 6, "frame_burst": 10 ** 6,
+            "bytes_per_s": 10 ** 9, "byte_burst": 10 ** 9, "room_bytes": 10 ** 12}
 
     def test_stalled_reader_closes_both(self):
         a = self.ws()
@@ -663,7 +689,7 @@ class SlowReader(Base):
         t0 = time.monotonic()
         try:
             while not got and time.monotonic() - t0 < 10:   # b never reads
-                a.frame(2, b"\0" * 4096)
+                a.text("x" * 4096)
         except OSError:
             pass
         reader.join(10)
@@ -692,10 +718,10 @@ class Leaks(Base):
         for batch in range(40):
             rooms = [pair(self.site) for _ in range(25)]
             for a, b, _ in rooms:
-                a.frame(2, b"ping")
+                a.frame(1, b"ping")
                 b.frame(1, "pong")
             for a, b, _ in rooms:
-                self.assertEqual(b.recv(), (2, b"ping"))
+                self.assertEqual(b.recv(), (1, b"ping"))
                 self.assertEqual(a.recv(), (1, b"pong"))
                 a.frame(8, struct.pack("!H", 1000))
                 self.assertEqual(a.expect_close(), 1000)
@@ -708,6 +734,123 @@ class Leaks(Base):
         snap = self.site.relay.snapshot()
         self.assertEqual((snap["waiting"], snap["paired"]), (0, 0))
         sys.stderr.write("[1000 rooms in %.1fs] " % elapsed)
+
+
+class ErrorPaths(Base):
+    """Review coverage gaps 4 and 5: sockets that die on error paths, and random
+    frames, leave no thread, FD or room behind and never raise out of a thread."""
+    caps = Leaks.caps
+    fds = Leaks.fds
+
+    def setUp(self):
+        Base.setUp(self)
+        self.crashes = []
+        self.site.httpd.handle_error = lambda req, addr: self.crashes.append(sys.exc_info()[0])
+        old_hook = threading.excepthook
+        threading.excepthook = lambda a: self.crashes.append(a.exc_type)
+        self.addCleanup(setattr, threading, "excepthook", old_hook)
+
+    def settle(self, threads0, fds0):
+        for _ in range(3):              # cut sockets still waiting for a close reply
+            self.site.tick(self.site.relay.caps["close_wait_s"] + 1)
+            time.sleep(0.05)
+        self.assertTrue(wait_for(lambda: self.site.relay.snapshot()["sockets"] == 0, 10),
+                        self.site.relay.snapshot())
+        self.assertTrue(wait_for(lambda: threading.active_count() <= threads0, 10),
+                        (threading.active_count(), threads0))
+        self.assertTrue(wait_for(lambda: self.fds() <= fds0, 10), (self.fds(), fds0))
+        snap = self.site.relay.snapshot()
+        self.assertEqual((snap["waiting"], snap["paired"]), (0, 0))
+        self.assertEqual(self.crashes, [])
+        for line in self.site.logs:
+            self.assertNotRegex(line, r"10\.\d+\.\d+\.\d+|Traceback|\"op\"")
+        a, b, _ = pair(self.site)       # still serving
+        a.text("after")
+        self.assertEqual(b.recv(), (1, b"after"))
+        a.close(), b.close()
+
+    def baseline(self):
+        a, b, _ = pair(self.site)
+        a.close(), b.close()
+        self.assertTrue(wait_for(lambda: self.site.relay.snapshot()["sockets"] == 0))
+        time.sleep(0.2)
+        return threading.active_count(), self.fds()
+
+    def test_error_path_sockets_leak_nothing(self):
+        threads0, fds0 = self.baseline()
+        held = []
+        for i in range(200):
+            ip = "10.5.%d.%d" % (i >> 8, i & 255)
+            c = WS(self.site, ip=ip)
+            held.append(c)
+            k = i % 10
+            if k == 0:
+                c.frame(1, "x", mask=False)                     # 1002, then vanish
+                c.close()
+            elif k == 1:
+                c.raw(b"\x82\xfe\x10")                          # partial header
+                c.close()
+            elif k == 2:
+                c.raw(b"\x82\x85abcd")                           # gone mid-payload
+                c.close()
+            elif k == 3:
+                c.frame(1, "x" * 300)                           # 1009, then vanish
+                c.close()
+            elif k == 4:
+                c.join("a-b-c")                                 # 4002, never answered
+                c.close()
+            elif k == 5:
+                c.frame(1, "x", mask=False)                     # 1002, held open, silent
+            elif k == 6:                                        # paired; one side dies mid-frame
+                code = c.create()
+                d = WS(self.site, ip="10.6.%d.%d" % (i >> 8, i & 255))
+                held.append(d)
+                d.join(code)
+                d.recv(), c.recv()
+                d.raw(b"\x81\x85ab")
+                d.close()
+            elif k == 7:
+                c.sock.shutdown(socket.SHUT_WR)                 # half-close, never read
+            elif k == 8:
+                c.text('{"op":"create"}')                       # data while waiting
+                c.text("data while waiting")
+                c.close()
+            else:
+                c.close()
+            if len(held) > 40:
+                for h in held[:20]:
+                    h.close()
+                held = held[20:]
+        for h in held:
+            h.close()
+        self.settle(threads0, fds0)
+
+    def test_random_frames_never_crash(self):
+        import random
+        rng = random.Random(7)
+        threads0, fds0 = self.baseline()
+        for i in range(150):
+            if i % 2:
+                a, b, _ = pair(self.site, "10.3.0.%d" % i, "10.4.0.%d" % i)
+            else:
+                a, b = WS(self.site, ip="10.3.0.%d" % i), None
+            try:
+                for _ in range(5):
+                    op = rng.choice([0, 1, 2, 3, 8, 9, 10, 11, 15])
+                    n = rng.choice([0, 1, 2, 125, 126, 127, 200, 4096, 4097])
+                    if rng.random() < 0.8:
+                        pl = os.urandom(n) if rng.random() < 0.5 else ("\u00e9" * n).encode()[:n]
+                        a.frame(op, pl, fin=rng.random() < 0.8,
+                                rsv=rng.choice([0, 0, 0x40, 0x10]))
+                    else:
+                        a.raw(os.urandom(rng.randint(1, 64)))
+                a.frame(8, struct.pack("!H", 1000))
+            except OSError:
+                pass
+            a.close()
+            if b:
+                b.close()
+        self.settle(threads0, fds0)
 
 
 class Logs(Base):
@@ -729,13 +872,309 @@ class Logs(Base):
             a.frame(8, struct.pack("!H", 1000))
             a.expect_close(), b.expect_close()
             wait_for(lambda: self.site.relay.snapshot()["sockets"] == 0)
+            self.site.tick(60)                # refusals are summarised once a minute
         text = "\n".join(self.site.logs) + "\n" + err.getvalue()
         for secret in [code, "SECRET", "198.51.100", "127.0.0.1"] + code.split("-"):
             self.assertNotIn(secret, text)
-        for event in ('- "GET /link"', "room created", "room paired", "join refused", "room closed 1000",
-                      "upgrade refused 403 origin"):
+        for event in ('- "GET /link"', "room created", "room paired", "join refused x1",
+                      "room closed 1000", "upgrade refused 403 origin x1",
+                      "rate key: CF-Connecting-IP from a trusted proxy"):
             self.assertIn(event, text)
         self.assertEqual(d.status, 403)
+
+
+class Bandwidth(Base):
+    """Review F1: byte budget, text-only forwarding, per-room byte cap."""
+
+    def test_byte_bucket_trips_while_frame_bucket_does_not(self):
+        a, b, _ = self.pair()               # a's control frame used 15 of the 16,384-byte burst
+        for i in range(3):
+            a.text("x" * 4096)
+            self.assertEqual(b.recv(), (1, b"x" * 4096))
+        a.text("x" * 4096)                  # 5 frames (frame burst 60), 16,399 bytes: over
+        self.assertEqual(a.expect_close(), 4003)
+        self.assertEqual(b.expect_close(), 4000)
+        # the bucket refills at bytes_per_s (512/s): 8 s later the same frame passes
+        c, d, _ = self.pair()
+        for i in range(3):
+            c.text("x" * 4096)
+            self.assertEqual(d.recv(), (1, b"x" * 4096))
+        self.site.clock.t += 8.0
+        c.text("x" * 4096)
+        self.assertEqual(d.recv(), (1, b"x" * 4096))
+
+    def test_pings_count_against_bytes(self):
+        a, b, _ = self.pair()
+        for i in range(33):                 # 33 x 125-byte pings (4,125 bytes) ...
+            a.frame(9, b"p" * 125)
+            self.assertEqual(a.recv(), (10, b"p" * 125))
+        a.text("x" * 4096)
+        a.text("x" * 4096)
+        a.text("x" * 4096)                  # ... leave less than 3 x 4,096 bytes
+        self.assertEqual(b.recv(), (1, b"x" * 4096))
+        self.assertEqual(b.recv(), (1, b"x" * 4096))
+        self.assertEqual(a.expect_close(), 4003)
+
+    def test_binary_after_pairing_1003(self):
+        a, b, _ = self.pair()
+        a.text("text is fine")
+        self.assertEqual(b.recv(), (1, b"text is fine"))
+        a.frame(2, b"\x00\x01")
+        self.assertEqual(a.expect_close(), 1003)
+        self.assertEqual(b.expect_close(), 4000)
+        c, d, _ = self.pair()
+        d.frame(2, b"")                     # even empty, even from the joiner
+        self.assertEqual(d.expect_close(), 1003)
+        self.assertEqual(c.expect_close(), 4000)
+
+
+class RoomBytes(Base):
+    caps = {"room_bytes": 10000}
+
+    def test_room_byte_cap_4006(self):
+        a, b, _ = self.pair()
+        a.text("x" * 4096)
+        self.assertEqual(b.recv(), (1, b"x" * 4096))
+        b.text("y" * 4096)                  # both directions count: 8,192
+        self.assertEqual(a.recv(), (1, b"y" * 4096))
+        a.text("z" * 4096)                  # 12,288 > 10,000: not forwarded, room ends
+        self.assertEqual(b.expect_close(), 4006)
+        self.assertEqual(a.expect_close(), 4006)
+
+
+class Admission(Base):
+    """Review F2/F3/F5: LRU rate windows, /56 keys, waiting per IP, global join ceiling."""
+    caps = {"tracked_ips": 50, "join_failures_min": 5, "joins_per_ip_min": 1000,
+            "upgrades_per_ip_min": 1000, "ping_s": 10 ** 6, "pong_s": 10 ** 6}
+
+    def test_full_table_evicts_instead_of_503(self):
+        for i in range(60):                  # 60 distinct keys through a 50-key table
+            c = WS(self.site, ip="2001:db8:%x::1" % (i << 8))
+            self.assertEqual(c.status, 101, i)
+            c.close()
+        self.assertTrue(wait_for(lambda: self.site.relay.snapshot()["sockets"] == 0))
+        self.assertEqual(self.site.relay.snapshot()["tracked_ips"], 50)
+        self.assertNotIn("2001:db8::/56", self.site.relay.windows)   # the oldest went first
+        c = self.ws(ip="192.0.2.200")                                  # a newcomer still gets in
+        self.assertEqual(c.status, 101)
+        self.site.tick(60)
+        self.assertIn("rate windows evicted (tracked_ips full) x11 in 60s", self.site.logs)
+
+    def test_10k_key_flood_does_not_lock_out(self):
+        relay = link_relay.Relay(caps={}, clock=self.site.clock, log=self.site.logs.append,
+                                 autotick=False)
+        now = self.site.clock()
+        with relay.lock:
+            for i in range(10000):
+                relay._hit("up", "2001:db8:%x::/56" % i, 30, now)
+            relay._hit("up", "198.51.100.1", 30, now)            # 10,001st key
+        self.assertEqual(len(relay.windows), 10000)
+        self.assertIn("198.51.100.1", relay.windows)
+        self.assertNotIn("2001:db8::/56", relay.windows)
+        # and through the real admission path of this site, a flood then a newcomer
+        with self.site.relay.lock:
+            for i in range(49):
+                self.site.relay._hit("up", "2001:db8:%x::/56" % i, 30, now)
+        self.assertEqual(self.ws(ip="192.0.2.9").status, 101)
+
+    def test_tick_prunes_windows(self):
+        c = self.ws(ip="192.0.2.10")
+        c.close()
+        self.assertEqual(self.site.relay.snapshot()["tracked_ips"], 1)
+        self.site.tick(59.9)
+        self.assertEqual(self.site.relay.snapshot()["tracked_ips"], 1)
+        self.site.tick(0.1)
+        self.assertEqual(self.site.relay.snapshot()["tracked_ips"], 0)
+
+    def test_ipv6_56_is_one_key_for_socket_cap(self):
+        for i in range(4):                   # four /64s of one /56
+            self.assertEqual(self.ws(ip="2001:db8:5:%x::1" % i).status, 101)
+        self.assertEqual(self.ws(ip="2001:db8:5:ff::9").status, 429)
+        self.assertEqual(self.ws(ip="2001:db8:5:100::1").status, 101)   # the next /56
+
+    def test_waiting_per_ip_4029(self):
+        self.ws(ip="203.0.113.9").create()
+        self.ws(ip="203.0.113.9").create()
+        c = self.ws(ip="203.0.113.9")
+        c.text('{"op":"create"}')
+        self.assertEqual(c.expect_close(), 4029)
+        self.ws(ip="203.0.113.10").create()   # another key is unaffected
+
+    def test_global_join_failure_ceiling(self):
+        a = self.ws(ip="203.0.113.20")
+        real = a.create()
+        for i in range(5):                   # 5 failures from 5 keys
+            c = self.ws(ip="198.51.100.%d" % (30 + i))
+            c.join("nope-nope-nope")
+            self.assertEqual(c.expect_close(), 4002)
+        c = self.ws(ip="198.51.100.99")     # a fresh key, the right code: still the neutral 4002
+        c.join(real)
+        self.assertEqual(c.expect_close(), 4002)
+        self.assertIn(real, self.site.relay.waiting)   # not consumed, not looked up
+        self.site.clock.t += 60.1            # the window slides
+        d = self.ws(ip="198.51.100.100")
+        d.join(real)
+        self.assertEqual(d.recv_json()["role"], "b")
+        self.site.tick()
+        self.assertTrue(any(l.startswith("join refused (relay-wide failure ceiling) x1 ")
+                            for l in self.site.logs), self.site.logs)
+
+
+class TrustedProxy(unittest.TestCase):
+    """Review F3: the header is believed only from TRUSTED_PROXIES; the key source is logged once."""
+
+    def test_untrusted_loopback_collapses_and_logs_once(self):
+        site = Site(caps={"sockets_per_ip": 2})
+        site.relay.trusted = (__import__("ipaddress").ip_network("10.9.9.9/32"),)
+        try:
+            a = WS(site, ip="198.51.100.1")
+            b = WS(site, ip="198.51.100.2")
+            c = WS(site, ip="198.51.100.3")         # all share the TCP peer's key
+            self.assertEqual([a.status, b.status, c.status], [101, 101, 429])
+            lines = [l for l in site.logs if l.startswith("rate key:")]
+            self.assertEqual(len(lines), 1, lines)
+            self.assertIn("IGNORED", lines[0])
+            self.assertIn("1 configured", lines[0])
+            for x in (a, b, c):
+                x.close()
+        finally:
+            site.close()
+
+    def test_module_setting_and_default(self):
+        old = link_relay.TRUSTED_PROXIES
+        try:
+            link_relay.TRUSTED_PROXIES = ("192.0.2.0/24",)
+            r = link_relay.Relay(autotick=False, log=lambda l: None)
+            self.assertEqual(r.client_ip(FakeHandler("192.0.2.7", "10.0.0.1")), "10.0.0.1")
+            self.assertEqual(r.client_ip(FakeHandler("127.0.0.1", "10.0.0.1")), "127.0.0.1")
+        finally:
+            link_relay.TRUSTED_PROXIES = old
+        logs = []
+        r = link_relay.Relay(autotick=False, log=logs.append)
+        self.assertEqual(r.client_ip(FakeHandler("127.0.0.1", "10.0.0.1")), "10.0.0.1")
+        self.assertEqual(r.client_ip(FakeHandler("127.0.0.1", "10.0.0.2")), "10.0.0.2")
+        self.assertEqual(r.client_ip(FakeHandler("127.0.0.1")), "127.0.0.1")
+        self.assertEqual(logs, [
+            "rate key: CF-Connecting-IP from a trusted proxy (per-client caps work); "
+            "trusted proxies: loopback (default)",
+            "rate key: TCP peer (a trusted proxy sent no CF-Connecting-IP); "
+            "trusted proxies: loopback (default)"])
+
+
+class Races(Base):
+    """Review F4: a socket the housekeeper is closing must not be revived by create/join."""
+
+    def test_create_after_end_does_not_revive(self):
+        c = self.ws()
+        conn = conn_in(self.site.relay, "control")
+        self.site.relay._end(conn, 4008)     # the housekeeper wins the race ...
+        self.site.relay._create(conn)        # ... then the reader thread's create runs
+        self.assertEqual(conn.state, "closing")
+        self.assertEqual(self.site.relay.waiting, {})
+        self.assertEqual(c.recv(), (8, struct.pack("!H", 4008)))   # no code frame before the close
+        self.site.tick(2)                    # close_wait_s still applies
+        self.assertTrue(c.eof())
+
+    def test_join_after_end_does_not_consume_code(self):
+        a = self.ws()
+        code = a.create()
+        b = self.ws()
+        conn = conn_in(self.site.relay, "control")
+        self.site.relay._end(conn, 4008)
+        self.site.relay._join(conn, code)
+        self.assertEqual(conn.state, "closing")
+        self.assertIn(code, self.site.relay.waiting)
+        self.assertEqual(b.recv(), (8, struct.pack("!H", 4008)))
+        d = self.ws()
+        d.join(code)                         # the real friend still gets in
+        self.assertEqual(d.recv_json()["role"], "b")
+        self.assertEqual(a.recv_json()["role"], "a")
+
+
+class CloseFrames(Base):
+    """Review F9: a client close must be empty, or a valid code plus UTF-8."""
+    caps = {"creates_per_ip_min": 100}
+
+    def test_close_payload_validated(self):
+        for payload, want in ((b"", 1000), (struct.pack("!H", 1000) + b"bye", 1000),
+                              (struct.pack("!H", 4321), 1000), (b"\x03", 1002),
+                              (struct.pack("!H", 1005), 1002), (struct.pack("!H", 999), 1002),
+                              (struct.pack("!H", 2000), 1002),
+                              (struct.pack("!H", 1000) + b"\xff", 1002)):
+            a, b, _ = self.pair()
+            a.frame(8, payload)
+            self.assertEqual(a.expect_close(), want, payload)
+            self.assertEqual(b.expect_close(), 4000, payload)
+
+
+class Liveness(Base):
+    caps = NO_PINGS
+
+    def test_pings_do_not_extend_code_ttl(self):
+        a = self.ws()
+        a.create()
+        for t in range(11):
+            self.site.tick(10)
+            a.frame(9, b"k")
+            self.assertEqual(a.recv(), (10, b"k"))
+        self.site.tick(10)                   # 120 s since create
+        self.assertEqual(a.expect_close(), 4001)
+
+    def test_pongs_do_not_extend_idle(self):
+        a, b, _ = self.pair()
+        for t in range(8):
+            self.site.tick(10)
+            a.frame(10, b"")                 # unsolicited pongs from a; b sends data
+            b.text("data")
+            self.assertEqual(a.recv(), (1, b"data"))
+        self.site.tick(10)                   # a: 90 s with no data frame
+        self.assertEqual(a.expect_close(), 4005)
+        self.assertEqual(b.expect_close(), 4005)
+
+
+class LogSummary(Base):
+    """Review F7: refusals are one line per reason per minute, with no code or IP."""
+    caps = dict(NO_PINGS, joins_per_ip_min=1000)
+
+    def test_refusals_aggregated(self):
+        a = self.ws(ip="198.51.100.50")
+        code = a.create()
+        for i in range(5):
+            c = self.ws(ip="198.51.100.%d" % (60 + i))
+            c.join("nope-nope-nope")
+            self.assertEqual(c.expect_close(), 4002)
+        for i in range(3):
+            self.assertEqual(self.ws(origin="https://evil.example").status, 403)
+        self.assertTrue(wait_for(lambda: self.site.relay.snapshot()["sockets"] == 1))
+        before = list(self.site.logs)
+        self.assertFalse([l for l in before if "refused" in l or "no room" in l], before)
+        self.site.tick(59)
+        self.assertEqual(self.site.logs, before)          # not yet a minute
+        self.site.tick(1)
+        new = self.site.logs[len(before):]
+        self.assertEqual(sorted(new), ["join refused x5 in 60s",
+                                       "socket closed 4002 (no room) x5 in 60s",
+                                       "upgrade refused 403 origin x3 in 60s"])
+        self.site.tick(60)                   # nothing repeated (the code expiring is a room event)
+        later = self.site.logs[len(before) + 3:]
+        self.assertFalse([l for l in later if "refused" in l or "no room" in l], later)
+        text = "\n".join(self.site.logs)
+        for secret in [code, "198.51.100", "127.0.0.1", "nope"] + code.split("-"):
+            self.assertNotIn(secret, text)
+
+    def test_exception_path_logs_type_only(self):
+        a, b, _ = self.pair(ip_a="198.51.100.70", ip_b="198.51.100.71")
+
+        def boom(c, op, data):
+            raise RuntimeError("SECRET 198.51.100.70 %s" % data.decode())
+        self.site.relay._forward = boom
+        a.text("PAYLOAD-XYZ")
+        self.assertEqual(a.expect_close(), 1002)
+        self.assertEqual(b.expect_close(), 4000)
+        self.assertIn("socket error RuntimeError", self.site.logs)
+        text = "\n".join(self.site.logs)
+        for secret in ("SECRET", "198.51.100", "PAYLOAD"):
+            self.assertNotIn(secret, text)
 
 
 class Words(unittest.TestCase):
