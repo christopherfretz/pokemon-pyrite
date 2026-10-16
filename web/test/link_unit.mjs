@@ -303,6 +303,71 @@ for (const [ph, v, n, want] of ACT) {
   check(`act ${ph} v=${JSON.stringify(v)} peerCount=${n} -> ${want}`, got === want, got);
 }
 
+// ------------------------------------------------- held while accepting ---
+// A peer that accepted first reaches the desk while our Accept is still up:
+// link.js holds its game messages (bounded) and replays them at link-up.
+function session(opts = {}) {
+  const sent = [];
+  const transport = { send(t) { sent.push(JSON.parse(t)); }, close() { transport.closed = true; } };
+  let answer;
+  const port = { enable() {}, ext() {}, clear() {}, drain() { return []; }, idle() {} };
+  let t = 1000;
+  const lk = Link.create({
+    tables: L, core: { port, read: () => 0 }, transport, role: 'a', rom: ROM, name: 'ALPHA',
+    now: () => t, ui: { accept: () => new Promise((r) => { answer = r; }) }, ...opts,
+  });
+  const peer = (m) => transport.onmessage(JSON.stringify(m));
+  peer({ type: 'hello', lk: Link.PROTOCOL, rom: ROM, build: 'x', core: 'y', name: 'BRAVO', role: 'b' });
+  return { lk, sent, peer, answer: (y) => answer(y), tick: (ms) => { t += ms; } };
+}
+const byes = (s) => s.sent.filter((m) => m.type === 'bye').map((m) => m.reason);
+const logOf = (s, e) => s.lk.state().log.filter((x) => x.e === e);
+{
+  const s = session();
+  check('held: accepting after the peer hello', s.lk.state().session === 'accepting');
+  for (let i = 0; i < 5; i++) { s.peer({ type: 'desk', left: 9000 - i * 500 }); s.tick(500); }
+  s.peer({ type: 'abort', stage: 'desk' });
+  s.peer({ type: 'desk', left: 12000 });
+  s.peer({ type: 'ping', t: 1 });
+  const st = s.lk.state();
+  check('held: desk/abort while accepting are held, not refused', st.session === 'accepting' && !byes(s).length, JSON.stringify(byes(s)));
+  check('held: consecutive desks coalesce (5 desks, abort, desk -> 3)', st.held === 3, st.held);
+  check('held: a ping is still answered while accepting', s.sent.some((m) => m.type === 'pong'));
+  s.answer(true);
+  await Promise.resolve();
+  const st2 = s.lk.state();
+  const rp = logOf(s, 'held-replay');
+  check('held: replayed in order at link-up', st2.session === 'linked' && st2.held === 0 && rp.length === 1 && rp[0].n === 3
+    && st2.peerStage === 'desk' && !byes(s).length, JSON.stringify({ s: st2.session, held: st2.held, rp, peer: st2.peerStage, byes: byes(s) }));
+}
+{
+  const s = session();
+  for (let i = 0; i < 200; i++) s.peer(i % 2 ? { type: 'abort', stage: 'desk' } : { type: 'desk', left: 5000 });
+  const st = s.lk.state();
+  check('held: bounded at 64, oldest dropped with a log note', st.held <= 64 && logOf(s, 'held-dropped').length > 0 && !byes(s).length,
+    JSON.stringify({ held: st.held, dropped: logOf(s, 'held-dropped').length }));
+  s.answer(true);
+  await Promise.resolve();
+  check('held: after overflow the replay starts at a desk (no protocol error)', s.lk.state().session === 'linked' && !byes(s).length,
+    JSON.stringify({ s: s.lk.state().session, byes: byes(s) }));
+}
+{
+  const s = session();
+  s.peer({ type: 'desk', left: 5000 });
+  s.answer(false);
+  await Promise.resolve();
+  const st = s.lk.state();
+  check('held: Decline drops the held messages', st.session === 'closed' && st.held === 0 && JSON.stringify(byes(s)) === '["user"]',
+    JSON.stringify({ s: st.session, held: st.held, byes: byes(s) }));
+}
+{
+  const s = session();
+  s.peer({ type: 'rcpt' });
+  s.answer(true);
+  await Promise.resolve();
+  check('held: a hostile out-of-order message still fails, at replay', JSON.stringify(byes(s)) === '["internal"]', JSON.stringify(byes(s)));
+}
+
 const hostileN = CASES.filter((c) => c[2] !== null).length + 1;
 console.log(`\n${fail ? 'FAIL' : 'PASS'} link_unit: ${pass}/${pass + fail} checks (${hostileN} hostile validator cases, ${GARBAGE.length + 1} garbage inputs)`);
 process.exit(fail ? 1 : 0);

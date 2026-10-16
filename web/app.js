@@ -2803,8 +2803,6 @@
       send: function (text) { return conn.send(text); },
       close: function () { conn.close(); }
     };
-    linkFacade = facade;
-    linkHeld = [];
     linkActive = true;
     $('#link-join').disabled = false;
     linkMsg('');
@@ -2848,23 +2846,11 @@
         } else if (m && m.type === 'pause') { linkPeerPaused = true; renderLink(); }
         else if (m && m.type === 'resume') { linkPeerPaused = false; renderLink(); }
       }
-      // A peer that accepted first can reach the desk while we still show
-      // Accept; link.js (session 'accepting') would take its 'desk' as a
-      // protocol error, so hold game messages until we are linked.
-      var sess = null;
-      try { sess = link ? link.state().session : null; } catch (e) { sess = null; }
-      if (sess === 'accepting') {
-        var mt = null;
-        try { mt = JSON.parse(text).type; } catch (e) { mt = null; }
-        if (mt && !/^(hello|bye|ping|pong|pause|resume)$/.test(mt)) {
-          if (linkHeld.length < 64) { linkHeld.push(text); linkNote('held', mt); return; }
-        }
-      }
-      linkFlushHeld();
+      // (a peer that accepted first can reach the desk while our Accept is up:
+      // link.js holds those messages and replays them at link-up)
       if (facade.onmessage) { facade.onmessage(text); }
     };
     conn.onclose = function (code, reason) {
-      linkFlushHeld();
       linkCloseCode = code;
       linkNote('socket-closed', code);
       if (conn === linkConn) { linkConn = null; }
@@ -2875,20 +2861,6 @@
     linkWakeWant(true);
   }
 
-  var linkHeld = [];       // peer game messages that arrived while our Accept was up
-  var linkFacade = null;
-  function linkFlushHeld() {
-    if (!linkHeld.length) { return; }
-    var sess = null;
-    try { sess = link ? link.state().session : null; } catch (e) { sess = null; }
-    if (sess === 'accepting') { return; }
-    var q = linkHeld;
-    linkHeld = [];
-    if (sess !== 'linked' || !linkFacade || !linkFacade.onmessage) { return; }   // declined or closed: drop
-    linkNote('flush', q.length);
-    q.forEach(function (t) { linkFacade.onmessage(t); });
-  }
-
   function linkPing() {
     if (linkConn && linkConn.state === 'paired') { linkConn.send('{"type":"ping","t":' + Date.now() + '}'); }
   }
@@ -2897,7 +2869,6 @@
     linkStatusNow = String(s);
     linkNote('status', linkStatusNow);
     if (s === 'hello') { return; }
-    if (s === 'linked') { Promise.resolve().then(linkFlushHeld); }
     if (s === 'linked' || /^draining/.test(s)) {
       linkAcceptResolve = null;
       linkLockedNow = true;

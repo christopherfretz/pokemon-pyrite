@@ -9,6 +9,7 @@ traverse.
 
     python3 server.py --rom kanto-first.gbc
     python3 server.py --rom kanto-first.gbc --link     # also the LK1d link relay at /link
+    python3 server.py --rom kanto-first.gbc --link --link-trusted-proxy 172.17.0.1
 
 TLS and any public exposure are the host's job -- put this behind a reverse
 proxy (nginx, Caddy, Cloudflare Tunnel) rather than binding it to 0.0.0.0.
@@ -16,8 +17,11 @@ proxy (nginx, Caddy, Cloudflare Tunnel) rather than binding it to 0.0.0.0.
 
 import argparse
 import http.server
+import io
 import os
+import socket
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -56,6 +60,12 @@ STATIC = {
 }
 
 ROM_PATH = "/kanto-first.gbc"
+
+# --link only: the request line and headers of each request must arrive within
+# this many times the relay's handshake_s (15 s at the default 10 s), however
+# they are trickled. The per-read timeout (handshake_s) still applies too
+# (review F6: a per-read timeout alone let one byte every 9 s hold a thread).
+HEADER_BUDGET_X = 1.5
 
 # The save editor's preset saves.  These are generated (scripts/gen_presets.py
 # in the helper repo), so the file names are not known here -- the directory is
@@ -99,12 +109,53 @@ def load_files(rom_file):
     return served
 
 
+class _HeaderDeadline(io.RawIOBase):
+    """The socket reader under rfile in --link mode. While the handler's header
+    deadline is armed, every read gets min(per-read timeout, time left) as its
+    socket timeout, and none starts once the budget is spent (socket.timeout, which
+    http.server answers like a per-read timeout: log and close). Disarmed, reads
+    pass straight through (the relay reads the upgraded socket through rfile)."""
+
+    def __init__(self, rfile, handler):
+        io.RawIOBase.__init__(self)
+        self.rfile, self.raw, self.h = rfile, rfile.raw, handler   # nothing buffered yet
+
+    def readable(self):
+        return True
+
+    def readinto(self, buf):
+        deadline = self.h.header_deadline
+        if deadline is not None:
+            left = deadline - time.monotonic()
+            if left <= 0:
+                raise socket.timeout("request headers not complete in time")
+            self.h.connection.settimeout(min(self.h.timeout, left))
+        return self.raw.readinto(buf)
+
+    def close(self):
+        if not self.closed:
+            self.rfile.close()
+        io.RawIOBase.close(self)
+
+
 class Handler(http.server.BaseHTTPRequestHandler):
     server_version = "KantoFirst"
     sys_version = ""
     protocol_version = "HTTP/1.1"
     files = {}
     link = None  # a link_relay.Relay when started with --link; else /link is a 404
+    header_budget = None  # --link: total seconds for one request's line + headers
+    header_deadline = None
+
+    def setup(self):
+        http.server.BaseHTTPRequestHandler.setup(self)
+        if self.header_budget is not None:
+            self.rfile = io.BufferedReader(_HeaderDeadline(self.rfile, self))
+
+    def handle_one_request(self):
+        if self.header_budget is not None:
+            self.header_deadline = time.monotonic() + self.header_budget
+        http.server.BaseHTTPRequestHandler.handle_one_request(self)
 
     def _respond(self, send_body):
         if self.timeout is None:
@@ -143,16 +194,16 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(body)
 
     def do_GET(self):
+        self.header_deadline = None   # headers are in: the deadline is for them only
         if self.link is not None and self.path.split("?", 1)[0] == "/link":
-            self.log_link()
+            # no access-log line per attempt (review F7): the relay logs room
+            # events and a once-a-minute count per refusal reason, never an IP
             return self.link.handle(self)
         self._respond(True)
 
     def do_HEAD(self):
+        self.header_deadline = None
         self._respond(False)
-
-    def log_link(self):  # no IP and no query string: the relay logs its own events
-        sys.stderr.write('- "GET /link"\n')
 
     def log_message(self, fmt, *args):  # one line per request, on stderr
         sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))
@@ -168,17 +219,27 @@ def main():
                         help="extra allowed Origin for /link, e.g. http://127.0.0.1:8080 (repeatable)")
     parser.add_argument("--link-cap", action="append", default=[], metavar="NAME=VALUE",
                         help="override a relay cap (see CAPS in link_relay.py; repeatable)")
+    parser.add_argument("--link-trusted-proxy", action="append", default=[], metavar="IP_OR_CIDR",
+                        help="peer whose CF-Connecting-IP header /link believes, e.g. 172.17.0.1 "
+                             "(repeatable; default: any loopback address)")
     args = parser.parse_args()
 
     Handler.files = load_files(args.rom)
     if args.link:
         import link_relay
-        Handler.link = link_relay.Relay(link_relay.DEFAULT_ORIGINS + tuple(args.link_origin),
-                                        link_relay.parse_caps(args.link_cap)).start()
-        # bounds the HTTP header phase before an upgrade (slowloris): a per-read socket timeout
-        Handler.timeout = Handler.link.caps["handshake_s"]
-    elif args.link_origin or args.link_cap:
-        parser.error("--link-origin and --link-cap need --link")
+        try:
+            relay = link_relay.Relay(link_relay.DEFAULT_ORIGINS + tuple(args.link_origin),
+                                     link_relay.parse_caps(args.link_cap),
+                                     trusted_proxies=args.link_trusted_proxy or None)
+        except ValueError as e:
+            parser.error("--link-trusted-proxy: %s" % e)
+        Handler.link = relay.start()
+        # bounds the HTTP header phase before an upgrade (slowloris): a per-read socket
+        # timeout, plus a total budget per request (review F6)
+        Handler.timeout = relay.caps["handshake_s"]
+        Handler.header_budget = HEADER_BUDGET_X * relay.caps["handshake_s"]
+    elif args.link_origin or args.link_cap or args.link_trusted_proxy:
+        parser.error("--link-origin, --link-cap and --link-trusted-proxy need --link")
     rom_bytes = len(Handler.files[ROM_PATH][0])
     server = http.server.ThreadingHTTPServer((args.host, args.port), Handler)
     print("Kanto First on http://%s:%d/  (%d files, ROM %d bytes from %s)%s"

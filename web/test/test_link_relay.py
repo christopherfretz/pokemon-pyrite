@@ -13,8 +13,11 @@ import http.server
 import io
 import json
 import os
+import select
+import signal
 import socket
 import struct
+import subprocess
 import sys
 import threading
 import time
@@ -46,12 +49,11 @@ class Site(object):
         self.logs = []
         self.relay = None
         attrs = {"files": FILES, "log_message": lambda h, fmt, *a: None}
-        if quiet:
-            attrs["log_link"] = lambda h: None
-        if link:
+        if link:   # as server.py main() wires --link
             self.relay = link_relay.Relay(origins, caps, clock=self.clock,
                                           log=self.logs.append, autotick=False)
-            attrs.update(link=self.relay, timeout=self.relay.caps["handshake_s"])
+            attrs.update(link=self.relay, timeout=self.relay.caps["handshake_s"],
+                         header_budget=server.HEADER_BUDGET_X * self.relay.caps["handshake_s"])
         handler = type("H", (server.Handler,), attrs)
         self.httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
         self.port = self.httpd.server_address[1]
@@ -876,7 +878,8 @@ class Logs(Base):
         text = "\n".join(self.site.logs) + "\n" + err.getvalue()
         for secret in [code, "SECRET", "198.51.100", "127.0.0.1"] + code.split("-"):
             self.assertNotIn(secret, text)
-        for event in ('- "GET /link"', "room created", "room paired", "join refused x1",
+        self.assertNotIn('"GET /link"', text)   # review F7: no access-log line per attempt
+        for event in ("room created", "room paired", "join refused x1",
                       "room closed 1000", "upgrade refused 403 origin x1",
                       "rate key: CF-Connecting-IP from a trusted proxy"):
             self.assertIn(event, text)
@@ -1192,6 +1195,146 @@ class Words(unittest.TestCase):
                          "-".join(w[:3]))
         for bad in ("", "%s-%s" % (w[0], w[1]), "zz-zz-zz", "-".join(w[:4])):
             self.assertIsNone(r.normalize_code(bad))
+
+
+def trickle_until_closed(port, limit=8.0, gap=0.3):
+    """Send a never-ending request one byte every `gap` s (each read well inside the
+    per-read timeout); return the seconds until the server closes the connection."""
+    data = b"GET / HTTP/1.1\r\nHost: x\r\n" + b"X-Slow: y\r\n" * 1000
+    s = socket.create_connection(("127.0.0.1", port))
+    t0 = time.monotonic()
+    try:
+        for i in range(len(data)):
+            if time.monotonic() - t0 > limit:
+                return None
+            try:
+                s.send(data[i:i + 1])
+            except OSError:
+                return time.monotonic() - t0
+            r, _, _ = select.select([s], [], [], gap)
+            if r:
+                try:
+                    if not s.recv(4096):
+                        return time.monotonic() - t0
+                except OSError:
+                    return time.monotonic() - t0
+        return None
+    finally:
+        s.close()
+
+
+class HeaderDeadline(unittest.TestCase):
+    """Review F6: a total budget for one request's line + headers in --link mode,
+    on top of the per-read timeout (handshake_s); 1.5 x handshake_s."""
+
+    def setUp(self):
+        self.site = Site(caps={"handshake_s": 1.0})          # per read 1.0 s, budget 1.5 s
+
+    def tearDown(self):
+        self.site.close()
+
+    def test_trickled_headers_cut_at_total_budget(self):
+        took = trickle_until_closed(self.site.port)
+        self.assertIsNotNone(took, "a trickle every 0.3 s held the connection for 8 s")
+        self.assertGreater(took, 1.3)
+        self.assertLess(took, 2.5)
+
+    def test_budget_is_per_request_on_keep_alive(self):
+        conn = http.client.HTTPConnection("127.0.0.1", self.site.port, timeout=5)
+        try:
+            conn.request("GET", "/index.html")
+            sock = conn.sock
+            for i in range(3):             # 3 requests over ~1.8 s on one connection
+                r = conn.getresponse()
+                self.assertEqual(r.status, 200)
+                r.read()
+                time.sleep(0.6)
+                if i < 2:
+                    conn.request("GET", "/index.html")
+            self.assertIs(conn.sock, sock)
+        finally:
+            conn.close()
+
+    def test_upgraded_socket_not_cut(self):
+        a, b, _ = pair(self.site)
+        try:
+            time.sleep(2.0)                # past the header budget, in wall time
+            a.text("hi")
+            self.assertEqual(b.recv(), (1, b"hi"))
+        finally:
+            a.close()
+            b.close()
+
+    def test_static_unchanged_without_link(self):
+        site = Site(link=False)
+        try:
+            h = site.httpd.RequestHandlerClass
+            self.assertIsNone(h.header_budget)
+            self.assertIsNone(h.timeout)
+        finally:
+            site.close()
+
+
+class ServerFlags(unittest.TestCase):
+    """server.py main(): --link-trusted-proxy, the header budget and the access log, run
+    as a real process on 127.0.0.1:0."""
+
+    def start(self, *args):
+        p = subprocess.Popen([sys.executable, os.path.join(WEB, "server.py"), "--rom", ROM,
+                              "--port", "0"] + list(args),
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        line = p.stdout.readline()
+        self.assertIn("link relay at /link", line)
+        p.port = int(line.split("http://127.0.0.1:")[1].split("/")[0])
+        return p
+
+    def stop(self, p):
+        p.send_signal(signal.SIGINT)
+        out, err = p.communicate(timeout=10)
+        return err
+
+    def upgrade_with_header(self, p):
+        c = WS(p, origin="http://127.0.0.1", ip="198.51.100.9")
+        self.assertEqual(c.status, 101)
+        c.create()
+        c.close()
+
+    def test_trusted_proxy_flag(self):
+        p = self.start("--link", "--link-origin", "http://127.0.0.1",
+                       "--link-trusted-proxy", "10.0.0.0/8", "--link-trusted-proxy", "fd00::/8")
+        self.upgrade_with_header(p)
+        err = self.stop(p)
+        self.assertIn("CF-Connecting-IP from an untrusted peer IGNORED", err)
+        self.assertIn("trusted proxies: 2 configured", err)
+        self.assertNotIn('"GET /link"', err)
+        p = self.start("--link", "--link-origin", "http://127.0.0.1", "--link-trusted-proxy", "127.0.0.1")
+        self.upgrade_with_header(p)
+        err = self.stop(p)
+        self.assertIn("rate key: CF-Connecting-IP from a trusted proxy (per-client caps work); "
+                      "trusted proxies: 1 configured", err)
+        p = self.start("--link", "--link-origin", "http://127.0.0.1")
+        self.upgrade_with_header(p)
+        err = self.stop(p)
+        self.assertIn("rate key: CF-Connecting-IP from a trusted proxy (per-client caps work); "
+                      "trusted proxies: loopback (default)", err)
+        for secret in ("198.51.100", "127.0.0.1"):
+            self.assertNotIn(secret, err)
+
+    def test_header_budget_wired(self):
+        p = self.start("--link", "--link-cap", "handshake_s=1")
+        try:
+            took = trickle_until_closed(p.port)
+        finally:
+            self.stop(p)
+        self.assertIsNotNone(took)
+        self.assertLess(took, 2.5)
+
+    def test_bad_flags(self):
+        for args in (["--link-trusted-proxy", "127.0.0.1"], ["--link", "--link-trusted-proxy", "not-an-ip"]):
+            r = subprocess.run([sys.executable, os.path.join(WEB, "server.py"), "--rom", ROM,
+                                "--port", "0"] + args, capture_output=True, text=True, timeout=10)
+            self.assertEqual(r.returncode, 2, args)
+            self.assertIn("--link-trusted-proxy", r.stderr)
 
 
 if __name__ == "__main__":

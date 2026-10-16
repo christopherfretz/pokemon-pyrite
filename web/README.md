@@ -112,6 +112,34 @@ TLS, authentication and public exposure are the host's job — put it behind a
 reverse proxy (Caddy, nginx, a Cloudflare Tunnel) rather than binding it to
 `0.0.0.0` on the open internet.
 
+**Link play** (`--link`, off by default) also serves the link relay at `/link`
+(design, caps and threat model: `docs/LK1-LINK.md` section 4; the numbered
+deploy list is under "Deploying (for manager-helper)" there):
+
+```bash
+python3 server.py --rom kanto-first.gbc --link \
+    --link-origin https://play.example.org --link-trusted-proxy 172.17.0.1
+```
+
+- `--link-origin URL` (repeatable) — an extra page origin allowed to open `/link`.
+- `--link-cap NAME=VALUE` (repeatable) — override one relay cap.
+- `--link-trusted-proxy IP_OR_CIDR` (repeatable) — peers whose
+  `CF-Connecting-IP` header is believed for per-client rate keys. Default:
+  loopback only. Set it to the tunnel's address when the tunnel is not on
+  loopback, or every client shares one rate key. The relay logs once on
+  stderr which rate key it is using (and says IGNORED if the header arrives
+  from an untrusted peer), so check the log after the first remote join.
+- With `--link`, every request must finish its request line and headers within
+  15 s in total (1.5 x the `handshake_s` cap), so a slow header trickle cannot
+  hold a thread; idle keep-alive connections are closed after 10 s. An upgraded
+  `/link` socket is not affected.
+- There is no per-attempt access-log line for `/link`; the relay logs room
+  events and a once-a-minute count per refusal reason (never an IP), so a
+  flood does not fill the disk.
+
+Without `--link` none of this applies: no header deadline, no socket timeout,
+and `/link` is a plain 404.
+
 ### Where the ROM comes from
 
 `scripts/release_rom.sh` (in the private helper repo `pokemon-romhack-helper`,

@@ -51,6 +51,7 @@
   const EXT_GAP = 6144, EXT_HOLD = 70224;         // bulk pacing / one idle byte per frame
   const TAIL_FRAMES = 10;
   const MAX_ACT_QUEUE = 8;
+  const MAX_HELD = 64;                            // peer game messages held while our Accept is up
   const BYE_REASONS = /^(user|rom-mismatch|role|invalid-blocks:[a-z0-9_.[\]$ -]{1,60}|invalid-act|timeout|internal|peer-gone)$/;
   const ABORT_STAGES = new Set(['desk', 'connected', 'rcpt', 'sync', 'blocks', 'menu']);
 
@@ -174,6 +175,11 @@
     const log = [];
     const stats = { sent: {}, recv: {}, bulk: [], fifoLeft: [], feeds: 0, visits: 0 };
     let peerHello = null;
+    // A peer that accepted first can reach the desk (desk, abort, ...) while our
+    // Accept is still up: hold those messages, with their arrival time, and
+    // replay them at link-up. Bounded; the oldest is dropped when full.
+    let held = [];
+    let rxAt = null;                            // arrival time of the message being replayed
     // peer stream (independent of our own visit)
     let peer = freshPeer();
     // our visit
@@ -247,6 +253,18 @@
         else decide(!!a);                           // synchronous answer: link up on this turn
         return;
       }
+      if (session === 'accepting') {                // the peer is linked, we are not yet: hold it
+        const last = held[held.length - 1];
+        // consecutive desks: only the newest matters (it carries the budget left)
+        if (m.type === 'desk' && last && last.m.type === 'desk') held.pop();
+        if (held.length >= MAX_HELD) {
+          // drop the oldest, then up to the next desk, so the replay starts at a visit
+          do { ev('held-dropped', { type: held.shift().m.type }); } while (held.length && held[0].m.type !== 'desk');
+        }
+        held.push({ m, t: now() });
+        ev('held', { type: m.type, n: held.length });
+        return;
+      }
       if (session !== 'linked' && session !== 'draining') return fail('internal', `${m.type} before hello`);
       if (session === 'draining') return;           // nothing the peer says matters any more
       switch (m.type) {
@@ -258,7 +276,7 @@
           }
           if (peer.stage !== 'desk') peer = freshPeer();
           peer.stage = 'desk';
-          peer.desk = { left: m.left, at: now() };
+          peer.desk = { left: m.left, at: rxAt === null ? now() : rxAt };
           return;
         case 'abort':
           if (peer.stage === 'ignoring') return;
@@ -309,6 +327,7 @@
       startDrain(reason);
     }
     function closeNow(why) {
+      held = [];
       if (session === 'linked' || session === 'draining') { try { port.enable(false); } catch (e) { /* */ } }
       session = 'closed';
       ev('closed', { why });
@@ -327,6 +346,15 @@
       lastRx = now();
       ev('linked', { peer: peerHello.name });
       ui.status('linked');
+      // replay what the peer sent while our Accept was up, in order, at its arrival time
+      const q = held;
+      held = [];
+      if (q.length) ev('held-replay', { n: q.length });
+      for (const h of q) {
+        if (session !== 'linked') break;
+        rxAt = h.t;
+        try { handle(h.m); } finally { rxAt = null; }
+      }
     }
     /* Graceful end: keep answering the local game with whatever leads it out
        (section 3.5), then disable the port once it is back outside. */
@@ -636,7 +664,7 @@
     function snapshot() {
       return {
         session, drainReason, frame, stage: v.stage, phase: v.phase, gen: v.gen, seq: v.seq,
-        peerStage: peer.stage, peerName: peerHello && peerHello.name, idle: idleNow,
+        peerStage: peer.stage, peerName: peerHello && peerHello.name, idle: idleNow, held: held.length,
         stats, log,
       };
     }

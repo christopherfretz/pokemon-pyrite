@@ -192,6 +192,11 @@ Also in §4.3:
 
 ## Follow-ups outside this change (for the main session)
 
+**Status (LK1 pre-deploy follow-up):** 1-3 are done in `server.py` (`--link-trusted-proxy`; no
+per-attempt `/link` log line; a 15 s total request-line + header budget, 1.5 x `handshake_s`, with
+tests in `HeaderDeadline` and `ServerFlags`). 4 landed in LK1e. 5 is step 3 of the deploy list in
+LK1-LINK.md, and the edits in the previous section are applied there.
+
 1. **`server.py`:** a `--link-trusted-proxy IP_OR_CIDR` flag (repeatable) that sets
    `link_relay.TRUSTED_PROXIES`, or passes `trusted_proxies=` to `Relay(...)`. The standalone
    `link_relay.py --trusted-proxy` already does this.

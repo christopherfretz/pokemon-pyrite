@@ -6,6 +6,15 @@ Operator decisions taken on 2026-10-15 (relay, pairing, dumb pipe, same ROM, Tra
 Colosseum only, headless testing, security review, save compatibility) are inputs here. This doc
 does not reopen them.
 
+## Reviews
+
+- **Relay security review (LK1d):** `docs/REVIEW-LK1D.md` in the private context repo (not linked
+  from here: it is not public). "Ship with fixes", no HIGH; findings F1-F11 and the deployment
+  preconditions.
+- **What changed because of it:** [`docs/LK1D-REVIEW-FIXES.md`](LK1D-REVIEW-FIXES.md) (per-finding
+  status, new caps, measured play against them). The `server.py` remainder (F3 flag, F6, F7) landed
+  in the LK1 pre-deploy follow-up; see *LK1d findings → Deploying* for the final deploy steps.
+
 ## Executive summary
 
 1. The cable cannot be stretched over the internet. Real link code assumes the partner answers each
@@ -574,24 +583,31 @@ table, with cap names, is in *LK1d findings*. Differences from the plan are mark
 |---|---|---|
 | frame payload | 4 KiB (control frame 256 B) | close 1009 |
 | messages per socket | 20/s sustained, burst 60 | close 4003 |
+| bytes per socket | 512 B/s sustained, burst 16 KiB | close 4003 |
+| bytes per room (both directions, lifetime) | 8 MiB | close 4006 both |
+| binary frames after pairing | refused (link.js sends only JSON text) | close 1003 |
+| pending codes per client IP | 2 | close 4029 |
+| failed joins, all clients | 60/min, then every join refused unlooked-up | close 4002 |
 | room creations per client IP | 6/min | close 4029 † (create happens after the upgrade, so it cannot be an HTTP 429) |
 | join attempts per client IP | 12/min | close 4029 † |
 | pending codes, all IPs † | 32 | close 4013 |
 | upgrades per client IP † | 30/min | HTTP 429 |
 | concurrent link sockets (global / per IP) | 64 / 4 | 503 / 429 |
-| handshake + first control frame | 10 s | before the upgrade: 10 s per-read socket timeout †; after it: close 4008 |
+| handshake + first control frame | 10 s | before the upgrade: 10 s per-read socket timeout and 15 s for the whole request line + headers †; after it: close 4008 |
 | per-room idle (no data frame from a side) | 90 s | close 4005 both |
 | room hard lifetime | 3 h | close 4006 both |
 | peer write blocked (slow reader) | 5 s | close 4004 both |
 | server WebSocket ping (keeps the tunnel warm, detects dead TCP) | every 30 s, no pong in 60 s | close 4007 (peer 4000) |
 
-- **Client IP.** `CF-Connecting-IP` is trusted only when the TCP peer is `127.0.0.1`, which is
-  always the case behind the tunnel. Otherwise the socket address is used.
+- **Client IP.** `CF-Connecting-IP` is trusted only from a trusted proxy (`TRUSTED_PROXIES`,
+  default any loopback address; `server.py --link-trusted-proxy IP_OR_CIDR` sets it), which is the
+  case behind a same-host tunnel. Otherwise the socket address is used. IPv6 clients are keyed by
+  their /56. The relay logs once which key source it sees.
 - **Threads.** † Each link socket holds exactly one thread, so the 64-socket cap *is* the link
   thread bound; there is no separate semaphore. Plus one housekeeping thread.
-- **Logging.** One line per room event: created, paired or closed, with the close code, a duration
-  and **no code, payload or IP**. The existing per-request `log_message` (`web/server.py:134-135`)
-  prints only `GET /link`.
+- **Logging.** One line per room event (created, paired, closed with code and duration). Refusals
+  are summarised once a minute per reason with a count. **No code, payload or IP.** `server.py`
+  writes no access-log line for `/link`.
 
 ### 4.4 Cloudflare and what manager-helper must change
 
@@ -600,7 +616,8 @@ configuration. The zone's *Network → WebSockets* toggle must be on; it is on b
 Cloudflare closes a WebSocket after ~100 s with no traffic. The 15 s client ping and 30 s server
 ping keep connections well inside that.
 
-**Asks for manager-helper (deploy owner):**
+**Asks for manager-helper (deploy owner):** (the final, verbatim deploy steps are the numbered
+list in *LK1d findings → Deploying*; this list is the original plan)
 
 1. Run `server.py` with `--link`. The production origin `https://waffle-time.christopherfretz.com`
    is built in, so no other flag is needed; the defaults above apply. (`--link-origin` adds an
@@ -623,13 +640,13 @@ ping keep connections well inside that.
 
 | threat | mitigation |
 |---|---|
-| code guessing to hijack a pending room | 2^30 codes, 120 s TTL, 12 joins/min/IP. With 10 pending rooms an attacker with 100 IPs has ~4×10⁻⁵ odds per 2 minutes. The creator also sees the joiner's trainer name (from `hello`) and must tap **Accept** before the game links |
-| connection, room or message floods | per-IP and global caps, per-socket rate limits; the socket cap bounds link threads |
-| slowloris on the upgrade | 10 s handshake deadline; `http.server` header limits |
-| oversize frames and memory | 4 KiB cap checked *before* reading the payload; no reassembly; no write queue at all (a forward that cannot be written in 5 s ends the room) |
+| code guessing to hijack a pending room | 2^30 codes, 120 s TTL, 12 joins/min/IP. With 10 pending rooms an attacker with 100 IPs has ~4×10⁻⁵ odds per 2 minutes. The creator also sees the joiner's trainer name (from `hello`) and must tap **Accept** before the game links; relay-wide, at most 60 failed joins per minute (then every join is refused), so many IPs don't multiply the odds |
+| connection, room or message floods | per-IP and global caps, per-socket frame **and byte** rate limits, a per-room byte cap, text-only forwarding; a full rate-window table evicts the oldest key instead of refusing; the socket cap bounds link threads |
+| slowloris on the upgrade | 10 s per read and 15 s in total for the request line + headers (`server.py`); 10 s from upgrade to control frame; `http.server` header limits |
+| oversize frames and memory | 4 KiB cap checked *before* reading the payload; no reassembly; no user-space write queue (the kernel buffer and cloudflared are the only queue, bounded by the byte rate; a forward that cannot be written in 5 s ends the room) |
 | cross-site use of the relay | `Origin` check (no cookies or credentials exist, so this is about abuse, not CSRF) |
 | privacy | the payload is never parsed after pairing and never logged; codes never logged; no persistence |
-| spoofed client IP | `CF-Connecting-IP` honoured only from 127.0.0.1 |
+| spoofed client IP | `CF-Connecting-IP` honoured only from `TRUSTED_PROXIES` (default loopback); the relay logs which key source it sees, and logs once if it ignores the header from an untrusted peer |
 | relay bug takes down the static site | flag-gated module, own socket cap, every exception caught per connection; option C exists |
 
 **Against a player, from a hostile or buggy peer:**
@@ -1631,7 +1648,8 @@ serves exactly the bytes it served before and `/link` is a 404.
 
 | suite | result | wall time |
 |---|---|---|
-| `test_link_relay.py` (unittest) | PASS 38/38 | 4.4 s |
+| `test_link_relay.py` (unittest) | PASS 66/66 (38 at LK1d, 59 after the review fixes, 66 after the pre-deploy follow-up) | ~15 s |
+| review fixes (REVIEW-LK1D) | see [`LK1D-REVIEW-FIXES.md`](LK1D-REVIEW-FIXES.md) | — |
 | `link_e2e.mjs --relay` (real relay, fault proxy) | PASS 13/13 scenarios | 76 s |
 | `link_e2e.mjs` (LK1c fake relay, regression) | PASS 13/13 scenarios | 75 s |
 | `link_e2e.mjs --relay --realtime` (default caps, paced to wall time) | PASS 3/3 (trade-200, battle-200, cut-menu) | 426 s |
@@ -1643,9 +1661,9 @@ serves exactly the bytes it served before and `/link` is a 404.
 |---|---|---|
 | `web/link_relay.py` | the relay (759 lines, about half of them comments) | design and threads `:1-31`; **`CAPS` `:54-102`** (each cap with its threat); `CLOSE` `:106-125`; origin and path `:127-128`; frame encoding `:143-173`; `_Conn` `:188`; `Relay` `:211`; admission `handle` `:269`, `client_ip` `:297`, `_upgrade` `:318`, `_hit` (rate windows) `:368`; reading `_read_frame` `:388`, `_serve` `:419`; control plane `normalize_code` `:472`, `_control` `:478`, `_create` `:490`, `_join` `:514`, `_forward` `:545`; writing `_write`/`_write_locked` `:555-589`, `_kill` `:591`; ending `_end` `:600`, `_room_line` `:631`, `_drop` `:642`; housekeeping `tick` `:664`; standalone `_Handler`/`parse_caps`/`main` `:708-759` |
 | `web/link_words.txt` | the 1,024 code words (sorted, 4-6 letters, lower case); `load_words` refuses a file that is not exactly 1,024 distinct `[a-z]` words | `link_relay.py:134` |
-| `web/server.py` | `--link`, `--link-origin`, `--link-cap` | `link` class attribute `:103`; header-timeout lift for downloads `:105-114`; `/link` routing `:141-145`; `log_link` `:150`; flags `:162-177`; `Relay.stop()` on exit `:189` |
+| `web/server.py` | `--link`, `--link-origin`, `--link-cap` (and, since the review fixes, `--link-trusted-proxy`) | header budget `HEADER_BUDGET_X` `:68` and `_HeaderDeadline` `:112`; `link` class attribute `:146`; budget armed in `setup`/`handle_one_request` `:150-158`; header-timeout lift for downloads `:160-169`; `/link` routing `:196-201` (the per-attempt `log_link` line is gone, review F7); flags `:217-224`; `Relay.stop()` on exit `:254` |
 | `web/link_transport.js` | browser side of the relay: `connect(url)` → `create(onCode)` / `join(code)`, then the LK1c transport (`send`, `close`, `onmessage`, `onclose`) plus `pause()`/`resume()`; no reconnect | `connect` `:78`; `send` (refuses > 4,096 UTF-8 bytes) `:102`; `ws.onmessage` (control plane before pairing, buffered data after) `:132`; `ws.onclose` (flushes buffered messages first) `:158`; close-code texts `REASONS` `:41` |
-| `web/test/test_link_relay.py` | Python suite, 38 tests in 13 classes | `Site` (a real `server.Handler` on an ephemeral port, fake clock, `autotick=False`) `:41`; raw `WS` client `:88`; classes from `:252` |
+| `web/test/test_link_relay.py` | Python suite, 66 tests in 23 classes (38 in 13 at LK1d) | `Site` (a real `server.Handler` on an ephemeral port, fake clock, `autotick=False`) `:41`; raw `WS` client `:88`; classes from `:252` |
 | `web/test/link_net.mjs` | `--relay` plumbing: spawns `server.py --link`, the fault proxy, the wrapper transports and `quiesce()` | `startRelayServer` `:32`; `Net` `:55`; frame gate `fromRelay` `:97`; `pairUp` `:151`; hooks and counting `transport` `:173`; cut `close` `:193`; `busy`/`quiesce` `:204-243` |
 | `web/test/link_e2e.mjs` | gains `--relay`, `--realtime`, `battle-200`, an async `settle` | `settle` `:144`; relay setup in `setup()`; log check after the run `:600-610` |
 | `scripts/link_relay_smoke.py` (context repo) | deploy smoke test, stdlib, ~1 s, 10 s budget | — |
@@ -1660,6 +1678,10 @@ All in `CAPS` (`web/link_relay.py:54-102`); every one can be overridden with
 | `frame_bytes` | 4096 | memory: huge frames | 1009, checked on the header before any payload is read |
 | `control_bytes` | 256 | the create/join frame is tiny | 1009 |
 | `frames_per_s` / `frame_burst` | 20 / 60 | message floods (token bucket, every client frame incl. pings and control) | 4003, peer 4000 |
+| `bytes_per_s` / `byte_burst` | 512 B/s / 16384 B | bandwidth: the frame bucket alone allowed 20 × 4 KiB/s per socket, ~42 Mbit/s each way at the socket cap, an anonymous pipe through the host's uplink (F1). Payload bytes of every client frame, control and pings included | 4003, peer 4000 |
+| `room_bytes` | 8 MiB (8388608) | a room used as a bulk pipe for its 3 h lifetime (F1); payload bytes forwarded, both directions | 4006 both |
+| `waiting_per_ip` | 2 | 8 keys × 4 sockets holding all 32 pending codes (F2) | 4029 |
+| `join_failures_min` | 60 | code guessing from many addresses (F5); failed joins relay-wide per 60 s | 4002 (neutral, no lookup) |
 | `sockets` | 64 | thread and FD exhaustion (one thread per link socket) | HTTP 503 |
 | `sockets_per_ip` | 4 | one IP holding many sockets | HTTP 429 |
 | `upgrades_per_ip_min` | 30 | connect/upgrade/drop loops | HTTP 429 |
@@ -1667,19 +1689,19 @@ All in `CAPS` (`web/link_relay.py:54-102`); every one can be overridden with
 | `waiting` | 32 | pending codes in memory (also bounds the guessing odds) | 4013 |
 | `joins_per_ip_min` | 12 | code guessing; counted whether or not the code exists | 4029 |
 | `code_ttl` | 120 s | stale codes | 4001 to the creator |
-| `handshake_s` | 10 s | sockets that never send create/join; also the per-read timeout on the HTTP headers in `--link` mode (slowloris) | 4008 / socket timeout |
+| `handshake_s` | 10 s | sockets that never send create/join; also the per-read timeout on the HTTP headers in `--link` mode, and 1.5× it (15 s) the total budget for one request's line + headers (`server.py` `HEADER_BUDGET_X`, review F6) | 4008 / socket timeout |
 | `idle_s` | 90 s | abandoned rooms: no data frame *from a side* (pings don't count) | 4005 both |
 | `lifetime_s` | 10800 s | rooms held forever | 4006 both |
 | `write_s` | 5 s | a slow or stalled reader: a forward that can't be written in time | 4004 both |
 | `ping_s` / `pong_s` | 30 s / 60 s | dead TCP, idle tunnels | 4007, peer 4000 |
 | `close_wait_s` | 2 s | a client that never answers our close | socket shut down |
 | `header_bytes` | 8192 | oversized upgrade requests (`http.server` itself allows 100 × 64 KiB) | HTTP 431 |
-| `tracked_ips` | 10000 | memory held by per-IP rate windows | HTTP 503 for new IPs |
+| `tracked_ips` | 10000 | memory held by per-IP rate windows | least-recently-used window evicted (no refusal) |
 
 Close codes (`CLOSE`, `:106-125`): 1000 normal, 1001 relay shutting down, 1002 protocol error,
-1003 fragmented frame, 1007 bad UTF-8, 1008 bad control message, 1009 too big, 4000 peer left,
+1003 fragmented frame, or binary after pairing, 1007 bad UTF-8, 1008 bad control message, 1009 too big, 4000 peer left,
 4001 code expired, **4002 code refused** (wrong, expired, used and malformed are deliberately one
-answer), 4003 rate, 4004 peer too slow, 4005 idle, 4006 lifetime, 4007 no pong, 4008 no control
+answer), 4003 rate (frames or bytes), 4004 peer too slow, 4005 idle, 4006 lifetime or room data cap, 4007 no pong, 4008 no control
 frame, 4013 relay busy, 4029 too many attempts. `link_transport.js` maps each to a sentence.
 
 ### Control plane (as built)
@@ -1690,7 +1712,8 @@ frame, 4013 relay busy, 4029 too many attempts. `link_transport.js` maps each to
   `{"op":"paired","role":"a"}` to the creator. The joiner's write lock is held from pairing until
   its `paired` is written, so no forwarded frame can overtake it.
 - Anything else as the first frame (other keys, binary, bad JSON) → 1008. A data frame while
-  waiting → 1008. After pairing nothing is parsed: opcode and payload are copied as they are.
+  waiting → 1008. After pairing nothing is parsed: text frames are copied as they are; a binary frame ends the
+  room (1003, peer 4000).
 - Code words come from `secrets.choice`; the code is deleted from memory at pairing, at expiry and
   when the creator leaves.
 
@@ -1700,10 +1723,10 @@ frame, 4013 relay busy, 4029 too many attempts. `link_transport.js` maps each to
 |---|---|
 | handshake | exactly `GET /link HTTP/1.1`; `Host` present; exactly one `Sec-WebSocket-Key` that base64-decodes to 16 bytes; `Upgrade` contains token `websocket`, `Connection` contains token `upgrade` (else 400); exactly one `Sec-WebSocket-Version: 13` (else 426 with `Sec-WebSocket-Version: 13`); exactly one `Origin`, matched exactly (case-insensitive, trailing `/` ignored) against the allow-list (else 403). Reply `101` with `Sec-WebSocket-Accept` = base64(sha1(key + GUID)); checked against the RFC's own example |
 | extensions, subprotocols | none: `Sec-WebSocket-Extensions` / `-Protocol` are never echoed, so `permessage-deflate` is declined |
-| client frames | must be masked (else 1002); RSV1-3 must be 0 (1002); opcodes 0,1,2,8,9,10 only (1002); 16/64-bit lengths must be minimal and the 64-bit MSB clear (1002); control frames FIN=1 and ≤ 125 bytes (1002); FIN=0 or a continuation frame → 1003 (no fragmentation); text payloads must be valid UTF-8 (1007); binary frames are forwarded as binary |
+| client frames | must be masked (else 1002); RSV1-3 must be 0 (1002); opcodes 0,1,2,8,9,10 only (1002); 16/64-bit lengths must be minimal and the 64-bit MSB clear (1002); control frames FIN=1 and ≤ 125 bytes (1002); FIN=0 or a continuation frame → 1003 (no fragmentation); text payloads must be valid UTF-8 (1007); binary frames are refused after pairing (1003) |
 | server frames | unmasked, FIN=1, minimal length; never fragmented |
 | ping/pong | client ping → pong with the same payload; server pings every 30 s; pongs refresh liveness |
-| close | client close → close 1000 back, peer gets 4000, then `SHUT_WR` and wait ≤ 2 s for EOF; relay-initiated close sends its code and waits ≤ 2 s for the client's close frame, discarding anything else; after a protocol error the rest of the stream is discarded until EOF |
+| close | client close → close 1000 back, peer gets 4000, then `SHUT_WR` and wait ≤ 2 s for EOF; relay-initiated close sends its code and waits ≤ 2 s for the client's close frame, discarding anything else; after a protocol error the rest of the stream is discarded until EOF; a close payload must be empty or a valid code (1000-1003, 1007-1014, 3000-4999) plus UTF-8, else the reply is 1002 |
 | not implemented | fragmentation, extensions, subprotocols, close-reason text, `wss://` (TLS is the tunnel's job) |
 
 ### End-to-end through the real relay (`link_e2e.mjs --relay`)
@@ -1756,7 +1779,7 @@ $NODE web/test/link_e2e.mjs --relay                     # all 13 through the rea
 $NODE web/test/link_e2e.mjs --relay --realtime --only trade-200   # default caps, ~3.5 min
 ```
 
-### Python suite (`test_link_relay.py`, 38 tests, 4.4 s)
+### Python suite (`test_link_relay.py`, 66 tests, ~15 s)
 
 - **Handshake** (4): the RFC's accept-key example; a good upgrade; 15 refusals (400 for missing or
   wrong Upgrade/Connection/key, a query string, HTTP/1.0; 426 + `Sec-WebSocket-Version: 13`; 403
@@ -1765,7 +1788,7 @@ $NODE web/test/link_e2e.mjs --relay --realtime --only trade-200   # default caps
 - **StaticUnchanged** (2): every static file, GET and HEAD, byte-identical with and without
   `--link`, `/link` a 404 without it; a slow reader of the ROM still gets every byte with
   `--link`'s header timeout (this caught a real bug: Python applies a socket timeout to a whole
-  `sendall`, so `server.py` lifts it while writing a response, `:105-114`).
+  `sendall`, so `server.py` lifts it while writing a response, `:160-169`).
 - **Framing** (7): unmasked, RSV, reserved opcode, non-minimal lengths (1002); fragmentation and
   continuation (1003); 4,096 OK / 4,097 refused before the payload, 64-bit lengths (1009); a
   257-byte control frame (1009); bad UTF-8 (1007).
@@ -1779,7 +1802,28 @@ $NODE web/test/link_e2e.mjs --relay --realtime --only trade-200   # default caps
 - **Lifetime** (1): 3 h → 4006 both. **SlowReader** (1): a reader that stops reading ends the room
   within `write_s` and does not block the sender's thread.
 - **Leaks** (1): 1,000 rooms in batches of 25; threads and FDs back to baseline (0.9 s).
-- **Logs** (1): no code, payload or IP in any log line; every room event present.
+- **Logs** (1): no code, payload or IP in any log line; every room event present; the rate-key
+  source line; no `GET /link` access-log line.
+- **Bandwidth** (3): byte bucket trips while the frame bucket does not; pings count against bytes;
+  binary after pairing → 1003. **RoomBytes** (1): the room byte cap → 4006 both.
+- **Admission** (6): a full rate-window table evicts instead of 503; a 10k-key flood locks nobody
+  out; `tick` prunes windows; IPv6 /56 is one key; `waiting_per_ip` → 4029; the relay-wide failed-join
+  ceiling.
+- **TrustedProxy** (2): an untrusted loopback collapses to the TCP peer and logs once; the module
+  setting and the default.
+- **Races** (2): create or join after `_end` does not revive the socket or consume the code.
+- **CloseFrames** (1): close payload validation (1002). **Liveness** (2): pings do not extend the code
+  TTL; pongs do not extend idle. **LogSummary** (2): refusals aggregated per minute; the exception path
+  logs the type only.
+- **ErrorPaths** (2): 200 sockets over 10 error paths leak nothing; 150 sockets of seeded random frames
+  never crash the server.
+- **HeaderDeadline** (4, review F6): a header trickle (1 byte / 0.3 s, under the per-read timeout) is cut
+  at the 1.5× `handshake_s` total budget; the budget is per request on a keep-alive connection; an
+  upgraded socket is never cut by it; without `--link` there is neither timeout nor budget.
+- **ServerFlags** (3, `server.py` as a real process): `--link-trusted-proxy` (untrusted loopback →
+  `IGNORED`, `127.0.0.1` and the default → `CF-Connecting-IP from a trusted proxy`, no IP in stderr);
+  the budget is wired from `--link-cap handshake_s`; the flag without `--link`, or with a bad address,
+  exits 2.
 - **Words** (2): the list loads (1,024 distinct words); `normalize_code` edge cases.
 
 ```sh
@@ -1791,27 +1835,54 @@ files.
 
 ### Deploying (for manager-helper)
 
-1. **Flags.** `python3 web/server.py --rom <rom> --link`. The production origin is built in
-   (`DEFAULT_ORIGINS`); add `--link-origin http://127.0.0.1:<port>` only for local testing.
-   `--link-cap NAME=VALUE` overrides any cap in the table above; nothing needs overriding.
-2. **Tunnel.** The existing ingress for `waffle-time.christopherfretz.com` → the local port works
-   unchanged: cloudflared proxies WebSocket upgrades on the same rule. Check there is no path
-   filter excluding `/link` and that the zone's *Network → WebSockets* toggle is on (default).
-   The relay trusts `CF-Connecting-IP` only when the TCP peer is loopback, i.e. cloudflared on the
-   same host. If cloudflared ever runs on another machine, every client shares one rate-limit key
-   (cloudflared's address): safe, but the per-IP caps then apply to everyone together.
-3. **Thread budget.** Link: at most 64 socket threads + 1 housekeeper. Static: one thread per
-   open HTTP connection, as before. Allow ~150 threads. With `--link`, idle keep-alive connections
-   are now dropped after 10 s without a request (the header timeout), which only lowers the
-   static thread count.
-4. **Smoke test** after every deploy, from the context repo:
+Final instructions (LK1 pre-deploy follow-up, 2026-10-16). Follow them in order.
+
+1. **Flags.** Run
+   `python3 web/server.py --rom <rom> --link --link-origin https://waffle-time.christopherfretz.com`.
+   The production origin is also built in (`DEFAULT_ORIGINS`), so `--link-origin` here only makes it
+   explicit. Add `--link-trusted-proxy IP_OR_CIDR` (repeatable) **only** if cloudflared reaches
+   `server.py` from an address that is not loopback (for example a Docker bridge such as
+   `172.17.0.1`); with cloudflared on the same host or network namespace, leave it out (the default
+   trusts any loopback address). Do not pass `--link-cap`: no cap needs overriding.
+2. **Bind.** Keep the default `--host 127.0.0.1` (no `0.0.0.0`, no Docker `-p` on a public
+   interface). **Nothing else on the host may reach the port** (8080 by default): any local
+   process that can connect to it can set `CF-Connecting-IP` and pick its own rate key. Confirm this
+   with the host owner.
+3. **Tunnel.** The existing ingress rule for `waffle-time.christopherfretz.com` → the local port
+   works unchanged; cloudflared proxies WebSocket upgrades on the same rule. Check that:
+   - the zone's *Network → WebSockets* toggle is on (the default);
+   - no path filter or rule excludes `/link`, and `noTLSVerify`/`http2Origin` settings don't disable
+     upgrades;
+   - optionally, a Cloudflare rate-limiting rule on `/link` (per IP, e.g. 30 requests / 10 s).
+   **Keep-alive (F11):** with `--link`, `server.py` closes an idle keep-alive connection after 10 s
+   (the per-read header timeout), and cloudflared's default `keepAliveTimeout` is 90 s. Go retries
+   replayable GETs, so this should be benign; if static requests show sporadic 502s after the deploy,
+   set the tunnel's `originRequest.keepAliveTimeout` below 10 s.
+4. **Thread budget.** Allow ~150 threads: at most 64 link-socket threads + 1 housekeeper, plus one
+   thread per open HTTP connection for the static site as before. With `--link`, a connection that has
+   not delivered its request line and headers within 15 s (10 s per read) is closed, so a slow or
+   idle client holds a thread for at most 15 s.
+5. **Logs.** Rotate or size-cap stderr. With `--link` it gains no per-request line for `/link`; only:
+   - per room event: `room created (waiting N)`, `room paired`, `room closed CODE after Ns`;
+   - once per key source: `rate key: …; trusted proxies: …`;
+   - once a minute per reason, only when non-zero: `REASON xN in Ss`, where REASON is one of
+     `join refused`, `join refused (relay-wide failure ceiling)`, `socket closed CODE (no room)`,
+     `upgrade refused STATUS why`, `rate windows evicted (tracked_ips full)`.
+
+   No codes, payloads or IPs.
+6. **Smoke test** after every deploy, from the context repo:
    `python3 scripts/link_relay_smoke.py wss://waffle-time.christopherfretz.com/link`
-   — ~1 s, 9 checks, exit 0 = pass. It uses 2 of the 6 creates and 3 of the 12 joins allowed per
+   (~1 s, stdlib only, exit 0 = pass). It uses 2 of the 6 creates and 3 of the 12 joins allowed per
    IP per minute, so don't run it more than twice a minute from one address.
-5. **Logs.** stderr gains `- "GET /link"` per upgrade attempt and one line per room event
-   (`room created (waiting N)`, `room paired`, `join refused`, `room closed CODE after Ns`,
-   `socket closed CODE (no room)`, `upgrade refused STATUS why`). No codes, payloads or IPs.
-6. **Rollback.** Restart without `--link`: `/link` is a 404 again and nothing else changes.
+7. **Rate-key check (F3 deploy precondition).** Right after the smoke test (its connections are the
+   first real ones), stderr **must** show
+   `link: rate key: CF-Connecting-IP from a trusted proxy (per-client caps work)`.
+   If it shows `… CF-Connecting-IP from an untrusted peer IGNORED …` or `rate key: TCP peer …`, the
+   deploy is misconfigured: every player shares one set of caps (two rooms in total). Find the
+   address cloudflared connects from, restart with `--link-trusted-proxy <that address>`, and repeat
+   steps 6-7.
+8. **Rollback.** Restart without `--link` (and its `--link-*` flags): `/link` is a 404 again and the
+   static site behaves exactly as before.
 
 ### Review guide
 
@@ -1827,13 +1898,13 @@ socket down, which wakes the reader with EOF).
 
 | threat (4.5) | code | test |
 |---|---|---|
-| code guessing | 2^30 codes from `secrets.choice` (`_create` `:490`); 120 s TTL (`tick`); joins counted per IP *before* the lookup, hit or miss (`_join` `:514`); one neutral 4002 for wrong/expired/used/malformed; code deleted at pairing; ≤ 32 live codes (`waiting`). The creator still sees the joiner's name and must Accept (LK1e) | Rooms, Caps |
-| connection, room, message floods | `_upgrade` `:318` (per-IP upgrade rate, per-IP and global sockets, tracked-IP cap); `_create` (creates/min, waiting cap); `_take_token` `:460` (every frame) | Caps, Deadlines |
-| slowloris on the upgrade | `handshake_s` as the per-read socket timeout on the HTTP headers (`server.py:175`); 4008 if no control frame 10 s after the upgrade (`tick`) | Deadlines (post-upgrade) |
+| code guessing | 2^30 codes from `secrets.choice` (`_create` `:490`); 120 s TTL (`tick`); joins counted per IP *before* the lookup, hit or miss (`_join` `:514`); one neutral 4002 for wrong/expired/used/malformed; code deleted at pairing; ≤ 32 live codes (`waiting`); `join_failures_min` ceiling (`_join`). The creator still sees the joiner's name and must Accept (LK1e) | Rooms, Caps, Admission |
+| connection, room, message floods | `_upgrade` `:318` (per-IP upgrade rate, per-IP and global sockets, tracked-IP cap); `_create` (creates/min, waiting cap); `_take_token` (frames and bytes), `_forward` (room byte cap), `_hit`/`_window` (LRU eviction) | Caps, Deadlines, Bandwidth, RoomBytes, Admission |
+| slowloris on the upgrade | `handshake_s` as the per-read socket timeout on the HTTP headers, plus a total budget of 1.5× it per request (`server.py` `_HeaderDeadline`, `Handler.handle_one_request`, `main`); 4008 if no control frame 10 s after the upgrade (`tick`) | HeaderDeadline, ServerFlags, Deadlines (post-upgrade) |
 | oversize frames, memory | `_read_frame` `:388`: length checked against the state's limit before the mask and payload are read; 256 B before pairing; no reassembly (fragments refused); no queue (`_write_locked` writes or fails within `write_s`); rate windows bounded by `tracked_ips` | Framing, SlowReader |
 | cross-site use | exact `Origin` match against the allow-list (`_upgrade`) | Handshake |
-| privacy | after pairing `_forward` copies opcode + payload without parsing; log lines are fixed strings with a count, a close code or a duration (`_create`, `_join`, `_room_line`, `_refuse`); `server.py` logs `/link` as a fixed string with no address or query (`log_link`); nothing written to disk | Logs; e2e log check |
-| spoofed client IP | `client_ip` `:297`: `CF-Connecting-IP` only from a loopback peer, exactly one header, must parse as an IP; IPv6 keyed by /64 | Rooms (`test_client_ip_key`) |
+| privacy | after pairing `_forward` copies opcode + payload without parsing; log lines are fixed strings with a count, a close code or a duration (`_create`, `_join`, `_room_line`, `_refuse`); `server.py` writes no access-log line for `/link`; nothing written to disk | Logs; e2e log check |
+| spoofed client IP | `client_ip` `:297`: `CF-Connecting-IP` only from a trusted peer, exactly one header, must parse as an IP; IPv6 keyed by /56 (`IPV6_PREFIX`); trusted peers from `TRUSTED_PROXIES` (`server.py --link-trusted-proxy`); key-source log line | Rooms, TrustedProxy, ServerFlags |
 | relay bug takes down the site | lazy import behind `--link`; `handle` catches every exception per socket and always runs `_drop` (bookkeeping, peer close, socket shutdown); the housekeeper catches and logs; socket cap bounds threads | Leaks (1,000 rooms, threads and FDs back to baseline) |
 | holding the player hostage | idle 90 s, lifetime 3 h, no-pong 60 s, slow reader 5 s, close wait 2 s — all from the housekeeper | Deadlines, PingPong, Lifetime, SlowReader |
 
@@ -1845,19 +1916,21 @@ socket down, which wakes the reader with EOF).
   client validator's job (section 5). The ROM-sha check is in `hello`, client side.
 - No persistence, metrics, admin endpoint or reconnect/resume; a dropped socket ends the room.
 - No TLS (the tunnel terminates it) and no auth (nothing to protect but capacity).
-- No write queue: a forward either completes within 5 s or ends the room.
+- No user-space write queue: a forward either completes within 5 s or ends the room.
 - Rate limits for create/join are in-band closes (4029), not HTTP 429, because both happen after
   the upgrade.
 
 **Known limits:**
 
-- **Pre-upgrade phase.** The header timeout is per read, so a client trickling one header byte
-  every 9 s holds a thread until `http.server`'s own limits (100 headers × 64 KiB) run out, and
-  those connections are not counted by the socket caps (they are counted only once upgraded).
-  Behind Cloudflare this cannot happen (the edge buffers the whole request before forwarding);
-  exposed directly it is the same exposure the static site already has.
+- **Pre-upgrade phase.** Since the pre-deploy follow-up (review F6) a request's line and headers
+  must arrive within 15 s in total (10 s per read), so a header trickle holds a thread for at most
+  15 s. Pre-upgrade connections are still not counted by the socket caps (only once upgraded), so
+  a direct flood of them is bounded by time, not by count. Behind Cloudflare this cannot happen (the
+  edge buffers the whole request before forwarding).
 - **Shared rate keys.** All clients behind one NAT/CGNAT share the per-IP caps (4 sockets = two
-  rooms, 6 creates/min); IPv6 /64s likewise.
+  rooms, 6 creates/min); IPv6 /56s likewise (one home's delegation).
+- **Global failed-join ceiling.** While 60 joins/min are failing relay-wide, correct codes are
+  refused too (4002); a guessing flood therefore denies joins for its duration.
 - **`_end` may wait up to 0.5 s** for a busy `wlock` before shutting the socket down instead;
   the housekeeper can therefore take longer than its 0.5 s tick when many rooms end at once.
 - **Server log.** `server.py`'s existing access log still prints the TCP peer for static requests
@@ -1877,7 +1950,8 @@ the double-free fix, the packaging, and a two-browser end-to-end check
 
 - **No ROM change.** No WRAM, SRAM, flag or map change. The core is layout-identical (same
   binjgb build as LK1a), so old resume states load.
-- **Not touched:** `link.js`, `link_validate.js`, `link_transport.js` and `link_relay.py`.
+- **Not touched:** `link.js`, `link_validate.js`, `link_transport.js` and `link_relay.py`. (The
+  pre-deploy follow-up later moved the held-message fix into `link.js`; see *Held messages*.)
 
 | check | result | wall time |
 |---|---|---|
@@ -1981,12 +2055,19 @@ An abnormal end makes the Restore button loud (accent colour).
   name must be `$50`-terminated and every byte mapped.
 - **Held messages (fix).** link.js links up on the local Accept alone. A peer that accepted
   first and walks to the desk sends `desk` while our Accept is still showing. link.js, in session
-  `accepting`, would take that as `internal: desk before hello` and refuse the link.
-  - The page now holds the peer's game messages while the session is `accepting`. Those are
-    anything but hello, bye, ping, pong, pause and resume, capped at 64.
-  - It replays them in order once link.js reports `linked`, and drops them on Decline or close.
-  - E2E case "skewed accept" covers it. It was found by reading `link.js:225-250`; it is worth a
-    one-line fix in link.js itself later (queue rather than fail in `accepting`).
+  `accepting`, used to take that as `internal: desk before hello` and refuse the link.
+  - LK1e first worked around it in the page (`app.js` held the messages). The pre-deploy follow-up
+    moved the fix into `link.js` and removed the page workaround: in session `accepting`, `handle`
+    holds every peer message except hello, bye, ping, pong, pause and resume (those are handled
+    as before).
+  - The queue is bounded at `MAX_HELD` 64. A `desk` replaces a `desk` held right before it (only the
+    newest budget matters). When the queue is full, the oldest message is dropped, and then any up
+    to the next `desk`, so a replay always starts at a visit. Each drop is a `held-dropped` log event.
+  - `linkUp` replays the queue in order, each message with its **arrival** time (so a stale `desk`
+    budget is judged by when it came, not when it is replayed), and logs `held-replay`. Decline or
+    close drops it. A hostile message that is out of order still fails, at replay.
+  - Covered by `link_unit.mjs` ("held: …", 9 checks) and the browser E2E case "skewed accept",
+    which reads link.js's own `held`/`held-replay` log.
 
 ### Disabled while linked, and why
 
@@ -2061,7 +2142,7 @@ runs at real speed.
 | trade: oracle | both players run the oracle trade (2 trades, cancel, back on 2F, SAVE). **Species and `sha256(wPokemonData..End)` equal `test/oracle/trade.json` on both sides** (A `881c123e…`, B `90fa684e…`); A's panel shows trainer BRAVO |
 | disconnect | A "You ended the link.", B "Your friend ended the link."; lock released and resume writer back on both; the battery changed (the in-game save happened) |
 | restore | confirm dialog shown; "Restored the save from …"; A's WRAM party = pre-trade (`96 19 97 13 10 15`); the stored battery = the pre-link battery; record deleted; B keeps its traded party |
-| skewed Accept | A accepts and walks to the desk while B's Accept is up; B holds 2 `desk` messages, links, replays them, no error; clean end on both |
+| skewed Accept | A accepts and walks to the desk while B's Accept is up; B's link.js holds A's `desk` messages, links, replays them, no error; clean end on both |
 | page errors | no `pageerror` or `console.error` on either page |
 
 Both runs had zero page errors.
@@ -2093,7 +2174,7 @@ owns the buffer.
 | record kept until the next Accept or a Restore | — |
 | lock also covers Reset and `.sav` import | same failure mode as a slot load |
 | the lock starts at the local Accept, not at Connect | before Accept nothing reaches the game |
-| the page holds peer game messages while Accept is up | see Wiring |
+| link.js holds peer game messages while Accept is up (the page did, until the pre-deploy follow-up) | see Wiring |
 | peer display name | the hello's `name` is the peer's own `wPlayerName`. The panel shows it, and adds `wOTPlayerName` in parentheses only if it differs |
 | the stage hint while linked | it says "Go upstairs in any Pokémon Center…" even when the player already stands at the desk. Cosmetic |
 | the save editor | it is only guarded by its menu link. An `edit.html` opened in another tab mid-link is not blocked (out of scope; noted for LK1f) |
