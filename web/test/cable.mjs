@@ -127,7 +127,7 @@ export class Cable {
 }
 
 // -------------------------------------------------------------- recording ---
-const IE_SERIAL = 0x08;
+export const IE_SERIAL = 0x08;
 /* Annotate every wire entry with what the master was doing:
    [t, masterIdx, masterOut, slaveOut, IE, linked, frame] */
 export function record(cable) {
@@ -140,11 +140,11 @@ export function record(cable) {
 /* The receiver side of Serial_ExchangeBytes / ExchangeBytes over a byte
    stream: skip until a $FD (or exactly one byte for ExchangeBytes), then take
    `len` bytes.  Returns [block, nextIndex]. */
-function recvBlock(stream, i, len, preamble = true) {
+export function recvBlock(stream, i, len, preamble = true) {
   if (preamble) { while (i < stream.length && stream[i] !== 0xfd) i++; i++; } else i++;
   return [stream.slice(i, i + len), i + len];
 }
-const hex = (a) => Buffer.from(a).toString('hex');
+export const hex = (a) => Buffer.from(a).toString('hex');
 
 /* Split the wire into the stages of LK1-LINK.md section 1.3.  Bulk bursts
    (master IE == IE_SERIAL) are cut into rows 10-14 by replaying each side's
@@ -211,9 +211,9 @@ export function nybbles(wire) {
 }
 
 // ---------------------------------------------------------------- drivers ---
-const TILE_ARROW = 0xed;                          // '▶'
+export const TILE_ARROW = 0xed;                          // '▶'
 /* Receptionist -> link -> save -> warp into the room -> seat -> console. */
-function* enterRoom(c, delay, room) {
+export function* enterRoom(c, delay, room) {
   yield* wait(delay);
   if (room === 'battle') yield* script(c, 'MOVE:DOWN*1 MOVE:RIGHT*4 MOVE:UP*1 FACE:UP');
   yield* until(() => c.rd1('wPlayerWalking') === 0xff, 60, 'standing');
@@ -236,7 +236,7 @@ function* enterRoom(c, delay, room) {
   yield* tap('A');
 }
 /* Trade screen: pick party slot `slot` (1-based), TRADE, confirm. */
-function* tradeOne(c, slot, otName) {
+export function* tradeOne(c, slot, otName) {
   yield* untilText(c, 'CANCEL', 4000);
   yield* wait(30);
   yield* menuTo(c, slot);
@@ -251,7 +251,7 @@ function* tradeOne(c, slot, otName) {
   yield* tap('A');
   yield* untilText(c, 'Trade completed!', 8000);
 }
-function* cancelOut(c) {
+export function* cancelOut(c) {
   yield* untilText(c, 'CANCEL', 4000);
   yield* wait(30);
   for (let i = 0; i < 16 && c.rd1('wTilemap', 17 * 20 + 9) !== TILE_ARROW; i++) yield* tap('DOWN', 1, 4, 10);
@@ -262,21 +262,21 @@ function* cancelOut(c) {
 /* After ExitLinkCommunications the console script reloads the room
    (newloadmap MAPSETUP_LINKRETURN): the player is back on the seat and walks
    out; POKeCENTER 2F's LEAVE_*_CENTER scene then closes the link. */
-function* leaveRoom(c) {
+export function* leaveRoom(c) {
   yield* wait(240);
   yield* until(() => c.rd1('wPlayerWalking') === 0xff, 600, 'room reloaded', null, 24, c);
   yield* script(c, c.role === 'master' ? 'MOVE:DOWN*1 MOVE:RIGHT*1 MOVE:DOWN*2' : 'MOVE:DOWN*1 MOVE:LEFT*2 MOVE:DOWN*2');
   yield* until(() => c.pos()[1] === 1, 300, 'warp to 2F', 'DOWN', 24, c);
 }
-function* backOn2F(c) {
+export function* backOn2F(c) {
   if (c.pos()[1] !== 1) yield* leaveRoom(c);
   yield* until(() => c.pos()[1] === 1 && c.rd1('wLinkMode') === 0, 3000, 'back on 2F', null, 24, c);
   yield* wait(120);
   yield* until(() => c.rd1('wPlayerWalking') === 0xff && c.rd1('hSerialConnectionStatus') === 0xff, 600, 'exit script done', null, 24, c);
   yield* wait(60);
 }
-const STARTMENU_SAVE = 4;
-function* saveGame(c) {
+export const STARTMENU_SAVE = 4;
+export function* saveGame(c) {
   yield* until(() => c.has('SAVE'), 600, 'start menu', 'START', 60, c);
   yield* wait(10);
   const items = c.rd('wMenuItemsList', 12);
@@ -293,13 +293,13 @@ function* saveGame(c) {
 }
 
 // -------------------------------------------------------------- scenarios ---
-const SP = { PIDGEY: 0x10, RATTATA: 0x13, SPEAROW: 0x15, PIKACHU: 0x19, MAGIKARP: 0x81,
+export const SP = { PIDGEY: 0x10, RATTATA: 0x13, SPEAROW: 0x15, PIKACHU: 0x19, MAGIKARP: 0x81,
   MEWTWO: 0x96, MEW: 0x97, CELEBI: 0xfb, EGG: 0xfd };
-const STRUCT = 48, NAME = 11, MAIL = 0x2f;
-const MON_ITEM = 1, MON_ID = 6, MON_STAT_EXP = 11, MON_CAUGHT_LEVEL = 0x1c;
-const FLOWER_MAIL = 0x9e;
+export const STRUCT = 48, NAME = 11, MAIL = 0x2f;
+export const MON_ITEM = 1, MON_ID = 6, MON_STAT_EXP = 11, MON_CAUGHT_LEVEL = 0x1c;
+export const FLOWER_MAIL = 0x9e;
 
-function party(c) {
+export function party(c) {
   const n = c.rd1('wPartyCount');
   const out = [];
   for (let i = 0; i < n; i++) {
@@ -313,7 +313,7 @@ function party(c) {
   return out;
 }
 /* The same party, read from the battery image's sPokemonData. */
-function sramParty(c, img) {
+export function sramParty(c, img) {
   const base = c.sramOffset('sPokemonData');
   const w0 = c.loc('wPokemonData').addr;
   const at = (sym, n, off = 0) => Array.from(img.slice(base + c.loc(sym).addr - w0 + off, base + c.loc(sym).addr - w0 + off + n));
@@ -327,15 +327,15 @@ function sramParty(c, img) {
   }
   return { out, dexCaught: at('wPokedexCaught', 32), dexSeen: at('wPokedexSeen', 32) };
 }
-const dexBit = (bytes, sp) => (bytes[(sp - 1) >> 3] >> ((sp - 1) & 7)) & 1;
-const sameMon = (x, y) => {
+export const dexBit = (bytes, sp) => (bytes[(sp - 1) >> 3] >> ((sp - 1) & 7)) & 1;
+export const sameMon = (x, y) => {
   // GF3: an incoming mon's CaughtLevel bits 7-6 are cleared on arrival (link.asm)
   const a = x.slice(), b = y.slice();
   a[MON_CAUGHT_LEVEL] &= 0x3f; b[MON_CAUGHT_LEVEL] &= 0x3f;
   return hex(a) === hex(b);
 };
 
-class Checks {
+export class Checks {
   constructor(label) { this.label = label; this.list = []; }
   ok(name, cond, detail = '') { this.list.push({ name, pass: !!cond, detail: String(detail) }); }
   get pass() { return this.list.every((c) => c.pass); }
@@ -345,7 +345,7 @@ class Checks {
   }
 }
 
-async function setup(opts) {
+export async function setup(opts) {
   const rig = await Rig.create();
   const a = rig.add('A', readFileSync(path.join(opts.fixtures, 'link_a.sav')));
   const b = rig.add('B', readFileSync(path.join(opts.fixtures, 'link_b.sav')));
@@ -357,7 +357,7 @@ async function setup(opts) {
   return { rig, a, b, cable };
 }
 /* Drive both cores to completion; B starts `skew` frames late. */
-function runBoth(rig, a, b, ga, gb, max, what) {
+export function runBoth(rig, a, b, ga, gb, max, what) {
   a.drive(ga); b.drive(gb);
   rig.settle(max, what);
 }
@@ -366,7 +366,7 @@ function runBoth(rig, a, b, ga, gb, max, what) {
    internal transfer of $00 on BOTH machines; the master's lands on the
    still-armed slave, the slave's lands on nobody (table 1.3 row 18).  Any
    other drop is a cable bug. */
-function checkDrops(ck, cable, slave, after) {
+export function checkDrops(ck, cable, slave, after) {
   const drops = cable.dropLog.map((i) => cable.wire[i]);
   const rows = segment(cable.wire, { trade: after === 'cancel' }).rows;
   const lastNyb = Math.max(...rows.filter((r) => r[0] === '16T' || r[0] === '16B').map((r) => r[3]));
@@ -375,7 +375,7 @@ function checkDrops(ck, cable, slave, after) {
   ck.ok('cable: no dropped bytes but the slave\'s exit $00 (row 18)', exitOnly,
     `${drops.length} dropped: ${drops.map((e) => JSON.stringify(e)).join(' ')}`);
 }
-const decode = (bytes) => decodeName(bytes);
+export const decode = (bytes) => decodeName(bytes);
 const DEBUG = { last: null };
 
 export async function tradeScenario(opts) {
@@ -545,9 +545,9 @@ async function main() {
   process.exit(ok ? 0 : 1);
 }
 // ---------------------------------------------------------------- battle ---
-const MON_HP = 0x22;
+export const MON_HP = 0x22;
 /* First party slot (1-based) that can fight: HP > 0 and not an EGG. */
-function firstFit(c) {
+export function firstFit(c) {
   const n = c.rd1('wPartyCount'), sp = c.rd('wPartySpecies', n), mons = c.rd('wPartyMon1', n * STRUCT);
   for (let i = 0; i < n; i++) {
     if (sp[i] !== SP.EGG && (mons[i * STRUCT + MON_HP] | mons[i * STRUCT + MON_HP + 1])) return i + 1;
@@ -558,7 +558,7 @@ function firstFit(c) {
    battle menu -> FIGHT, move menu -> first move, forced switch ("Which PKMN?")
    -> first mon that can fight.  Link battle text needs no button (wLinkMode
    makes prompts time out), so nothing else is pressed. */
-function* fightBattle(c, rec) {
+export function* fightBattle(c, rec) {
   yield* until(() => c.rd1('wBattleMode') !== 0, 6000, 'battle start', null, 24, c);
   rec.rnsAtStart = hex(c.rd('wLinkBattleRNs', 10));
   rec.startFrame = c.frames;
@@ -591,8 +591,8 @@ function* fightBattle(c, rec) {
     yield {};
   }
 }
-const LBR_LEN = 2 + 10 + 6;
-function linkStats(c, img) {
+export const LBR_LEN = 2 + 10 + 6;
+export function linkStats(c, img) {
   const o = c.sramOffset('sLinkBattleStats'), be = (k) => (img[o + k] << 8) | img[o + k + 1];
   const recs = [];
   for (let r = 0; r < 5; r++) {

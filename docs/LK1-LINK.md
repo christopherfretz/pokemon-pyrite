@@ -398,6 +398,8 @@ section with symbols from the same build's `.sym`:
 
 ### 3.2 Messages (JSON text frames, `v:1`)
 
+> As built in LK1c, the schema differs (no per-message `v`, plus `desk`/`abort`): see "LK1c findings".
+
 | type | fields | when |
 |---|---|---|
 | `hello` | `lk:1, rom:<sha256>, build:<BUILD_REV>, core:<CORE_COMMIT>, name:<trainer name, ≤7 chars>` | right after `paired` |
@@ -1397,3 +1399,214 @@ diff.
 - **Fixture ROM dependency.** The fixtures and oracle are tied to the ROM sha256 recorded in each
   oracle file (`54d5da4d…`). Any ROM change that moves WRAM or Cable Club code means regenerating
   both.
+
+---
+
+## LK1c findings
+
+LK1c delivers the stand-in (`web/link.js`), the validator (`web/link_validate.js`), the `link`
+section of `tables.json`, and test layers 1 and 3: unit tests, and two cores driven by two
+stand-ins through an in-process fake relay. **No ROM change.** `tables.json` is still a build
+product (`make crystal` runs `gen_tables.py`) and is not committed.
+
+| suite | result | wall time |
+|---|---|---|
+| `link_unit.mjs` | PASS 161/161 (63 hostile validator cases, 12 garbage inputs) | < 1 s |
+| `link_e2e.mjs` | PASS 12/12 scenarios (202 checks) | 81 s |
+
+### Files
+
+| file | what | where to look |
+|---|---|---|
+| `web/link.js` (652 lines) | stand-in, UMD/CommonJS, no DOM | constants `:42-55`; base64 `:58-70`; message schema `FIELD`/`SCHEMA` `:74-101`; `parseMessage` `:105`; `encodeMessage` `:129`; `buildFeed` `:139`; `create` `:151`; peer-message handler `handle` `:226` (peer stage machine `:252-295`); `refuse`/`fail`/`closeNow`/`linkUp`/`startDrain`/`disconnect` `:298-350`; nybble feeder `feedNybble`/`stepFeeder` `:358-375`; `endVisit` `:377`; `onFrame` `:395` (stages: outside+desk `:424`, connected `:464`, rcpt `:473`, sync `:484`, room/menu `:494`, blocks `:513`, bulk `:559`); `readBlock` `:584`; act exchange + trade-menu phase model `exchange` `:594`; drain answers `drainAnswer` `:627`; `state()` `:636`; hello `:645` |
+| `web/link_validate.js` (250 lines) | validator, UMD/CommonJS, pure | `nameOk` `:42`; `maxPP` `:52`; `monReasons` `:56`; `rnReasons` `:97`; `patchOffsets` `:109`; `partyReasons` `:139`; `mailReasons` `:168`; `validateBlocks` `:211`; `validateAct` `:232` |
+| `web/gen_tables.py` | `link` section (`:934` on) | WRAM/HRAM addresses, block banks/addresses/lengths, party and mail layouts (asserted against the `.sym` spans), serial and battle constants, species growth rates, exp table (with the 24-bit wrap), move PP, holdable items, mail items, charmap glyphs |
+| `web/test/link_unit.mjs` | layer 1 | schema, feed, validator, `validateAct` |
+| `web/test/link_e2e.mjs` | layer 3 | `Relay` `:49`; `setup` `:92`; `recover` (drives a game home from any link screen) `:294`; scenarios `:148-530`; `main` `:532` |
+| `web/test/cable.mjs` | LK1b, unchanged behaviour | helpers now `export`ed for the e2e; `main()` runs only when executed directly |
+
+**API.** `create({core: {port, read}, transport, tables, ui, role, rom, build, coreRev, name, now,
+onBeforeLink})` returns `{onFrame(), isLinked(), disconnect(), state(), onBeforeLink}`.
+`onFrame()` must run after every emulated frame. `state()` returns the session, visit stage,
+trade phase, gen/seq, the peer's stage, counters (`sent`, `recv`, `bulk[]`, `fifoLeft[]`,
+`visits`) and an event log (`linked`, `desk`, `connected`, `rcpt`, `sync`, `room`,
+`blocks-out`, `invalid-blocks`, `bulk`, `bulk-done`, `act-out`, `act-in`, `visit-end`,
+`refuse`, `fail`, `drain`, `closed`, ...), which is what the e2e asserts on.
+
+### Message schema (as built)
+
+Every frame is one JSON object. Every type has an exact key set: a missing key, an extra key, an
+unknown `type` (including prototype names such as `constructor`), a field out of range, a frame
+over 4,096 characters, non-JSON or a non-object fails parsing. A failed parse is
+`fail('internal')`: `bye{internal}`, then drain.
+
+| type | fields (validated) | sent when |
+|---|---|---|
+| `hello` | `lk` int 0-1000 (=1), `rom` 64 lowercase hex, `build` ≤ 40 printable, `core` ≤ 64 printable, `name` ≤ 16 chars without control characters, `role` `a`\|`b` | at `create()` |
+| `desk` | `left` int ms 0-60000 (the sender's row-2 budget left) | every 30 frames while the local game probes at the receptionist (row 2) |
+| `rcpt` | — | row 4 seen (`hi\|1` shifted out) |
+| `sync` | `room` 1\|2 | row 5 seen (`$D0\|room` shifted out) |
+| `blocks` | `gen` int, `rn` 17 B, `party` 450 B, `patch` 200 B, `mail` 390 B or 0 B (base64; sizes checked after decode) | action 5 seen (`hi\|5` shifted out with the timeout armed) |
+| `act` | `gen`, `seq` int 0-65535, `v` int 0-15, `mode` 2\|3 | an untimed nybble exchange armed (`wOtherPlayerLinkAction=$FF`) |
+| `ping` / `pong` | `t` finite number | every 15 s while linked / reply |
+| `pause` / `resume` | — | parsed and honoured (60 s pause = peer gone); **sent by the page (LK1e), not by `link.js`** |
+| `abort` | `stage` ∈ desk, connected, rcpt, sync, blocks, menu | the local visit ended early (row 2 over, action-5 timeout) |
+| `bye` | `reason` ∈ user, rom-mismatch, role, `invalid-blocks:<field>`, invalid-act, timeout, internal, peer-gone | any end of the session; the sender then drains and closes |
+
+Ordering is enforced per peer visit: `desk → rcpt → sync → blocks(gen n+1) → act(gen, seq+1)…`.
+Anything out of order is `fail('internal')`. Early messages are queued (one `blocks`, 8 `act`s).
+A `desk` after `rcpt` means the peer started a new visit; an `abort` makes the stand-in ignore
+the rest of that peer visit (messages already in flight).
+
+### Deviations from section 3 (and why)
+
+1. **No per-message `v:1`.** The protocol version travels once, in `hello.lk`; a mismatch is
+   refused as `rom-mismatch` together with the ROM sha. Saves 6 bytes per frame and there is no
+   mixed-version session to route.
+2. **`hello` carries `role`**, and a same-role pair is refused (`bye{role}`). The relay assigns the
+   roles; this catches a relay bug before both games try to be master.
+3. **`name` is ≤ 16 characters**, not ≤ 7. It is a page-level display name (`textContent`), not the
+   in-game trainer name, which travels inside the party block and is validated there.
+4. **Two new messages, `desk` and `abort`.**
+   - Row 2's role race is timed (the game's own budget). The stand-in shifts its role byte into the
+     local game's `$01` probe only when the peer's `desk` is fresh (≤ 1.5 s old), the peer has
+     > 1.5 s of its budget left and we have > 1 s of ours. Otherwise one game connects while the
+     other times out, which leaves the two visits out of step. `left` is computed from
+     `wLinkTimeoutFrames`.
+   - `abort{stage}` tells the peer that this visit ended locally (row 2 over, action-5 timeout), so
+     the peer stops waiting for messages that will never come and drops ones in flight.
+5. **Stage detection uses the bytes the game shifts out** (from the LinkPort drain log: the `$01`
+   probe, `hi|1`, `$D0|room`, `hi|5`, `hi|6`) plus `wLinkMode`, `wPlayerLinkAction`,
+   `wOtherPlayerLinkAction`, `wLinkTimeoutFrames`, `hSerialConnectionStatus` and `IE`. There is
+   no PC or return-address tracking.
+6. **The phase-model cross-check against the GB stack return address (3.5) was not built.** The
+   e2e instead asserts the outcomes the model drives: the oracle's end state on the happy paths,
+   and the right in-game text on every cut.
+7. **Row 8 drain (`$x0`) prints "Too much time has elapsed. Please try again."**
+   (`_LinkTimeoutText`), not "The link has been closed…". The validator-failure path is the same
+   `$x0`. Section 3.5 and section 5 name the wrong string; behaviour is as intended.
+8. **Prompts auto-advance.** In link mode `PromptButton` is `DelayFrames 65`
+   (`home/joypad.asm:397`), so every timeout text clears by itself. After `LinkTimeout` the special
+   returns and the room reloads (`newloadmap MAPSETUP_LINKRETURN`) with the player seated and
+   `wLinkMode` still 2/3; `CloseLink` runs when the player walks out to 2F. The stand-in ends the
+   visit at that point (`visit-end`), and the session itself stays open for another visit.
+9. **`ForcePlayerMonChoice` needs no special rule.** Draining answers FORFEIT at every battle
+   exchange. At the replacement pick (no FORFEIT check) the game takes it as a switch byte, and the
+   very next exchange's FORFEIT ends the battle with "Enemy <mon> fled!" on both sides
+   (cut-battle).
+10. **Battle-end `wLinkBattleRNs` differ from the cable oracle.** The master rolls them at a
+    timing-dependent frame. The e2e asserts A's RNs = B's RNs, and `wPokemonData` against the
+    oracle.
+
+### Validator rules (as built)
+
+The ruleset is section 5's, with these differences. **Stricter or added:** patch-list entries must
+be strictly increasing and in 1..252 / 1..38 (`$00` inside a list is rejected; a native sender
+never writes one); the exp lower bound uses the 24-bit wrapped Medium Slow table; Pokérus (days
+≤ 4, and days only with a strain); every string's first byte must be a charmap glyph; the mail
+message's first byte cannot be `$20`/`$FE`; the mail patch set may not hit the same offset twice.
+**Not implemented (follow-ups, none lets the receiver index outside its buffers):** structs and
+names for i ≥ count all `$00`; species-list entries after the `$FF`; padding bytes; CaughtLevel
+bits; filler in mail slots whose mon holds no mail; the Colosseum move slot must exist on the
+active mon (0-3 are always accepted); the egg nickname is checked like any nickname.
+
+| rule (reason string prefix) | unit cases |
+|---|---|
+| `mode N` (only 2, 3) | mode 1 |
+| `rn.length`, `rn.preamble[i]`, `rn[i] $FD/$FE` | 16 bytes, preamble byte, `$FE`, `$FD` |
+| `party.length`, `party.preamble[i]`, `party[i] raw $FE` | 449 bytes, preamble byte, raw `$FE` |
+| `party.name …` (empty / no terminator / first byte not a glyph / control byte) | empty, control byte |
+| `party.count N` (1-6) | 0, 7, 255 |
+| `party.species[count] not $FF`, `party.species[i] $xx` (1..252 or EGG) | both; list 0, list `$FF` |
+| `party.mon[i].species` (1..252, = list unless list is EGG) | 0, 253, `$FF`, list mismatch; 252 and EGG-in-list **accepted** |
+| `…item` (0 or holdable) | non-holdable |
+| `…move1 empty`, `…moveN after an empty slot`, `…moveN $xx`, `…moveN duplicate`, `…ppN on empty slot`, `…ppN x > max` | all six; PP 63 with 0 and 3 PP Ups |
+| `…level` (1-100), `…exp outside lo..hi` | 0, 101, exp 0, exp `$FDFDFD` |
+| `…hp > max`, `…statN` (≤ 999), `…status`, `…pokerus` | all |
+| `party.ot[i] …`, `party.nick[i] …` | no terminator (both), first byte not a glyph |
+| `patch.length`, `patch.preamble[i]`, `patch[i] not zero` (before/after the lists), `patch list K offset N out of range`, `… not increasing`, `… -> party[x] is $yy, not $FF`, `… unterminated` | 199 bytes, preamble, both zero areas, 253 / 0 / list-2 39, not increasing, non-`$FF` target, unterminated (`patchOffsets` directly) |
+| `mail.length`, `mail.preamble[i]`, `mail.messages[0] starts with …`, `mail[i] raw $FE`, `mail.patch offset N out of range`, `… -> $xx, not $FF`, `mail.patch unterminated` | 389 bytes, preamble, raw `$FE`, offsets 0 / 85, non-`$FF` target, repeated offset |
+| per mail-holding mon: `mail[s].message no terminator`/`byte k`, `mail[s].author …`, `mail[s].species`, `mail[s].type` | all five, plus a valid held mail **accepted** |
+| `mail.length 390 in the Colosseum` | Colosseum with mail |
+| `internal: …` (never throws) | 11 garbage inputs and a broken tables object |
+| `validateAct`: S0 `$F` or < peer count; S1 {1, 2}; S2 {0, 1, 2}; battle 0-3, 4..4+count-1, 13, 14, 15 | 30 cases incl. 16, 1.5, `"1"`, unknown phase |
+
+The baseline for every hostile case is the LK1b cable oracle's own blocks (ALPHA's trade blocks,
+both battle sides), re-framed to the native preamble length; all three validate clean. A
+mutation check (validator stubbed to "always ok", then "always reject") fails 74 and 68 of the
+161 checks respectively, so the cases are live.
+
+### End-to-end matrix (`link_e2e.mjs`)
+
+Fixtures `link_a.sav` (ALPHA, role a, master) and `link_b.sav` (BRAVO, role b). The relay delivers
+each message RTT/2 of virtual time later (frames × 16.74 ms), in order per direction. Every
+scenario also asserts: no `fail`/`bad-message` events unless the scenario expects one, the FIFO
+empty after every bulk exchange, and on a cut that the session closed and the last `port.enable`
+call was `false`.
+
+| scenario | checks | wall s | frames / key values |
+|---|---|---|---|
+| trade-0 | PASS 28/28 | 12.1 | 13,003 frames; 7 act pairs, max act wait 3 f; 3 bulk exchanges of 87 f each; `wPokemonData` sha256 = cable oracle on both sides; mail, `$FE` patching, Pokédex bits, both saves reload via CONTINUE |
+| trade-200 | PASS 28/28 | 12.1 | 13,070 frames; max act wait 13 f |
+| trade-1000 | PASS 28/28 | 12.2 | 13,338 frames; max act wait 62 f |
+| battle-0 | PASS 21/21 | 8.5 | 9,814 frames; 5 act pairs, max act wait 102 f; result and `wPokemonData` = oracle; A RNs = B RNs |
+| battle-1000 | PASS 21/21 | 8.8 | 10,058 frames; max act wait 164 f |
+| never-shows | PASS 11/11 | 1.7 | "Your friend is not ready." 639 f (10.7 s) after YES; save untouched |
+| cut-blocks | PASS 11/11 | 3.4 | cut at B's first `blocks`; both "Too much time has elapsed." |
+| cut-menu | PASS 11/11 | 3.9 | cut at A's S1 act; both "Too bad! The trade was canceled!", then menu cancel |
+| cut-battle | PASS 11/11 | 6.8 | cut while B picks a replacement (`ForcePlayerMonChoice`); A "Enemy MAGIKARP fled!", B "Enemy MEWTWO fled!" |
+| cut-menu-half | PASS 10/10 (informational) | 6.8 | A's S1 act delivered, B's lost: A keeps `96 19 97 13 10 15` (SRAM same), B traded `FB FD 19 97` (SRAM same); A "Too bad!", B "Too much time" at the post-trade re-exchange |
+| hostile | PASS 13/13 | 3.5 | B's party arrives with species[0] = `$FF`: A rejects `party.species[0] $ff`, A's party and save untouched; B reaches the menu and is cancelled out |
+| rom-mismatch | PASS 9/9 | 0.9 | refused at `hello`, port never enabled |
+| **all** | **PASS 12/12** | **80.8** | |
+
+**Disconnect paths, as the player sees them** (all verified on screen by the e2e):
+
+| where the link dies | what the player sees | save |
+|---|---|---|
+| peer never reaches the desk | "Your friend is not ready." after ~10.7 s; back on 2F | untouched |
+| blocks exchange (action 5) | "Too much time has elapsed. Please try again." (auto-advances), room reloads, walk out | untouched |
+| peer's blocks invalid | same as above on the validating side; the peer reaches the trade menu and is cancelled out by its drain | untouched on both |
+| trade menu, choosing (S0) | the game's own cancel: the menu exits | untouched |
+| trade menu, confirm (S1) | "Too bad! The trade was canceled!", then the menu cancels out | untouched |
+| after both confirmed (S2) | the trade completes and saves locally (Q5) | traded |
+| battle, any exchange incl. the replacement pick | "Enemy <mon> fled!", the battle ends | link record written, as on hardware |
+| ROM or protocol mismatch | refused at `hello`; the port is never enabled | untouched |
+
+### Known exposure: the S1 two-generals window (measured)
+
+`cut-menu-half` loses exactly one message: A's S1 TRADE reaches B, B's S1 TRADE never reaches A.
+B sees (TRADE, TRADE), enters S2, trades and saves (party `FB FD 19 97`). A drains with `$1`
+("Too bad! The trade was canceled!") and keeps its MEW (party `96 19 97 13 10 15`). Net: B's
+MAGIKARP is gone and A's MEW is duplicated. Section 3.5 already accepts this ("hardware has the
+same exposure"); an extra ack round only moves the window, it does not close it. Recovery is the
+pre-link snapshot (Q2/Q5, LK1e). The scenario is informational: it asserts the outcome above, so a
+protocol change that closes or widens the window will show up.
+
+### Not working / not verified
+
+- **Not exercised:** a second desk visit in the same session (re-exchanges inside one visit are:
+  the trade does 3 bulk gens); peer-gone by silence (45 s) or by `pause` (60 s) — cuts use a
+  transport close; `bye{invalid-act}` from a live peer; battle at RTT 200 (trade covers 0/200/1000,
+  battle 0/1000); Disconnect pressed by the user mid-stage (`disconnect()` shares `startDrain`
+  with the cuts).
+- **No browser, no real relay.** The transport is the in-process fake; LK1d builds the relay and
+  re-runs this matrix through it. `onBeforeLink` (the snapshot hook) is called but the page's
+  snapshot/rollback is LK1e.
+- **The phase-model stack cross-check** (deviation 6).
+- **Validator gaps** listed above.
+- **Tied to the ROM** like LK1b: the fixtures and oracle carry the ROM sha256.
+
+### Re-running
+
+From `hack/` (needs `tables.json`, i.e. a `make crystal` build of the same ROM):
+
+```sh
+NODE=../tools/emsdk/node/24.19.0_64bit/bin/node
+$NODE web/test/link_unit.mjs                         # < 1 s; UNIT_VERBOSE=1 prints each case's reasons
+$NODE web/test/link_e2e.mjs                          # all 12 scenarios, ~80-100 s
+$NODE web/test/link_e2e.mjs --only cut-battle,hostile
+E2E_DEBUG=1 $NODE web/test/link_e2e.mjs --only trade-0   # stand-in logs on failure
+```
+
+Both exit 0 on pass. Single-threaded.

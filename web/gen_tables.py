@@ -931,6 +931,166 @@ def main():
         with open(rev_file, "r", encoding="utf-8") as f:
             build_rev = f.read().strip()
 
+    # --- LK1c: the link stand-in (web/link.js) and its validator ----------
+    # Every address link.js touches comes from here, never from the page, so
+    # a rebuild that moves the link buffers moves the stand-in with them.
+    CS = Consts()
+    CS.feed_file(p("constants", "serial_constants.asm"))
+
+    def sk(name):
+        if name not in CS.vals:
+            sys.exit("gen_tables: serial constant %s not resolved" % name)
+        return CS.vals[name]
+
+    def span(start, end):
+        return syms[end][1] - syms[start][1]
+
+    lp_party = span("wLinkSendParty", "wLinkSendPartyEnd")
+    lp_mail = span("wLinkSendMail", "wLinkSendMailEnd")
+    plen, nlen = need("PARTY_LENGTH"), need("NAME_LENGTH")
+    mlen = need("MON_NAME_LENGTH")
+    mon_stride = party["stride"]
+    pre = sk("SERIAL_PREAMBLE_LENGTH")
+    lay = {
+        "preamble": 0,
+        "name": span("wLinkSendParty", "wLinkSendPartyPlayerName"),
+        "count": span("wLinkSendParty", "wLinkSendPartyPartyCount"),
+        "species": span("wLinkSendParty", "wLinkSendPartyPartySpecies"),
+        "speciesEnd": span("wLinkSendParty", "wLinkSendPartyPartyEnd"),
+        "id": span("wLinkSendParty", "wLinkSendPartyPlayerID"),
+        "mons": span("wLinkSendParty", "wLinkSendPartyPlayerPartyMon1"),
+        "ots": span("wLinkSendParty", "wLinkSendPartyPlayerPartyMon1OT"),
+        "nicks": span("wLinkSendParty", "wLinkSendPartyPlayerPartyMon1Nickname"),
+        "padding": span("wLinkSendParty", "wLinkSendPartyPadding"),
+    }
+    # the layout the validator hard-codes its reasoning on
+    assert lay["name"] == pre and lay["count"] == pre + nlen
+    assert lay["ots"] == lay["mons"] + plen * mon_stride
+    assert lay["nicks"] == lay["ots"] + plen * nlen
+    assert lay["padding"] == lay["nicks"] + plen * mlen
+    assert lp_party == lay["padding"] + sk("SERIAL_PADDING_LENGTH")
+    mail_msgs = span("wLinkSendMail", "wLinkSendMailMessages")
+    mail_meta = span("wLinkSendMail", "wLinkSendMailMetadata")
+    mail_patch = span("wLinkSendMail", "wLinkSendMailPatchSet")
+    msg_len = need("MAIL_MSG_LENGTH") + 1
+    meta_len = need("MAIL_STRUCT_LENGTH") - msg_len
+    assert mail_meta == mail_msgs + plen * msg_len
+    assert mail_patch == mail_meta + plen * meta_len
+    rn_len = sk("SERIAL_RN_PREAMBLE_LENGTH") + sk("SERIAL_RNS_LENGTH")
+    assert span("wLinkBattleRNPreamble", "wLinkBattleRNs") == \
+        sk("SERIAL_RN_PREAMBLE_LENGTH")
+
+    # per-species growth rate straight from BaseData (MISSINGNO. included)
+    n_species = len(species_names)
+    gr_off = base_stats["fields"]["growthRate"]
+    species_growth = [rom[base_stats_off + i * base_stats["stride"] + gr_off]
+                      for i in range(n_species)]
+
+    def exp_at(g, n):
+        # CalcExpAtLevel, including its 24-bit wrap (the Medium Slow
+        # level-1 underflow is a real value a traded mon can carry)
+        a, b, c, d, e = growth[g]
+        v = (a * n ** 3) // b + c * n * n + d * n - e
+        return v & 0xFFFFFF
+
+    max_level = need("MAX_LEVEL")
+    exp_table = [[exp_at(g, n) for n in range(max_level + 1)]
+                 for g in range(len(growth))]
+    ms = move_stats["rom"]
+    move_pp = [rom[ms + i * move_stats["stride"] + move_stats["fields"]["pp"]]
+               for i in range(need("NUM_ATTACKS"))]
+
+    # holdable = GiveItem's rule: not a key item, not CANT_TOSS
+    props = []
+    with open(p("data", "items", "attributes.asm"), "r", encoding="utf-8") as f:
+        inmacro = False
+        for line in f:
+            s = line.split(";")[0].strip()
+            if s.startswith("MACRO"):
+                inmacro = True
+                continue
+            if inmacro:
+                inmacro = s != "ENDM"
+                continue
+            m = re.match(r"^item_attribute\s+(.*)$", s)
+            if m:
+                props.append([x.strip() for x in m.group(1).split(",")])
+    holdable = [i + 1 for i, a in enumerate(props)
+                if i + 1 <= 0xFE and a[4] != "KEY_ITEM"
+                and "CANT_TOSS" not in a[3]]
+    mail_items = []
+    with open(p("data", "items", "mail_items.asm"), "r", encoding="utf-8") as f:
+        for line in f:
+            m = re.match(r"^\s*db\s+([A-Z_0-9]+)", line.split(";")[0])
+            if m:
+                mail_items.append(K[m.group(1)])
+    if not mail_items:
+        sys.exit("gen_tables: no MailItems parsed")
+
+    bconst = {k: need(k) for k in (
+        "BATTLEACTION_MOVE1", "BATTLEACTION_SWITCH1", "BATTLEACTION_SKIPTURN",
+        "BATTLEACTION_STRUGGLE", "BATTLEACTION_FORFEIT")}
+    link = {
+        "wram": {n: wram(n) for n in (
+            "wLinkMode", "wScriptVar", "wPlayerPatchLists", "wOTPatchLists",
+            "wLinkSendParty", "wLinkSendMail", "wLinkReceivedMail",
+            "wOtherPlayerLinkMode", "wOtherPlayerLinkAction",
+            "wPlayerLinkAction", "wLinkTimeoutFrames",
+            "wLinkBattleRNPreamble", "wLinkBattleRNs", "wBattleMode",
+            "wChosenCableClubRoom", "wOTPlayerName", "wOTPartyCount",
+            "wLinkBattleSentAction", "wPartyCount", "wPartySpecies",
+            "wPlayerName")},
+        "hram": {n: syms[n][1] for n in (
+            "hSerialConnectionStatus", "hSerialSend", "hSerialReceive")},
+        "rIE": 0xFFFF,
+        "IE_SERIAL": 1 << 3,
+        "blocks": {
+            "rn": wram("wLinkBattleRNPreamble") + [rn_len],
+            "party": wram("wLinkSendParty") + [lp_party],
+            "patch": wram("wPlayerPatchLists") + [sk("SERIAL_PATCH_LIST_LENGTH")],
+            "mail": wram("wLinkSendMail") + [lp_mail],
+        },
+        "partyLayout": lay,
+        "mailLayout": {"messages": mail_msgs, "metadata": mail_meta,
+                       "patch": mail_patch, "msgLength": msg_len,
+                       "metaLength": meta_len,
+                       "author": 0, "authorLength": need("PLAYER_NAME_LENGTH"),
+                       "species": syms["wLinkOTMon1MailSpecies"][1]
+                       - syms["wLinkOTMon1MailAuthor"][1],
+                       "type": syms["wLinkOTMon1MailType"][1]
+                       - syms["wLinkOTMon1MailAuthor"][1],
+                       "patchLength": lp_mail - mail_patch},
+        "serial": {k: sk(k) for k in (
+            "LINK_NULL", "LINK_TIMECAPSULE", "LINK_TRADECENTER",
+            "LINK_COLOSSEUM", "CABLECLUBROOM_TRADECENTER",
+            "CABLECLUBROOM_COLOSSEUM", "SERIAL_TIMECAPSULE",
+            "SERIAL_TRADECENTER", "SERIAL_BATTLE",
+            "USING_EXTERNAL_CLOCK", "USING_INTERNAL_CLOCK",
+            "CONNECTION_NOT_ESTABLISHED", "SERIAL_PATCH_LIST_LENGTH",
+            "SERIAL_PATCH_DATA_SIZE", "SERIAL_PREAMBLE_BYTE",
+            "SERIAL_NO_DATA_BYTE", "SERIAL_PATCH_LIST_PART_TERMINATOR",
+            "SERIAL_PREAMBLE_LENGTH", "SERIAL_RN_PREAMBLE_LENGTH",
+            "SERIAL_PATCH_PREAMBLE_LENGTH", "SERIAL_RNS_LENGTH",
+            "SERIAL_MAIL_PREAMBLE_BYTE", "SERIAL_MAIL_PREAMBLE_LENGTH",
+            "SERIAL_MAIL_REPLACEMENT_BYTE")},
+        "battle": bconst,
+        "numSpecies": n_species,
+        "numMoves": need("NUM_ATTACKS"),
+        "numMovesPerMon": need("NUM_MOVES"),
+        "partyLength": plen, "nameLength": nlen, "monNameLength": mlen,
+        "playerNameLength": need("PLAYER_NAME_LENGTH"),
+        "maxLevel": max_level, "maxStatValue": need("MAX_STAT_VALUE"),
+        "egg": need("EGG"), "mew": need("MEW"), "celebi": need("CELEBI"),
+        "monStride": mon_stride, "mon": party["mon"],
+        "speciesGrowth": species_growth,
+        "expTable": exp_table,
+        "movePP": move_pp,
+        "holdable": holdable,
+        "mailItems": mail_items,
+        "glyphMin": 0x60,
+        "glyphs": sorted({v for v in charmap.values() if 0x60 <= v <= 0xFF}),
+    }
+
     out = {
         "generated": datetime.datetime.now(datetime.timezone.utc)
         .strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -988,6 +1148,7 @@ def main():
         "badges": parse_badges(p("constants", "engine_flags.asm")),
         "charmap": charmap,
         "hunt": hunt,
+        "link": link,
     }
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
