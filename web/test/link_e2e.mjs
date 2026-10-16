@@ -9,7 +9,7 @@
 // link_b.sav = BRAVO = role b):
 //   trade-0 / trade-200 / trade-1000  the LK1b trade at RTT 0/200/1000 ms;
 //                     end state compared with the cable oracle
-//   battle-0 / battle-1000            the LK1b battle; result + oracle
+//   battle-0 / battle-200 / battle-1000  the LK1b battle; result + oracle
 //   never-shows       B is linked but never goes to the desk: A gets the
 //                     game's own "Your friend isn't ready." and an untouched save
 //   cut-blocks        the relay dies as B sends its blocks
@@ -21,7 +21,14 @@
 //   hostile           B's party block arrives with species[0] = $FF
 //   rom-mismatch      B claims another ROM: refused at hello, port never enabled
 //
-// Usage: node web/test/link_e2e.mjs [--only name[,name...]]
+// Usage: node web/test/link_e2e.mjs [--only name[,name...]] [--relay]
+//   --relay (LK1d): the same scenarios through the real relay -- `server.py
+//        --link` on an ephemeral loopback port, two link_transport.js
+//        WebSocket connections and a fault proxy that delays, drops and cuts
+//        (link_net.mjs).  PYTHON=... picks the interpreter (default
+//        ../tools/venv/bin/python, then python3).
+//   --realtime (with --relay): pace virtual time to wall time and keep the
+//        relay's default caps (the fast mode lifts the per-socket rate cap).
 //        E2E_DEBUG=1 prints the stand-in logs on a failure; E2E_TRACE=1 prints each screen text change during recovery.
 // Prints PASS/FAIL per check and per scenario; exit status 0 = all passed.
 import { readFileSync } from 'node:fs';
@@ -31,6 +38,8 @@ import {
   Rig, defaultStepper, REPO_DIR, sha256, bootContinue, wait, tap, until, untilText, aUntil, menuTo,
 } from './harness.mjs';
 import { parseArgs } from './core.mjs';
+import { Net, startRelayServer } from './link_net.mjs';
+import { existsSync } from 'node:fs';
 import {
   enterRoom, tradeOne, cancelOut, leaveRoom, backOn2F, saveGame, firstFit, party, sramParty, dexBit, sameMon,
   linkStats, hex, decode, Checks, SP, STRUCT, NAME, MAIL, MON_ID, MON_STAT_EXP, MON_ITEM, FLOWER_MAIL, TILE_ARROW,
@@ -42,6 +51,11 @@ const TABLES = JSON.parse(readFileSync(path.join(REPO_DIR, 'web/tables.json'), '
 const L = TABLES.link;
 const FIX = path.join(REPO_DIR, 'web/test/fixtures');
 const ORACLE = path.join(REPO_DIR, 'web/test/oracle');
+const OPTS = parseArgs(process.argv.slice(2), { only: '', relay: false, realtime: false });
+let SERVER = null;          // --relay: the spawned server.py --link
+let NET = null;             // --relay: this scenario's Net (proxy + transports)
+let PAIRS = 0;
+const CODES = [];           // every room code used, to check the server log never shows one
 
 // ------------------------------------------------------------------ relay ---
 /* In-order, delayed, per-direction message pipe.  hook(text, dir) may return
@@ -96,7 +110,11 @@ async function setup({ rtt = 0, romB = null, fixtures = ['link_a', 'link_b'] } =
   a.drive(bootContinue(a)); b.drive(bootContinue(b));
   rig.settle(4000, 'boot');
   const clock = () => rig.frames * Link.FRAME_MS;
-  const relay = new Relay(clock, rtt);
+  let relay;
+  if (SERVER) {
+    relay = NET = new Net({ relayPort: SERVER.port, clock, rtt, pair: ++PAIRS, realtime: !!OPTS.realtime });
+    CODES.push(await NET.pairUp());
+  } else relay = new Relay(clock, rtt);
   const romSha = sha256(rig.rom);
   const enables = { A: [], B: [] };
   const mk = (c, i, role, rom) => {
@@ -117,10 +135,22 @@ async function setup({ rtt = 0, romB = null, fixtures = ['link_a', 'link_b'] } =
   const sb = mk(b, 1, 'b', romB || romSha);
   rig.stepper = (r) => { defaultStepper(r); sa.onFrame(); sb.onFrame(); relay.tick(); };
   relay.tick();                                     // RTT 0: hellos land before the first frame
+  if (NET) await NET.quiesce();
   globalThis.__S = { sa, sb };
   return { rig, a, b, sa, sb, relay, enables, t0: Date.now() };
 }
-function runBoth(rig, a, b, ga, gb, max, what) { a.drive(ga); b.drive(gb); rig.settle(max, what); }
+/* rig.settle, but with --relay each frame first waits (in wall time) for the
+   real network to catch up with virtual time (link_net.mjs quiesce). */
+async function settle(rig, max, what) {
+  if (!NET) return rig.settle(max, what);
+  for (let i = 0; i < max; i++) {
+    if (rig.cores.every((c) => c.idle)) return i;
+    await NET.quiesce();
+    rig.frame();
+  }
+  return rig.settle(0, what);                       // throws with the screens
+}
+async function runBoth(rig, a, b, ga, gb, max, what) { a.drive(ga); b.drive(gb); return settle(rig, max, what); }
 const pokemonDataSha = (c) => sha256(Uint8Array.from(c.rd('wPokemonData', c.loc('wPokemonDataEnd').addr - c.loc('wPokemonData').addr)));
 const oracle = (name) => JSON.parse(readFileSync(path.join(ORACLE, `${name}.json`), 'utf8'));
 const evs = (s, e) => s.state().log.filter((x) => x.e === e);
@@ -163,7 +193,7 @@ async function tradeScenario(rtt) {
     yield* backOn2F(c);
     yield* saveGame(c);
   }
-  runBoth(rig, a, b, side(a, [3, 3], ['MAGIKARP', 'CELEBI']), side(b, [1, 1], ['MEW', 'RATTATA']), 60000, `trade-${rtt}`);
+  await runBoth(rig, a, b, side(a, [3, 3], ['MAGIKARP', 'CELEBI']), side(b, [1, 1], ['MEW', 'RATTATA']), 60000, `trade-${rtt}`);
   const wall = Date.now() - S.t0;
   const post = { A: party(a), B: party(b) };
   const img = { A: a.sram(), B: b.sram() };
@@ -255,7 +285,7 @@ async function battleScenario(rtt) {
   const pre = { A: party(a), B: party(b) };
   const rec = { A: {}, B: {} };
   function* side(c, r) { yield* enterRoom(c, c === b ? 37 : 0, 'battle'); yield* fight(c, r); yield* backOn2F(c); }
-  runBoth(rig, a, b, side(a, rec.A), side(b, rec.B), 40000, `battle-${rtt}`);
+  await runBoth(rig, a, b, side(a, rec.A), side(b, rec.B), 40000, `battle-${rtt}`);
   const wall = Date.now() - S.t0;
   const after = { A: linkStats(a, a.sram()), B: linkStats(b, b.sram()) };
   linkChecks(ck, S);
@@ -342,7 +372,7 @@ async function neverShows() {
     yield* until(() => a.rd1('wPlayerWalking') === 0xff && a.rd1('hSerialConnectionStatus') === 0xff, 600, 'free', null, 24, a);
     yield* wait(60);
   }
-  runBoth(rig, a, b, sideA(), wait(10), 6000, 'never-shows');
+  await runBoth(rig, a, b, sideA(), wait(10), 6000, 'never-shows');
   const wall = Date.now() - S.t0;
   ck.ok('A shows the game\'s own "Your friend is not ready."', tText > 0, `${tText - tYes} frames after YES`);
   ck.ok('A link status back to $FF, mode 0', a.rd1('hSerialConnectionStatus') === 0xff && a.rd1('wLinkMode') === 0);
@@ -374,7 +404,7 @@ async function cutScenario(name, { room, cutWhen, sides, expect }) {
     for (const x of res.texts || []) seen[c.name].add(x);
     yield* recover(c, seen[c.name], res);
   }
-  runBoth(rig, a, b, side(a, sides.A), side(b, sides.B), 40000, name);
+  await runBoth(rig, a, b, side(a, sides.A), side(b, sides.B), 40000, name);
   const wall = Date.now() - S.t0;
   ck.ok('the relay was cut', relay.closed && cut.frame > 0, cut.why);
   for (const [who, c, s] of [['A', a, S.sa], ['B', b, S.sb]]) {
@@ -477,7 +507,7 @@ async function hostile() {
   const seen = { A: new Set(), B: new Set() };
   watchText(rig, [a, b]);
   function* side(c) { yield* enterRoom(c, c === b ? 37 : 0, 'trade'); yield* recover(c, seen[c.name]); }
-  runBoth(rig, a, b, side(a), side(b), 40000, 'hostile');
+  await runBoth(rig, a, b, side(a), side(b), 40000, 'hostile');
   const wall = Date.now() - S.t0;
   const inv = evs(S.sa, 'invalid-blocks');
   ck.ok('B\'s blocks were tampered in flight', tampered);
@@ -500,7 +530,7 @@ async function romMismatch() {
   const S = await setup({ rtt: 200, romB: 'ab'.repeat(32) });
   const { rig } = S;
   rig.stepper = ((inner) => (r) => inner(r))(rig.stepper);
-  for (let i = 0; i < 120; i++) rig.frame();
+  for (let i = 0; i < 120; i++) { if (NET) await NET.quiesce(); rig.frame(); }
   const wall = Date.now() - S.t0;
   for (const [who, s] of [['A', S.sa], ['B', S.sb]]) {
     ck.ok(`${who} refused at hello (rom-mismatch)`, evs(s, 'refuse').some((x) => x.reason === 'rom-mismatch'), tail(s));
@@ -519,6 +549,7 @@ const SCENARIOS = {
   'trade-200': () => tradeScenario(200),
   'trade-1000': () => tradeScenario(1000),
   'battle-0': () => battleScenario(0),
+  'battle-200': () => battleScenario(200),
   'battle-1000': () => battleScenario(1000),
   'never-shows': neverShows,
   'cut-blocks': cutBlocks,
@@ -530,7 +561,15 @@ const SCENARIOS = {
 };
 
 async function main() {
-  const opts = parseArgs(process.argv.slice(2), { only: '' });
+  const opts = OPTS;
+  if (opts.relay) {
+    const venv = path.join(REPO_DIR, '../tools/venv/bin/python');
+    const python = process.env.PYTHON || (existsSync(venv) ? venv : 'python3');
+    // the e2e runs faster than real time, so the per-socket frame rate cap is lifted
+    const caps = opts.realtime ? [] : ['frames_per_s=100000', 'frame_burst=100000'];
+    SERVER = await startRelayServer({ repoDir: REPO_DIR, python, caps });
+    console.log(`relay mode${opts.realtime ? ' (real time, default caps)' : ''}: server.py --link on 127.0.0.1:${SERVER.port}`);
+  }
   const names = opts.only ? opts.only.split(',') : Object.keys(SCENARIOS);
   const rows = [];
   let ok = true;
@@ -539,12 +578,19 @@ async function main() {
     if (!SCENARIOS[name]) { console.log(`unknown scenario ${name}`); ok = false; continue; }
     const t0 = Date.now();
     let r;
+    NET = null;
     try { r = await SCENARIOS[name](); } catch (e) {
+      if (NET && process.env.E2E_DEBUG) console.log(`net: ${NET.busy()}`);
+      if (NET) await NET.shutdown().catch(() => {});
       console.log(`${name}: FAIL (exception)\n${e.stack || e}`);
       if (process.env.E2E_DEBUG && globalThis.__S) for (const s of [globalThis.__S.sa, globalThis.__S.sb]) console.log(JSON.stringify(s.state().log.slice(-25)));
       rows.push([name, 'FAIL', ((Date.now() - t0) / 1000).toFixed(1), 'exception']);
       ok = false;
       continue;
+    }
+    if (NET) {
+      r.ck.ok('every message fit the relay frame cap', NET.oversize === 0, NET.oversize);
+      await NET.shutdown();
     }
     r.ck.print();
     const secs = ((Date.now() - t0) / 1000).toFixed(1);
@@ -552,6 +598,16 @@ async function main() {
     rows.push([name, r.ck.pass ? 'PASS' : 'FAIL', secs, r.key || '']);
     ok = ok && r.ck.pass;
     r.rig.delete();
+  }
+  if (SERVER) {
+    await new Promise((res) => setTimeout(res, 300));    // let the relay log the last closes
+    await SERVER.stop();
+    const log = SERVER.stderr();
+    const leaks = CODES.filter((c) => log.includes(c)).length + (/"type"|"op"|10\.\d+\.\d+\.\d+/.test(log) ? 1 : 0);
+    const rooms = (log.match(/room paired/g) || []).length;
+    console.log(`relay log: ${log.split('\n').length - 1} lines, ${rooms} rooms paired, no code/payload/IP: ${leaks === 0 ? 'PASS' : 'FAIL'}`);
+    if (process.env.E2E_DEBUG) console.log(log);
+    ok = ok && leaks === 0 && rooms === CODES.length;
   }
   console.log('\n| scenario | result | wall s | key values |\n|---|---|---|---|');
   for (const row of rows) console.log(`| ${row.join(' | ')} |`);

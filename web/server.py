@@ -8,6 +8,7 @@ URL is never turned into a filesystem path, so path traversal has nothing to
 traverse.
 
     python3 server.py --rom kanto-first.gbc
+    python3 server.py --rom kanto-first.gbc --link     # also the LK1d link relay at /link
 
 TLS and any public exposure are the host's job -- put this behind a reverse
 proxy (nginx, Caddy, Cloudflare Tunnel) rather than binding it to 0.0.0.0.
@@ -99,8 +100,20 @@ class Handler(http.server.BaseHTTPRequestHandler):
     sys_version = ""
     protocol_version = "HTTP/1.1"
     files = {}
+    link = None  # a link_relay.Relay when started with --link; else /link is a 404
 
     def _respond(self, send_body):
+        if self.timeout is None:
+            return self._send(send_body)
+        # --link: the per-read timeout bounds the request headers (slowloris), but Python
+        # applies a socket timeout to a whole sendall, so lift it while a download is written
+        self.connection.settimeout(None)
+        try:
+            return self._send(send_body)
+        finally:
+            self.connection.settimeout(self.timeout)
+
+    def _send(self, send_body):
         entry = self.files.get(self.path.split("?", 1)[0])
         if entry is None:
             body = b"404\n"
@@ -126,10 +139,16 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(body)
 
     def do_GET(self):
+        if self.link is not None and self.path.split("?", 1)[0] == "/link":
+            self.log_link()
+            return self.link.handle(self)
         self._respond(True)
 
     def do_HEAD(self):
         self._respond(False)
+
+    def log_link(self):  # no IP and no query string: the relay logs its own events
+        sys.stderr.write('- "GET /link"\n')
 
     def log_message(self, fmt, *args):  # one line per request, on stderr
         sys.stderr.write("%s %s\n" % (self.address_string(), fmt % args))
@@ -139,19 +158,35 @@ def main():
     parser = argparse.ArgumentParser(description="Serve the Kanto First web player.")
     parser.add_argument("--rom", default="kanto-first.gbc", help="path to the .gbc ROM (default: ./kanto-first.gbc)")
     parser.add_argument("--host", default="127.0.0.1", help="bind address (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8080, help="port (default: 8080)")
+    parser.add_argument("--port", type=int, default=8080, help="port (default: 8080; 0 = any free port)")
+    parser.add_argument("--link", action="store_true", help="also serve the link relay at /link (LK1d)")
+    parser.add_argument("--link-origin", action="append", default=[], metavar="ORIGIN",
+                        help="extra allowed Origin for /link, e.g. http://127.0.0.1:8080 (repeatable)")
+    parser.add_argument("--link-cap", action="append", default=[], metavar="NAME=VALUE",
+                        help="override a relay cap (see CAPS in link_relay.py; repeatable)")
     args = parser.parse_args()
 
     Handler.files = load_files(args.rom)
+    if args.link:
+        import link_relay
+        Handler.link = link_relay.Relay(link_relay.DEFAULT_ORIGINS + tuple(args.link_origin),
+                                        link_relay.parse_caps(args.link_cap)).start()
+        # bounds the HTTP header phase before an upgrade (slowloris): a per-read socket timeout
+        Handler.timeout = Handler.link.caps["handshake_s"]
+    elif args.link_origin or args.link_cap:
+        parser.error("--link-origin and --link-cap need --link")
     rom_bytes = len(Handler.files[ROM_PATH][0])
     server = http.server.ThreadingHTTPServer((args.host, args.port), Handler)
-    print("Kanto First on http://%s:%d/  (%d files, ROM %d bytes from %s)"
-          % (args.host, args.port, len(Handler.files) - 1, rom_bytes, args.rom), flush=True)
+    print("Kanto First on http://%s:%d/  (%d files, ROM %d bytes from %s)%s"
+          % (args.host, server.server_address[1], len(Handler.files) - 1, rom_bytes, args.rom,
+             "  link relay at /link" if args.link else ""), flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         pass
     finally:
+        if Handler.link is not None:
+            Handler.link.stop()
         server.server_close()
 
 
