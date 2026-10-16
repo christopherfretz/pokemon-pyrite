@@ -19,6 +19,8 @@ does not reopen them.
   "code refused", so a real player under an attack was told their code was wrong — now 4029 "too many attempts");
   G2 INFO pong coalescing in link.js not done (a ping flood trips the sender's own frame bucket first); G3/G4 INFO
   rate-key and logging edge cases, recorded in the review; G5 the held queue cannot bypass stage checks.
+- **LK1f review (`docs/REVIEW-LK1F.md`, private):** no HIGH/MEDIUM; LOW-1 and INFO-3/4/5 handled in
+  *LK1f findings → Review follow-up*.
 
 ## Executive summary
 
@@ -1391,6 +1393,12 @@ tools/venv/bin/python scripts/gen_link_fixtures.py   # writes hack/web/test/fixt
 After rebuilding the ROM or the fixtures, rerun without `--no-write` and commit the oracle
 diff.
 
+`rom_sha256` is recorded in every oracle file but is **not compared** by `--no-write` (since the LK1f review,
+REVIEW-LK1F INFO-5). The title-screen `BUILD_REV` is the pyrite short hash and is baked into the ROM, so an oracle
+recorded before a commit can never match the committed build's sha, and a whole-file compare failed on every
+committed tree. Every other field (frames, stages, blocks, nybbles, end state, RNs, pacing results) must still be
+identical. Each run prints an `INFO rom_sha256 stored … current …` line, so a drift stays visible.
+
 ### Harness lessons (for LK1c-e)
 
 - **Shared joypad.** binjgb's joypad is a single static per wasm module. Each core's buttons must
@@ -2259,8 +2267,16 @@ The party block is `name(11) party(8) structs(288) OTs(66) nicks(66) padding(3)`
 with $00 by `Link_PrepPartyData_Gen2`, is not in either patch list (`FixDataForLinkTransfer` patches only ID and
 structs), and is never read by vanilla Crystal. Only **padding byte 0** is used: `Serial_ExchangeBytes` keeps any
 leftover `$FD` preamble bytes as data, so the block can arrive shifted by up to the 2 bytes measured in LK1b (8
-leading `$FD` toward the slave, 6 toward the master). Byte 0 always arrives; bytes 1-2 may be cut off. Bytes 1-2 stay
-`$00`, reserved.
+leading `$FD` toward the slave, 6 toward the master). Byte 0 arrives for shifts up to 2; bytes 1-2 may be cut off.
+Bytes 1-2 stay `$00`, reserved.
+
+The margin is not symmetric (REVIEW-LK1F LOW-1). Toward the master the byte lands at receive-buffer index 447
+(shift 0). Toward the **slave** it lands at index 449 (shift 2), the **last** byte of the 450-byte
+`wLinkReceivedPartyData`, so the slave already uses the whole measured margin. A shift of 3 toward the slave (never
+observed; the measured maximum is 2) would push byte 0 off the end: the slave would read `$FE` and mask, while the
+master still keeps the gender. That is a one-sided, cosmetic loss of the explicit gender on one mon (it falls back to
+its DV gender, exactly as before LK1f); there is no corruption, crash or desync, and the trade completes. The 3-byte
+padding cannot carry more margin without moving the flag, which would be a protocol change.
 
 `$8F` is `'P'` in the charmap. It is none of the bytes that can sit there by accident: `$00` (vanilla, pre-LK1f
 pyrite), `$FE` (no-data byte, never sent raw; `wLinkReceivedPartyEnd`), `$FD`/`$FF` (preamble, patch replacement),
@@ -2305,7 +2321,7 @@ be abnormal!" / "Too bad! The trade was canceled!" path, which sends `$1` and re
 | `pacing` | PASS 3/3 | failure edge unchanged (gap 1568 ok, 1536 bad) |
 | `gender-keep` | PASS 20/20 | wire byte 0 = `8f8f8f` both ways; latch A `8f8f8f`, B `8f8f8f`; MAGIKARP B->A CaughtLevel `$c0` kept, stats screen female (DV male); RATTATA A->B `$80` kept, male (DV female); MEW A->B hostile `$80` kept, stats screen blank |
 | `gender-mask-vanilla` | PASS 20/20 | A's byte zeroed every frame: wire A->B `000000`, B latch `000000`; RATTATA and MEW arrive `$00` (masked), RATTATA shows its DV gender (female); MAGIKARP B->A still `$c0`, female |
-| `bounds` | PASS 8/8 | B holds `wPlayerLinkAction` at 5, 6, 14 (B has 4): A refuses each ("abnormal", "canceled"); slot 5 read species `$00`/`$00`, the case vanilla let through; both parties byte-identical; both back on 2F |
+| `bounds` | PASS 9/9 | B holds `wPlayerLinkAction` at 4, 5, 6, 14 (B has 4): A refuses each ("abnormal", "canceled"); slot 4 is the exact boundary (slot == `wOTPartyCount`, list `$FF`, added after the review); slot 5 read species `$00`/`$00`, the case vanilla let through; both parties byte-identical; both back on 2F |
 
 Negative control: `bounds` against the pre-LK1f ROM (368b0d5) fails at slot 5. A never shows "abnormal" or
 "canceled": the bogus slot passes vanilla validation and the trade sequence goes ahead.
@@ -2365,6 +2381,19 @@ LK1f adds no save data. `wLinkPeerFeatures` is unsaved WRAM0, written before eve
   exactly what vanilla sends.
 - The Time Capsule path at run time (it has no harness). It is covered by reading the code: `LinkTrade` checks
   `wLinkMode` first.
+
+### Review follow-up (REVIEW-LK1F)
+
+The independent review (`docs/REVIEW-LK1F.md`, private context repo) found no HIGH or MEDIUM. Follow-up, with no
+ROM change (the `serial_constants.asm` edit is comment-only):
+- **LOW-1:** "byte 0 always arrives" overclaimed. *The byte and the value* and the `LINK_PYRITE_FEATURES` comment now
+  say the slave has no shift margin left: a shift of 3 makes the slave mask while the master keeps (cosmetic, safe).
+- **INFO-3:** `bounds` also names slot 4 of 4 (slot == party count); refused. 9/9.
+- **INFO-4:** GENDER-FIELD.md's "needs a version handshake" bullets now point here; the mixed-build link-battle
+  desync stays a physical-cable-only limit, with gating `LinkEnemyMonGender` on `wLinkPeerFeatures` as an unbuilt idea.
+- **INFO-5:** `cable.mjs --no-write` no longer compares `rom_sha256` (see *LK1b findings → Re-running*). On the
+  committed a2fd224 build: trade 33/33, battle 17/17, pacing 3/3, gender-keep 20/20, gender-mask-vanilla 20/20,
+  bounds 9/9, every oracle identical, exit 0.
 
 ### Release-note sentence
 

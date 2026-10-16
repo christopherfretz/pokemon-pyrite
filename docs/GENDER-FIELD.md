@@ -914,10 +914,16 @@ $01 is unchanged: the GiveShuckle and NewGame call sites swap one farcall target
   gender on the pyrite side. If a mixed-ratio mon whose explicit and DV genders differ uses or receives **Attract**, the
   move can succeed on one Game Boy and fail on the other. From then on the "in love" 50% roll in `CheckTurn` (and its
   enemy twin) consumes `Random` on one side only, the two battle RNGs diverge and the link battle desyncs. The HUD
-  symbol mismatch is the visible part of the same disagreement. Only GF3-vs-GF3 is consistent. Nobody link-battles
-  this ROM today and the web player has no link cable, so this is documented, not fixed; a fix would need a version
-  handshake. Save data is never affected (link battles do not save the opponent). Outgoing pyrite mons look like a
-  time of day to a vanilla partner's Poké Seer.
+  symbol mismatch is the visible part of the same disagreement. Only GF3-vs-GF3 is consistent. **Where it can still
+  happen (since LK1):** only on a **physical cable** against vanilla Crystal/GS or a pre-GF3 pyrite. It cannot happen
+  over the web link, because the relay's `hello` requires both players to run an identical ROM (same sha256). The
+  version handshake this bullet used to ask for now exists: LK1f's feature byte (`LINK_PYRITE_FEATURES` = `$8F` in
+  the party block's first padding byte, latched into `wLinkPeerFeatures`; LK1-LINK.md "LK1f findings"). LK1f uses it
+  for trades only, so pyrite↔pyrite trades keep explicit gender over the web link and a real cable alike; link
+  battles do not consult it. **Unbuilt follow-up idea:** gate `LinkEnemyMonGender` (and the own-mon gender shown in a
+  link battle) on `wLinkPeerFeatures == LINK_PYRITE_FEATURES`, falling back to the DV gender against any other peer,
+  which would close the mixed-build desync on a cable too. Save data is never affected (link battles do not save the
+  opponent). Outgoing pyrite mons look like a time of day to a vanilla partner's Poké Seer.
 - **NPC in-game trades** keep their DV gender (`npc_trade.asm` still uses `SetGiftPartyMonCaughtData`). Their OT
   gender tables already fix what the player sees.
 - **Mobile paths** (Battle Tower uploads, mobile trades) were not touched.
@@ -932,6 +938,10 @@ No engine or save-format change.
   now says why. Against any non-GF3 build, Attract can succeed on one Game Boy and fail on the other. The "in love"
   roll then consumes `Random` on one side only, and the battle desyncs. Only GF3-vs-GF3 is consistent. The bullet
   records this without fixing it, because a fix needs a version handshake and nobody links this ROM.
+  *Update (LK1f):* that handshake now exists (`wLinkPeerFeatures`, `LINK_PYRITE_FEATURES`) and pyrite↔pyrite trades
+  keep explicit gender. The battle desync remains only on a physical cable against vanilla or a pre-GF3 pyrite (GF3
+  pyrites agree with each other with or without LK1f); the web link cannot pair different ROMs. Gating
+  `LinkEnemyMonGender` on the latch is an unbuilt follow-up (see the bullet above).
 - **L-2 (web tracker):** `readEnemy` still reads through the gender byte. Its "settled" signature now uses only the
   encounter's identity bytes: species, the two DV bytes, level, and the gender byte when the tables have it. PP, the
   status byte, held item and moves are no longer part of it.

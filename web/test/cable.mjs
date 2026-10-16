@@ -31,14 +31,16 @@
 //           hostile bits on genderless MEW are kept but shown genderless
 //   gender-mask-vanilla  (LK1f) the same with A's feature byte zeroed in
 //           flight (A looks like vanilla Gen 2): B masks, A still keeps
-//   bounds  (LK1f) B names trade slots 5, 6, 14 past its 4-mon party; A
+//   bounds  (LK1f) B names trade slots 4 (== party count), 5, 6, 14 past its
+//           4-mon party; A
 //           refuses each via "abnormal"/"trade was canceled", parties intact
 //   (the LK1f scenarios assert only; they write no oracle)
 //
 // Usage: node web/test/cable.mjs [--scenario trade|battle|pacing|gender-keep|
 //        gender-mask-vanilla|bounds|all]
 //        [--fixtures web/test/fixtures] [--oracle web/test/oracle] [--slice 512]
-//        [--no-write]   (compare against the oracle snapshots, do not rewrite)
+//        [--no-write]   (compare against the oracle snapshots, do not rewrite;
+//                        rom_sha256 is shown as INFO, not compared)
 // Exit status 0 = every scenario run passed.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
@@ -614,10 +616,11 @@ export async function genderScenario(opts, { vanillaA = false } = {}) {
 }
 
 /* bounds: B (slave) is made hostile by holding its wPlayerLinkAction at a slot
-   past its 4-mon party while the trade nybbles are exchanged.  A must refuse
+   at or past the end of its 4-mon party (slot 4 is the exact boundary,
+   slot == wOTPartyCount) while the trade nybbles are exchanged.  A must refuse
    through "<mon> appears to be abnormal!" / "trade was canceled", with no
    crash, both parties untouched and both back at the trade menu. */
-export const HOSTILE_SLOTS = [5, 6, 14];
+export const HOSTILE_SLOTS = [4, 5, 6, 14];
 export async function boundsScenario(opts) {
   const ck = new Checks('bounds');
   const { rig, a, b, cable } = await setup(opts);
@@ -709,12 +712,20 @@ function oracleOf(name, r, opts) {
   };
 }
 /* Deterministic parts only (frames/ticks/stage frame numbers are included:
-   with fixed fixtures, RTC and inputs they must not move either). */
+   with fixed fixtures, RTC and inputs they must not move either).
+   rom_sha256 is recorded but NOT compared: BUILD_REV (the pyrite short hash)
+   is baked into the ROM, so an oracle recorded before a commit can never match
+   the committed build's sha (REVIEW-LK1F INFO-5).  The stored and current
+   values are returned as an INFO line so a drift stays visible. */
 function compareOracle(file, now) {
   let old;
-  try { old = JSON.parse(readFileSync(file, 'utf8')); } catch { return 'no oracle on disk'; }
-  const a = JSON.stringify(old), b = JSON.stringify(JSON.parse(JSON.stringify(now)));
-  return a === b ? null : 'differs from the oracle on disk';
+  try { old = JSON.parse(readFileSync(file, 'utf8')); } catch { return { diff: 'no oracle on disk', info: null }; }
+  const cur = JSON.parse(JSON.stringify(now));
+  const info = `INFO rom_sha256 stored ${old.rom_sha256 ?? '-'} current ${cur.rom_sha256 ?? '-'}` +
+    (old.rom_sha256 === cur.rom_sha256 ? ' (same)' : ' (differs; not compared)');
+  delete old.rom_sha256;
+  delete cur.rom_sha256;
+  return { diff: JSON.stringify(old) === JSON.stringify(cur) ? null : 'differs from the oracle on disk', info };
 }
 
 async function main() {
@@ -749,7 +760,7 @@ async function main() {
     if (r.oracle !== false && r.seg) {
       const o = oracleOf(name, r, opts);
       const file = path.join(opts.oracle, `${name}.json`);
-      const diff = compareOracle(file, o);
+      const { diff, info } = compareOracle(file, o);
       if (opts['no-write']) {
         console.log(`  oracle ${file}: ${diff || 'identical'}`);
         if (diff) ok = false;
@@ -758,6 +769,7 @@ async function main() {
         writeFileSync(file, JSON.stringify(o) + '\n');
         console.log(`  oracle ${file}: written (${diff || 'unchanged'})`);
       }
+      if (info) console.log(`  ${info}`);
     }
     ok = ok && r.ck.pass;
     r.rig.delete();
@@ -970,10 +982,10 @@ async function pacingScenario(opts) {
         rom_sha256: sha256(rig.rom), snap_frame: snap.frame, burst_frame: burstFrame, fed_bytes: feed.length,
         edge, first_fail: lo, default_gap: 6144, results };
       if (o['no-write']) {
-        let old = null; try { old = readFileSync(file, 'utf8'); } catch { /* none */ }
-        const same = old === JSON.stringify(doc) + '\n';
-        console.log(`  oracle ${file}: ${same ? 'identical' : 'differs from the oracle on disk'}`);
-        if (!same) ck.ok('pacing oracle identical', false);
+        const { diff, info } = compareOracle(file, doc);
+        console.log(`  oracle ${file}: ${diff || 'identical'}`);
+        if (info) console.log(`  ${info}`);
+        if (diff) ck.ok('pacing oracle identical', false);
       } else {
         writeFileSync(file, JSON.stringify(doc) + '\n');
         console.log(`  oracle ${file}: written`);

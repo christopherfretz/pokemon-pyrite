@@ -52,9 +52,13 @@ DEF SERIAL_PADDING_LENGTH EQU 3
 ; block can carry up to 2 extra leading $FD, measured in LK1b, which pushes the
 ; last 2 padding bytes off the end of the 450-byte receive buffer).  Pyrite
 ; therefore uses only the FIRST padding byte, the one that still arrives after
-; that shift.  A peer that sends LINK_PYRITE_FEATURES there keeps the explicit
-; gender bits (GF2/GF3, CaughtLevel bits 7-6) on a traded mon; anything else
-; ($00 from vanilla Crystal or a pre-LK1f pyrite) gets them masked, as before.
+; that shift.  The margin is used up toward the slave: there the byte lands on
+; the last byte of the 450-byte buffer, so a shift of 3 (never observed; the
+; measured maximum is 2) loses it and the slave masks while the master keeps
+; the gender -- a one-sided cosmetic loss, no corruption.  A peer that sends
+; LINK_PYRITE_FEATURES there keeps the explicit gender bits (GF2/GF3,
+; CaughtLevel bits 7-6) on a traded mon; anything else ($00 from vanilla
+; Crystal or a pre-LK1f pyrite) gets them masked, as before.
 ; $8F is 'P' in the charmap.  It cannot be produced by accident at that spot:
 ; not $00 (vanilla/pre-LK1f), $FE (wLinkReceivedPartyEnd, read when the shift
 ; is 3 and the byte is lost), $FD/$FF (preamble, patch replacement), $20/$21
