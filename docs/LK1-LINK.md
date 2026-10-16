@@ -894,3 +894,208 @@ Order: a → b → c → d → e → (release) → f → g. The review in g cove
 | Q7 | Gender handshake timing | **LK1f, after the transport ships** (section 7); masked until then |
 | Q8 | Relay in `server.py` or a separate process? | **In-process stdlib behind `--link`** (4.1), with the standalone mode as the escape hatch |
 | Q9 | Code length | **3 words / 1,024-word list / 120 s TTL.** 4 words if the security review asks |
+
+---
+
+## LK1a findings
+
+**Status: done (2026-10-15).** The fork has the link port. The rebuilt core is committed. Both
+the identity gate and the link smoke pass. Nothing player-visible changes: app.js never enables
+the port; that waits for LK1e.
+
+### What changed
+
+**Fork:** `christopherfretz/binjgb`, branch `pyrite-rtc`, commit
+`b91486087e74a6ab74eefd71143e96dd2401c5bd` on top of `8fb6fda`. The `web/vendor/binjgb-src`
+submodule points at it.
+
+In `src/emulator.c`:
+
+| what | lines |
+|---|---|
+| `LinkPort` struct, defines, log-entry layout | `:696-728` |
+| member `LinkPort link;` in `struct Emulator` | `:760` |
+| comment pinning `SAVE_STATE_VERSION (2)` | `:805-808` |
+| SC write stamps `ext_armed_at` | `:2685` |
+| helpers `link_in_count` … `link_reschedule` | `:4080-4175` |
+| `calculate_next_serial_intr` schedules the external completion | `:4180` |
+| `serial_synchronize`: internal bits from the FIFO | `:4206`, `:4217` |
+| `serial_synchronize`: external completion | `:4231-4234` |
+| `emulator_read_state` re-arms or reschedules | `:5214` |
+| defaults in `emulator_new` | `:5315` |
+| the nine API functions | `:5424-5511` |
+
+The nine prototypes are in `src/emulator.h`. The exports are in `src/emscripten/exported.json`
+(`:16-24`).
+
+**Core build** (`web/vendor/binjgb/build.sh`, unchanged; emcc 5.0.7, `-DWERROR=ON`, no
+warnings). It reproduces byte-for-byte from the fork commit:
+
+| file | new sha256 (b914860) | old sha256 (8fb6fda) |
+|---|---|---|
+| `binjgb.js` | `6d448da28611d53d8d57f0fdf0ea7788a1d35211346bed8ecee7cb37fdee1233` | `f011e737…720f` |
+| `binjgb.wasm` | `056cf5b50366fd9a5b5591c39f7c1ee55f595c74fb2658f5367cba78a029254d` | `3818651d…18c8` |
+
+The old pair also rebuilt byte-identically from a clean `8fb6fda` checkout, so the toolchain is
+the same one.
+
+`web/vendor/binjgb/VERSION.txt` now has the fork commit, the API list, the hashes and the gate
+commands.
+
+**`web/app.js:63-72`:**
+
+- `CORE_COMMIT = 'c60e138d…+pyrite-rtc@b91486087e74'`.
+- `COMPAT_CORES` gains `'c60e138d…+pyrite-rtc@8fb6fda5550d'`, so today's resume snapshots and
+  slot states keep loading. The identity gate checks the layout claim behind that (`sizeof`
+  unchanged); the existing state-size check in app.js remains the backstop.
+- `make crystal` regenerated `web/sw.js` (untracked, built at deploy). Its precache manifest now
+  lists the new hashes.
+
+**Tests:** `web/test/`, Node 24, no npm deps.
+
+- `core.mjs`: a small Node driver for the wasm core that mirrors app.js's boot sequence. This is
+  the seed of LK1b's `harness.mjs`.
+- `identity.mjs`: the 2.4 step 4 gate.
+- `linkport.mjs`: a behavioural smoke test of the port on a synthetic 32 KB ROM (`di`, then
+  `jr @`). It pokes SB/SC directly, so it tests the core rather than Crystal's link code.
+
+### Identity gate (2.4 step 4)
+
+Reference run: old core = `git show 4f09baa:web/vendor/binjgb/*` (8fb6fda); new core = the
+committed blobs; ROM = `pokecrystal.gbc` built at `4f09baa` (`54d5da4d24e4`); fixed RTC (day 3,
+10:00). The input script is seeded (mulberry32):
+
+- it taps A/START through the title and Continue;
+- then it walks, presses A/B and makes START-menu excursions (Pokédex, save dialog).
+
+Screenshots of the run confirm each of those screens is reached.
+
+| preset / seed | frames | checkpoints (every 60) | distinct screens | result |
+|---|---|---|---|---|
+| `celadon.sav` / 1 (default) | 20,000 | 333 identical | 253 | PASS (13.9 s) |
+| `cerulean.sav` / 2 | 20,000 | 333 identical | 276 | PASS |
+| `route4.sav` / 3 | 20,000 | 333 identical | 199 | PASS |
+| `johto_complete.sav` / 4 | 20,000 | 333 identical | 248 | PASS |
+
+In every run:
+
+- state size is 199,608 on both cores;
+- end SRAM is identical; the game saved during the run, so the check is not vacuous (celadon
+  `126f0a95…`);
+- end `emulator_write_state` bytes are identical (0 bytes differ; celadon `7fa96870…`);
+- the header (`0x6b57a7e2`, version 2) is identical.
+
+Cross-load: an **old-core** end state and a **new-core** end state are each loaded into a fresh
+old core and a fresh new core and run for 600 frames. Old and new agree on every framebuffer
+checkpoint and on the end state. Both also match the uninterrupted run's framebuffers.
+
+### Link smoke (`linkport.mjs`): 46 checks, 0 failed
+
+- **(a) Internal clock.**
+  - Halfway through a byte, `SB = out<<4 | in>>4` (MSB first).
+  - The peer byte is taken from the FIFO at the first clock edge.
+  - IF bit 3 is raised.
+  - With an empty FIFO, `idle_in` is shifted in.
+  - Log: `{12→a5, int, FIFO}`, `{34→3c, int, FIFO}`, `{56→fe, int, idle}`.
+- **(b) External clock.**
+  - Still armed at +6,000 ticks; complete at +6,208 (gap 6,144 plus the 64-tick `run_until`
+    granularity), with IF bit 3 raised.
+  - A second byte armed straight away is held until `ext_last + gap`.
+  - Mode 1 with an empty FIFO never clocks; a later `push_in` completes it at once (the armed
+    and last stamps are already old).
+  - Mode 2 sends `idle_in` at the gap, then the next idle byte only at `ext_last + ext_idle_period`
+    (70,224).
+  - Mode 0 never clocks.
+- **(c) peek / clock_external.**
+  - `peek = 0x25b` while armed external.
+  - `clock_external(0x42)` returns `0x5b`; SB becomes `0x42`, IF is visible at once, and the
+    entry is logged with the FORCED flag.
+  - A second call returns -1. The FIFO is untouched.
+  - `clear_in` empties it. Disabling while armed means no completion.
+- **(d) Link disabled.**
+  - Every API call is inert: push 0, pending 0, peek 0, drain 0, clock -1.
+  - An internal transfer reads SB `$FF`, SC `$7F`, IF 8.
+  - An external transfer never completes (SB `$34`, SC `$FE`).
+  - All of these read-backs, and the state sha (`37e83049…`), equal the old core's.
+
+### Browser checks (2.4 step 5): not run
+
+`web_clock_check.py`, `web_offline_check.py` and `web_layout_check.py` need headless Chromium.
+This container has the `playwright` Python package but no browser (`~/.cache/ms-playwright`
+absent). The brief said not to install one, so they still need running with
+`PROVISION_BROWSER=1 scripts/provision.sh`, then the three scripts with `tools/venv/bin/python`.
+
+Mitigations so far:
+
+- `node --check web/app.js` passes.
+- The only app.js change is the two constants.
+- The core's JS surface used by app.js is a strict superset of the old one: same glue options,
+  same exports plus nine.
+
+### Deviations from section 2 (and why)
+
+1. **Extra private fields in `LinkPort`:** `int_latched`, `int_out`, `int_in`, `int_flags`,
+   `out_overflow`.
+   - The internal-clock byte is shifted in one bit per edge, so the peer byte and the outgoing
+     SB must be latched at the first edge. The log needs the SB from the *start* of the
+     transfer, which section 2.2 asks for.
+   - `out_overflow` marks a dropped log entry. When `out_log` is full, the oldest entry is
+     dropped and the next entry carries flag `0x80`, so the stand-in can tell it lost bytes.
+2. **Log entry packing** (section 2.2 left it open):
+   - bits 0-7 = out, 8-15 = in, bit 16 = clock (1 = internal);
+   - bits 24-31 = flags (`0x01` from FIFO, `0x02` forced by `clock_external`, `0x80` overflow
+     before this entry).
+3. **Idle cadence formula.** A FIFO byte completes at `max(armed_at, last) + gap`. A mode-2 idle
+   byte completes at `max(armed_at + gap, last + ext_idle_period)`. This is section 2.2's
+   "(idle cadence for idle bytes)" made explicit.
+4. **`emulator_read_state` re-arms the port.** It sets `ext_armed_at = TICKS`, `ext_last = 0` and
+   drops a half-latched internal byte, then reschedules. A state loaded mid-transfer is then
+   paced from the load, not from stale ticks. When the port is disabled this only recomputes
+   `next_intr_ticks` to the value the state already holds, which the gate confirms.
+5. **`clock_external` also sets `INTR.if_`**, as well as `new_if`, so JS sees the interrupt
+   immediately without another `run_until`. **`peek` returns 0 while disabled**, in line with
+   "no-ops until enabled".
+6. **Known benign asymmetry.** Suppose the new core saves a state while the port is enabled and
+   an external transfer is armed. That state holds a finite `serial.next_intr_ticks`. Loaded into
+   an *old* core:
+   - the transfer still never completes there, as before;
+   - it only costs one extra `serial_synchronize` per instruction until SC is rewritten.
+   
+   The identity gate cannot hit this because the port stays off. It only matters if someone
+   rolls the core back during a link session.
+7. **Pre-existing, not ours: APU resample accumulator.** `apu.channel[1].accumulator`
+   (state offset 198,440) can differ by one after a load → run, because it depends on the audio
+   buffer, which is outside the state. Old→old does it too. The cross-load therefore compares
+   fresh old against fresh new, and the framebuffers against the uninterrupted run, rather than
+   byte-comparing a resumed state against the uninterrupted one.
+8. **Pre-existing app.js bug, reported only (out of scope).** `destroyEmulator`
+   (`web/app.js:898-903`) calls `_emulator_delete` and then `_free(romPtr)`. `emulator_delete`
+   already frees the ROM (`emulator.c:5331`, `file_data_delete`), so this is a double free. In the Node driver it caused
+   "memory access out of bounds" on the next allocation. In the page it fires on ROM swap and
+   reset; emmalloc seems to tolerate it there so far. It is worth a one-line fix (drop the
+   `_free`) in LK1e.
+9. **Tooling.** `cmake` was installed in the container with apt, which is what
+   `PROVISION_EMSDK=1` does. `make` came from `scripts/provision.sh`.
+
+### Re-running the gate
+
+From the pyrite checkout (`hack/`), with the workspace's emsdk Node 24:
+
+```sh
+NODE=../tools/emsdk/node/24.19.0_64bit/bin/node
+$NODE web/test/identity.mjs                      # old = 4f09baa's blobs, new = working tree
+$NODE web/test/identity.mjs --sav web/presets/cerulean.sav --seed 2
+$NODE web/test/linkport.mjs
+```
+
+Both exit 0 on pass. For the *next* core change, pass `--old-rev <the last pyrite commit that
+shipped a core>` (or `--old-dir`), so the gate compares against what phones actually run.
+
+Rebuilding the core:
+
+```sh
+PROVISION_EMSDK=1 scripts/provision.sh
+EMSDK=$PWD/tools/emsdk hack/web/vendor/binjgb/build.sh
+```
+
+Then compare the printed sha256s with `VERSION.txt`.

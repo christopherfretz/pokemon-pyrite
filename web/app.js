@@ -63,11 +63,13 @@
   var CORE_NAME = 'binjgb';
   /* Upstream commit + our fork commit (vendor/binjgb/VERSION.txt).  Stamped on
      every stored machine state. */
-  var CORE_COMMIT = 'c60e138da5a795ebb55e56b11b7e90024e41112c+pyrite-rtc@8fb6fda5550d';
+  var CORE_COMMIT = 'c60e138da5a795ebb55e56b11b7e90024e41112c+pyrite-rtc@b91486087e74';
   /* Cores whose EmulatorState layout is identical to this one, so their states
-     still load: the pyrite-rtc commit adds two functions and touches no struct.
+     still load: the pyrite-rtc commits add the RTC accessors (8fb6fda) and the
+     link port (b914860, kept outside EmulatorState) and touch no saved struct.
      (The state size check below still guards against a real layout change.) */
-  var COMPAT_CORES = ['c60e138da5a795ebb55e56b11b7e90024e41112c'];
+  var COMPAT_CORES = ['c60e138da5a795ebb55e56b11b7e90024e41112c',
+                      'c60e138da5a795ebb55e56b11b7e90024e41112c+pyrite-rtc@8fb6fda5550d'];
   var CORE_DIR = './vendor/binjgb/';
   var CORE_JS = CORE_DIR + 'binjgb.js';
   var DEFAULT_ROM = './kanto-first.gbc';

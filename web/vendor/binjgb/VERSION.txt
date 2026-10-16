@@ -4,9 +4,12 @@ binjgb — vendored emulator core
 Upstream:  https://github.com/binji/binjgb
            commit c60e138da5a795ebb55e56b11b7e90024e41112c (2026-06-16)
 Fork:      https://github.com/christopherfretz/binjgb
-           branch pyrite-rtc, commit 8fb6fda5550d0c306f534939e3442b96aac79f8a
-           = upstream c60e138d + one commit, "Export an MBC3 RTC getter/setter
-           for embedders" (CLK1, 2026-09-27)
+           branch pyrite-rtc, commit b91486087e74a6ab74eefd71143e96dd2401c5bd
+           = upstream c60e138d + two commits:
+             8fb6fda "Export an MBC3 RTC getter/setter for embedders"
+                     (CLK1, 2026-09-27)
+             b914860 "Add a link port: a host-driven stand-in for the link
+                     cable" (LK1a, 2026-10-15)
 Source:    git submodule ../binjgb-src (pinned to the fork commit above)
 Licence:   MIT (see LICENSE; docs/simple.js and docs/demo.js, from which this
            page's core glue was adapted, additionally carry LICENSE.gbstudio)
@@ -25,6 +28,26 @@ and the resume snapshot from the unpatched core still load (app.js
 COMPAT_CORES).  Both functions are exported as _emulator_get_rtc_seconds_f64
 and _emulator_set_rtc_seconds_f64.
 
+    void emulator_link_enable(Emulator*, Bool)
+    void emulator_link_set_idle_in(Emulator*, u8)
+    u32  emulator_link_push_in(Emulator*, const u8*, u32 len)
+    u32  emulator_link_in_pending(Emulator*)
+    void emulator_link_clear_in(Emulator*)
+    void emulator_link_set_ext_clock(Emulator*, u32 mode, u32 gap_ticks,
+                                     u32 idle_period_ticks)
+    u32  emulator_link_drain_out(Emulator*, u32* dst, u32 max)
+    u32  emulator_link_peek(Emulator*)
+    s32  emulator_link_clock_external(Emulator*, u8 in)
+
+The link port (docs/LK1-LINK.md section 2): a byte FIFO that feeds the other
+end of the serial cable, a paced virtual master for external-clock transfers,
+and a log of every completed byte.  It lives in struct Emulator, NOT in
+EmulatorState, so SAVE_STATE_VERSION and sizeof(EmulatorState) (199608) are
+unchanged and states from the two earlier cores still load.  It is off by
+default; with it off the core is behaviourally identical to 8fb6fda, which
+web/test/identity.mjs checks side by side (frames, SRAM and state bytes).
+All nine are exported with a leading underscore.
+
 Build (build.sh here; the committed artefacts are its output):
 
     Emscripten 5.0.7 (the version upstream used for its own docs/binjgb.*)
@@ -41,8 +64,9 @@ Build (build.sh here; the committed artefacts are its output):
     submodule of binjgb is not needed and is left uninitialised.
 
 sha256:
-    f011e7377aa6191c964d35bc0e5500019577dd6f76a9b9aff5e7175371f2720f  binjgb.js
-    3818651d324b90386cc4d2007490204f0ac519753345f93bf83bfd8c1a5818c8  binjgb.wasm
+    6d448da28611d53d8d57f0fdf0ea7788a1d35211346bed8ecee7cb37fdee1233  binjgb.js
+    056cf5b50366fd9a5b5591c39f7c1ee55f595c74fb2658f5367cba78a029254d  binjgb.wasm
+  (8fb6fda's build was f011e737...720f / 3818651d...18c8.)
 
 Reproducibility: the build is byte-identical from any checkout path.  Built
 the same way from unmodified upstream c60e138d, binjgb.js matches upstream's
@@ -55,7 +79,10 @@ To refresh:
     git -C <pyrite> submodule update --init web/vendor/binjgb-src
     (commit to the fork's pyrite-rtc branch; move the submodule to it)
     EMSDK=<emsdk> web/vendor/binjgb/build.sh     # or with emcc on PATH
-    # then update the hashes here and CORE_COMMIT in web/app.js.
+    # then update the hashes here and CORE_COMMIT in web/app.js, and
+    # (layout unchanged) add the old CORE_COMMIT to COMPAT_CORES.
+    tools/emsdk/node/*/bin/node web/test/identity.mjs   # must PASS
+    tools/emsdk/node/*/bin/node web/test/linkport.mjs
 
 Changing the core's EmulatorState layout invalidates every save *state* and
 the auto-resume snapshot, because they are raw dumps of that struct.  app.js
