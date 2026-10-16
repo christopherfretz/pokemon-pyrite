@@ -1099,3 +1099,301 @@ EMSDK=$PWD/tools/emsdk hack/web/vendor/binjgb/build.sh
 ```
 
 Then compare the printed sha256s with `VERSION.txt`.
+
+---
+
+## LK1b findings
+
+LK1b delivers section 8's harness and cable-mode oracle (layer 2), the two fixtures and the
+oracle snapshots. All three cable scenarios pass and are deterministic: a second run with
+`--no-write` reports every oracle file identical.
+
+| scenario | result | frames | wire bytes | wall time |
+|---|---|---|---|---|
+| trade | PASS 33/33 | 14,982 | 3,589 | 14 s |
+| battle | PASS 17/17 | 9,816 | 1,119 | 10 s |
+| pacing | PASS 3/3 | 3,552 + replays | 1,196 fed | 6 s |
+| all (`cable.mjs`) | exit 0 | | | 30 s |
+
+### Files
+
+- **`web/test/harness.mjs`** is the library. It provides:
+  - N cores on one wasm module, the shipped `binjgb.js`/`.wasm`, booted from a `.sav` + ROM;
+  - lockstep frames;
+  - per-core input *drivers*, which are generators;
+  - play.py's grammar (`script()`: `A*4 TAP:A*3 WAIT*60 MOVE:UP*3 FACE:UP UNTIL:TEXT AUNTIL:TEXT
+    WRAM:sym SHOT`);
+  - `.sym` reads and writes, with banked WRAM handled;
+  - screen text, the framebuffer sha256 and a PNG;
+  - the LK1a `LinkPort` per core (`enable/ext/idle/peek/drain/clockExt/putState`);
+  - JSON dumps (`core.dump()`).
+- **`web/test/cable.mjs`** contains the zero-latency cable, the stage segmenter and the three
+  scenarios.
+- **`web/test/fixtures/link_{a,b}.sav`** are the fixtures. `*.sa*` is git-ignored, so they were
+  added with `-f`. They are made by `scripts/gen_link_fixtures.py` in the context repo.
+- **`web/test/oracle/{trade,battle,pacing}.json`** hold the snapshots (17 KB, 7 KB and 2.5 KB).
+  Each one records:
+  - the ROM and fixture sha256s;
+  - the stage rows;
+  - the nybble run-lengths;
+  - every bulk block as the receiver stored it;
+  - end-of-run WRAM excerpts and the SRAM/framebuffer hashes.
+
+### Fixtures
+
+Both fixtures start from the `cerulean` web preset, which has the POKéDEX that the receptionists
+require. Each one is booted through CONTINUE in the PyBoy harness and walked to CERULEAN
+POKéCENTER 2F (map 20,1), at (5,3) facing the TRADE receptionist. The generator then does four
+things:
+
+1. It rewrites the trainer name and ID, re-badging the starter PIKACHU.
+2. It rebuilds the party with the ROM's own `TryAddMonToParty`. The EGG goes in through `GiveEgg`,
+   which gives it HP 0. This matters: `CheckPlayerPartyForFitMon` only ORs HP, so an egg with HP
+   would count as able to fight and the battle would never end.
+3. It makes the POKéDEX agree with the party and clears the species each side will receive.
+4. It saves through START > SAVE and pokes the mail letter into `sPartyMail` and its backup.
+
+The output is deterministic and takes about 1 s.
+
+| | trainer | ID | party (species/level) | planted bytes |
+|---|---|---|---|---|
+| `link_a` (master) | ALPHA | 11111 ($2B67) | MEWTWO 70 (PSYCHIC only), PIKACHU 6, MEW 5, RATTATA 4, PIDGEY 4, SPEAROW 4 | MEW HP stat exp $FE00; RATTATA holds FLOWER_MAIL "HELLO FROM / THE CABLE!" |
+| `link_b` (slave) | BRAVO | 65090 ($FE42) | MAGIKARP 5, CELEBI 5, EGG (TOGEPI) 5, PIKACHU 6 | ID $FE42, so a $FE in the header and in every struct |
+
+Deviations from section 8:
+
+- `link_b` has 4 mons, not 3, because the starter PIKACHU is kept.
+- The fixtures come from a dedicated generator, not from `scripts/gen_states.sh` (section 9). The
+  chain has no link-ready state, and patching identities on top of a preset is simpler.
+
+The roles come out as A master and B slave every run. This is deterministic, not designed: A
+reaches the receptionist first.
+
+### Scripted paths
+
+- **Trade.**
+  1. Both sides talk to the receptionist at (5,2) and say YES to save.
+  2. Both walk to their seats and sit.
+  3. Trade 1: A's MEW (slot 3) for B's MAGIKARP (slot 1).
+  4. Trade 2: A's RATTATA + mail (now slot 3) for B's CELEBI (slot 1).
+  5. Both CANCEL.
+  6. After `ExitLinkCommunications`, `MAPSETUP_LINKRETURN` reloads the room with the player still
+     on the seat, so each side walks out:
+     - master from (3,4): `MOVE:DOWN*1 MOVE:RIGHT*1 MOVE:DOWN*2`;
+     - slave from (6,4): `MOVE:DOWN*1 MOVE:LEFT*2 MOVE:DOWN*2`;
+     - then hold DOWN to the 2F.
+  7. Both SAVE, then reload through CONTINUE.
+- **Battle.**
+  1. From (5,3), walk `MOVE:DOWN*1 MOVE:RIGHT*4 MOVE:UP*1 FACE:UP` to the COLOSSEUM receptionist
+     at (9,2). The direct route is blocked by the counter at (7,3).
+  2. The fight is a state machine on screen cues:
+     - FIGHT/PACK/RUN menu: A. "PKMN" renders as "PM" in this font, so it is not a usable cue.
+     - Move menu (`TYPE/`): A.
+     - Forced switch (`Which PM?`, no FIGHT on screen): cursor to the first fit mon, then A.
+     - RECORD screen: B. It appears while `wBattleMode` is still nonzero.
+  3. Walk out as for the trade.
+
+### Asserted values
+
+**Trade (33 checks).**
+
+- **Cable:**
+  - 0 mismatches;
+  - exactly 1 dropped byte, which is the slave's exit $00 (see below);
+  - roles A master, B slave;
+  - 3 bulk exchanges: one on entry and one after each trade.
+- **Before trading:** each side saw the other's party and name. The slave adopted the master's RNs
+  (`2884e03a93ec4399ef43` on both).
+- **Final party species, WRAM = SRAM:**
+  - A: MEWTWO PIKACHU PIDGEY SPEAROW MAGIKARP CELEBI;
+  - B: EGG PIKACHU MEW RATTATA.
+- **Each traded mon:** its 48-byte struct is byte-identical on the receiving side, its OT name is
+  the sender's, and its nickname is kept.
+- **$FE handling:**
+  - BRAVO's ID $FE42 arrived in A's MAGIKARP and CELEBI;
+  - MEW's stat exp $FE00 arrived at B;
+  - no raw $FE in either party block on the wire;
+  - both patch lists are non-empty: toMaster `fdfdfdfdfd00…0109396999ffff`, toSlave
+    `fdfdfd00…006effff`.
+- **Mail:** RATTATA still holds FLOWER_MAIL at B, and B's `sPartyMail` slot 4 equals A's letter.
+- **POKéDEX:** caught set for each received species, in WRAM and SRAM (A: MAGIKARP, CELEBI; B:
+  MEW, RATTATA).
+- **Ending:** both back on 2F with `wLinkMode` 0, and both saves reload through CONTINUE with the
+  traded party.
+
+**Battle (17 checks).**
+
+- **Cable:** the same drop and mismatch rules; 1 bulk exchange, with no mail block.
+- **RNs:** the slave adopted the master's (`be57ef851baf43d667f8`). The RNs on the wire equal the
+  RNs in both games. Both sides consumed the same number of RNs (2 / 2).
+- **Result:**
+  - A: `wBattleResult` 0, "BRAVO was defeated";
+  - B: `wBattleResult` 1, "Lost against".
+- **Moves:** B was forced to switch twice, to CELEBI (slot 2) and then to PIKACHU (slot 4, past
+  the EGG). A used PSYCHIC 3 times.
+- **RECORD screens:** both agree.
+- **Party:** both parties are byte-unchanged after the battle, because `LoadPokemonData` restores
+  the party saved at the receptionist.
+- **SRAM `sLinkBattleStats`:** A 1-0-0 against BRAVO (65090); B 0-1-0 against ALPHA (11111).
+- **Ending:** both back on 2F.
+
+### Observed stage sequence (trade), against the 1.3 table
+
+Frames are from boot. "idle" is a byte pair outside any stage, shown as master/slave.
+
+| row | frames | observed |
+|---|---|---|
+| 2 | 1537-1572 | 36 × `$01`/`$00` (the slave is not yet armed, so it reads as its bit-7 fill), then one `$01`/`$02` that settles the roles |
+| 4 | 2596-2611 | `$61`, 15 bytes |
+| 5 | 2624-2626 | `$D1`, 3 bytes |
+| 8 | 3230-3259 | `$75`, 29 bytes |
+| 9 | 3307-3320 | `$76`, 13 bytes |
+| 10 | 3333 | one `$00/$FD` idle, then 3 frames |
+| 11-14 | 3336-3422 | bulk, 1,063 bytes |
+| 16T | 3690-7083 | 3 nybble exchanges of 13 bytes |
+| 17T | 7210-7378 | rows 8, 9 and the 1,063-byte bulk again |
+| 16T | 7644-11007 | 3 more |
+| 17T | 11134-11303 | rows 8, 9 and the bulk again |
+| 16T | 11629-11648 | CANCEL, `$7F` × 18 |
+| 18 | 11702 | linked: the slave's exit `$00`, dropped |
+| 18 | 11953-11974 | 2 unlinked bytes after `CloseLink` |
+
+The battle follows the same rows 2-9 at almost the same frames. It has a 672-byte bulk at
+3343-3397. Its 16B nybbles (`$80`/`$84`/`$85`/`$87`) run from 4889 to 7919, in runs of 13 to 103
+bytes, because the side that waits keeps resending its byte. Row 18 bytes fall at 9576-9625.
+
+**Discrepancies with the table:**
+
+1. **Row 18, "M: 1 B".** Both sides start an internal `$00` in `ExitLinkCommunications`. The
+   master's lands on the still-armed slave. The slave's goes to nobody, which is also true on
+   hardware. Later, 2 more bytes go out unlinked during `CloseLink`/reset. The stand-in must
+   tolerate a stray `$00` from the slave after the session; `checkDrops` asserts exactly this
+   case.
+2. **Row 10, "idle byte $FE".** Between nybble runs, the slave's idle byte is `$FE` and the
+   master's is `$00`. The byte just before the bulk is `$FD`, because the slave has already
+   staged its preamble.
+3. **Row 8 length.** On entry the run is 29 bytes, because the second side arrives later. In the
+   two repeats it is 13-14 bytes.
+4. **Rows 11-14 byte count.** The sum of the blocks is 17+450+200+390 = 1,057, but the burst is
+   1,063 bytes, 6 more. The battle shows the same: 17+450+200 = 667 against 672. The cause is
+   `Serial_ExchangeBytes`, which resends the current byte for every non-`$FD` it receives before
+   the first `$FD`. With the one-transfer lag (1.4 item 1), that is at least one extra byte per
+   block.
+
+   Replaying each receiver over the wire, the slave consumes 1,064 bytes of the master's stream
+   (673 in battle). That is one byte past the burst cut, so the oracle's last slave-side block
+   reads one byte short (mail 389, battle patch 199). This is an artefact of the segmentation
+   only: the game data checks above pass.
+5. **Block starts.** The receiver stores everything after the first `$FD`, so each stored block
+   starts with the leftover preamble bytes. One example is toMaster RN = 9 × `$FD` + 8 bytes.
+   `Link_CopyOTData` and the patch loop skip `$FD` by value.
+
+   The mail block comes through `ExchangeBytes`, which drops exactly one byte. The slave stores
+   `$20` × 5 first; the master stores `$00 $20 …`. This is the same one-transfer lag. The game
+   skips `$20` by value.
+
+   The stand-in feed (LK1c) should therefore be built from the *sender's* blocks with the native
+   preambles, not from the oracle's stored blocks.
+
+The first 16T run of each trade carries the menu choices. Master `$72` against slave `$70` is
+party index 2 (MEW) against index 0 (MAGIKARP). The later runs are the confirmations and the
+Mew/Celebi check byte (`link.asm:2036`). The check byte is not asserted separately.
+
+### Pacing sweep (`ext_gap`)
+
+**Method.**
+
+- **Snapshot:** the slave's state is snapshotted at frame 3334, two frames before the trade's
+  first bulk exchange.
+- **Feed:** the master's 1,063 burst bytes, taken from the cable run.
+- **Replay at each gap:** restore the snapshot with the LinkPort in `ext_mode 1` at that gap, push
+  the whole feed into the in-FIFO, and run until the FIFO is empty and the trade menu (CANCEL) is
+  on screen.
+- **Pass criteria** (both by sha256):
+  - the slave's received WRAM equals the cable run's (`wOTPlayerName` to `wOTPartyDataEnd`,
+    `wLinkOTMail`, `wLinkReceivedMail`, `wLinkBattleRNs`);
+  - the slave's own out bytes equal what it sent on the cable.
+
+**Results.**
+
+| gap | result |
+|---|---|
+| 12288 to 1568 | pass. 6144 replays the cable result exactly; 195 frames to the menu |
+| 1536 | **fail**. Received data is still right, but the slave's out stream goes wrong at byte 472: it is clocked before it has staged its next SB |
+| ≤ 1280 | fail. Received data is corrupt from byte 2 and the menu is never reached |
+
+- **Edge:** 1,568 ticks, found by bisection to 32-tick resolution.
+- **Margin:** the default 6144 is **3.92×** the edge. **No change to the C default is
+  recommended.**
+- **Scope:** this covers only the bulk exchange. That is the only hardware-paced stage; the
+  nybble stages are frame-paced.
+
+### Re-running
+
+From `hack/`:
+
+```sh
+NODE=../tools/emsdk/node/24.19.0_64bit/bin/node
+$NODE web/test/cable.mjs --no-write                  # all three; compare with the oracle
+$NODE web/test/cable.mjs --scenario battle --no-write
+$NODE web/test/cable.mjs                             # rewrite the oracle (after a ROM or fixture change)
+```
+
+Options:
+
+- `--scenario trade|battle|pacing|all`;
+- `--fixtures DIR`;
+- `--oracle DIR`;
+- `--slice N`, the cable granularity: a divisor of 3584, default 512.
+
+The run exits 0 on pass. It is single-threaded, about 30 s total. On a failure it prints both
+cores' position, frame, `wLinkMode`, serial status and screen, plus the cable counters and stage
+rows.
+
+To rebuild the fixtures, run this from the context repo. It needs `hack/pokecrystal.gbc` built:
+
+```sh
+tools/venv/bin/python scripts/gen_link_fixtures.py   # writes hack/web/test/fixtures/
+```
+
+After rebuilding the ROM or the fixtures, rerun without `--no-write` and commit the oracle
+diff.
+
+### Harness lessons (for LK1c-e)
+
+- **Shared joypad.** binjgb's joypad is a single static per wasm module. Each core's buttons must
+  be set immediately before that core runs, never for all cores up front.
+- **Lazy serial sync.** binjgb synchronises serial lazily. A transfer due exactly at the end of a
+  run is only logged at the next `serial_synchronize`, which `peek()` performs. So `peek()` before
+  `drain()`, and never discard a drained log.
+
+  An early cable version drained and discarded the peer's log inside `peek()`. It lost about one
+  master byte in 18. The game still traded, because the preamble skip absorbed the loss, but the
+  wire log was wrong.
+- **Unarmed peer.** An unarmed peer must read as its bit-7 fill (`$00`/`$FF`), not as its SB.
+  Otherwise the role race in `WaitForLinkedFriend` settles on a stale `$01`/`$02`.
+- **Latch rule.** Clock a peer only if it was armed when the byte latched (3,584 ticks before
+  completion) *and* is still armed. A peer that arms part-way through a byte must not complete.
+- **Room reload.** After a trade or battle the room reloads with the player still seated, and the
+  stand-in must not assume the player is back on 2F. LEAVE's `CloseLink` runs only once the player
+  walks out.
+- **Link battle UI.** It shows "PM" for PKMN. The RECORD screen waits for A or B before the battle
+  ends.
+
+### Not done / not verified
+
+- **Layer 1 unit tests** (validator, message schema, feed construction) and **layers 3-4** belong
+  to LK1c-e. The modules they test do not exist yet.
+- The pacing sweep covers the trade's first bulk exchange only. It does not cover the battle bulk
+  or the nybble stages.
+- Only the default slice of 512 ticks was run for the oracle. `--slice` accepts other divisors of
+  3584, but no result is recorded for them.
+- **Not exercised:**
+  - the check-byte paths b=1/2 are not asserted directly; the MEW and CELEBI trades exercise them
+    and both trades complete;
+  - the `$FE` path through the mail patch set;
+  - a draw, a forfeit or a time-out;
+  - the battle with the slave winning.
+- **Fixture ROM dependency.** The fixtures and oracle are tied to the ROM sha256 recorded in each
+  oracle file (`54d5da4d…`). Any ROM change that moves WRAM or Cable Club code means regenerating
+  both.
