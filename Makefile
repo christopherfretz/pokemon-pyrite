@@ -213,6 +213,7 @@ web/tables.json: web/gen_tables.py pokecrystal.gbc pokecrystal.sym \
 # BUNDLE) plus the preset saves it verifies on first use.  build_rev.txt is
 # rewritten only when HEAD moves (see above), so a second run is a no-op.
 SW_BUNDLE := web/index.html web/app.js web/offline.js web/style.css \
+             web/link.js web/link_validate.js web/link_transport.js \
              web/manifest.webmanifest web/icon-192.png web/icon-512.png \
              web/vendor/binjgb/binjgb.js web/vendor/binjgb/binjgb.wasm \
              web/edit.html web/edit.js web/presets/manifest.json \

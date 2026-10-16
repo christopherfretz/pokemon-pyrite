@@ -24,6 +24,10 @@ ROM source it plays. `make crystal` at the repo root builds `pokecrystal.gbc`.
 | `index.html` | the page |
 | `app.js` | all the logic (core loading, ROM loading, input, saves) |
 | `offline.js` | registers `sw.js`, drives the menu's "Offline:" line and the "Update ready" button (player **and** editor) |
+| `link.js` | link play: the stand-in that answers the game's link cable from the friend's messages (docs/LK1-LINK.md section 3) |
+| `link_validate.js` | link play: checks every party block and menu action the friend sends before the game sees it (section 5) |
+| `link_transport.js` | link play: the WebSocket to the `/link` relay (create or join a room by a 3-word code) |
+| `link_relay.py`, `link_words.txt` | the relay `server.py --link` serves at `/link`, and its code word list (section 4) |
 | `sw.template.js` | the offline service worker's source |
 | `gen_sw.py` | stamps `sw.template.js` with the build into `sw.js` — run by `make crystal` |
 | `sw.js` | **derived, git-ignored** — the service worker the page registers |

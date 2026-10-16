@@ -87,6 +87,73 @@
         <input id="file-rom" type="file" accept=".gbc,.gb,application/octet-stream" hidden>
       </div>
 
+      <!-- LK1e: link play with a friend (link.js + link_transport.js; app.js drives it). -->
+      <section id="link-section" aria-labelledby="link-heading">
+        <details id="link">
+          <summary><h3 id="link-heading">Link with a friend</h3><span id="link-sum"></span></summary>
+          <div class="link-body" data-lstate="idle">
+            <div class="lk-idle">
+              <p class="note">Trade or battle with a friend over the internet. Both of you need this same build.
+                One of you makes a code, the other types it in, then you both walk into the Cable Club
+                upstairs in any Pok&eacute;mon Center.</p>
+              <div class="link-row">
+                <button id="link-create" type="button">Make a code</button>
+                <button id="link-join-open" type="button">Enter a code</button>
+              </div>
+            </div>
+            <div class="lk-creating">
+              <p class="link-label">Your code &ndash; tell it to your friend</p>
+              <div id="link-code" class="link-code" aria-live="polite">&hellip;</div>
+              <div class="link-row">
+                <button id="link-copy" type="button">Copy code</button>
+                <button id="link-cancel" class="lk-quiet" type="button">Cancel</button>
+              </div>
+              <p id="link-wait" class="link-wait">Waiting for your friend&hellip;</p>
+            </div>
+            <div class="lk-joining">
+              <label class="link-label" for="link-code-in">Your friend's code (three words)</label>
+              <input id="link-code-in" class="link-input" type="text" inputmode="text" autocomplete="off"
+                     autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="e.g. apple river stone">
+              <div class="link-row">
+                <button id="link-join" type="button">Join</button>
+                <button id="link-join-cancel" class="lk-quiet" type="button">Cancel</button>
+              </div>
+            </div>
+            <div class="lk-connected">
+              <p class="link-label">Connected to</p>
+              <p id="link-peer" class="link-peer">your friend</p>
+              <p class="note">Accepting saves a copy of your game first, so you can undo the link session afterwards.</p>
+              <div class="link-row">
+                <button id="link-accept" class="lk-go" type="button">Accept</button>
+                <button id="link-decline" type="button">Decline</button>
+              </div>
+            </div>
+            <div class="lk-linked">
+              <p id="link-line" class="link-line" role="status">Linked</p>
+              <p id="link-hint" class="note"></p>
+              <div class="link-row">
+                <button id="link-disconnect" type="button">Disconnect</button>
+              </div>
+            </div>
+            <div class="lk-ended">
+              <p id="link-ended" class="link-ended" role="status"></p>
+              <div class="link-row">
+                <button id="link-again" type="button">OK</button>
+              </div>
+            </div>
+            <div id="link-restore-box" class="link-restore" hidden>
+              <p id="link-restore-info" class="note"></p>
+              <div class="link-row">
+                <button id="link-restore" type="button">Restore pre-link save</button>
+              </div>
+            </div>
+            <p id="link-msg" class="link-msg" role="status"></p>
+          </div>
+        </details>
+      </section>
+      <p id="link-lock" class="note link-lock" hidden>Linked: fast-forward, Reset, slot save/load, .sav import, ROM swap and
+        the save editor are off until the link ends, so both games stay in step and nothing overwrites the game mid-link.</p>
+
       <!-- HT1: shiny-hunt tracker.  Collapsed by default; app.js fills it. -->
       <section id="hunt-section" aria-labelledby="hunt-heading">
         <details id="hunt">
@@ -175,6 +242,9 @@
 
 </div>
 
+<script src="./link_validate.js"></script>
+<script src="./link.js"></script>
+<script src="./link_transport.js"></script>
 <script src="./app.js"></script>
 <script src="./offline.js"></script>
 </body>

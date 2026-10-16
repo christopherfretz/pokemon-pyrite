@@ -900,7 +900,11 @@
     clearFlush();
     if (emu) { mod._emulator_delete(emu); emu = 0; }
     if (joypadBuf) { mod._joypad_delete(joypadBuf); joypadBuf = 0; }
-    if (romPtr) { mod._free(romPtr); romPtr = 0; }
+    // emulator_delete() already frees the ROM buffer it was handed
+    // (emulator_new_simple takes ownership; LK1a findings), so freeing romPtr
+    // here as well was a double free.  Only forget the pointer.  The one free
+    // of romPtr left is createEmulator's failure path, where no emulator owns it.
+    romPtr = 0;
     frameView = null;
     audioView = null;
     started = false;
@@ -996,6 +1000,8 @@
   // ------------------------------------------------------------ run loop ---
 
   var rafToken = null;
+  var debugSpeed = 0;        // ?debug=1 only (kfDebug.speed): tests run faster than real time
+  var debugSpeedLinked = false;
   var lastRafSec = 0;
   var leftoverTicks = 0;
 
@@ -1019,10 +1025,14 @@
     var deltaSec = Math.max(startSec - (lastRafSec || startSec), 0);
     lastRafSec = startSec;
 
-    var speed = fastForward ? FF_SPEED : 1;
+    var speed = linkLockedNow ? 1 : fastForward ? FF_SPEED : 1;
+    if (debugSpeed && !linkLockedNow) { speed = debugSpeed; }
+    if (debugSpeed && linkLockedNow && debugSpeedLinked) { speed = debugSpeed; }
     var deltaTicks = Math.min(deltaSec, MAX_UPDATE_SEC) * speed * CPU_TICKS_PER_SECOND;
     var until = ticks() + deltaTicks - leftoverTicks;
-    runUntil(until);
+    // LK1e: while linked (or a ?debug=1 driver runs) the run is cut at every
+    // frame boundary so link.js sees each frame (frameHook).
+    if (hookWanted()) { runHooked(until); } else { hookNextTick = 0; runUntil(until); }
     // Not |0: the tick counter passes 2^31 after about eight minutes of play.
     leftoverTicks = Math.max(ticks() - until, 0);
     drawFrame();
@@ -1208,6 +1218,8 @@
       writeClock().catch(function (e) { console.warn('could not write the clock record', e); });
       fitScreen();
       refreshSlotLabels();
+      renderLink();
+      refreshPrelink();
       pushJoypad(true);
       say(how.mode === 'resume' ? 'Running (picked up where you left off)'
         : how.stale ? 'Booted from your last SAVE - the resume snapshot was older'
@@ -1268,6 +1280,11 @@
     // snapshot is never older than a SAVE), on the 60 s cadence for scratch
     // churn, and always when forced (page hidden / closing).
     var wantState = force || saveChanged || (Date.now() - lastResumeWriteMs) >= RESUME_MS;
+    // LK1e: no resume state from Accept until the game is out of the Cable
+    // Club - it would restore inside a link loop with no partner.  The
+    // battery (the game's own saves, trades included) is still written.
+    linkReleaseResume();
+    if (linkHoldsResume) { wantState = false; }
     if (wantState) {
       try { state = getState(); } catch (e) {
         console.warn('could not read the machine state out of the core', e);
@@ -1352,6 +1369,7 @@
      progress and shows local time once it is CONTINUEd. */
   function importSav(file) {
     if (!started) { say('Load a ROM first', true); return; }
+    if (linkRefuse('.sav import')) { return; }
     readFile(file).then(function (bytes) {
       var extra = bytes.length - extRamSize;
       var note = extra > 0 ? ' (' + extra + ' trailing bytes dropped - RTC footer not imported)'
@@ -1387,6 +1405,7 @@
 
   function saveSlot(n) {
     if (!started) { return; }
+    if (linkRefuse('Slot save')) { return; }
     var state;
     try { state = getState(); } catch (e) { fail('Save state failed', e); return; }
     if (!state) { say('Could not read a save state', true); return; }
@@ -1399,6 +1418,7 @@
 
   function loadSlot(n) {
     if (!started) { return; }
+    if (linkRefuse('Slot load')) { return; }
     kvGet(slotKey(n)).then(function (entry) {
       if (!entry || !entry.state) { say('Slot ' + n + ' is empty', true); return; }
       if (!coreOk(entry.core) || entry.state.byteLength !== stateSize) {
@@ -1447,6 +1467,7 @@
      local time, as a cartridge's clock would have kept running. */
   function resetEmulator() {
     if (!started || !rom) { return; }
+    if (linkRefuse('Reset')) { return; }
     say('Resetting...');
     saveProgress(true).then(function () {
       return kvDel(resumeKey()).catch(function () { return null; });
@@ -1562,6 +1583,7 @@
 
   function setFastForward(next) {
     if (fastForward === next) { return; }
+    if (next && linkLockedNow) { say('Fast-forward is off while linked', true); return; }
     fastForward = next;
     audioStartSec = 0;      // audio is skipped while fast-forwarding
     $('#btn-ff').textContent = 'Speed: ' + (fastForward ? FF_SPEED + '×' : '1×');
@@ -2432,8 +2454,716 @@
   window.addEventListener('pagehide', function () { huntSave(true); });
 
   huntPendingReset = huntPrefs.count.page ? 'page' : null;
-  loadTables();
+  loadTables().then(function () { renderLink(); });
   setInterval(huntPoll, HUNT_POLL_MS);
+
+  // ---------------------------------------------------- link play (LK1e) --
+  /* The Link panel drives link_transport.js (the relay socket) and link.js
+     (the stand-in that feeds the local game the bytes a cable would carry).
+     docs/LK1-LINK.md section 6 and "LK1e findings".  UI states:
+       idle -> creating (code shown) | joining (code typed)
+            -> connected (peer named; Accept / Decline)
+            -> linked (status line; Disconnect) -> ended (reason; Restore).
+     The link.js session (hello, accepting, linked, draining, closed) is the
+     source of truth; the panel follows its ui.status() callback. */
+
+  var LINK_HIDDEN_MS = 45000;      // backgrounded longer than this: end the link
+  var LINK_KEEPALIVE_MS = 10000;   // page ping (relay idle is 90 s; also gives the RTT)
+  var Link = window.PyriteLink || null;
+  var LinkNet = window.PyriteLinkTransport || null;
+
+  var link = null;                 // the link.js stand-in, once paired
+  var linkConn = null;             // the relay socket (link_transport.js)
+  var linkActive = false;          // a stand-in exists and its session is not closed
+  var linkLockedNow = false;       // the session is linked or draining: lock the page
+  var linkHoldsResume = false;     // suppress resume-state writes until the game is out
+  var linkUiState = 'idle';
+  var linkPeer = null;             // the name in the peer's hello
+  var linkPeerTrainer = null;      // wOTPlayerName, once the game has it
+  var linkRole = null;
+  var linkRtt = null;
+  var linkPeerPaused = false;
+  var linkStatusNow = '';          // last ui.status() from link.js
+  var linkErr = null;              // last ui.error() from link.js
+  var linkByUs = null;             // 'cancel' | 'decline' | 'disconnect' | 'hidden'
+  var linkCloseCode = null;
+  var linkAcceptResolve = null;
+  var linkKeepTimer = null;
+  var linkHiddenTimer = null;
+  var linkHiddenAt = 0;
+  var linkEndAbnormal = false;
+  var linkWake = null;
+  var linkEvents = [];             // ui-side log for kfDebug
+  var hookNextTick = 0;            // next frame boundary for the per-frame hook
+  var debugDriver = null;          // ?debug=1: an iterator of per-frame buttons
+  var lastDriver = null;
+
+  function prelinkKey() { return 'prelink:' + romTitleKey; }
+
+  function linkNote(what, detail) {
+    linkEvents.push({ t: Date.now(), what: what, detail: detail === undefined ? null : detail });
+    if (linkEvents.length > 200) { linkEvents.shift(); }
+  }
+
+  function linkUrl() {
+    var m = /[?&]link=([^&]+)/.exec(window.location.search);
+    if (m) { return decodeURIComponent(m[1]); }
+    return LinkNet.defaultUrl(window.location);
+  }
+
+  /* Why link play is unavailable right now, or null. */
+  function linkBlocker() {
+    if (!Link || !LinkNet || !window.PyriteLinkValidate) { return 'Link play did not load - reload the page.'; }
+    if (!('WebSocket' in window)) { return 'This browser has no WebSocket support.'; }
+    if (!started || !emu) { return 'Start the game first.'; }
+    if (!mod._emulator_link_enable) { return 'This emulator core has no link port - reload the page.'; }
+    if (!T || !T.link) { return 'The link tables did not load - reload the page.'; }
+    if (!T.rom || T.rom.sha256 !== romSha) { return 'Link play works only with the hosted ROM, not a picked file.'; }
+    return null;
+  }
+
+  /* The binjgb LinkPort surface link.js expects (docs/LK1-LINK.md 2.2). */
+  var linkPort = {
+    enable: function (on) { mod._emulator_link_enable(emu, on ? 1 : 0); },
+    idle: function (v) { mod._emulator_link_set_idle_in(emu, v); },
+    push: function (bytes) {
+      var p = mod._malloc(Math.max(bytes.length, 1));
+      mod.HEAPU8.set(bytes, p);
+      var n = mod._emulator_link_push_in(emu, p, bytes.length);
+      mod._free(p);
+      return n;
+    },
+    pending: function () { return mod._emulator_link_in_pending(emu); },
+    clear: function () { mod._emulator_link_clear_in(emu); },
+    ext: function (mode, gap, idlePeriod) {
+      mod._emulator_link_set_ext_clock(emu, mode, gap === undefined ? 6144 : gap, idlePeriod === undefined ? 6144 : idlePeriod);
+    },
+    drain: function (max) {
+      max = max || 256;
+      var p = mod._malloc(4 * max);
+      var n = mod._emulator_link_drain_out(emu, p, max);
+      var out = [];
+      for (var i = 0; i < n; i++) {
+        var e = mod.HEAPU32[(p >> 2) + i];
+        out.push({ out: e & 0xff, 'in': (e >>> 8) & 0xff, clock: (e >>> 16) & 1, flags: e >>> 24 });
+      }
+      mod._free(p);
+      return out;
+    },
+    peek: function () {
+      var v = mod._emulator_link_peek(emu) >>> 0;
+      return { sb: v & 0xff, clock: (v >> 8) & 1, transferring: (v >> 9) & 1 };
+    },
+    clockExt: function (v) { return mod._emulator_link_clock_external(emu, v); }
+  };
+
+  function linkRead(addr, bank) {
+    if (addr >= 0xc000 && addr < 0xe000) { return readWram(addr, bank); }
+    return mod._emulator_read_mem(emu, addr);
+  }
+
+  var charOfByte = null;
+  /* strict: '' unless the name is $50-terminated within `max` and every byte maps
+     to a character (wOTPlayerName holds junk until the first bulk exchange). */
+  function decodeName(name, max, strict) {
+    if (!T || !T.link || !T.link.wram[name]) { return ''; }
+    if (!charOfByte) {
+      charOfByte = {};
+      Object.keys(T.charmap || {}).forEach(function (k) {
+        var b = T.charmap[k];
+        if (k.length !== 1) { return; }
+        var ascii = k.charCodeAt(0) < 0x7f;
+        if (!(b in charOfByte) || (ascii && charOfByte[b].charCodeAt(0) >= 0x7f)) { charOfByte[b] = k; }
+      });
+    }
+    var w = T.link.wram[name], s = '';
+    var ended = false, bad = false;
+    for (var i = 0; i < (max || 11); i++) {
+      var b = readWram(w[1] + i, w[0]);
+      if (b === 0x50 || b < 0) { ended = true; break; }
+      if (!(b in charOfByte)) { bad = true; }
+      s += charOfByte[b] || '?';
+    }
+    if (strict && (!ended || bad)) { return ''; }
+    return s.trim();
+  }
+  function linkMyName() { return (decodeName('wPlayerName', T.link.playerNameLength + 3) || 'a friend').slice(0, 16); }
+
+  function linkGameOutside() {
+    if (!emu || !T || !T.link) { return true; }
+    var w = T.link.wram.wLinkMode;
+    return readWram(w[1], w[0]) === 0 && mod._emulator_read_mem(emu, T.link.hram.hSerialConnectionStatus) === 0xff;
+  }
+
+  /* The resume snapshot is held from Accept until the session is closed AND
+     the game is back outside the Cable Club with its link mode cleared. */
+  function linkReleaseResume() {
+    if (linkHoldsResume && !linkActive && linkGameOutside()) {
+      linkHoldsResume = false;
+      linkNote('resume-released');
+    }
+  }
+
+  // ---- the panel ----
+
+  function linkMsg(text, isError) {
+    var el = $('#link-msg');
+    el.textContent = text || '';
+    el.classList.toggle('err', !!isError);
+  }
+
+  function setLinkUi(state) {
+    if (linkUiState !== state) { linkNote('ui', state); }
+    linkUiState = state;
+    renderLink();
+  }
+
+  function stageHint(st) {
+    if (!st) { return ''; }
+    if (linkPeerPaused) { return 'Your friend switched away from the game - waiting for them to come back.'; }
+    switch (st.stage) {
+      case 'outside': return 'Go upstairs in any Pokémon Center and talk to the Cable Club attendant (the left desk is TRADE, the right desk is BATTLE). Your friend picks the same desk.';
+      case 'desk': return 'At the desk: answer the attendant. The game saves before you go in.';
+      case 'connected': case 'rcpt': case 'sync': return 'Connecting the games…';
+      case 'room': return 'In the Cable Club: sit at the table and press A.';
+      default: return 'Trading or battling… keep this page open.';
+    }
+  }
+
+  function renderLink() {
+    var body = $('.link-body');
+    body.setAttribute('data-lstate', linkUiState);
+    var block = linkBlocker();
+    $('#link-create').disabled = !!block;
+    $('#link-join-open').disabled = !!block;
+    var sum = $('#link-sum');
+    sum.classList.toggle('on', linkUiState === 'linked');
+    if (linkUiState === 'idle') {
+      sum.textContent = '';
+      if (block && started) { linkMsg(block, false); }
+    } else if (linkUiState === 'creating') {
+      sum.textContent = 'code ready';
+    } else if (linkUiState === 'joining') {
+      sum.textContent = 'joining';
+    } else if (linkUiState === 'connected') {
+      sum.textContent = 'friend found';
+      var who = linkPeer ? linkPeer : 'Waiting for your friend’s game…';
+      $('#link-peer').textContent = who;
+      $('#link-accept').disabled = !linkAcceptResolve;
+      $('#link-decline').disabled = !linkActive;
+    } else if (linkUiState === 'linked') {
+      var name = linkPeer || 'your friend';
+      if (linkPeerTrainer && linkPeerTrainer !== linkPeer) { name += ' (' + linkPeerTrainer + ')'; }
+      var line;
+      if (/^draining/.test(linkStatusNow)) {
+        line = 'Ending the link… the game is leading you out';
+      } else {
+        line = 'Linked with ' + name + ' · ' + (linkRole === 'a' ? 'master' : 'slave') +
+          (linkRtt !== null ? ' · ' + linkRtt + ' ms' : '');
+      }
+      $('#link-line').textContent = line;
+      sum.textContent = /^draining/.test(linkStatusNow) ? 'ending' : 'linked' + (linkRtt !== null ? ' · ' + linkRtt + ' ms' : '');
+      var st = null;
+      try { st = link ? link.state() : null; } catch (e) { st = null; }
+      $('#link-hint').textContent = /^draining/.test(linkStatusNow) ? '' : stageHint(st);
+      $('#link-disconnect').disabled = !(linkActive && linkStatusNow === 'linked');
+    } else if (linkUiState === 'ended') {
+      sum.textContent = 'ended';
+    }
+    renderRestore();
+  }
+
+  var prelinkInfo = null;    // {date, romSha} of the stored record, or null
+  function refreshPrelink() {
+    if (!romTitleKey) { prelinkInfo = null; renderRestore(); return Promise.resolve(null); }
+    return kvGet(prelinkKey()).then(function (rec) {
+      prelinkInfo = rec && rec.state ? { date: rec.date, romSha: rec.romSha, core: rec.core,
+        size: rec.state.byteLength, battery: rec.battery ? rec.battery.length : 0, saveSig: rec.saveSig } : null;
+      renderRestore();
+      return prelinkInfo;
+    }).catch(function () { prelinkInfo = null; renderRestore(); return null; });
+  }
+
+  function renderRestore() {
+    var box = $('#link-restore-box');
+    var show = !!prelinkInfo && !linkActive && (linkUiState === 'idle' || linkUiState === 'ended');
+    box.hidden = !show;
+    if (!show) { return; }
+    var when = new Date(prelinkInfo.date);
+    var other = prelinkInfo.romSha !== romSha;
+    $('#link-restore-info').textContent = (other
+      ? 'A pre-link save from ' + when.toLocaleString() + ' was taken on a different build of the game, so it cannot be restored here.'
+      : 'Pre-link save taken ' + when.toLocaleString() + '. Restoring it puts THIS game back to that moment; it does not take anything back from your friend’s game.');
+    var btn = $('#link-restore');
+    btn.disabled = other;
+    btn.textContent = 'Restore pre-link save (' + when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ')';
+    btn.classList.toggle('lk-loud', linkUiState === 'ended' && linkEndAbnormal);
+  }
+
+  // ---- lock while linked ----
+
+  function linkApplyLock() {
+    var on = linkLockedNow;
+    ['#btn-ff', '#btn-reset', '#btn-import', '#btn-rom'].forEach(function (s) { $(s).disabled = on; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-save],[data-load]'), function (el) { el.disabled = on; });
+    var edit = $('#btn-edit');
+    if (on) { edit.setAttribute('aria-disabled', 'true'); edit.setAttribute('tabindex', '-1'); }
+    else { edit.removeAttribute('aria-disabled'); edit.removeAttribute('tabindex'); }
+    $('#link-lock').hidden = !on;
+    if (on && fastForward) { setFastForward(false); }
+    linkWakeWant(linkActive);
+  }
+
+  function linkRefuse(what) {
+    if (!linkLockedNow) { return false; }
+    say(what + ' is off while linked - end the link first', true);
+    return true;
+  }
+
+  function linkWakeWant(on) {
+    if (!navigator.wakeLock || !navigator.wakeLock.request) { return; }
+    if (on && !linkWake && document.visibilityState === 'visible') {
+      linkWake = 'pending';
+      navigator.wakeLock.request('screen').then(function (s) {
+        linkWake = s;
+        linkNote('wakelock', 'held');
+        s.addEventListener('release', function () { if (linkWake === s) { linkWake = null; } });
+        if (!linkActive) { linkWakeWant(false); }
+      }).catch(function (e) { linkWake = null; linkNote('wakelock', String(e && e.name)); });
+    } else if (!on && linkWake && linkWake !== 'pending') {
+      var s = linkWake;
+      linkWake = null;
+      s.release().catch(function () { /* already released */ });
+      linkNote('wakelock', 'released');
+    }
+  }
+
+  // ---- session ----
+
+  function linkClearTimers() {
+    if (linkKeepTimer) { clearInterval(linkKeepTimer); linkKeepTimer = null; }
+    if (linkHiddenTimer) { clearTimeout(linkHiddenTimer); linkHiddenTimer = null; }
+    linkHiddenAt = 0;
+  }
+
+  function linkStart(mode, code) {
+    var block = linkBlocker();
+    if (block) { linkMsg(block, true); return; }
+    if (linkActive || linkConn) { return; }
+    link = null; linkPeer = null; linkPeerTrainer = null; linkRole = null; linkRtt = null; linkPeerPaused = false;
+    linkStatusNow = ''; linkErr = null; linkByUs = null; linkCloseCode = null; linkAcceptResolve = null;
+    linkEndAbnormal = false; linkOtReady = false;
+    linkMsg('');
+    var conn;
+    try { conn = LinkNet.connect(linkUrl()); } catch (e) {
+      linkEnd('Could not reach the link server.', false);
+      return;
+    }
+    linkConn = conn;
+    linkNote('connect', mode);
+    conn.onpaired = function (role) { if (conn === linkConn) { linkPaired(conn, role); } };
+    conn.onrefused = function (c, reason) {
+      if (conn !== linkConn) { return; }
+      linkConn = null;
+      linkCloseCode = c;
+      linkNote('refused', c);
+      if (linkByUs === 'cancel') { setLinkUi('idle'); return; }
+      var text = reason || LinkNet.reasonFor(c);
+      linkEnd(text.charAt(0).toUpperCase() + text.slice(1) + '.', false);
+    };
+    if (mode === 'create') {
+      $('#link-code').textContent = '…';
+      $('#link-wait').textContent = 'Asking the link server for a code…';
+      setLinkUi('creating');
+      conn.create(function (c, ttl) {
+        if (conn !== linkConn) { return; }
+        // relay-supplied: untrusted (REVIEW-LK1D F10). Only three lower-case words are shown; textContent only.
+        if (typeof c !== 'string' || !/^[a-z]{4,8}-[a-z]{4,8}-[a-z]{4,8}$/.test(c)) {
+          linkNote('bad-code'); linkConn = null; conn.close();
+          linkEnd('The link server sent a bad code. Try again.', false);
+          return;
+        }
+        var mins = (typeof ttl === 'number' && isFinite(ttl) && ttl > 0 && ttl < 86400) ? Math.max(1, Math.round(ttl / 60)) : 2;
+        $('#link-code').textContent = c.replace(/-/g, ' ');
+        $('#link-wait').textContent = 'Waiting for your friend… (the code works for ' + mins + ' min)';
+        linkNote('code');
+      });
+    } else {
+      $('#link-join').disabled = true;
+      linkMsg('Connecting…');
+      conn.join(code);
+    }
+  }
+
+  function linkPaired(conn, role) {
+    linkRole = role;
+    linkNote('paired', role);
+    var facade = {
+      onmessage: null, onclose: null,
+      send: function (text) { return conn.send(text); },
+      close: function () { conn.close(); }
+    };
+    linkFacade = facade;
+    linkHeld = [];
+    linkActive = true;
+    $('#link-join').disabled = false;
+    linkMsg('');
+    setLinkUi('connected');
+    try {
+      link = Link.create({
+        core: { port: linkPort, read: linkRead },
+        transport: facade,
+        tables: T.link,
+        role: role,
+        rom: romSha,
+        build: romSha.slice(0, 12),
+        coreRev: CORE_COMMIT,
+        name: linkMyName(),
+        onBeforeLink: linkSnapshot,
+        ui: {
+          status: linkOnStatus,
+          peerName: function (n) { linkPeer = String(n || '').replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069]/g, '').trim().slice(0, 16) || 'your friend'; renderLink(); },
+          accept: function () {
+            return new Promise(function (resolve) { linkAcceptResolve = resolve; renderLink(); });
+          },
+          error: function (e) { linkErr = String(e); linkNote('error', linkErr); }
+        }
+      });
+    } catch (e) {
+      console.error('link: could not start the stand-in', e);
+      linkActive = false;
+      linkConn = null;
+      try { conn.close(); } catch (e2) { /* */ }
+      linkEnd('Link play failed to start (' + (e && e.message ? e.message : e) + ').', false);
+      return;
+    }
+    conn.onmessage = function (text) {
+      if (typeof text !== 'string') { linkNote('binary-dropped'); return; }   // REVIEW-LK1D F10: text frames only
+      if (text.length < 80 && text.indexOf('"type":"p') >= 0) {
+        var m = null;
+        try { m = JSON.parse(text); } catch (e) { m = null; }
+        if (m && m.type === 'pong' && typeof m.t === 'number') {
+          var rtt = Date.now() - m.t;
+          if (rtt >= 0 && rtt < 120000) { linkRtt = rtt; if (linkUiState === 'linked') { renderLink(); } }
+        } else if (m && m.type === 'pause') { linkPeerPaused = true; renderLink(); }
+        else if (m && m.type === 'resume') { linkPeerPaused = false; renderLink(); }
+      }
+      // A peer that accepted first can reach the desk while we still show
+      // Accept; link.js (session 'accepting') would take its 'desk' as a
+      // protocol error, so hold game messages until we are linked.
+      var sess = null;
+      try { sess = link ? link.state().session : null; } catch (e) { sess = null; }
+      if (sess === 'accepting') {
+        var mt = null;
+        try { mt = JSON.parse(text).type; } catch (e) { mt = null; }
+        if (mt && !/^(hello|bye|ping|pong|pause|resume)$/.test(mt)) {
+          if (linkHeld.length < 64) { linkHeld.push(text); linkNote('held', mt); return; }
+        }
+      }
+      linkFlushHeld();
+      if (facade.onmessage) { facade.onmessage(text); }
+    };
+    conn.onclose = function (code, reason) {
+      linkFlushHeld();
+      linkCloseCode = code;
+      linkNote('socket-closed', code);
+      if (conn === linkConn) { linkConn = null; }
+      if (facade.onclose) { facade.onclose(code, reason); }
+    };
+    linkPing();
+    linkKeepTimer = setInterval(linkPing, LINK_KEEPALIVE_MS);
+    linkWakeWant(true);
+  }
+
+  var linkHeld = [];       // peer game messages that arrived while our Accept was up
+  var linkFacade = null;
+  function linkFlushHeld() {
+    if (!linkHeld.length) { return; }
+    var sess = null;
+    try { sess = link ? link.state().session : null; } catch (e) { sess = null; }
+    if (sess === 'accepting') { return; }
+    var q = linkHeld;
+    linkHeld = [];
+    if (sess !== 'linked' || !linkFacade || !linkFacade.onmessage) { return; }   // declined or closed: drop
+    linkNote('flush', q.length);
+    q.forEach(function (t) { linkFacade.onmessage(t); });
+  }
+
+  function linkPing() {
+    if (linkConn && linkConn.state === 'paired') { linkConn.send('{"type":"ping","t":' + Date.now() + '}'); }
+  }
+
+  function linkOnStatus(s) {
+    linkStatusNow = String(s);
+    linkNote('status', linkStatusNow);
+    if (s === 'hello') { return; }
+    if (s === 'linked') { Promise.resolve().then(linkFlushHeld); }
+    if (s === 'linked' || /^draining/.test(s)) {
+      linkAcceptResolve = null;
+      linkLockedNow = true;
+      linkApplyLock();
+      setLinkUi('linked');
+      return;
+    }
+    if (s === 'closed') { linkFinished(); }
+  }
+
+  /* Snapshot before link: called by link.js right before the port is enabled. */
+  function linkSnapshot() {
+    linkLockedNow = true;
+    linkHoldsResume = true;
+    linkApplyLock();
+    var state = null, ram = null;
+    try { state = getState(); ram = getExtRam(); } catch (e) { state = null; }
+    if (!state) {
+      console.warn('link: could not snapshot the game before linking');
+      prelinkInfo = null;
+      kvDel(prelinkKey()).catch(function () { return null; });
+      linkNote('prelink', 'failed');
+      return;
+    }
+    var rec = { state: state, battery: ram, date: Date.now(), core: CORE_COMMIT, romSha: romSha,
+      title: romTitleKey, saveSig: ram ? saveSig(ram) : null };
+    prelinkInfo = { date: rec.date, romSha: romSha, core: CORE_COMMIT, size: state.byteLength,
+      battery: ram ? ram.length : 0, saveSig: rec.saveSig };
+    linkNote('prelink', 'taken');
+    kvPut(prelinkKey(), rec).catch(function (e) {
+      console.warn('link: could not store the pre-link save', e);
+      linkMsg('Could not store the pre-link save (' + (e && e.name ? e.name : e) + ').', true);
+    });
+  }
+
+  function linkEndReason() {
+    var e = linkErr || '';
+    var m;
+    if (linkByUs === 'disconnect') { return ['You ended the link.', false]; }
+    if (linkByUs === 'decline') { return ['You declined the link.', false]; }
+    if (linkByUs === 'hidden') { return ['The link ended because this page was in the background for too long.', true]; }
+    if (e === 'peer: user') {
+      return [linkLockedNowWas ? 'Your friend ended the link.' : 'Your friend declined the link.', false];
+    }
+    if (/rom-mismatch/.test(e)) { return ['Your friend is on a different build of the game. Both of you reload this page to get the newest build, then try again.', false]; }
+    if (/(^|: )role$/.test(e)) { return ['The link could not be set up (both sides took the same role). Try a new code.', false]; }
+    if ((m = /invalid-blocks:([\w.\-]+)/.exec(e))) { return ['Stopped: your friend’s game sent data that failed a safety check (' + m[1] + '). None of it reached your game.', true]; }
+    if (/invalid-act/.test(e)) { return ['Stopped: your friend’s game sent a move that failed a safety check.', true]; }
+    if (/timeout/.test(e)) { return ['Stopped: your friend’s game stopped answering.', true]; }
+    if (/^(peer: )?internal/.test(e)) { return ['Stopped by a link error (' + e.replace(/^(peer: )?internal:?\s*/, '') + ').', true]; }
+    if (/^peer: /.test(e)) { return ['Your friend’s side ended the link (' + e.slice(6) + ').', true]; }
+    var why = LinkNet.reasonFor(linkCloseCode === null ? 1006 : linkCloseCode);
+    return [why.charAt(0).toUpperCase() + why.slice(1) + '.', !!linkLockedNowWas];
+  }
+
+  var linkLockedNowWas = false;
+  function linkFinished() {
+    linkLockedNowWas = linkLockedNow;
+    linkActive = false;
+    linkAcceptResolve = null;
+    linkClearTimers();
+    if (linkConn) { try { linkConn.close(); } catch (e) { /* */ } linkConn = null; }
+    linkLockedNow = false;
+    linkApplyLock();
+    linkReleaseResume();
+    var r = linkEndReason();
+    linkEnd(r[0], r[1]);
+  }
+
+  function linkEnd(text, abnormal) {
+    linkEndAbnormal = !!abnormal;
+    $('#link-ended').textContent = text;
+    $('#link-join').disabled = false;
+    linkMsg('');
+    linkNote('ended', text);
+    setLinkUi('ended');
+    refreshPrelink();
+  }
+
+  function linkUserEnd(why) {
+    linkByUs = why;
+    linkNote('user-end', why);
+    if (link && linkActive) { link.disconnect(); }
+    else if (linkConn) { var c = linkConn; c.close(); }
+  }
+
+  function linkCancel() {
+    linkByUs = 'cancel';
+    if (linkConn) { linkConn.close(); } else { setLinkUi('idle'); }
+  }
+
+  /* Called from the run loop at every frame boundary (between run_until slices). */
+  function frameHook() {
+    if (link && linkActive) {
+      try { link.onFrame(); } catch (e) { console.error('link: onFrame threw', e); }
+      if (linkUiState === 'linked' && (++linkRenderTick % 30) === 0) {
+        // wOTPlayerName is only the peer's once a bulk exchange is done (link.js stage 'menu')
+        var lst = null;
+        try { lst = link.state(); } catch (e) { lst = null; }
+        if (lst && lst.stage === 'menu') { linkOtReady = true; }
+        else if (lst && (lst.stage === 'outside' || lst.stage === 'desk')) { linkOtReady = false; }
+        var w = T.link.wram.wLinkMode;
+        if (linkOtReady && readWram(w[1], w[0]) !== 0) {
+          var ot = decodeName('wOTPlayerName', T.link.nameLength, true);
+          if (ot) { linkPeerTrainer = ot; }
+        }
+        renderLink();
+      }
+    }
+    if (debugDriver) {
+      var r;
+      try { r = debugDriver.it.next(); } catch (e) { debugDriver.error = String(e && e.stack || e); r = { done: true }; }
+      if (r.done) {
+        debugDriver.done = true;
+        debugDriver = null;
+        pushJoypad(true);
+      } else {
+        var b = r.value || {};
+        mod._set_joyp_up(emu, b.UP ? 1 : 0);
+        mod._set_joyp_down(emu, b.DOWN ? 1 : 0);
+        mod._set_joyp_left(emu, b.LEFT ? 1 : 0);
+        mod._set_joyp_right(emu, b.RIGHT ? 1 : 0);
+        mod._set_joyp_A(emu, b.A ? 1 : 0);
+        mod._set_joyp_B(emu, b.B ? 1 : 0);
+        mod._set_joyp_start(emu, b.START ? 1 : 0);
+        mod._set_joyp_select(emu, b.SELECT ? 1 : 0);
+        debugDriver.frames++;
+      }
+    }
+  }
+  var linkRenderTick = 0;
+  var linkOtReady = false;
+
+  function hookWanted() { return !!(debugDriver || (link && linkActive)); }
+
+  /* Run to `until` in frame-sized slices, calling frameHook at each boundary. */
+  function runHooked(until) {
+    var now = ticks();
+    if (!hookNextTick || hookNextTick < now - 2 * TICKS_PER_FRAME || hookNextTick > now + 2 * TICKS_PER_FRAME) {
+      hookNextTick = now;
+    }
+    var newFrame = false;
+    while (hookNextTick <= until) {
+      if (runUntil(hookNextTick)) { newFrame = true; }
+      frameHook();
+      hookNextTick += TICKS_PER_FRAME;
+    }
+    if (runUntil(until)) { newFrame = true; }
+    return newFrame;
+  }
+
+  function linkOnHidden() {
+    if (!linkActive || !linkConn) { return; }
+    try { linkConn.pause(); } catch (e) { /* */ }
+    linkHiddenAt = Date.now();
+    if (linkHiddenTimer) { clearTimeout(linkHiddenTimer); }
+    linkHiddenTimer = setTimeout(function () { linkHiddenTimer = null; if (linkActive) { linkUserEnd('hidden'); } }, LINK_HIDDEN_MS);
+  }
+  function linkOnVisible() {
+    if (linkHiddenTimer) { clearTimeout(linkHiddenTimer); linkHiddenTimer = null; }
+    var away = linkHiddenAt ? Date.now() - linkHiddenAt : 0;
+    linkHiddenAt = 0;
+    if (!linkActive) { return; }
+    if (away > LINK_HIDDEN_MS) { linkUserEnd('hidden'); return; }
+    if (linkConn) { try { linkConn.resume(); } catch (e) { /* */ } }
+    linkWake = linkWake === 'pending' ? 'pending' : null;   // iOS drops the lock when hidden
+    linkWakeWant(true);
+  }
+
+  /* Restore the pre-link save: same path as loadSlot, then rewrite the
+     battery and resume records so they agree. */
+  function linkRestore() {
+    if (!started || !emu) { return; }
+    if (linkActive || linkLockedNow) { linkMsg('End the link first.', true); return; }
+    kvGet(prelinkKey()).then(function (rec) {
+      if (!rec || !rec.state) { linkMsg('There is no pre-link save.', true); refreshPrelink(); return null; }
+      if (rec.romSha !== romSha) { linkMsg('That pre-link save was taken on a different build of the game - it cannot be restored here.', true); return null; }
+      if (!coreOk(rec.core) || rec.state.byteLength !== stateSize) { linkMsg('That pre-link save was written by a different emulator core - it cannot be restored.', true); return null; }
+      var when = new Date(rec.date).toLocaleString();
+      if (!window.confirm('Restore your game to how it was before the link (' + when + ')?\n\n' +
+          'Everything since then on THIS phone is undone, trades included. Your friend’s game is not changed.')) {
+        return null;
+      }
+      if (!putState(new Uint8Array(rec.state))) { linkMsg('The pre-link save would not load.', true); return null; }
+      if (rec.battery && rec.battery.length === extRamSize) { putExtRam(new Uint8Array(rec.battery)); }
+      syncClock('pre-link restore');
+      pendingStir = null;
+      stirRng('pre-link restore');
+      huntRebaseline();
+      huntReset('slot');
+      lastSramSig = null;
+      lastSaveSig = null;
+      extRamDirty = true;
+      audioStartSec = 0;
+      linkHoldsResume = false;
+      linkNote('restored');
+      return saveProgress(true).then(function () {
+        return kvDel(prelinkKey()).catch(function () { return null; });
+      }).then(function () {
+        prelinkInfo = null;
+        say('Restored the pre-link save');
+        setLinkUi('idle');
+        linkMsg('Restored the save from ' + when + '.');
+      });
+    }).catch(function (e) { linkMsg('Restore failed: ' + (e && e.message ? e.message : e), true); });
+  }
+
+  $('#link').addEventListener('toggle', function () { setTimeout(fitScreen, 0); if ($('#link').open) { renderLink(); refreshPrelink(); } });
+  $('#link-create').addEventListener('click', function () { linkStart('create'); });
+  $('#link-join-open').addEventListener('click', function () {
+    if (linkBlocker()) { renderLink(); return; }
+    setLinkUi('joining');
+    linkMsg('');
+    setTimeout(function () { $('#link-code-in').focus(); }, 0);
+  });
+  $('#link-join').addEventListener('click', function () {
+    var code = LinkNet ? LinkNet.normalizeCode($('#link-code-in').value) : '';
+    if (code.split('-').length !== 3) { linkMsg('Type the three words of your friend’s code.', true); return; }
+    linkStart('join', code);
+  });
+  $('#link-code-in').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('#link-join').click(); }
+  });
+  $('#link-code-in').addEventListener('blur', function () {
+    var el = $('#link-code-in');
+    el.value = el.value.trim().toLowerCase();
+  });
+  $('#link-cancel').addEventListener('click', linkCancel);
+  $('#link-join-cancel').addEventListener('click', function () { linkMsg(''); if (linkConn) { linkCancel(); } else { setLinkUi('idle'); } });
+  $('#link-copy').addEventListener('click', function () {
+    var text = $('#link-code').textContent;
+    var done = function () { linkMsg('Code copied.'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { selectCode(); });
+    } else { selectCode(); }
+    function selectCode() {
+      var r = document.createRange();
+      r.selectNodeContents($('#link-code'));
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      linkMsg(ok ? 'Code copied.' : 'Select the code and copy it.');
+    }
+  });
+  $('#link-accept').addEventListener('click', function () {
+    var r = linkAcceptResolve;
+    if (!r) { return; }
+    linkAcceptResolve = null;
+    renderLink();
+    r(true);
+  });
+  $('#link-decline').addEventListener('click', function () {
+    var r = linkAcceptResolve;
+    linkByUs = 'decline';
+    linkAcceptResolve = null;
+    if (r) { r(false); } else { linkUserEnd('decline'); }
+  });
+  $('#link-disconnect').addEventListener('click', function () { linkUserEnd('disconnect'); });
+  $('#link-again').addEventListener('click', function () { linkMsg(''); setLinkUi('idle'); });
+  $('#link-restore').addEventListener('click', linkRestore);
+  $('#btn-edit').addEventListener('click', function (e) {
+    if (linkLockedNow) { e.preventDefault(); say('The save editor is off while linked - end the link first', true); }
+  });
+
 
   // ----------------------------------------------------------- lifecycle --
 
@@ -2459,6 +3189,7 @@
     if (document.visibilityState === 'hidden') {
       saveProgress(true);
       stopLoop();
+      linkOnHidden();
       // No audioCtx.suspend() any more (AU2, 2026-09-28): WebKit's non-gesture
       // resume() of a page-suspended context came back 'running' but silent.
       // iOS pauses the context itself; the stopped loop queues nothing.
@@ -2470,6 +3201,7 @@
       resumeAudio();
       startLoop();
     }
+    if (document.visibilityState !== 'hidden') { linkOnVisible(); }
   });
   window.addEventListener('pagehide', function () { saveProgress(true); });
   // PW1: offline.js awaits this (at most 3 s) before activating a new build.
@@ -2498,11 +3230,12 @@
     if (e.target.files && e.target.files[0]) { importSav(e.target.files[0]); }
     e.target.value = '';
   });
-  $('#btn-rom').addEventListener('click', function () { $('#file-rom').click(); });
+  $('#btn-rom').addEventListener('click', function () { if (!linkRefuse('Loading a ROM')) { $('#file-rom').click(); } });
   $('#file-rom').addEventListener('change', function (e) {
     var file = e.target.files && e.target.files[0];
     e.target.value = '';
     if (!file) { return; }
+    if (linkRefuse('Loading a ROM')) { return; }
     readFile(file).then(function (bytes) {
       return startWithRom(bytes, 'file: ' + file.name).then(stashRomIfNeeded);
     }).catch(function (err) { fail('Could not load that ROM', err); });
@@ -2559,6 +3292,27 @@
         stirs: function () { return { count: rngStirs.count, last: rngStirs.last, pending: pendingStir }; },
         read: function () { return rngVars && emu ? [mod._emulator_read_mem(emu, rngVars.add), mod._emulator_read_mem(emu, rngVars.sub)] : null; }
       },
+      /* LK1e: link play (scripts/web_link_check.py). */
+      link: {
+        ui: function () {
+          return { state: linkUiState, active: linkActive, locked: linkLockedNow, holdsResume: linkHoldsResume,
+            status: linkStatusNow, peer: linkPeer, peerTrainer: linkPeerTrainer, role: linkRole, rtt: linkRtt,
+            err: linkErr, byUs: linkByUs, closeCode: linkCloseCode, abnormal: linkEndAbnormal,
+            ended: $('#link-ended').textContent, msg: $('#link-msg').textContent, line: $('#link-line').textContent,
+            wake: linkWake ? (linkWake === 'pending' ? 'pending' : 'held') : null, events: linkEvents.slice(-40) };
+        },
+        state: function () { return link ? link.state() : null; },
+        prelink: refreshPrelink,
+        url: linkUrl,
+        myName: function () { return T && T.link ? linkMyName() : null; },
+        hookFrames: function () { return linkRenderTick; }
+      },
+      /* Drive the joypad from an iterator of per-frame button objects
+         ({A: true, ...}); the run loop calls it at every frame boundary. */
+      drive: function (it) { debugDriver = lastDriver = { it: it, frames: 0, done: false, error: null }; return true; },
+      driving: function () { return lastDriver ? { frames: lastDriver.frames, done: lastDriver.done, error: lastDriver.error } : null; },
+      speed: function (n, evenLinked) { debugSpeed = n > 1 ? n : 0; debugSpeedLinked = !!evenLinked; return debugSpeed; },
+      romSha: function () { return romSha; },
       /* HT1: the shiny-hunt tracker. */
       hunt: {
         poll: function () { huntPoll(); return hd.pending ? hd.pending.seq : 0; },

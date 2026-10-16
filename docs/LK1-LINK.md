@@ -1867,3 +1867,275 @@ socket down, which wakes the reader with EOF).
   message would lose the room; LK1e should send a keepalive (or `hello`) while the prompt is up.
 - **Not tested against a real browser or Cloudflare.** The e2e uses Node 24's built-in WebSocket
   (undici) through a local proxy; the browser and the tunnel are LK1e/LK1g.
+
+## LK1e findings
+
+LK1e is the first player-visible slice. It adds the **Link panel** to the menu and wires
+`link.js` + `link_transport.js` into the run loop. It also adds the pre-link snapshot and restore,
+the double-free fix, the packaging, and a two-browser end-to-end check
+(`scripts/web_link_check.py` in the context repo).
+
+- **No ROM change.** No WRAM, SRAM, flag or map change. The core is layout-identical (same
+  binjgb build as LK1a), so old resume states load.
+- **Not touched:** `link.js`, `link_validate.js`, `link_transport.js` and `link_relay.py`.
+
+| check | result | wall time |
+|---|---|---|
+| `scripts/web_link_check.py` (`LINK_SPEED=4`, the default) | PASS 65/65 | 69 s (trade itself: 51 s, about 12,000 frames per side) |
+| `scripts/web_link_check.py` with `LINK_SPEED=1` (real time; run before the skewed-Accept case was added) | PASS 62/62 | 228 s (trade: 202 s) |
+| `scripts/web_offline_check.py` | PASS 39/39 | — |
+| `scripts/web_layout_check.py` | 4 viewports, no pill/status overlap | — |
+| `scripts/web_clock_check.py` | PASS 40/40 | — |
+
+The offline check needed no changes. The three link files are in the precache bundle
+(`gen_sw.py` `BUNDLE`, `Makefile` `SW_BUNDLE`), so the check's "bundle == cache" assertions
+cover them.
+
+### Files (file:line map)
+
+| file | what | where to look |
+|---|---|---|
+| `web/index.html` | the panel: `#link-section`/`details#link`, one block per state (`.lk-idle`, `.lk-creating`, `.lk-joining`, `.lk-connected`, `.lk-linked`, `.lk-ended`), `#link-restore-box`, `#link-msg` | `:90-153`; the lock note `#link-lock` `:154`; the three scripts load before `app.js` at `:245-247` |
+| `web/style.css` | the panel (48 px buttons, 24 px monospace code, 16 px input so iOS does not zoom) | `:639-693` |
+| `web/app.js` | the double-free fix | `destroyEmulator` `:898` |
+| `web/app.js` | run loop: speed is 1 while linked (and the `kfDebug.speed` test override); frame-sliced running while a hook is wanted | `:1003-1004`, `:1028`; `hookWanted` `:3034`, `runHooked` `:3037` |
+| `web/app.js` | resume writer held | `saveProgress` `:1260` → `linkReleaseResume()` `:1286` |
+| `web/app.js` | refusals while linked | `importSav` `:1370`, `saveSlot` `:1406`, `loadSlot` `:1419`, `resetEmulator` `:1468`, `setFastForward` `:1584`, ROM picker `:3233-3234` |
+| `web/app.js` | LK1e block: constants and state | from `:2461` (`LINK_HIDDEN_MS` 45 s, `LINK_KEEPALIVE_MS` 10 s at `:2470`) |
+| `web/app.js` | blockers and the core port | `linkBlocker` `:2515`; `linkPort` (binjgb `LinkPort`) `:2526` |
+| `web/app.js` | names | `decodeName` (strict mode for `wOTPlayerName`) `:2568` |
+| `web/app.js` | outside check and resume release | `linkGameOutside` `:2592`; `linkReleaseResume` `:2600` |
+| `web/app.js` | panel | `setLinkUi` `:2615`, `stageHint` `:2621`, `renderLink` `:2633`, `refreshPrelink` `:2677`, `renderRestore` `:2687` |
+| `web/app.js` | lock and wake lock | `linkApplyLock` `:2705`; `linkRefuse` `:2717`; `linkWakeWant` `:2723` |
+| `web/app.js` | session | `linkStart` `:2749`; `linkPaired` `:2798` (the facade link.js talks through, `conn.onmessage` `:2840`); `linkFlushHeld` `:2880`; `linkPing` `:2892`; `linkOnStatus` `:2896` |
+| `web/app.js` | snapshot | `linkSnapshot` `:2912` |
+| `web/app.js` | ending | `linkEndReason` `:2936`; `linkFinished` `:2957`; `linkEnd` `:2970`; `linkUserEnd` `:2980`; `linkCancel` `:2987` |
+| `web/app.js` | per-frame hook | `frameHook` `:2993` (`link.onFrame()`, trainer name, test driver) |
+| `web/app.js` | page visibility | `linkOnHidden` `:3052`, `linkOnVisible` `:3059`; called from the `visibilitychange` handler `:3188` |
+| `web/app.js` | restore | `linkRestore` `:3072` |
+| `web/app.js` | debug hooks | `kfDebug.link` `:3296`; `kfDebug.drive`/`driving` `:3312`; `kfDebug.speed` `:3314` |
+| `web/server.py` | `/link.js`, `/link_validate.js`, `/link_transport.js` in `STATIC` | `:36-39` |
+| `web/gen_sw.py` | the same three files in `BUNDLE` | `:34-36` |
+| `Makefile` | the same three files in `SW_BUNDLE` | `:216` |
+| `web/README.md` | file table rows | — |
+| `scripts/web_link_check.py` (context repo) | the browser E2E | drivers ported from `test/harness.mjs` + `test/cable.mjs` in `DRIVER` |
+
+### State machine
+
+The panel's `data-lstate` is the UI state. `link.js`'s own session sits underneath it.
+
+| UI state | entered by | shows | leaves by |
+|---|---|---|---|
+| `idle` | page load, OK, Cancel, a successful Restore | Make a code / Enter a code (disabled with the reason when `linkBlocker()` says no) | Make a code → `creating`; Enter a code → `joining` |
+| `creating` | Make a code | the 3-word code (24 px, `user-select: all`), Copy code, Cancel, "Waiting for your friend… (the code works for N min)" | paired → `connected`; refused/expired → `ended`; Cancel → `idle` |
+| `joining` | Enter a code | a text input (trimmed and lower-cased on blur; `normalizeCode` on Join), Join, Cancel | paired → `connected`; refused → `ended` ("That code did not work.") |
+| `connected` | relay `paired` (link.js session `hello`, then `accepting` once the peer's hello arrives) | the peer's name (from its hello), Accept, Decline | Accept → `linked`; Decline → `ended`; peer declines or leaves → `ended` |
+| `linked` | link.js status `linked` (and `draining:*`) | "Linked with NAME (TRAINER) · master/slave · N ms", a stage hint, Disconnect | link.js status `closed` → `ended` |
+| `ended` | any end | the reason (`linkEndReason`), OK, and Restore when a record exists | OK → `idle` |
+
+**Reasons shown.**
+
+| situation | text |
+|---|---|
+| you ended the link | "You ended the link." |
+| you declined | "You declined the link." |
+| the peer declined (before you accepted) | "Your friend declined the link." |
+| the peer ended (after you were linked) | "Your friend ended the link." |
+| the page was hidden more than 45 s | "The link ended because this page was in the background for too long." |
+| different builds | "Your friend is on a different build of the game. Both of you reload this page…" |
+| validator abort | "Stopped: your friend's game sent data that failed a safety check (RULE)…" |
+| peer silent | "Stopped: your friend's game stopped answering." |
+| relay codes | `LinkNet.reasonFor(code)` (4002 "That code did not work.", 4001 "The code expired.", …) |
+
+An abnormal end makes the Restore button loud (accent colour).
+
+**Relay-supplied values are untrusted** (REVIEW-LK1D F10). Everything is rendered with
+`textContent`; the page never uses `innerHTML` for link data.
+
+| value | check |
+|---|---|
+| `code` | must match `^[a-z]{4,8}-[a-z]{4,8}-[a-z]{4,8}$` or the page ends with "The link server sent a bad code." |
+| `ttl` | must be a finite number (0 < ttl < 86400) or "2 min" is shown |
+| the peer's hello name | stripped of control and bidi characters, cut to 16 characters |
+| frames | non-string (binary) frames are dropped before link.js sees them |
+
+### Wiring
+
+- **Per-frame hook.** While a link object is active, `rafCallback` runs the core in frame-sized
+  `run_until` slices (`runHooked`) and calls `link.onFrame()` at every boundary (`frameHook`).
+  Without a link, it is the old single `runUntil`.
+- **Keepalive.** From pairing on, the page sends `{"type":"ping","t":ms}` every 10 s. This
+  includes the time the Accept prompt is up, which closes the LK1d caveat about the relay's 90 s
+  data-frame idle. Pongs give the RTT on the status line.
+- **Visibility.**
+  - When the page is hidden: the loop stops (as before), `conn.pause()` tells the peer, and a
+    45 s timer starts.
+  - When the page is shown again in time: `conn.resume()` and the wake lock is re-requested.
+  - After 45 s hidden, the page disconnects cleanly with `bye`. That is below link.js's 60 s
+    "peer paused = gone" limit, so the peer always gets a clean end rather than a timeout.
+- **Wake lock.** `navigator.wakeLock.request('screen')` is held from pairing until the session
+  closes, and re-requested on return to the tab.
+- **Trainer name.** Read from `wOTPlayerName` every 30 frames while `wLinkMode != 0`, but only
+  after link.js reports stage `menu` (the first bulk exchange is done). Before that the buffer
+  holds junk; the first E2E run showed `???????????` until this gate went in. Strict decode: the
+  name must be `$50`-terminated and every byte mapped.
+- **Held messages (fix).** link.js links up on the local Accept alone. A peer that accepted
+  first and walks to the desk sends `desk` while our Accept is still showing. link.js, in session
+  `accepting`, would take that as `internal: desk before hello` and refuse the link.
+  - The page now holds the peer's game messages while the session is `accepting`. Those are
+    anything but hello, bye, ping, pong, pause and resume, capped at 64.
+  - It replays them in order once link.js reports `linked`, and drops them on Decline or close.
+  - E2E case "skewed accept" covers it. It was found by reading `link.js:225-250`; it is worth a
+    one-line fix in link.js itself later (queue rather than fail in `accepting`).
+
+### Disabled while linked, and why
+
+`linkLockedNow` runs from the local Accept until link.js reports `closed`.
+
+| disabled | why |
+|---|---|
+| fast-forward (`#btn-ff`; `setFastForward(true)` refuses; the run loop forces speed 1) | it would shrink the game's handshake budgets in wall-clock time |
+| slot save and load | a load mid-link puts the game somewhere the peer's stand-in does not expect |
+| Reset | same reason as slot load |
+| `.sav` import | same reason as slot load |
+| ROM swap (`#btn-rom`, `#file-rom`) | same reason as slot load |
+| the save-editor link (`aria-disabled`, click prevented) | the editor would write the battery under a running link |
+
+The `#link-lock` note says all of this in one sentence. Each refused action also says
+"X is off while linked - end the link first" in the status line.
+
+### Snapshot and restore
+
+**Snapshot** (`linkSnapshot`, link.js `onBeforeLink`, so it runs right before `port.enable(true)`):
+
+- `prelink:` + title key = `{state, battery, date, core, romSha, title, saveSig}`.
+- It is written on the local Accept. A declined, refused or wrong-code session writes nothing,
+  and leaves the previous record alone.
+- **Deviation from §6 "At Connect":** a Connect that never links (wrong code, decline) would
+  otherwise overwrite the only useful undo point.
+- The record is kept until the next Accept or an explicit Restore. The E2E checks that the
+  record's battery is the save the page was running from (the fixture).
+
+**Resume writer.** It is suppressed from Accept (`linkHoldsResume`). It is released only when the
+session is closed *and* the game is outside: `wLinkMode == 0` and `hSerialConnectionStatus == $FF`.
+The battery is still written throughout, so the game's own saves (before entering, after each
+trade) persist.
+
+**Restore** (`linkRestore`):
+
+1. It refuses while linked.
+2. It refuses a record from a different ROM sha. The button is shown disabled, with "taken on a
+   different build" text, and `linkRestore` re-checks.
+3. It refuses a record from a different core, or of a different size.
+4. It asks `confirm()`, saying that the friend's game is not changed.
+5. It then runs `putState` and the battery, then the `loadSlot` side effects (`syncClock`,
+   `stirRng`, `huntRebaseline`, `huntReset`, signature resets).
+6. Finally `saveProgress(true)`, so the resume and battery records agree, and the record is
+   deleted.
+
+The E2E asserts the restored party in WRAM and that the stored battery equals the pre-link battery
+byte for byte.
+
+### E2E (`scripts/web_link_check.py`)
+
+**Setup.** Two Chromium contexts at 390x844 (DPR 2, touch). Each IndexedDB is seeded with
+`link_a.sav` / `link_b.sav` on a neutral page. The script then opens `index.html?debug=1` against
+`server.py --link --link-origin http://127.0.0.1:PORT`.
+
+**Drivers.** They are the node harness's drivers (bootContinue, enterRoom, tradeOne, cancelOut,
+backOn2F, saveGame), ported verbatim into an iterator that `kfDebug.drive` steps once per frame.
+The pages run at `kfDebug.speed(4, true)` (test-only override, also while linked). `LINK_SPEED=1`
+runs at real speed.
+
+| phase | asserted |
+|---|---|
+| boot | both CONTINUE; A's party = pre-trade; relay URL `ws://127.0.0.1:P/link` |
+| panel, every state | `scrollWidth <= innerWidth` at 390 px; every visible link button ≥ 44 px tall (screenshots in `playtest/lk1/web/`) |
+| wrong code `foo bar baz` | "That code did not work.", close code 4002, nothing locked |
+| decline (B declines first) | A "Your friend declined the link.", B "You declined the link.", no `prelink:` on either, nothing locked; a planted record with another `romSha` shows Restore disabled, and `linkRestore` refuses it without a dialog |
+| trade: pairing | A master (role `a`), B slave |
+| trade: lock | FF, Reset, import, ROM and slots disabled, editor `aria-disabled`, note shown, resume held |
+| trade: snapshot | `prelink:` written with state + 32 KiB battery + ROM sha; battery = fixture |
+| trade: status line | "Linked with BRAVO · master · 1 ms" |
+| trade: wake lock | requested (headless Chromium has the API) |
+| trade: oracle | both players run the oracle trade (2 trades, cancel, back on 2F, SAVE). **Species and `sha256(wPokemonData..End)` equal `test/oracle/trade.json` on both sides** (A `881c123e…`, B `90fa684e…`); A's panel shows trainer BRAVO |
+| disconnect | A "You ended the link.", B "Your friend ended the link."; lock released and resume writer back on both; the battery changed (the in-game save happened) |
+| restore | confirm dialog shown; "Restored the save from …"; A's WRAM party = pre-trade (`96 19 97 13 10 15`); the stored battery = the pre-link battery; record deleted; B keeps its traded party |
+| skewed Accept | A accepts and walks to the desk while B's Accept is up; B holds 2 `desk` messages, links, replays them, no error; clean end on both |
+| page errors | no `pageerror` or `console.error` on either page |
+
+Both runs had zero page errors.
+
+| `LINK_SPEED` | checks | trade frames (A / B) | trade wall time | whole run |
+|---|---|---|---|---|
+| 4 | 65/65 | 12,030 / 11,987 | 51 s | 69 s |
+| 1 | 62/62 (before the skewed case) | 12,020 / 11,975 | 202 s | 228 s |
+
+The trade took about 12,000 frames per side, against the node rig's 14,982. The rig counts its
+4,000-frame reload settle as well.
+
+**Screenshots** (context repo `playtest/lk1/web/`): `panel-idle`, `-joining`, `-wrong-code`,
+`-creating`, `-connected`, `-declined`, `-linked`, `-linked-b`, `-ended` and `-restored`, plus
+`console.json` (console logs and both pages' link event logs).
+
+### Double free (fixed)
+
+`destroyEmulator` freed `romPtr` after `emulator_delete`, which already frees the ROM buffer it
+owns (LK1a findings). That was a double free on every ROM swap and reset. It now only forgets the
+pointer. The one remaining `_free(romPtr)` is `createEmulator`'s failure path, where no emulator
+owns the buffer.
+
+### Deviations from §3/§6
+
+| deviation | why / note |
+|---|---|
+| snapshot on Accept, not at Connect | a Connect that never links (wrong code, decline) would otherwise overwrite the only useful undo point |
+| record kept until the next Accept or a Restore | — |
+| lock also covers Reset and `.sav` import | same failure mode as a slot load |
+| the lock starts at the local Accept, not at Connect | before Accept nothing reaches the game |
+| the page holds peer game messages while Accept is up | see Wiring |
+| peer display name | the hello's `name` is the peer's own `wPlayerName`. The panel shows it, and adds `wOTPlayerName` in parentheses only if it differs |
+| the stage hint while linked | it says "Go upstairs in any Pokémon Center…" even when the player already stands at the desk. Cosmetic |
+| the save editor | it is only guarded by its menu link. An `edit.html` opened in another tab mid-link is not blocked (out of scope; noted for LK1f) |
+
+### Phone checklist (what headless Chromium could not prove)
+
+Run on two iPhones (or an iPhone and a desktop) against the deployed `latest`:
+
+1. **WebSocket over the tunnel.** Make a code on phone 1 and enter it on phone 2. Both show the
+   other's trainer name, both Accept, and the status line shows `· master · N ms` with N a few
+   tens of ms. Leave the Accept prompt up for 2 minutes first: the link must survive (keepalive
+   against cloudflared's idle; F11).
+2. **Trade end to end.** Trade at the left desk, SAVE, then reload both pages: the traded mon
+   is still there.
+3. **Clipboard.** Copy code says "Code copied." and paste works in Messages. If iOS refuses, the
+   code text is selected for a manual copy instead.
+4. **Wake lock.** Leave a linked phone untouched for longer than the auto-lock time: the screen
+   must stay on (Safari 16.4+). If it still locks, report the iOS version.
+5. **Background tab.** While linked, switch to another app for about 10 s and back: the link
+   continues, and the friend may see a short stall. Then switch away for more than 45 s:
+   - on return, this phone says "The link ended because this page was in the background for too
+     long.";
+   - the friend's phone says "Your friend ended the link.";
+   - neither game hangs. Both players can walk again; if the trade was mid-way, expect the game's
+     own link-error text first. This path is not exercised in the browser E2E, so look closely.
+6. **Lock.** While linked, FF, Reset, slots, import and Edit save are greyed and the yellow note
+   explains why. Tapping Edit save does nothing.
+7. **Restore.** After a trade, Disconnect, then tap Restore pre-link save and confirm. The party
+   is back to before the trade, and a reload keeps it that way.
+8. **390 px.** Nothing scrolls sideways in any panel state. The code input does not zoom the page
+   (16 px font).
+
+### Not verified
+
+- Real iOS Safari, Cloudflare tunnel, wake lock, clipboard and background-tab behaviour: see the
+  phone checklist.
+- A link battle in the browser. The E2E covers trade only; battles are covered by the node
+  `link_e2e.mjs` matrix through the same link.js.
+- A peer killed mid-trade in the browser (the LK1c and LK1d matrices cover it at the link.js level).
+
+### Release-note sentence
+
+> Link play: trade and battle with a friend over the internet from the menu's "Link with a
+> friend" panel — no WRAM, SRAM, flag or map change; the core is layout-identical and old resume
+> states load.
