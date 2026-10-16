@@ -26,8 +26,17 @@
 //           walk out; result, RNs, party restore, SRAM link records
 //   pacing  replay the trade's first bulk exchange into a slave snapshot with
 //           ext_mode 1 at a range of ext_gap values; find the failure edge
+//   gender-keep          (LK1f) explicit genders planted in CaughtLevel bits
+//           7-6 cross a pyrite<->pyrite trade intact; stats screen shows them;
+//           hostile bits on genderless MEW are kept but shown genderless
+//   gender-mask-vanilla  (LK1f) the same with A's feature byte zeroed in
+//           flight (A looks like vanilla Gen 2): B masks, A still keeps
+//   bounds  (LK1f) B names trade slots 5, 6, 14 past its 4-mon party; A
+//           refuses each via "abnormal"/"trade was canceled", parties intact
+//   (the LK1f scenarios assert only; they write no oracle)
 //
-// Usage: node web/test/cable.mjs [--scenario trade|battle|pacing|all]
+// Usage: node web/test/cable.mjs [--scenario trade|battle|pacing|gender-keep|
+//        gender-mask-vanilla|bounds|all]
 //        [--fixtures web/test/fixtures] [--oracle web/test/oracle] [--slice 512]
 //        [--no-write]   (compare against the oracle snapshots, do not rewrite)
 // Exit status 0 = every scenario run passed.
@@ -296,7 +305,7 @@ export function* saveGame(c) {
 export const SP = { PIDGEY: 0x10, RATTATA: 0x13, SPEAROW: 0x15, PIKACHU: 0x19, MAGIKARP: 0x81,
   MEWTWO: 0x96, MEW: 0x97, CELEBI: 0xfb, EGG: 0xfd };
 export const STRUCT = 48, NAME = 11, MAIL = 0x2f;
-export const MON_ITEM = 1, MON_ID = 6, MON_STAT_EXP = 11, MON_CAUGHT_LEVEL = 0x1c;
+export const MON_ITEM = 1, MON_ID = 6, MON_STAT_EXP = 11, MON_CAUGHT_LEVEL = 0x1d;
 export const FLOWER_MAIL = 0x9e;
 
 export function party(c) {
@@ -329,7 +338,9 @@ export function sramParty(c, img) {
 }
 export const dexBit = (bytes, sp) => (bytes[(sp - 1) >> 3] >> ((sp - 1) & 7)) & 1;
 export const sameMon = (x, y) => {
-  // GF3: an incoming mon's CaughtLevel bits 7-6 are cleared on arrival (link.asm)
+  // GF3/LK1f: an incoming mon's CaughtLevel bits 7-6 are cleared on arrival
+  // unless the peer is pyrite (link.asm LinkTrade); compare the rest.
+  // (0x1d = MON_CAUGHTLEVEL; this was 0x1c, MON_POKERUS, before LK1f.)
   const a = x.slice(), b = y.slice();
   a[MON_CAUGHT_LEVEL] &= 0x3f; b[MON_CAUGHT_LEVEL] &= 0x3f;
   return hex(a) === hex(b);
@@ -471,6 +482,213 @@ export async function tradeScenario(opts) {
   return { ck, rig, a, b, cable, seg, wall, frames: rig.frames, img, extra: { snaps } };
 }
 
+// ------------------------------------------------------- LK1f: gender + bounds ---
+// The pyrite feature byte (link.asm Link_PrepPartyData_Gen2, first padding
+// byte of the party block) and the conditional GF3 mask in LinkTrade; the
+// slot bound in ValidateOTTrademon (time_capsule.asm).
+export const LINK_PYRITE_FEATURES = 0x8f;               // constants/serial_constants.asm
+export const MON_DVS = 0x15, GENDER_EXPLICIT = 0x80, GENDER_FEMALE = 0x40;
+export const TILE_MALE = 0xef, TILE_FEMALE = 0xf5, TILE_BLANK = 0x7f;
+export const PARTY_PADDING_AT = 441;                    // name 11 + party 8 + structs 288 + OTs 66 + nicks 66 + mail-less
+/* GetGender's DV rule for a GENDER_F50 species: (atk hi | spd hi) > 127 is male. */
+export const dvMale = (mon) => ((mon[MON_DVS] & 0xf0) | (mon[MON_DVS + 1] >> 4)) > 127;
+/* The gender tile .PlaceGenderChar puts at hlcoord 18,0 of stats page 1. */
+const genderTile = (g) => (g === 'M' ? TILE_MALE : g === 'F' ? TILE_FEMALE : TILE_BLANK);
+const tileName = (t) => ({ [TILE_MALE]: 'male', [TILE_FEMALE]: 'female', [TILE_BLANK]: 'blank' }[t] || `$${t.toString(16)}`);
+/* Run `fn` once per frame (before the frame is stepped) for as long as `gen` drives. */
+export function* everyFrame(gen, fn) {
+  let r = gen.next();
+  while (!r.done) { fn(); yield r.value; r = gen.next(); }
+  return r.value;
+}
+/* Trade menu: open STATS on party slot `slot` (1-based), read the gender tile, back out. */
+export function* statsGender(c, slot, out) {
+  yield* untilText(c, 'CANCEL', 4000);
+  yield* wait(30);
+  yield* menuTo(c, slot);
+  yield* tap('A');
+  yield* untilText(c, 'STATS', 300);
+  yield* wait(10);
+  yield* tap('A');                                       // STATS (cursor starts there)
+  yield* until(() => c.rd1('wTilemap', 8) === 0x74 && c.rd1('wCurPartyMon') === slot - 1, 600, 'stats page 1', null, 24, c);
+  yield* wait(40);
+  out.push({ slot, species: c.rd1('wPartySpecies', slot - 1), tile: c.rd1('wTilemap', 18), screen: c.screen() });
+  yield* until(() => c.has('CANCEL'), 2000, 'stats screen closed', 'B', 60, c);
+}
+/* The party block's first padding byte as it crossed the wire (leading $FD stripped). */
+const wirePadding = (h) => {
+  const buf = Buffer.from(h, 'hex');
+  let i = 0;
+  while (i < buf.length && buf[i] === 0xfd) i++;
+  return buf[i + PARTY_PADDING_AT];
+};
+
+/* gender-keep (vanillaA false) / gender-mask-vanilla (vanillaA true).
+   Planted before the room: B's MAGIKARP and A's RATTATA get an explicit gender
+   opposite to their DV gender; A's MEW (genderless) gets hostile bits %10.
+   Trades: A's MEW <-> B's MAGIKARP, A's RATTATA <-> B's CELEBI.
+   vanillaA zeroes A's feature byte every frame, so B sees A as a vanilla
+   Gen 2 peer (B must mask) while A still sees B as pyrite (A must keep). */
+export async function genderScenario(opts, { vanillaA = false } = {}) {
+  const name = vanillaA ? 'gender-mask-vanilla' : 'gender-keep';
+  const ck = new Checks(name);
+  const { rig, a, b, cable } = await setup(opts);
+  const plant = (c, idx, bits) => {
+    const mon = c.rd('wPartyMon1', STRUCT, idx * STRUCT);
+    const v = (mon[MON_CAUGHT_LEVEL] & 0x3f) | bits;
+    c.wr('wPartyMon1', [v], idx * STRUCT + MON_CAUGHT_LEVEL);
+    return v;
+  };
+  const opposite = (c, idx) => (dvMale(c.rd('wPartyMon1', STRUCT, idx * STRUCT)) ? GENDER_EXPLICIT | GENDER_FEMALE : GENDER_EXPLICIT);
+  const bitsOf = { karp: opposite(b, 0), rat: opposite(a, 3), mew: GENDER_EXPLICIT };
+  plant(b, 0, bitsOf.karp); plant(a, 3, bitsOf.rat); plant(a, 2, bitsOf.mew);
+  const pre = { A: party(a), B: party(b) };
+  const latch = { A: [], B: [] }, stats = { A: [], B: [] }, looked = {};
+  function* side(c, picks, ot, look) {
+    yield* enterRoom(c, c === b ? 37 : 0, 'trade');
+    for (let i = 0; i < picks.length; i++) {
+      yield* untilText(c, 'CANCEL', 4000);
+      latch[c.name].push(c.rd1('wLinkPeerFeatures'));
+      yield* tradeOne(c, picks[i], ot[i]);
+    }
+    yield* untilText(c, 'CANCEL', 4000);
+    latch[c.name].push(c.rd1('wLinkPeerFeatures'));
+    for (const s of look) yield* statsGender(c, s, stats[c.name]);
+    // leave together: backOn2F expects the CANCEL exchange to finish promptly
+    looked[c.name] = true;
+    yield* until(() => looked.A && looked.B, 4000, 'both read the stats screens', null, 24, c);
+    yield* cancelOut(c);
+    yield* backOn2F(c);
+  }
+  const ga = side(a, [3, 3], ['MAGIKARP', 'CELEBI'], [5]);
+  runBoth(rig, a, b, vanillaA ? everyFrame(ga, () => a.wr('wLinkSendPartyPadding', [0])) : ga,
+    side(b, [1, 1], ['MEW', 'RATTATA'], [3, 4]), 40000, name);
+  const post = { A: party(a), B: party(b) };
+  const seg = segment(cable.wire, { trade: true });
+  const keepAtB = !vanillaA;
+
+  checkDrops(ck, cable, b, 'cancel');
+  ck.ok('cable: no master/slave byte mismatch', cable.mismatch === 0, cable.mismatch);
+  ck.ok('three bulk exchanges', seg.blocks.length === 3, seg.blocks.length);
+  // the feature byte on the wire: toMaster = B's block, toSlave = A's block
+  const wireB = seg.blocks.map((k) => wirePadding(k.toMaster['12 party']));
+  const wireA = seg.blocks.map((k) => wirePadding(k.toSlave['12 party']));
+  ck.ok('wire: B\'s party block carries $8F in padding byte 0 (every exchange)', wireB.every((v) => v === LINK_PYRITE_FEATURES), hex(wireB));
+  ck.ok(`wire: A's party block carries ${vanillaA ? '$00 (zeroed in flight)' : '$8F'} in padding byte 0`,
+    wireA.every((v) => v === (vanillaA ? 0 : LINK_PYRITE_FEATURES)), hex(wireA));
+  ck.ok('latch: A\'s wLinkPeerFeatures = $8F after every exchange', latch.A.every((v) => v === LINK_PYRITE_FEATURES), hex(latch.A));
+  ck.ok(`latch: B's wLinkPeerFeatures = ${vanillaA ? '$00' : '$8F'} after every exchange`,
+    latch.B.every((v) => v === (vanillaA ? 0 : LINK_PYRITE_FEATURES)), hex(latch.B));
+  // CaughtLevel bits 7-6 on arrival
+  const karp = post.A[4], mew = post.B[2], rat = post.B[3];
+  const bits = (m) => m && (m.mon[MON_CAUGHT_LEVEL] & 0xc0);
+  ck.ok('species landed: A slot 5 MAGIKARP, B slots 3-4 MEW RATTATA',
+    karp && karp.species === SP.MAGIKARP && mew && mew.species === SP.MEW && rat && rat.species === SP.RATTATA,
+    hex(post.A.map((m) => m.species)) + ' / ' + hex(post.B.map((m) => m.species)));
+  ck.ok(`MAGIKARP B->A: explicit bits kept (%${(bitsOf.karp >> 6).toString(2)})`, bits(karp) === bitsOf.karp, karp && hex([karp.mon[MON_CAUGHT_LEVEL]]));
+  ck.ok(`RATTATA A->B: explicit bits ${keepAtB ? `kept (%${(bitsOf.rat >> 6).toString(2)})` : 'masked'}`,
+    bits(rat) === (keepAtB ? bitsOf.rat : 0), rat && hex([rat.mon[MON_CAUGHT_LEVEL]]));
+  ck.ok(`MEW A->B (hostile %10 on a genderless species): bits ${keepAtB ? 'kept' : 'masked'}`,
+    bits(mew) === (keepAtB ? bitsOf.mew : 0), mew && hex([mew.mon[MON_CAUGHT_LEVEL]]));
+  for (const [what, from, to] of [['MAGIKARP B->A', pre.B[0], karp], ['MEW A->B', pre.A[2], mew], ['RATTATA A->B', pre.A[3], rat]]) {
+    ck.ok(`${what}: rest of the struct identical`, to && sameMon(from.mon, to.mon));
+  }
+  // what the receiver's stats screen shows (GetGender)
+  const expect = [
+    ['A', 5, 'MAGIKARP', genderTile(bitsOf.karp & GENDER_FEMALE ? 'F' : 'M'), 'explicit'],
+    ['B', 3, 'MEW', TILE_BLANK, 'genderless despite the bits'],
+    ['B', 4, 'RATTATA', keepAtB ? genderTile(bitsOf.rat & GENDER_FEMALE ? 'F' : 'M') : genderTile(dvMale(pre.A[3].mon) ? 'M' : 'F'),
+      keepAtB ? 'explicit' : 'DV gender'],
+  ];
+  for (const [who, slot, sp, tile, why] of expect) {
+    const s = stats[who].find((x) => x.slot === slot);
+    ck.ok(`${who} stats screen, ${sp}: ${tileName(tile)} (${why})`, s && s.tile === tile, s ? `tile ${tileName(s.tile)}` : 'not read');
+  }
+  ck.ok('explicit genders oppose the DV gender (the check can tell them apart)',
+    dvMale(pre.B[0].mon) === !!(bitsOf.karp & GENDER_FEMALE) && dvMale(pre.A[3].mon) === !!(bitsOf.rat & GENDER_FEMALE));
+  for (const c of [a, b]) {
+    ck.ok(`${c.name} back on 2F, link closed`, c.pos()[1] === 1 && c.rd1('wLinkMode') === 0 && c.rd1('hSerialConnectionStatus') === 0xff);
+  }
+  return { ck, rig, a, b, cable, seg, frames: rig.frames, oracle: false,
+    extra: { latch, wireA, wireB, bitsOf, stats: Object.fromEntries(Object.entries(stats).map(([k, v]) => [k, v.map((x) => [x.slot, tileName(x.tile)])])) } };
+}
+
+/* bounds: B (slave) is made hostile by holding its wPlayerLinkAction at a slot
+   past its 4-mon party while the trade nybbles are exchanged.  A must refuse
+   through "<mon> appears to be abnormal!" / "trade was canceled", with no
+   crash, both parties untouched and both back at the trade menu. */
+export const HOSTILE_SLOTS = [5, 6, 14];
+export async function boundsScenario(opts) {
+  const ck = new Checks('bounds');
+  const { rig, a, b, cable } = await setup(opts);
+  const pre = { A: party(a), B: party(b) };
+  const hostile = { slot: null };
+  const seen = [];
+  function* sideA() {
+    yield* enterRoom(a, 0, 'trade');
+    for (const slot of HOSTILE_SLOTS) {
+      yield* untilText(a, 'CANCEL', 4000);
+      yield* wait(30);
+      yield* menuTo(a, 3);
+      yield* tap('A');
+      yield* untilText(a, 'STATS', 300);
+      yield* wait(10);
+      yield* tap('RIGHT');
+      yield* wait(10);
+      yield* until(() => b.has('WAITING'), 3000, 'B waiting first', null, 24, a);
+      yield* wait(20);
+      yield* tap('A');
+      yield* until(() => a.has('abnormal') || a.has('for BRAVO') || a.has('for '), 3000, 'A verdict', null, 24, a);
+      const otSp = a.rd('wOTPartySpecies', 15);
+      const at = a.rd1('wCurOTTradePartyMon');
+      seen.push({ slot, at, abnormal: a.has('abnormal'), otCount: a.rd1('wOTPartyCount'),
+        listSpecies: at < 15 ? otSp[at] : null, structSpecies: a.rd1('wOTPartyMon1Species', at * STRUCT) });
+      yield* until(() => a.has('canceled'), 1200, 'A canceled', 'A', 40, a);
+      seen[seen.length - 1].canceled = true;
+    }
+    yield* cancelOut(a);
+    yield* backOn2F(a);
+  }
+  function* sideB() {
+    yield* enterRoom(b, 37, 'trade');
+    for (const slot of HOSTILE_SLOTS) {
+      yield* untilText(b, 'CANCEL', 4000);
+      yield* wait(30);
+      yield* menuTo(b, 1);
+      yield* tap('A');
+      yield* untilText(b, 'STATS', 300);
+      yield* wait(10);
+      yield* tap('RIGHT');
+      yield* wait(10);
+      yield* tap('A');
+      hostile.slot = slot;
+      yield* untilText(b, 'for MEW?', 3000);
+      hostile.slot = null;
+      yield* wait(30);
+      yield* tap('A');
+      yield* untilText(b, 'canceled', 1200);
+    }
+    yield* cancelOut(b);
+    yield* backOn2F(b);
+  }
+  runBoth(rig, a, b, sideA(), everyFrame(sideB(), () => { if (hostile.slot !== null) b.wr('wPlayerLinkAction', [hostile.slot]); }), 40000, 'bounds');
+  const post = { A: party(a), B: party(b) };
+  ck.ok('cable: no master/slave byte mismatch', cable.mismatch === 0, cable.mismatch);
+  for (const s of HOSTILE_SLOTS) {
+    const r = seen.find((x) => x.slot === s);
+    ck.ok(`slot ${s} (B has ${pre.B.length}): A took the hostile nybble and refused it ("abnormal", "trade was canceled")`,
+      r && r.at === s && r.abnormal && r.canceled,
+      r && `at ${r.at} otCount ${r.otCount} list $${(r.listSpecies ?? 0).toString(16)} struct $${r.structSpecies.toString(16)}`);
+  }
+  ck.ok('A party untouched', JSON.stringify(post.A) === JSON.stringify(pre.A));
+  ck.ok('B party untouched', JSON.stringify(post.B) === JSON.stringify(pre.B));
+  for (const c of [a, b]) {
+    ck.ok(`${c.name} back on 2F, link closed (no crash)`, c.pos()[1] === 1 && c.rd1('wLinkMode') === 0 && c.rd1('hSerialConnectionStatus') === 0xff,
+      `${c.pos()} mode ${c.rd1('wLinkMode')}`);
+  }
+  return { ck, rig, a, b, cable, seg: segment(cable.wire, { trade: true }), frames: rig.frames, oracle: false, extra: { seen } };
+}
+
 // ------------------------------------------------------------------- main ---
 const ORACLE_RANGES = [['wPartyCount', 8], ['wOTPartyCount', 8], ['wOTPlayerName', NAME], ['wLinkBattleRNs', 10]];
 function oracleOf(name, r, opts) {
@@ -505,8 +723,10 @@ async function main() {
     oracle: path.join(REPO_DIR, 'web/test/oracle'), slice: '512',
   });
   opts.slice = parseInt(opts.slice, 10);
-  const want = opts.scenario === 'all' ? ['trade', 'battle', 'pacing'] : [opts.scenario];
-  const runners = { trade: tradeScenario, battle: battleScenario, pacing: pacingScenario };
+  const want = opts.scenario === 'all' ? ['trade', 'battle', 'pacing', 'gender-keep', 'gender-mask-vanilla', 'bounds'] : [opts.scenario];
+  const runners = { trade: tradeScenario, battle: battleScenario, pacing: pacingScenario,
+    'gender-keep': (o) => genderScenario(o), 'gender-mask-vanilla': (o) => genderScenario(o, { vanillaA: true }),
+    bounds: boundsScenario };
   let ok = true;
   for (const name of want) {
     let r;

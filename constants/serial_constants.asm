@@ -45,6 +45,23 @@ DEF SERIAL_RNS_LENGTH            EQU 10
 
 DEF SERIAL_PADDING_LENGTH EQU 3
 
+; LK1f (docs/LK1-LINK.md "## LK1f findings"): the pyrite feature byte.  The
+; Gen 2 party block ends in SERIAL_PADDING_LENGTH bytes that vanilla Crystal
+; leaves at zero (ClearLinkData) and never reads back on receive: they are the
+; slack that absorbs the preamble shift of Serial_ExchangeBytes (a received
+; block can carry up to 2 extra leading $FD, measured in LK1b, which pushes the
+; last 2 padding bytes off the end of the 450-byte receive buffer).  Pyrite
+; therefore uses only the FIRST padding byte, the one that still arrives after
+; that shift.  A peer that sends LINK_PYRITE_FEATURES there keeps the explicit
+; gender bits (GF2/GF3, CaughtLevel bits 7-6) on a traded mon; anything else
+; ($00 from vanilla Crystal or a pre-LK1f pyrite) gets them masked, as before.
+; $8F is 'P' in the charmap.  It cannot be produced by accident at that spot:
+; not $00 (vanilla/pre-LK1f), $FE (wLinkReceivedPartyEnd, read when the shift
+; is 3 and the byte is lost), $FD/$FF (preamble, patch replacement), $20/$21
+; (mail framing) or $01/$02 (connection bytes).  The other two padding bytes
+; stay $00 (reserved).
+DEF LINK_PYRITE_FEATURES EQU $8f
+
 DEF SERIAL_MAIL_PREAMBLE_BYTE    EQU $20
 DEF SERIAL_MAIL_PREAMBLE_LENGTH  EQU 5
 ; used to replace SERIAL_NO_DATA_BYTE

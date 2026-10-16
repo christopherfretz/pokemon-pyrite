@@ -2227,3 +2227,147 @@ Run on two iPhones (or an iPhone and a desktop) against the deployed `latest`:
 > Link play: trade and battle with a friend over the internet from the menu's "Link with a
 > friend" panel — no WRAM, SRAM, flag or map change; the core is layout-identical and old resume
 > states load.
+
+## LK1f findings
+
+LK1f is the ROM side of link play: a **pyrite feature byte** in the Gen 2 party block, so two pyrite Game Boys keep
+each other's explicit genders (GENDER-FIELD.md, GF2/GF3), and a **slot bound** in `ValidateOTTrademon`, so a hostile
+partner cannot have an arbitrary chunk of OT data traded in as a Pokémon.
+
+- **Save compatibility:** existing saves load; no WRAM/SRAM layout change (one previously unused WRAM byte now used
+  at $cd1c; no symbol moved).
+- **Vanilla interop is unchanged.** A vanilla Crystal (or older pyrite) partner sends $00 in that byte and its
+  Pokémon are masked exactly as under GF3. A vanilla Crystal receiving from pyrite never reads the byte.
+
+### Files (file:line map)
+
+| file:line | change |
+|---|---|
+| `constants/serial_constants.asm:48-63` | `LINK_PYRITE_FEATURES EQU $8f`, with the why of the byte and the value |
+| `ram/wram.asm:2085-2096` | `SECTION "Link Peer Features", WRAM0[$cd1c]` / `wLinkPeerFeatures:: db` |
+| `engine/link/link.asm:919-924` | `Link_PrepPartyData_Gen2`: write `LINK_PYRITE_FEATURES` to `wLinkSendPartyPadding` (padding byte 0) |
+| `engine/link/link.asm:296-303` | `Gen2ToGen2LinkComms`, right after `Link_CopyOTData`: latch the peer's padding byte 0 into `wLinkPeerFeatures` |
+| `engine/link/link.asm:2011-2028` | `LinkTrade`: the GF3 mask of CaughtLevel bits 7-6 now runs only if `wLinkMode == LINK_TIMECAPSULE` or the latch is not `$8F` |
+| `engine/link/time_capsule.asm:5-16` | `ValidateOTTrademon`: slot `>= PARTY_LENGTH` or `>= wOTPartyCount` takes the existing `.abnormal` exit |
+| `web/test/cable.mjs` | scenarios `gender-keep`, `gender-mask-vanilla`, `bounds`; `MON_CAUGHT_LEVEL` fixed to `0x1d` (see below) |
+| `web/test/link_e2e.mjs` (trade) | one check: both cores latched `$8F` through `link.js` |
+| `web/test/oracle/{trade,battle,pacing}.json` | re-recorded (see *Oracles*) |
+
+### The byte and the value
+
+The party block is `name(11) party(8) structs(288) OTs(66) nicks(66) padding(3)` = 441 + 3. The padding is filled
+with $00 by `Link_PrepPartyData_Gen2`, is not in either patch list (`FixDataForLinkTransfer` patches only ID and
+structs), and is never read by vanilla Crystal. Only **padding byte 0** is used: `Serial_ExchangeBytes` keeps any
+leftover `$FD` preamble bytes as data, so the block can arrive shifted by up to the 2 bytes measured in LK1b (8
+leading `$FD` toward the slave, 6 toward the master). Byte 0 always arrives; bytes 1-2 may be cut off. Bytes 1-2 stay
+`$00`, reserved.
+
+`$8F` is `'P'` in the charmap. It is none of the bytes that can sit there by accident: `$00` (vanilla, pre-LK1f
+pyrite), `$FE` (no-data byte, never sent raw; `wLinkReceivedPartyEnd`), `$FD`/`$FF` (preamble, patch replacement),
+`$20`/`$21` (mail preamble/replacement) or `$01`/`$02` (connection-status bytes). If the block were shifted by 3, `hl` after `Link_CopyOTData`
+would sit on `wLinkReceivedPartyEnd`'s `$FE`, which is not `$8F`, so the result is the safe (masked) side.
+
+### Receive logic
+
+1. Every bulk exchange (`Gen2ToGen2LinkComms`, entering the room and after every trade) rewrites the latch, so it
+   always describes the partner of the current session.
+2. `LinkTrade` keeps bits 7-6 only if `wLinkMode != LINK_TIMECAPSULE` **and** the latch is `$8F`. A Gen 1 block has no
+   feature byte and the latch may be stale from an earlier Gen 2 session, so the Time Capsule always masks.
+3. A hostile peer that sends `$8F` with arbitrary bits gains nothing: `GetGender` ignores the bits on genderless, F0
+   and F100 species, and on mixed-ratio species every bit pattern is a legal gender (`%0x` = DV gender, `%10`/`%11` =
+   male/female). `gender-keep` asserts the genderless case on the stats screen.
+4. Link battles were already right (GF3 `LinkEnemyMonGender`); LK1f does not touch them. The mixed-build Attract
+   desync in GENDER-FIELD.md remains (a vanilla partner still sends no gender).
+
+Alternative considered and not taken: mask every `wOTPartyMon` at receive time and need no WRAM. It would change the
+trade-menu STATS screen and link battles against pyrite partners, and it cannot tell partners apart either.
+
+### Bounds check
+
+The slot is the partner's nybble, 0-14 (`$F` = cancel). Vanilla trusts it. Past the party, `ValidateOTTrademon`
+compares `wOTPartySpecies[slot]` with the struct's species; for slot 5 of a 4-mon party both read `$00` and the check
+passes, and `LinkTrade` then copies whatever lies there in as a Pokémon. The bound refuses any slot `>= PARTY_LENGTH`
+or `>= wOTPartyCount` (both, because the count is the partner's word too) through the game's own "<mon> appears to
+be abnormal!" / "Too bad! The trade was canceled!" path, which sends `$1` and returns both sides to the trade menu.
+
+- **Residual, not fixed:** `LinkTradePlaceArrow` draws the `▷` at `hlcoord 6, 9 + slot` *before* the validation. For
+  slots 9-14 that write lands past `wTilemap`, in the Miscellaneous scratch union. This is vanilla behaviour, the
+  scratch is dead at that point, and `bounds` (slot 14) shows no crash; fixing it would mean reordering vanilla code.
+- The abnormal text names `GetPokemonName(wOTPartySpecies[slot])`, which for a bogus slot is junk from the species
+  table. Same as vanilla for a mismatched slot.
+
+### Tests (`web/test/cable.mjs`, two-core zero-latency cable)
+
+| scenario | result | key values |
+|---|---|---|
+| `trade` | PASS 33/33 | unchanged checks |
+| `battle` | PASS 17/17 | |
+| `pacing` | PASS 3/3 | failure edge unchanged (gap 1568 ok, 1536 bad) |
+| `gender-keep` | PASS 20/20 | wire byte 0 = `8f8f8f` both ways; latch A `8f8f8f`, B `8f8f8f`; MAGIKARP B->A CaughtLevel `$c0` kept, stats screen female (DV male); RATTATA A->B `$80` kept, male (DV female); MEW A->B hostile `$80` kept, stats screen blank |
+| `gender-mask-vanilla` | PASS 20/20 | A's byte zeroed every frame: wire A->B `000000`, B latch `000000`; RATTATA and MEW arrive `$00` (masked), RATTATA shows its DV gender (female); MAGIKARP B->A still `$c0`, female |
+| `bounds` | PASS 8/8 | B holds `wPlayerLinkAction` at 5, 6, 14 (B has 4): A refuses each ("abnormal", "canceled"); slot 5 read species `$00`/`$00`, the case vanilla let through; both parties byte-identical; both back on 2F |
+
+Negative control: `bounds` against the pre-LK1f ROM (368b0d5) fails at slot 5. A never shows "abnormal" or
+"canceled": the bogus slot passes vanilla validation and the trade sequence goes ahead.
+
+Also in `cable.mjs`: `MON_CAUGHT_LEVEL` was `0x1c` (`MON_POKERUS`), so `sameMon` masked the wrong byte. It is now
+`0x1d`. The fixtures' CaughtLevel bits 7-6 are all 0, so no earlier result changes.
+
+Node suites (ROM with LK1f):
+
+| check | result |
+|---|---|
+| `link_unit.mjs` | PASS 170/170 |
+| `link_e2e.mjs` | PASS 13/13 (the trade checks now also assert both latches `$8F`: the stand-in passes the byte untouched) |
+| `link_e2e.mjs --relay` | PASS 13/13 |
+
+`link_validate.js` needed no change: `partyReasons` does not inspect the padding.
+
+### Oracles
+
+`trade.json`, `battle.json` and `pacing.json` were re-recorded. Each was diffed field by field against the old one:
+- `rom_sha256` differs in all three (every build does).
+- Party blocks: byte 441 is `8f` instead of `00` in both directions, in every exchange.
+- `trade.json`: the battle RNs of exchanges 2 and 3 (and so `wLinkBattleRNs` at the end) differ. The RNs are drawn
+  from `Random` at the room's sync point and the extra instructions move it by a few cycles. The first exchange's
+  RNs, all frame counts, stage boundaries and `wPokemonData` hashes are identical.
+
+Two `--no-write` runs after re-recording are identical.
+
+### Symbols and banks
+
+`pokecrystal.sym` before (368b0d5) and after:
+- **RAM** (`$8000`+): 0 of 16,460 symbols moved or removed. One new: `wLinkPeerFeatures` at `00:cd1c`.
+- **ROM**: 550 local and global labels shift, all in banks `$0a` (416) and `$3e` (134). This is code growth inside
+  the edited sections. New labels: `LinkTrade.mask_gender`, `LinkTrade.gender_done`.
+
+`wLinkPeerFeatures` is pinned to `$cd1c` on purpose. As a floating `WRAM0` section, rgblink put it in the 1-byte hole
+at `$c2ff` and pushed `wConveyorDir` to `$cd1c`.
+
+| budget | before | after |
+|---|---|---|
+| bank `$0a` free | 406 B | 383 B (-23: send 5, latch 4, mask 14) |
+| bank `$3e` free | 367 B | 357 B (-10: the bound) |
+| WRAM0 free | 40 B | 39 B (hole `$cd1d-$cd1f` now 3 B) |
+
+### Save compatibility
+
+`scripts/gf2_save_integrity.py --sav` on both real saves (`playtest/gf2/real/`, OLD = rebuilt pre-GF2 ea5a211):
+- `cfretz244.sav`: SUMMARY 5/5.
+- `jonathan.sav`: SUMMARY 5/5. T0: 0 of 11,417 SRAM/wPlayerData/wPokemonData symbols moved.
+
+LK1f adds no save data. `wLinkPeerFeatures` is unsaved WRAM0, written before every read.
+
+### Not verified
+
+- A real cable between two Game Boys running this build (the cable model is the LK1b oracle).
+- A real vanilla Crystal cartridge as the partner. `gender-mask-vanilla` models it by zeroing the byte, which is
+  exactly what vanilla sends.
+- The Time Capsule path at run time (it has no harness). It is covered by reading the code: `LinkTrade` checks
+  `wLinkMode` first.
+
+### Release-note sentence
+
+> Link trades between two pyrite players now keep each Pokémon's gender, and a trade partner can no longer offer a
+> Pokémon from outside their party: existing saves load; no WRAM/SRAM layout change (one previously unused WRAM byte
+> now used at $cd1c; no symbol moved).

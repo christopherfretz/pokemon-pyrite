@@ -904,8 +904,10 @@ $01 is unchanged: the GiveShuckle and NewGame call sites swap one farcall target
   downgrade" note from GF2 still applies.
 
 ### Deferred / known limits
-- **Pyrite-to-pyrite trades** lose a rolled gender: the receiver masks it, because a vanilla partner cannot be told
-  apart. Link battles do show it (`LinkEnemyMonGender`).
+- ~~**Pyrite-to-pyrite trades** lose a rolled gender~~ **Closed by LK1f** (LK1-LINK.md "LK1f findings"). A pyrite
+  partner announces itself with `LINK_PYRITE_FEATURES` ($8F) in the party block's first padding byte, and the
+  receiver keeps the explicit gender. This works over the web link and a real cable alike. Vanilla partners send $00
+  and are still masked; the Time Capsule always masks. Link battles already showed it (`LinkEnemyMonGender`).
 - **Mixed-build link battles are not just cosmetic: they can desync.** Against any non-GF3 build (vanilla Crystal,
   pre-GF2 or GF2 pyrite) the two Game Boys can disagree about a mon's gender: the GF3 side uses the explicit gender
   (`LinkEnemyMonGender`), the other side reads the DV gender, and a vanilla opponent's time bits read as an explicit

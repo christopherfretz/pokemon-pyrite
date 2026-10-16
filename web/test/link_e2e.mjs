@@ -228,6 +228,10 @@ async function tradeScenario(rtt) {
   ck.ok('A wPokemonData = cable oracle', pokemonDataSha(a) === o.end.A.wram_pokemon_data_sha256);
   ck.ok('B wPokemonData = cable oracle', pokemonDataSha(b) === o.end.B.wram_pokemon_data_sha256);
   ck.ok('both stand-ins still linked (room open for another visit)', S.sa.isLinked() && S.sb.isLinked());
+  // LK1f: the party block's first padding byte (pyrite feature byte $8F) went
+  // through link.js untouched, so each side latched the other as pyrite.
+  ck.ok('LK1f: both latched the peer\'s feature byte $8F (stand-in passed it untouched)',
+    a.rd1('wLinkPeerFeatures') === 0x8f && b.rd1('wLinkPeerFeatures') === 0x8f, hex([a.rd1('wLinkPeerFeatures'), b.rd1('wLinkPeerFeatures')]));
   const frames = rig.frames;
   rig.stepper = defaultStepper;
   for (const [who, image] of Object.entries(img)) {

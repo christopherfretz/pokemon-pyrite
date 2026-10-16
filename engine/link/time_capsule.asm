@@ -2,6 +2,18 @@
 
 ValidateOTTrademon:
 	ld a, [wCurOTTradePartyMon]
+; LK1f: the slot comes from the partner's nybble (0-14).  Vanilla trusts it,
+; so a hostile partner on a real cable could name a slot past its party and
+; have LinkTrade copy whatever lies there (OT names, nicknames) in as a mon:
+; slots >= wOTPartyCount whose species bytes both read 0 even pass the checks
+; below.  Refuse any slot that is not a real party member, through the game's
+; own "abnormal" message and "trade was canceled".  PARTY_LENGTH too, because
+; wOTPartyCount is the partner's word as well.
+	cp PARTY_LENGTH
+	jr nc, .abnormal
+	ld hl, wOTPartyCount
+	cp [hl]
+	jr nc, .abnormal
 	ld hl, wOTPartyMon1Species
 	call GetPartyLocation
 	push hl

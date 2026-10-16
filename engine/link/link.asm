@@ -293,6 +293,14 @@ endc
 	ld de, wLinkPlayerPartyData
 	ld bc, wLinkPlayerPartyDataEnd - wLinkPlayerPartyData
 	call Link_CopyOTData
+; LK1f: Link_CopyOTData leaves hl just past the 441 bytes it copied (name
+; through nicknames), i.e. on the peer's first padding byte.  Latch it: it is
+; LINK_PYRITE_FEATURES from a pyrite peer, $00 from vanilla Crystal.  If the
+; preamble shift ever reached 3 bytes, the padding fell off the end of the
+; buffer and hl is on wLinkReceivedPartyEnd ($FE, set above): not the magic,
+; so the trade masks exactly as before.  hl is reloaded right below.
+	ld a, [hl]
+	ld [wLinkPeerFeatures], a
 
 	ld de, wOTPatchLists
 	ld hl, wLinkPlayerPatchedData
@@ -907,6 +915,13 @@ Link_PrepPartyData_Gen2:
 	ld hl, wPartyMonNicknames
 	ld bc, PARTY_LENGTH * MON_NAME_LENGTH
 	call CopyBytes
+
+; LK1f: announce "pyrite, explicit genders" in the first padding byte, which
+; vanilla Crystal sends as $00 and never reads (see LINK_PYRITE_FEATURES).
+; The Time Capsule builds its own block (Link_PrepPartyData_Gen1), so a Gen 1
+; partner never sees this.
+	ld a, LINK_PYRITE_FEATURES
+	ld [wLinkSendPartyPadding], a
 
 ; Okay, we did all that.  Now, are we in the trade center?
 	ld a, [wLinkMode]
@@ -1993,9 +2008,24 @@ LinkTrade:
 	call CopyBytes
 ; GF3 (docs/GENDER-FIELD.md): bits 7-6 of an incoming mon's CaughtLevel may be
 ; a vanilla Gen 2 time of day; drop them so its gender comes from its DVs.
+; LK1f: unless the partner announced itself as pyrite (wLinkPeerFeatures, set
+; by Gen2ToGen2LinkComms from its party block), in which case they are its
+; explicit gender and are kept.  The Time Capsule always masks: a Gen 1 block
+; has no feature byte, and the latch may be left over from a Gen 2 session.
+; A hostile peer gains nothing it could not already do: on a genderless, F0
+; or F100 species GetGender ignores the bits, and on a mixed-ratio species any
+; value is a legal explicit gender.
+	ld a, [wLinkMode]
+	cp LINK_TIMECAPSULE
+	jr z, .mask_gender
+	ld a, [wLinkPeerFeatures]
+	cp LINK_PYRITE_FEATURES
+	jr z, .gender_done
+.mask_gender
 	ld a, [wTempMonCaughtLevel]
 	and CAUGHT_LEVEL_MASK
 	ld [wTempMonCaughtLevel], a
+.gender_done
 	predef AddTempmonToParty
 	ld a, [wPartyCount]
 	dec a

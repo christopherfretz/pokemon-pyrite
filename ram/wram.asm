@@ -2082,6 +2082,20 @@ wPK1StarterDVsState:: db   ; PK1_STARTER_DVS_ARMED, or anything else = unarmed
 wPK1StarterGender:: db
 
 
+; LK1f (docs/LK1-LINK.md "## LK1f findings"): the first padding byte of the
+; peer's Gen 2 party block, latched by Gen2ToGen2LinkComms on every bulk
+; exchange (so it is always the current partner's).  LinkTrade keeps a traded
+; mon's explicit gender bits only when this is LINK_PYRITE_FEATURES and the
+; link is not the Time Capsule.  Unsaved WRAM0 scratch, outside wPlayerData:
+; no save or SRAM change.  Pinned to $cd1c, the free 4-byte hole after
+; "Pikachu Emotion Scratch": left floating, rgblink placed it first in the
+; 1-byte hole at $c2ff and pushed wConveyorDir out to $cd1c.  Pinned, no
+; existing symbol moves (pokecrystal.sym diffed before and after).
+SECTION "Link Peer Features", WRAM0[$cd1c]
+
+wLinkPeerFeatures:: db
+
+
 SECTION "WRAM 1", WRAMX
 
 wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION
