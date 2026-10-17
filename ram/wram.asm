@@ -3435,8 +3435,9 @@ wVermilionCitySceneID::                           db ; 7j
 wRoute23SceneID::                                 db ; M10 13e-1: badge checks passed, 0-7
 wCeruleanTrashedHouseSceneID::                    db ; CH1: stale-block heal only, always 0
 wCeruleanBadgeHouseSceneID::                      db ; CH1: stale-block heal only, always 0
+wBikeShopSceneID::                                db ; BS1: stale-block heal only, always 0
 
-	ds 24
+	ds 23
 ; Kanto hack (OMG1): the Red/Blue Old Man glitch (docs/OLD-MAN-GLITCH.md),
 ; carved from the END of the same reserve so nothing after it moves.  Saved,
 ; like Gen 1, so the leak survives save + reset.

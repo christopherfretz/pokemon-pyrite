@@ -3,6 +3,14 @@
 ; 6a laid in the geometry (reused CERULEAN_TRADE_SPEECH_HOUSE's slot on the
 ; shared House1 block group) and the two door warps.
 ;
+; BS1 (docs/M3-CERULEAN.md "## BS1 findings"): 6a's House1 room made the shop
+; a plain house (table, stools, palms).  The room is now Yellow's own
+; BikeShop.blk on TILESET_KANTO_CLUB (Yellow's CLUB tileset,
+; scripts/kanto_club_blk.py): checkered floor, the bikes on display -- tiles,
+; as in Yellow -- and the clerk's L-shaped counter.  Objects, warps and
+; bg_events were already on Yellow's squares and are unchanged, in number and
+; order.
+;
 ; Yellow's clerk draws a FAKE shop menu -- a hand-placed TextBoxBorder with the
 ; strings "BICYCLE / CANCEL" and "¥1000000" -- because no mart list can carry a
 ; price of a million.  GSC has the same limit and worse: `pokemart` reads every
@@ -25,8 +33,58 @@
 
 BikeShop_MapScripts:
 	def_scene_scripts
+	scene_script BikeShopHealScene ; scene 0, the only one
 
 	def_callbacks
+	callback MAPCALLBACK_CMDQUEUE, BikeShopSceneCallback
+
+; BS1 save compatibility: a game saved INSIDE the shop before BS1 carries the
+; old House1 room's TILESET_HOUSE block ids in wScreenSave, which Continue
+; writes back over the new .blk.  Same 4x4 footprint as the Cerulean pass
+; houses, so CH1's heal (hack/maps/CeruleanTrashedHouse.asm) serves as is:
+; any block that differs from the ROM .blk is stale (the shop never edits its
+; own blocks), so reload, re-buffer wScreenSave and redraw.  The scene pointer
+; of such a save is 0 (no scene_var before BS1), hence the CMDQUEUE callback.
+	assert BIKE_SHOP_WIDTH == CERULEAN_TRASHED_HOUSE_WIDTH
+	assert BIKE_SHOP_HEIGHT == CERULEAN_TRASHED_HOUSE_HEIGHT
+BikeShopSceneCallback:
+	callasm CeruleanPassHouseFindScene
+	endcallback
+
+BikeShopHealScene:
+	callasm CeruleanPassHouseHealStaleBlocks
+	iffalse .done
+	refreshmap
+; Every square of the old room's floor was walkable; in Yellow's room some are
+; bikes or the counter, and (1,2) is boxed in by bikes and the youngster.  A
+; save made on one of those comes back standing inside the furniture, so step
+; the player onto the floor in front of the mat, as if just walked in.
+	callasm BikeShopPlayerOffTheFloor
+	iffalse .done
+	warpfacing UP, BIKE_SHOP, 3, 6
+.done
+	end
+
+BikeShopPlayerOffTheFloor:
+; wScriptVar = TRUE unless the player's square is floor or the exit mat.
+	ld a, [wXCoord]
+	add 4
+	ld d, a
+	ld a, [wYCoord]
+	add 4
+	ld e, a
+	call GetCoordTileCollision
+	cp COLL_FLOOR
+	jr z, .floor
+	cp COLL_WARP_CARPET_DOWN
+	jr z, .floor
+	ld a, TRUE
+	jr .done
+.floor
+	xor a ; FALSE
+.done
+	ld [wScriptVar], a
+	ret
 
 BikeShopClerkScript:
 	faceplayer
@@ -159,11 +217,10 @@ BikeShopYoungsterCoolBikeText:
 ; BG1Q1 + BG2 (docs/BG1-BENCH-AND-SHELVES.md): Yellow's hidden PrintNewBikeText
 ; (engine/events/hidden_events/new_bike.asm, any facing) on all six of its
 ; BICYCLE squares (vendor/pokeyellow/data/events/hidden_events.asm BIKE_SHOP).
-; BG1 did (2,1), the one that is a std-script TV tile in our room; BG2 adds the
-; other five.  Text follows Yellow's square, not our House1 art: (1,2), (3,2),
-; (0,4) and (1,5) are plain floor here (bikes, so solid, in Yellow) and read
-; when faced from a neighbour; (1,0) is back wall behind the (1,1) bookshelf,
-; so no square faces it -- kept for parity, unreachable.
+; BG1 did (2,1), BG2 the other five.  Since BS1 the bikes are drawn there too
+; (Yellow's room).  As in Yellow only three can be faced: (3,2), (0,4) and
+; (1,5); (1,0), (2,1) and (1,2) are boxed in by other bikes, the back wall and
+; the youngster -- kept for parity.
 BikeShopBG1Q1NewBicycle:
 	jumptext BikeShopBG1Q1NewBicycleText
 

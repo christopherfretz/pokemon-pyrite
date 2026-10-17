@@ -76,4 +76,6 @@ Tilesets::
 	tileset TilesetKantoCave
 ; CH1: Yellow's HOUSE, CERULEAN's trashed house (docs/M3-CERULEAN.md).
 	tileset TilesetKantoHouse
+; BS1: Yellow's CLUB, CERULEAN's BIKE SHOP (docs/M3-CERULEAN.md).
+	tileset TilesetKantoClub
 	assert_table_length NUM_TILESETS + 1

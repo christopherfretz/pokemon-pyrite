@@ -137,7 +137,6 @@ BlackthornDragonSpeechHouse_Blocks:
 BlackthornEmysHouse_Blocks:
 MoveDeletersHouse_Blocks:
 CeruleanMelaniesHouse_Blocks:
-BikeShop_Blocks:
 CharcoalKiln_Blocks:
 LakeOfRageHiddenPowerHouse_Blocks:
 LakeOfRageMagikarpHouse_Blocks:
@@ -1494,5 +1493,10 @@ CeruleanCaveB1F_Blocks:
 
 PokemonMansionSealedLab_Blocks: ; MEW1
 	INCBIN "maps/PokemonMansionSealedLab.blk"
+
+; BS1 (docs/M3-CERULEAN.md): Yellow's BIKE SHOP, 4x4 on TILESET_KANTO_CLUB
+; (scripts/kanto_club_blk.py), off 6a's shared House1 room.
+BikeShop_Blocks:
+	INCBIN "maps/BikeShop.blk"
 
 ENDSECTION

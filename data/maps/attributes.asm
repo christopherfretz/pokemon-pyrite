@@ -612,7 +612,7 @@ ENDM
 	map_attributes PokemonMansionSealedLab, POKEMON_MANSION_SEALED_LAB, $17 ; MEW1
 	map_attributes CeruleanTrashedHouse, CERULEAN_TRASHED_HOUSE, $0a ; CH1: Yellow's own border (db $a) on TILESET_KANTO_HOUSE
 	map_attributes CeruleanMelaniesHouse, CERULEAN_MELANIES_HOUSE, $00
-	map_attributes BikeShop, BIKE_SHOP, $00
+	map_attributes BikeShop, BIKE_SHOP, $0e
 	map_attributes CeruleanBadgeHouse, CERULEAN_BADGE_HOUSE, $0c ; CH1: Yellow's own border (db $c) on the SHIP tileset
 	map_attributes CeruleanCave1F, CERULEAN_CAVE_1F, $7d ; M10P: Yellow's border block
 	map_attributes CeruleanCave2F, CERULEAN_CAVE_2F, $7d

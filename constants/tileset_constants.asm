@@ -50,6 +50,7 @@
 	const TILESET_KANTO_BEACH_HOUSE ; 30 (M12a: Yellow's BEACH_HOUSE)
 	const TILESET_KANTO_CAVE ; 31 (CT1: Yellow's CAVERN)
 	const TILESET_KANTO_HOUSE ; 32 (CH1: Yellow's HOUSE)
+	const TILESET_KANTO_CLUB ; 33 (BS1: Yellow's CLUB, the Bike Shop)
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

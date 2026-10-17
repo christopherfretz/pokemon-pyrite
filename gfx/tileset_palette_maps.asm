@@ -142,6 +142,10 @@ INCLUDE "gfx/tilesets/kanto_beach_house_palette_map.asm"
 TilesetKantoHousePalMap:
 INCLUDE "gfx/tilesets/kanto_house_palette_map.asm"
 
+; Kanto hack: Yellow's CLUB tileset, CERULEAN's BIKE SHOP (BS1).
+TilesetKantoClubPalMap:
+INCLUDE "gfx/tilesets/kanto_club_palette_map.asm"
+
 ; Kanto hack: Yellow's GYM (= DOJO) tileset, VIRIDIAN GYM (M10 13a).
 TilesetKantoGymPalMap:
 INCLUDE "gfx/tilesets/kanto_gym_palette_map.asm"
