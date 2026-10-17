@@ -1,4 +1,19 @@
 Pokepic::
+; SS3b: the box interior is ' ' ($7f), and the 7x7 picture leaves one interior
+; row under it showing that tile.  In the overworld vTiles2 tile $7f is not
+; blank: CloseText (and map entry) runs LoadOverworldFont, which puts
+; overworld_space.2bpp there -- a solid colour-1 tile, the map name sign's
+; background.  ElmsLab and the Fan Club reach pokepic through reanchormap,
+; whose font reload (LoadFrame) blanks $7f, so their row is white; the S.S.
+; ANNE storyteller and the Route 15 binoculars come straight from closetext,
+; so their row was a colour-1 bar (grey, then the mon's light colour once SS3
+; coloured the box).  Load the blank textbox space here, as LoadFrame does,
+; before the box is drawn.  The next CloseText or map entry reloads the
+; overworld one.
+	ld de, TextboxSpaceGFX
+	ld hl, vTiles2 tile ' '
+	lb bc, BANK(TextboxSpaceGFX), 1
+	call Get2bpp
 	ld hl, PokepicMenuHeader
 	call CopyMenuHeader
 	call MenuBox
@@ -28,6 +43,21 @@ Pokepic::
 	ret
 
 ClosePokepic::
+; SS3b: the box interior is ' ' ($7f), and the 7x7 picture leaves one interior
+; row under it showing that tile.  In the overworld vTiles2 tile $7f is not
+; blank: CloseText (and map entry) runs LoadOverworldFont, which puts
+; overworld_space.2bpp there -- a solid colour-1 tile, the map name sign's
+; background.  ElmsLab and the Fan Club reach pokepic through reanchormap,
+; whose font reload (LoadFrame) blanks $7f, so their row is white; the S.S.
+; ANNE storyteller and the Route 15 binoculars come straight from closetext,
+; so their row was a colour-1 bar (grey, then the mon's light colour once SS3
+; coloured the box).  Load the blank textbox space here, as LoadFrame does,
+; before the box is drawn.  The next CloseText or map entry reloads the
+; overworld one.
+	ld de, TextboxSpaceGFX
+	ld hl, vTiles2 tile ' '
+	lb bc, BANK(TextboxSpaceGFX), 1
+	call Get2bpp
 	ld hl, PokepicMenuHeader
 	call CopyMenuHeader
 	call ClearMenuBoxInterior
