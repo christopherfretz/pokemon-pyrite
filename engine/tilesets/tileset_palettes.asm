@@ -18,7 +18,14 @@ LoadSpecialMapPalette:
 	jr z, .kanto_e4
 	cp TILESET_KANTO_E4_TOWER
 	jr z, .kanto_e4
+	cp TILESET_SHIP ; SA1: Yellow's black void
+	jr z, .ship
 	jr .do_nothing
+
+.ship
+	call LoadShipPalette
+	scf
+	ret
 
 .kanto_e4
 	jp LoadKantoE4Palette ; carry = loaded
@@ -115,6 +122,20 @@ LoadRadioTowerPalette:
 
 RadioTowerPalette:
 INCLUDE "gfx/tilesets/radio_tower.pal"
+
+; SA1: TILESET_SHIP (the S.S. Anne, and the two Kanto houses ported on Yellow's
+; SHIP blockset) = the indoor palettes with WATER colour 3 black, so the
+; ship's void/porthole band is Yellow's near-black instead of 07,07,07.
+LoadShipPalette:
+	ld a, BANK(wBGPals1)
+	ld de, wBGPals1
+	ld hl, ShipPalette
+	ld bc, 8 palettes
+	call FarCopyWRAM
+	ret
+
+ShipPalette:
+INCLUDE "gfx/tilesets/ship.pal"
 
 MansionPalette1:
 INCLUDE "gfx/tilesets/mansion_1.pal"

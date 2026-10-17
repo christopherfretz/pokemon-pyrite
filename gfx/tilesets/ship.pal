@@ -1,0 +1,16 @@
+; TILESET_SHIP BG palettes (SA1), loaded by LoadSpecialMapPalette .ship
+; (engine/tilesets/tileset_palettes.asm) in place of the stock indoor set.
+; Yellow draws the S.S. Anne's void (the band between the deck and the sea,
+; the portholes, the ceiling band; ship_palette_map.asm maps them all to
+; WATER) in near-black, where Crystal's indoor colour 3 is a lifted 07,07,07.
+; This is the "; indoor" block of bg_tiles.pal byte for byte, except WATER
+; colour 3, which is 00,00,00 so the void reads black as in Yellow.  The other
+; seven palettes keep Crystal's 07,07,07 outline like every other interior.
+	RGB 30,28,26, 19,19,19, 13,13,13, 07,07,07 ; gray
+	RGB 30,28,26, 31,19,24, 30,10,06, 07,07,07 ; red
+	RGB 18,24,09, 15,20,01, 09,13,00, 07,07,07 ; green
+	RGB 30,28,26, 15,16,31, 09,09,31, 00,00,00 ; water (SA1: void black)
+	RGB 30,28,26, 31,31,07, 31,16,01, 07,07,07 ; yellow
+	RGB 26,24,17, 21,17,07, 16,13,03, 07,07,07 ; brown
+	RGB 30,28,26, 17,19,31, 14,16,31, 07,07,07 ; roof
+	RGB 31,31,16, 31,31,16, 14,09,00, 00,00,00 ; text
