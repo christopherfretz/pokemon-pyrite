@@ -806,9 +806,8 @@ FanClubPikachuWalk::
 ; right, one step up, from the door tile Pikachu is standing on.  Ours walks
 ; the same L a tile at a time instead of from a fixed list -- our room is two
 ; tiles wider than Yellow's and either door may be the one the player came
-; through -- and the $26 slide is a plain walk, because our movement
-; mini-interpreter only has Yellow's four in-place opcodes
-; (constants/pikachu_emotion_constants.asm).
+; through.  The $26 "slide" is a half-speed walk in Yellow (1px x 16, the walk
+; frames still cycling, measured PK2), so the first leg is FanClubPikachuSlowStep.
 	ld bc, wFollowerStruct
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
@@ -819,7 +818,7 @@ FanClubPikachuWalk::
 	jr c, .rightward
 	jr z, .rightward
 	ld d, UP
-	call FanClubPikachuStep
+	call FanClubPikachuSlowStep
 	jr c, .up_to_aisle
 	jr .park
 .rightward
@@ -849,12 +848,21 @@ FanClubPikachuWalk::
 	ld [wPikaAsleep], a
 	ret
 
+FanClubPikachuSlowStep:
+; Yellow's $25-$2c "slide": the same walk at half speed (1px x 16, 32 frames),
+; its four walk frames 8 frames apart.  PK2.
+	ld e, STEP_SLOW << 2
+	jr FanClubPikachuStepAtSpeed
+
 FanClubPikachuStep:
 ; d = DOWN, UP, LEFT or RIGHT.  Walks the follower one tile, blocking until the
 ; step is finished the way FollowerHopToCounter animates its hop (a running
 ; script stops HandleMap, so nothing else would tick the object).  Carry if it
 ; moved.  (7f only needed UP/RIGHT; 12n's CINNABAR GYM step-aside adds DOWN and
 ; LEFT.)
+	ld e, STEP_WALK << 2
+FanClubPikachuStepAtSpeed:
+; e = STEP_SLOW << 2 or STEP_WALK << 2
 	push de
 	ld a, [wFollowerMapX]
 	ld b, a
@@ -891,22 +899,32 @@ FanClubPikachuStep:
 	call ObjectStep_ZeroAnonJumptableIndex
 	pop de
 	ld bc, wFollowerStruct
-	ld a, STEP_WALK << 2
+	ld a, e
 	or d
 	call NormalStep
 
 ; The cap only exists so a follower HandleObjectStep refuses to tick can never
-; hang the script; a walk at STEP_WALK is 16 frames.
+; hang the script.  Each tick is held to two frames, the overworld's own pace
+; (HandleMap's work spills each pass past one vblank), so a STEP_WALK tile is
+; 16 frames and a STEP_SLOW one 32 wherever this runs.  PK2: a pass that fit in
+; one frame (CINNABAR GYM) used to walk the tile in 8, its walk frames twice as
+; fast as a following Pikachu's.
 	ld b, 40
 .animate
+	ldh a, [hVBlankCounter]
+	ld c, a
 	push bc
 	ld a, FOLLOWER_OBJECT
 	ldh [hMapObjectIndex], a
 	ld bc, wFollowerStruct
 	call HandleObjectStep
-	call UpdateSprites
+	call .draw
 	call DelayFrame
 	pop bc
+	ldh a, [hVBlankCounter]
+	sub c
+	cp 2
+	call c, DelayFrame
 	ld a, [wFollowerStepType]
 	cp STEP_TYPE_NPC_WALK
 	jr nz, .done
@@ -915,6 +933,31 @@ FanClubPikachuStep:
 .done
 	scf
 	ret
+
+.draw
+; PK2: home UpdateSprites, minus the clobber.  Its UpdateAllObjectsFrozen pass
+; runs every struct through HandleFrozenObjectAction, whose OBJECT_ACTION_STEP
+; entry is SetFacingCurrent -- so the walk frame SetFacingStepAction had just
+; put in OBJECT_FACING was overwritten with the standing frame before every
+; draw, and Pikachu glided.  The overworld never runs that pass (HandleMap
+; draws with _UpdateSprites alone), which is why ordinary following animates.
+; Every struct still gets the frozen pass exactly as before; the follower then
+; gets its walk frame back unless the pass hid it (STANDING: under a textbox
+; or off screen).
+	ld a, [wStateFlags]
+	bit SPRITE_UPDATES_DISABLED_F, a
+	ret z
+	ld a, [wFollowerFacing]
+	push af
+	call UpdateAllObjectsFrozen
+	pop bc
+	ld hl, wFollowerFacing
+	ld a, [hl]
+	cp STANDING
+	jr z, .hidden
+	ld [hl], b
+.hidden
+	jp _UpdateSprites
 
 
 ; --- PE1: Bill's Sea Cottage (A3 row 3), called from engine/pikachu/emotions.asm.
