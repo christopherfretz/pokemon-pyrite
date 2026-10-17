@@ -318,10 +318,13 @@ ChampionGroup:
 
 BrockGroup:
 	; BROCK (1)
-	; Kanto hack: Yellow's BROCK (docs/M2-PEWTER-CITY.md), moves as in Yellow.
+	; Kanto hack: Yellow's BROCK (docs/M2-PEWTER-CITY.md), moves as in Yellow:
+	; the Gen 1 level-up fill, then Yellow's SpecialTrainerMoves BROCK 1
+	; (vendor/pokeyellow/data/trainers/special_moves.asm) puts BIND/BIDE in
+	; ONIX's slots 3/4 (MV1b).
 	db "BROCK@", TRAINERTYPE_MOVES
 	db 10, GEODUDE,    TACKLE, NO_MOVE, NO_MOVE, NO_MOVE
-	db 12, ONIX,       TACKLE, SCREECH, BIDE, NO_MOVE
+	db 12, ONIX,       TACKLE, SCREECH, BIND, BIDE
 	db -1 ; end
 
 MistyGroup:
@@ -332,22 +335,25 @@ MistyGroup:
 	; at or below its level (vendor/pokeyellow/data/pokemon/base_stats/*.asm,
 	; evos_moves.asm): STARYU L18 = TACKLE + WATER_GUN (L17); STARMIE L21 =
 	; TACKLE/WATER_GUN/HARDEN (its level-1 set -- Starmie is a stone evolution
-	; and learns nothing by level).  Same convention as BrockGroup above.
+	; and learns nothing by level), then Yellow's SpecialTrainerMoves MISTY 1
+	; (vendor/pokeyellow/data/trainers/special_moves.asm) puts BUBBLEBEAM in
+	; STARMIE's slot 4 (MV1b).  Same convention as BrockGroup above.
 	db "MISTY@", TRAINERTYPE_MOVES
 	db 18, STARYU,     TACKLE, WATER_GUN, NO_MOVE, NO_MOVE
-	db 21, STARMIE,    TACKLE, WATER_GUN, HARDEN, NO_MOVE
+	db 21, STARMIE,    TACKLE, WATER_GUN, HARDEN, BUBBLEBEAM
 	db -1 ; end
 
 LtSurgeGroup:
 	; LT_SURGE (1) - Kanto hack: Yellow's LT.SURGE (docs/M4-VERMILION.md 5.1),
-	; one L28 RAICHU.  Yellow gives it no explicit moveset, so the game builds
-	; one from RAICHU's base moves -- and RaichuEvosMoves has an empty learnset,
-	; so a L28 RAICHU knows exactly its level-1 four:
-	; THUNDERSHOCK/GROWL/THUNDER_WAVE and an empty slot.  Spelled out with
+	; one L28 RAICHU.  Yellow's party row has no moves, so WriteMonMoves gives
+	; it RAICHU's level-1 THUNDERSHOCK/GROWL/THUNDER_WAVE (RaichuEvosMoves has
+	; an empty learnset) -- and then Yellow's SpecialTrainerMoves LT_SURGE 1
+	; (vendor/pokeyellow/data/trainers/special_moves.asm) overwrites all four
+	; slots: THUNDERBOLT/MEGA_PUNCH/MEGA_KICK/GROWL (MV1b).  Spelled out with
 	; TRAINERTYPE_MOVES because Gen 2 would otherwise hand it Gen 2's RAICHU
 	; learnset (as with BROCK/MISTY in M2/M3).
 	db "LT.SURGE@", TRAINERTYPE_MOVES
-	db 28, RAICHU,     THUNDERSHOCK, GROWL, THUNDER_WAVE, NO_MOVE
+	db 28, RAICHU,     THUNDERBOLT, MEGA_PUNCH, MEGA_KICK, GROWL
 	db -1 ; end
 
 ScientistGroup:
@@ -491,12 +497,15 @@ ErikaGroup:
 	;              known at L13, and the first three base moves shift out)
 	;   GLOOM      L32 base ABSORB/POISONPOWDER/STUN_SPORE + L19 SLEEP_POWDER,
 	;              L28 ACID (ABSORB shifts out)
+	; then Yellow's SpecialTrainerMoves ERIKA 1 (vendor/pokeyellow/data/
+	; trainers/special_moves.asm) sets TANGELA slot 3 MEGA_DRAIN, WEEPINBELL
+	; slot 1 RAZOR_LEAF and GLOOM slot 1 PETAL_DANCE (MV1b).
 	; Spelled out with TRAINERTYPE_MOVES for the same reason as BROCK/MISTY/
 	; LT.SURGE above: Gen 2 would otherwise use Gen 2's learnsets.
 	db "ERIKA@", TRAINERTYPE_MOVES
-	db 30, TANGELA,    CONSTRICT, BIND, ABSORB, VINE_WHIP
-	db 32, WEEPINBELL, POISONPOWDER, SLEEP_POWDER, STUN_SPORE, ACID
-	db 32, GLOOM,      POISONPOWDER, STUN_SPORE, SLEEP_POWDER, ACID
+	db 30, TANGELA,    CONSTRICT, BIND, MEGA_DRAIN, VINE_WHIP
+	db 32, WEEPINBELL, RAZOR_LEAF, SLEEP_POWDER, STUN_SPORE, ACID
+	db 32, GLOOM,      PETAL_DANCE, STUN_SPORE, SLEEP_POWDER, ACID
 	db -1 ; end
 
 YoungsterGroup:
@@ -1224,12 +1233,17 @@ KogaLeaderGroup:
 	; 19 CONFUSION, 22 POISONPOWDER, 27 LEECH_LIFE, 30 STUN_SPORE, 35 PSYBEAM,
 	; 38 SLEEP_POWDER, 43 PSYCHIC_M; VENOMOTH L1 adds SUPERSONIC/CONFUSION,
 	; learnset 22/27/30/38/43/50.  At L44/46/48/50 all four land on the same
-	; last four moves.  Same convention as BrockGroup/MistyGroup/ErikaGroup.
+	; last four moves (STUN_SPORE/PSYBEAM/SLEEP_POWDER/PSYCHIC_M); Yellow's
+	; SpecialTrainerMoves KOGA 1 (vendor/pokeyellow/data/trainers/
+	; special_moves.asm) then writes TOXIC into every mon, plus TACKLE (L44),
+	; SUPERSONIC (L46), DOUBLE_EDGE (L48) and LEECH_LIFE/DOUBLE_TEAM/PSYCHIC_M
+	; (VENOMOTH) (MV1b).
+	; Same convention as BrockGroup/MistyGroup/ErikaGroup.
 	db "KOGA@", TRAINERTYPE_MOVES
-	db 44, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
-	db 46, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
-	db 48, VENONAT,    STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
-	db 50, VENOMOTH,   STUN_SPORE, PSYBEAM, SLEEP_POWDER, PSYCHIC_M
+	db 44, VENONAT,    TOXIC, TACKLE, SLEEP_POWDER, PSYCHIC_M
+	db 46, VENONAT,    TOXIC, PSYBEAM, SUPERSONIC, PSYCHIC_M
+	db 48, VENONAT,    TOXIC, DOUBLE_EDGE, SLEEP_POWDER, PSYCHIC_M
+	db 50, VENOMOTH,   LEECH_LIFE, DOUBLE_TEAM, PSYCHIC_M, TOXIC
 	db -1 ; end
 
 CooltrainerMGroup:
@@ -2330,8 +2344,10 @@ SabrinaGroup:
 	; SABRINA (1)
 ; Kanto hack (M8 11l, D79): Yellow's SABRINA -- SabrinaData in
 ; vendor/pokeyellow/data/trainers/parties.asm.  Yellow's $FF-prefixed row is a
-; per-#MON level list with no custom moves, so it becomes a plain
-; TRAINERTYPE_NORMAL row here (G9); ESPEON and the Gen 2 movesets are gone.
+; per-#MON level list with no moves of its own; the moves are Gen 1's
+; WriteMonMoves fill plus Yellow's SpecialTrainerMoves SABRINA 1
+; (vendor/pokeyellow/data/trainers/special_moves.asm), spelled out with
+; TRAINERTYPE_MOVES by MV1 (G9); ESPEON and the Gen 2 movesets are gone.
 	db "SABRINA@", TRAINERTYPE_MOVES
 	db 50, ABRA,       FLASH, NO_MOVE, NO_MOVE, NO_MOVE
 	db 50, KADABRA,    KINESIS, RECOVER, PSYCHIC_M, PSYWAVE
@@ -5232,9 +5248,9 @@ KantoRivalGroup:
 	; seventh rival fight (OPP_RIVAL2 / wTrainerNo = wRivalStarter + 7,
 	; Rival2Data rows 8-10 at vendor/pokeyellow/data/trainers/parties.asm:
 	; 698-700).  Selected by `special GetKantoRivalStarter` -- see
-	; maps/Route22.asm (M10 13c).  TRAINERTYPE_NORMAL like rows 1-10: Yellow's
-	; special_moves.asm lists no RIVAL2 rows, so every mon has its level-up
-	; moves, exactly as in Yellow.  Slots 1, 2 and 5 are the same in all three
+	; maps/Route22.asm (M10 13c).  Like rows 1-10 (MV1): Yellow's
+	; special_moves.asm lists no RIVAL2 rows, so every mon has its Gen 1
+	; level-up moves, spelled out with TRAINERTYPE_MOVES.  Slots 1, 2 and 5 are the same in all three
 	; rows; slots 3 and 4 cover the two evolutions he did not take.
 
 	; KANTO_RIVAL (11): ROUTE 22 #2, RIVAL_STARTER_JOLTEON
@@ -5320,7 +5336,9 @@ JessieJamesGroup:
 
 ; Kanto hack (M6 9x): GIOVANNI, Yellow's GiovanniData rows 1-3 verbatim
 ; (vendor/pokeyellow/data/trainers/parties.asm:535-541).  Yellow's leading $FF
-; means "per-mon levels", which is TRAINERTYPE_NORMAL's default shape here.
+; means "per-mon levels"; the moves are Gen 1's WriteMonMoves fill (plus
+; SpecialTrainerMoves GIOVANNI 3 for row 3), spelled out with TRAINERTYPE_MOVES
+; (MV1).
 ; The name is empty so PlaceEnemysName prints the class name "GIOVANNI" alone.
 GiovanniGroup:
 	; GIOVANNI (1): ROCKET HIDEOUT B4F
