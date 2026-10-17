@@ -42,6 +42,15 @@ _LoadStandardFont::
 	ret
 
 _LoadFontsExtra1::
+; Kanto hack (SS4, docs/M4-VERMILION.md): this overwrites vTiles2 $60-$77,
+; which hold the map name sign's frame (MapEntryFrameGFX at
+; MAP_NAME_SIGN_START). A sign still counting down would come back up over
+; these glyphs -- the S.S. ANNE departure's script `warp` to VERMILION CITY
+; did (same landmark, so InitMapNameSign does not reload the frame). Only
+; InitMapNameSign reloads the frame and it restarts the timer itself, so
+; drop any running sign here.
+	xor a
+	ld [wLandmarkSignTimer], a
 	ld de, FontsExtra_SolidBlackGFX
 	ld hl, vTiles2 tile '■' ; $60
 	lb bc, BANK(FontsExtra_SolidBlackGFX), 1
