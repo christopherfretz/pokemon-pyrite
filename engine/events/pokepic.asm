@@ -36,6 +36,11 @@ ClosePokepic::
 	xor a
 	ldh [hBGMapMode], a
 	call LoadOverworldTilemapAndAttrmapPals
+; SS3: _CGB_Pokepic borrowed PAL_BG_TEXT for the species' palette.
+; GetMemSGBLayout only refills wBGPals1; push it to the shadow buffer and the
+; hardware (as ClosePikapicBox does), or the next textbox -- ElmsLab's opentext
+; right after closepokepic -- draws in the mon's colours.
+	farcall RestorePikapicMapPals
 	call ApplyTilemap
 	call UpdateSprites
 	call LoadStandardFont

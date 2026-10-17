@@ -823,6 +823,19 @@ INCLUDE "gfx/pack/pack_f.pal"
 
 _CGB_Pokepic:
 	call _CGB_MapPals
+; SS3 (operator playtest, 2026-10-17): stock Crystal fills the box with
+; PAL_BG_GRAY, so every pokepic (S.S. ANNE storyteller's SNORLAX, Fan Club,
+; Route 15 binoculars, Elm's starters) was black and white.  Yellow shows the
+; mon in its own colours (the dex page), so load the species' normal palette
+; into PAL_BG_TEXT and colour the box with it -- the Pikapic idiom (J10, see
+; _CGB_Pikapic below): no *_palette_map.asm names TEXT, so no map tile changes
+; colour while the box is up, and the textbox is not on screen meanwhile.
+; ClosePokepic puts the stock text palette back (RestorePikapicMapPals).
+; The frame tiles are 1bpp (colours 0/3), which stay white/black.
+	ld de, wBGPals1 palette PAL_BG_TEXT
+	ld a, [wCurPartySpecies]
+	call GetMonPalettePointer
+	call LoadPalette_White_Col1_Col2_Black
 	ld de, SCREEN_WIDTH
 	hlcoord 0, 0, wAttrmap
 	ld a, [wMenuBorderTopCoord]
@@ -850,9 +863,13 @@ _CGB_Pokepic:
 	sub c
 	inc a
 	ld c, a
-	ld a, PAL_BG_GRAY
+	ld a, PAL_BG_TEXT
 	call FillBoxCGB
 	call ApplyAttrmap
+	call ApplyPals
+; ApplyPals only fills the shadow buffer; ask VBlank to push it to the hardware.
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
 	ret
 
 _CGB_MagnetTrain: ; unused
