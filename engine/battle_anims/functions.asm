@@ -353,7 +353,6 @@ BattleAnimFunc_PokeBall:
 	dec [hl]
 .two
 .five
-.nine
 	ret
 
 .seven
@@ -364,8 +363,67 @@ BattleAnimFunc_PokeBall:
 	ld hl, BATTLEANIMSTRUCT_VAR2
 	add hl, bc
 	ld [hl], $20
+	ld hl, BATTLEANIMSTRUCT_MB1_PREVPAD
+	add hl, bc
+	xor a
+	ld [hli], a ; MB1_PREVPAD
+	ld [hli], a ; MB1_DONE
+	ld [hl], a  ; MB1_TIMER
+	assert BATTLEANIMSTRUCT_MB1_TIMER == BATTLEANIMSTRUCT_MB1_PREVPAD + 2
 .eight
+; Kanto hack MB1: the lid rising off the ball. Sample the pad every frame
+; so the window frame below has a previous sample to find edges against.
+	call MasterFrame_SamplePad
+	call .LidArc
+	jr z, .eleven
+	and $f
+	ret nz
+	call BattleAnim_IncAnonJumptableIndex
+	ret
+
+.nine
+; Kanto hack MB1: the lid holds at its apex. Its first frame here is the
+; first frame the open ball is on screen (OAM shows last frame's positions):
+; that one frame is the window. After a hit, count down the flash and then
+; give both halves the Master Ball's colour.
+	ld hl, BATTLEANIMSTRUCT_MB1_DONE
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr nz, .nine_flash
+	inc [hl]
+	call MasterFrame_SamplePad
+	jp MasterFrame_Check
+
+.nine_flash
+	ld hl, BATTLEANIMSTRUCT_MB1_TIMER
+	add hl, bc
+	ld a, [hl]
+	and a
+	ret z
+	dec [hl]
+	ret nz
+	push bc
+	ld e, MASTER_BALL
+	call LookupBallColor
+	call MasterFrame_SetBallPals
+	pop bc
+	ret
+
 .ten
+	call .LidArc
+	jr z, .eleven
+	and $f
+	ret nz
+	call BattleAnim_IncAnonJumptableIndex
+	ret
+
+.eleven
+	call DeinitBattleAnimation
+	ret
+
+.LidArc:
+; Returns a = VAR1 & $1f after the step (z: the arc is over).
 	ld hl, BATTLEANIMSTRUCT_VAR1
 	add hl, bc
 	ld a, [hli]
@@ -380,14 +438,104 @@ BattleAnimFunc_PokeBall:
 	dec a
 	ld [hl], a
 	and $1f
-	jr z, .eleven
-	and $f
-	ret nz
-	call BattleAnim_IncAnonJumptableIndex
 	ret
 
-.eleven
-	call DeinitBattleAnimation
+MasterFrame_SamplePad:
+; Kanto hack MB1 (docs/MB1-MASTER-FRAME.md). Battle anims run on
+; VBLANK_CUTSCENE, which does not call UpdateJoypad, so hJoypad* are frozen
+; for the whole anim. Read the pad directly (same sequence as UpdateJoypad,
+; d-pad in the high nybble) without touching any hJoypad* byte.
+; Returns a = buttons down now that were up at the previous sample.
+	ld a, JOYP_GET_CTRL_PAD
+	ldh [rJOYP], a
+	ldh a, [rJOYP]
+	ldh a, [rJOYP]
+	cpl
+	and JOYP_INPUTS
+	swap a
+	ld d, a
+	ld a, JOYP_GET_BUTTONS
+	ldh [rJOYP], a
+rept 6
+	ldh a, [rJOYP]
+endr
+	cpl
+	and JOYP_INPUTS
+	or d
+	ld d, a
+	ld a, JOYP_GET_NONE
+	ldh [rJOYP], a
+	ld hl, BATTLEANIMSTRUCT_MB1_PREVPAD
+	add hl, bc
+	ld a, [hl]
+	ld [hl], d
+	cpl
+	and d
+	ret
+
+DEF MB1_FLASH_FRAMES EQU 4
+
+MasterFrame_Check:
+; Kanto hack MB1: a = buttons newly down on the window frame. A hit needs A
+; and DOWN both newly pressed on exactly this frame; MasterFrameCatch decides
+; whether the battle allows it and, if so, sets wWildMon the way a
+; MASTER_BALL does.
+	and PAD_A | PAD_DOWN
+	cp PAD_A | PAD_DOWN
+	ret nz
+	push bc
+	farcall MasterFrameCatch
+	pop bc
+	ret nc
+	; flash once...
+	push bc
+	ld a, PAL_BATTLE_OB_GRAY
+	call MasterFrame_SetBallPals
+	pop bc
+	; ...then .nine switches to the Master Ball colour
+	ld hl, BATTLEANIMSTRUCT_MB1_TIMER
+	add hl, bc
+	ld [hl], MB1_FLASH_FRAMES
+	; the script skips SFX_BALL_POOF (BattleAnim_ThrowPokeBall.MasterFramePoof)
+	ld a, 1
+	ld [wBattleAnimVar], a
+	; panned like the anim_sound 0, 1 of the poof it replaces
+	xor a
+	ld [wSFXDuration], a
+	ld a, 1
+	ld [wCryTracks], a
+	ld a, $0f
+	ld [wStereoPanningMask], a
+	push bc
+	ld de, SFX_SHINE
+	callfar PlayStereoSFX
+	pop bc
+	ret
+
+MasterFrame_SetBallPals:
+; Give palette a to every active Poke Ball struct (the ball and its lid).
+	ld hl, wActiveAnimObjects
+	ld e, NUM_BATTLE_ANIM_STRUCTS
+	ld d, a
+.loop
+	ld a, [hl]
+	and a
+	jr z, .next
+	push hl
+	ld bc, BATTLEANIMSTRUCT_FUNCTION
+	add hl, bc
+	ld a, [hli]
+	cp BATTLE_ANIM_FUNC_POKEBALL
+	jr nz, .skip
+	assert BATTLEANIMSTRUCT_PALETTE == BATTLEANIMSTRUCT_FUNCTION + 1
+	ld [hl], d
+.skip
+	pop hl
+.next
+	ld bc, BATTLEANIMSTRUCT_LENGTH
+	add hl, bc
+	dec e
+	jr nz, .loop
 	ret
 
 BattleAnimFunc_PokeBallBlocked:
@@ -431,7 +579,6 @@ BattleAnimFunc_PokeBallBlocked:
 	ret
 
 GetBallAnimPal:
-	ld hl, BallColors
 	ldh a, [rWBK]
 	push af
 	ld a, BANK(wCurItem)
@@ -440,6 +587,15 @@ GetBallAnimPal:
 	ld e, a
 	pop af
 	ldh [rWBK], a
+	call LookupBallColor
+	ld hl, BATTLEANIMSTRUCT_PALETTE
+	add hl, bc
+	ld [hl], a
+	ret
+
+LookupBallColor:
+; e = ball item; returns a = its BallColors palette.
+	ld hl, BallColors
 .IsInArray:
 	ld a, [hli]
 	cp -1
@@ -451,9 +607,6 @@ GetBallAnimPal:
 
 .load
 	ld a, [hl]
-	ld hl, BATTLEANIMSTRUCT_PALETTE
-	add hl, bc
-	ld [hl], a
 	ret
 
 INCLUDE "data/battle_anims/ball_colors.asm"

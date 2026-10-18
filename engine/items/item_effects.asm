@@ -200,6 +200,42 @@ ItemEffects:
 ; They all have the ITEMMENU_NOUSE attribute so they can't be used anyway.
 ; NoEffect would be appropriate, with the table then being NUM_ITEMS long.
 
+MasterFrameCatch:
+; Kanto hack MB1 (docs/MB1-MASTER-FRAME.md), an operator-requested Easter egg:
+; called from the Poke Ball anim when A and DOWN were both newly pressed on
+; the ball-open frame. If this throw could have been a MASTER_BALL, make it
+; one: wWildMon = species, exactly what .catch_without_fail stores, so the
+; shakes (GetPokeBallWobble) and the post-anim check take the caught path.
+; Returns carry if it took. Wild battles only; never the tutorial, a ghost,
+; or a real MASTER_BALL (already certain).
+	ldh a, [rWBK]
+	push af
+	ld a, BANK(wBattleMode)
+	ldh [rWBK], a
+	ld a, [wBattleMode]
+	cp WILD_BATTLE
+	jr nz, .no
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
+	jr z, .no
+	ld a, [wCurItem]
+	cp MASTER_BALL
+	jr z, .no
+	farcall GhostCantBeCaught
+	jr c, .no
+	ld a, [wEnemyMonSpecies]
+	ld [wWildMon], a
+	pop af
+	ldh [rWBK], a
+	scf
+	ret
+
+.no
+	pop af
+	ldh [rWBK], a
+	and a
+	ret
+
 PokeBallEffect:
 ; BUG: The Dude's catching tutorial may crash if his Poké Ball can't be used (see docs/bugs_and_glitches.md)
 	ld a, [wBattleMode]

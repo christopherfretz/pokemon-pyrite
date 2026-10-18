@@ -314,6 +314,7 @@ BattleAnim_ThrowPokeBall:
 	anim_obj BATTLE_ANIM_OBJ_POKE_BALL, 136, 65, $0
 	anim_setobj $2, $7
 	anim_wait 16
+	anim_if_var_equal $1, .MasterFramePoof
 	anim_sound 0, 1, SFX_BALL_POOF
 	anim_obj BATTLE_ANIM_OBJ_BALL_POOF, 136, 64, $10
 	anim_wait 16
@@ -336,6 +337,7 @@ BattleAnim_ThrowPokeBall:
 	anim_obj BATTLE_ANIM_OBJ_POKE_BALL, 136, 65, $0
 	anim_setobj $2, $7
 	anim_wait 16
+	anim_if_var_equal $1, .MasterFramePoof
 	anim_sound 0, 1, SFX_BALL_POOF
 	anim_obj BATTLE_ANIM_OBJ_BALL_POOF, 136, 64, $10
 	anim_wait 16
@@ -349,7 +351,16 @@ BattleAnim_ThrowPokeBall:
 	anim_obj BATTLE_ANIM_OBJ_POKE_BALL, 136, 65, $0
 	anim_setobj $2, $7
 	anim_wait 16
+	anim_if_var_equal $1, .MasterFramePoof
 	anim_sound 0, 1, SFX_BALL_POOF
+	anim_obj BATTLE_ANIM_OBJ_BALL_POOF, 136, 64, $10
+	anim_wait 16
+	anim_jump .Shake
+
+.MasterFramePoof:
+; Kanto hack MB1 (docs/MB1-MASTER-FRAME.md): A+DOWN landed on the ball-open
+; frame and the lid set wBattleAnimVar. Same poof, minus SFX_BALL_POOF, so it
+; does not cut off the SFX_SHINE that the hit just started.
 	anim_obj BATTLE_ANIM_OBJ_BALL_POOF, 136, 64, $10
 	anim_wait 16
 	anim_jump .Shake

@@ -18,7 +18,12 @@ DEF BATTLEANIMSTRUCT_FRAME           rb ; 0d
 DEF BATTLEANIMSTRUCT_JUMPTABLE_INDEX rb ; 0e
 DEF BATTLEANIMSTRUCT_VAR1            rb ; 0f
 DEF BATTLEANIMSTRUCT_VAR2            rb ; 10
-                                     rb_skip 7
+; Kanto hack MB1 (docs/MB1-MASTER-FRAME.md): the Poke Ball lid uses three
+; bytes of the struct's unused padding (zeroed by ClearBattleAnims).
+DEF BATTLEANIMSTRUCT_MB1_PREVPAD     rb ; 11 last raw joypad sample
+DEF BATTLEANIMSTRUCT_MB1_DONE        rb ; 12 nonzero once the window frame has passed
+DEF BATTLEANIMSTRUCT_MB1_TIMER       rb ; 13 flash frames left before the Master Ball colour
+                                     rb_skip 4
 DEF BATTLEANIMSTRUCT_LENGTH EQU _RS
 DEF NUM_BATTLE_ANIM_STRUCTS EQU 10 ; see wActiveAnimObjects
 
