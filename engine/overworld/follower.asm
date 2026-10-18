@@ -2,6 +2,12 @@
 ; INCLUDEd from map_objects.asm so it shares that bank with NormalStep /
 ; JumpStep / the movement-function jumptable.
 
+; PB2: on the bike the follower's ledge hop starts once the player's landing
+; phase (8 ticks: the player's jump is walking speed) is BELOW this many ticks.
+; The hop then takes 8 ticks at bike speed, so it lands after the player has
+; ridden one 4-tick step off the ledge.  Measured, docs/PB2-BIKE-LEDGE.md.
+DEF BIKE_HOP_START_DURATION EQU 4
+
 MovementFunction_PikaFollower:
 ; bc = wFollowerStruct. Runs every frame the follower is between steps.
 ; Keep the VRAM tile current: wUsedSprites is rebuilt on every map load.
@@ -107,8 +113,28 @@ ENDC
 	ld a, [wPlayerStepIndex]
 	cp 2
 	jr c, .walk
+IF PIKA_BIKE_FOLLOWER
+; PB2 (docs/PB2-BIKE-LEDGE.md): on the BICYCLE the walking-speed hop landed
+; 2 tiles behind a player who rode on, and the catch-up below snapped Pikachu
+; onto the player's tile, from where it walked back against them.  The
+; player's own jump is walking speed whatever they ride, so on the bike hop at
+; bike speed (8 ticks) and start it half-way through the player's landing
+; phase: Pikachu touches down on the ledge's foot just as the player finishes
+; their first bike step off it, i.e. one tile behind, ready for the next one.
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	jr nz, .walk_hop
+	ld a, [wPlayerStepDuration]
+	cp BIKE_HOP_START_DURATION
+	jr nc, .idle ; wait on the ledge-top tile
+	call .Show
+	ld a, STEP_BIKE << 2
+	jr .hop
+.walk_hop
+ENDC
 	call .Show
 	ld a, STEP_WALK << 2
+.hop
 	or d
 	jp JumpStep
 
