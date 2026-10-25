@@ -282,12 +282,20 @@ CeladonGameCornerRocketScript:
 	closetext
 ; Yellow walks him five steps east when the player stands below him
 ; (wYCoord 6) or beside him on the left (wXCoord 8), and around the player
-; otherwise.  (Yellow's else branch also plays a PIKACHU emote; we have no
-; follower here, so it is dropped.)
+; otherwise.
+; RG1: in the walk-around branch Yellow first runs GameCornerPikachuMovementScript
+; (vendor/pokeyellow/scripts/GameCorner_2.asm): if PIKACHU is BELOW the player
+; -- on (10,6), right on his DOWN, RIGHT x3 path -- it steps right, steps up
+; and looks down ($20 $1e $35), ending on (11,5) beside the player.  That is
+; byte for byte the CINNABAR GYM gate-2 step-aside, so its special does it
+; (wScriptVar 0 = "Pikachu below"; nothing happens if it is anywhere else,
+; hidden, or not following).
 	readvar VAR_YCOORD
 	ifequal 6, .WalkDirect
 	readvar VAR_XCOORD
 	ifequal 8, .WalkDirect
+	setval 0
+	special CinnabarGymPikachuStepAside
 	applymovement CELADONGAMECORNER_ROCKET, CeladonGameCornerRocketWalkAroundPlayerMovement
 	sjump .Leave
 

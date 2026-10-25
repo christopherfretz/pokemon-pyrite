@@ -1055,6 +1055,9 @@ CinnabarGymPikachuStepAside::
 ;     left, look right.
 ; A step onto a wall or an NPC is refused (FollowerCanStandAt) and the rest of
 ; the dance is skipped, rather than walking Pikachu into the scenery.
+; RG1: the CELADON GAME CORNER poster ROCKET's walk-around exit uses the
+; wScriptVar 0 dance too -- Yellow's GameCornerPikachuMovementData is the same
+; $20 $1e $35 blob with the same SPRITE_FACING_DOWN gate.
 	ld a, [wPikaFollowFlags]
 	and 1 << FOLLOWER_ENABLED_F | 1 << FOLLOWER_HIDDEN_F | 1 << FOLLOWER_SCRIPTHIDE_F
 	cp 1 << FOLLOWER_ENABLED_F
