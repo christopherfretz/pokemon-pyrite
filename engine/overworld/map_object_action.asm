@@ -94,6 +94,25 @@ SetFacingStepAction:
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld [hl], a
+
+; SP1 (docs/FOLLOWER.md): while an arrow run carries the player, Yellow's
+; UpdatePikachuWalkingSprite (.copy_player) draws Pikachu with the player's
+; spinning facing -- standing frame, no walk cycle -- as it trails the ride one
+; tile behind.  So the follower shows wPlayerDirection (OW_* == FACING_STEP_*_0)
+; instead of its own walk frame.  wConveyorDir is 0 outside a ride, so ordinary
+; following is untouched.
+	ld a, [wConveyorDir]
+	and a
+	ret z
+	ld a, c
+	cp LOW(wFollowerStruct)
+	ret nz
+	ld a, b
+	cp HIGH(wFollowerStruct)
+	ret nz
+	ld a, [wPlayerDirection]
+	and %00001100
+	ld [hl], a
 	ret
 
 SetFacingSkyfall:
