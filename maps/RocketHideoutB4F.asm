@@ -32,11 +32,12 @@
 ; flag and his object's hide flag -- the polarity already matches (he is on B4F
 ; iff he is unbeaten), the MR FUJI precedent from maps/PokemonTower7F.asm.
 ;
-; Battle music: a brand-new class falls through engine/battle/start_battle.asm
-; to .kantotrainer -> MUSIC_KANTO_TRAINER_BATTLE, which is Crystal's
-; arrangement of Gen 1's Music_TrainerBattle -- exactly what Yellow's
-; PlayBattleMusic gives hideout GIOVANNI (wGymLeaderNo is 0 here; only the
-; VIRIDIAN GYM battle sets it).  No engine change needed.
+; Battle music: MUSIC_KANTO_GYM_LEADER_BATTLE, by operator ruling (GM1,
+; 2026-10-24): engine/battle/start_battle.asm sends class GIOVANNI to the
+; gym-leader theme in all three fights.  Yellow's PlayBattleMusic would give
+; hideout GIOVANNI the ordinary trainer theme (wGymLeaderNo is 0 here; only the
+; VIRIDIAN GYM battle sets it), so this is a deliberate deviation.  Victory
+; music stays the trainer one (IsGymLeaderCommon still keys on GIOVANNI_3).
 ;
 ; --- JESSIE & JAMES #2 -----------------------------------------------------
 ; Yellow's trigger is wYCoord == $e AND wXCoord == $18 or $19, i.e. (24,14) and

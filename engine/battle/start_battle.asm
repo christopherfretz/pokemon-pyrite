@@ -110,6 +110,13 @@ PlayBattleMusic:
 	; the ordinary trainer theme via .othertrainer.
 	cp LANCE_E4
 	jr z, .done
+	; Kanto hack (GM1, operator ruling 2026-10-24): GIOVANNI gets the gym-leader
+	; theme in all three fights (HIDEOUT B4F, SILPH 11F, VIRIDIAN GYM). Yellow
+	; plays it only in his gym (wGymLeaderNo); this is a deliberate deviation.
+	; Victory music and HAPPINESS_GYMBATTLE still key on GIOVANNI_3 alone
+	; (IsGymLeaderCommon, engine/battle/core.asm).
+	cp GIOVANNI
+	jr z, .done
 	farcall IsKantoGymLeader
 	jr c, .done
 

@@ -73,9 +73,9 @@
 ; hides 41 toggleable objects and shows 6 -- all of that is flag-driven in GSC
 ; and belongs to 11k; here we only need the flag and the local `disappear`.
 ;
-; Battle music: GIOVANNI is a Kanto-hack class, so start_battle.asm falls
-; through to MUSIC_KANTO_TRAINER_BATTLE -- what Yellow's PlayBattleMusic gives
-; the Silph GIOVANNI too (wGymLeaderNo is 0 here).
+; Battle music: MUSIC_KANTO_GYM_LEADER_BATTLE, by operator ruling (GM1,
+; 2026-10-24; engine/battle/start_battle.asm).  Yellow's PlayBattleMusic would
+; give the Silph GIOVANNI the trainer theme (wGymLeaderNo is 0 here).
 ;
 ; --- the PRESIDENT and the MASTER BALL -------------------------------------
 ; Yellow's president gives MASTER_BALL once on EVENT_GOT_MASTER_BALL, prints
