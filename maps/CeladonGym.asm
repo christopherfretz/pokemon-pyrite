@@ -256,11 +256,32 @@ ErikaPostBattleAdviceText:
 	cont "unattractive."
 	done
 
+; CG1: Yellow's line (verbatim, below) assumes a boy; Yellow has no girl player.
+; For a girl the gatekeeper lets her in but still picks the fight. The branch is a
+; text_asm so the trainer header still points at one seen-text label.
 LassMichelleSeenText:
+	text_asm
+	ld hl, wPlayerGender
+	bit PLAYERGENDER_FEMALE_F, [hl]
+	ld hl, .Male
+	ret z
+	ld hl, .Female
+	ret
+
+.Male:
 	text "Hey!"
 
 	para "You are not"
 	line "allowed in here!"
+	done
+
+.Female:
+	text "Hey!"
+
+	para "Girls are allowed"
+	line "in here, but that"
+	cont "doesn't mean you"
+	cont "get past me!"
 	done
 
 LassMichelleBeatenText:
