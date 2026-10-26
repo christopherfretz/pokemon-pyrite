@@ -862,3 +862,8 @@ DEF NUM_BG_EFFECTS EQU 5 ; see wActiveBGEffects
 	const PAL_BATTLE_OB_GREEN  ; 5
 	const PAL_BATTLE_OB_BLUE   ; 6
 	const PAL_BATTLE_OB_BROWN  ; 7
+
+; Kanto hack GD1 (docs/M6-TOWER.md): the wBattleAnimParam PokeBallEffect sets
+; for a ball thrown at a ghost that GhostCantBeCaught refuses. Real params are
+; clamped to NO_ITEM..POKE_BALL, so this value never comes from an item.
+DEF BALL_ANIM_GHOST_DODGE EQU $ff

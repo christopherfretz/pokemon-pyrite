@@ -171,9 +171,9 @@ MACRO anim_minimize
 	db anim_minimize_command
 ENDM
 
-	const anim_0xea_command ; $ea
-MACRO anim_0xea
-	db anim_0xea_command
+	const anim_ghostdodge_command ; $ea
+MACRO anim_ghostdodge ; Kanto hack GD1: was the dummy anim_0xea
+	db anim_ghostdodge_command
 ENDM
 
 	const anim_0xeb_command ; $eb

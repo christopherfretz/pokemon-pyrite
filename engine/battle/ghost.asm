@@ -225,6 +225,40 @@ GhostCantBeCaught::
 	scf
 	ret
 
+GhostDodgeStep::
+; Kanto hack GD1 (docs/M6-TOWER.md): anim_ghostdodge, run on the last three
+; steps of the BALL_ANIM_GHOST_DODGE toss. Yellow DoBallTossSpecialEffects
+; .moveGhostMarowakLeft: AnimCopyRowRight from hlcoord 17, 0 on 7 rows, i.e.
+; col 17 -> 18 ... col 11 -> 12, so the pic slides one tile RIGHT (despite the
+; label), its right column clips and blank col 11 fills in behind it. Then
+; Yellow pokes %00001000 into the channel 1 sweep register. The pic is put
+; back by the ExitMenu after the dodge text (BattleMenu_Pack.UseItem), the
+; same moment Yellow restores it.
+	hlcoord 18, 0
+	ld b, 7
+.row
+	push hl
+	ld c, 7
+.col
+	dec hl
+	ld a, [hli]
+	ld [hld], a
+	dec c
+	jr nz, .col
+	pop hl
+	ld de, SCREEN_WIDTH
+	add hl, de
+	dec b
+	jr nz, .row
+
+	xor a
+	ldh [hBGMapThird], a
+	inc a
+	ldh [hBGMapMode], a
+	ld a, %00001000
+	ldh [rAUD1SWEEP], a
+	ret
+
 RevealGhost::
 ; D25 / docs/M6-TOWER.md 3.6 -- designed by 9d, wired by 9i above.
 ; Call with the battle screen up and wTempEnemyMonSpecies holding the real

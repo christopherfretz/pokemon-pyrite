@@ -437,6 +437,13 @@ PokeBallEffect:
 	ld a, POKE_BALL
 .not_kurt_ball
 	ld [wBattleAnimParam], a
+	; Kanto hack GD1 (docs/M6-TOWER.md): Yellow's $10 anim -- toss, sidestep,
+	; no shakes -- for the ball a ghost dodges.
+	farcall GhostCantBeCaught
+	jr nc, .not_ghost_dodge
+	ld a, BALL_ANIM_GHOST_DODGE
+	ld [wBattleAnimParam], a
+.not_ghost_dodge
 
 	ld de, ANIM_THROW_POKE_BALL
 	ld a, e

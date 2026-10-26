@@ -360,7 +360,7 @@ BattleAnimCommands::
 	dw BattleAnimCmd_E7
 	dw BattleAnimCmd_UpdateActorPic
 	dw BattleAnimCmd_Minimize
-	dw BattleAnimCmd_EA ; dummy
+	dw BattleAnimCmd_GhostDodge ; Kanto hack GD1 (was the dummy $ea)
 	dw BattleAnimCmd_EB ; dummy
 	dw BattleAnimCmd_EC ; dummy
 	dw BattleAnimCmd_ED ; dummy
@@ -384,7 +384,10 @@ BattleAnimCommands::
 	dw BattleAnimCmd_Ret
 	assert_table_length $100 - FIRST_BATTLE_ANIM_CMD
 
-BattleAnimCmd_EA:
+BattleAnimCmd_GhostDodge:
+	farcall GhostDodgeStep
+	ret
+
 BattleAnimCmd_EB:
 BattleAnimCmd_EC:
 BattleAnimCmd_ED:

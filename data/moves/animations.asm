@@ -302,6 +302,7 @@ BattleAnim_SweetScent2:
 	anim_ret
 
 BattleAnim_ThrowPokeBall:
+	anim_if_param_equal BALL_ANIM_GHOST_DODGE, .GhostDodge
 	anim_if_param_equal NO_ITEM, .TheTrainerBlockedTheBall
 	anim_if_param_equal MASTER_BALL, .MasterBall
 	anim_if_param_equal ULTRA_BALL, .UltraBall
@@ -319,6 +320,24 @@ BattleAnim_ThrowPokeBall:
 	anim_obj BATTLE_ANIM_OBJ_BALL_POOF, 136, 64, $10
 	anim_wait 16
 	anim_jump .Shake
+
+.GhostDodge:
+; Kanto hack GD1 (docs/M6-TOWER.md): Yellow's ball anim data $10 -- toss only,
+; no poof and no shakes, and on the toss's last three steps (4 frames apart,
+; the third on the frame the ball vanishes) the enemy pic sidesteps one tile right
+; (Yellow DoBallTossSpecialEffects .moveGhostMarowakLeft). Same throw as the
+; plain POKE BALL, so every ball type tosses alike, as in Yellow.
+	anim_2gfx BATTLE_ANIM_GFX_POKE_BALL, BATTLE_ANIM_GFX_SMOKE
+	anim_sound 6, 2, SFX_THROW_BALL
+	anim_obj BATTLE_ANIM_OBJ_POKE_BALL, 68, 92, $40
+	anim_wait 26
+	anim_ghostdodge
+	anim_wait 3
+	anim_ghostdodge
+	anim_wait 3
+	anim_clearobjs
+	anim_ghostdodge
+	anim_ret
 
 .TheTrainerBlockedTheBall:
 	anim_2gfx BATTLE_ANIM_GFX_POKE_BALL, BATTLE_ANIM_GFX_HIT
