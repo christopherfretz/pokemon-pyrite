@@ -298,9 +298,12 @@ CelebiEvent_SetBattleType:
 	ld [wBattleType], a
 	ret
 
-CheckCaughtCelebi:
+; SN1: vanilla's CheckCaughtCelebi, generalised -- the bit is now set on every
+; successful wild catch, so this answers "was the last wild battle a catch?".
+; ILEX FOREST's Celebi script still calls it right after the Celebi battle.
+CheckCaughtWildMon:
 	ld a, [wBattleResult]
-	bit BATTLERESULT_CAUGHT_CELEBI, a
+	bit BATTLERESULT_CAUGHT, a
 	jr z, .false
 	ld a, TRUE
 	ld [wScriptVar], a

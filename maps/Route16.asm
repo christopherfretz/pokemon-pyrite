@@ -68,7 +68,9 @@ Route16AlwaysOnBikeCallback:
 ; SFX_POKEFLUTE + RestartMapMusic, and the battle-result branch has to precede
 ; `reloadmapafterbattle` because that command jp's to the whiteout on LOSE.
 ; Only the two wake texts differ from ROUTE 12's: Yellow gives ROUTE 16 its own
-; _Route16SnorlaxReturnedToMountainsText.
+; _Route16SnorlaxReturnedToMountainsText.  SN1: as on ROUTE 12, a catch skips the
+; returned-to-the-mountains text (Yellow's Route16SnorlaxPostBattleScript tests
+; wBattleResult $2); win, run and POKe DOLL still print it.
 Route16Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	opentext
 	checkitem POKE_FLUTE
@@ -89,10 +91,13 @@ Route16Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	setevent EVENT_BEAT_ROUTE_16_SNORLAX ; = the object's hide flag
 	disappear ROUTE16_SNORLAX
 	reloadmapafterbattle
+	special CheckCaughtWildMon ; SN1: Yellow's wBattleResult $2 skip
+	iftrue .Caught
 	opentext
 	writetext Route16SnorlaxReturnedText
 	waitbutton
 	closetext
+.Caught:
 	end
 
 .Fainted:

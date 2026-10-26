@@ -280,9 +280,12 @@ DEF NUM_WEATHERS EQU const_value - 1
 	const LOSE
 	const DRAW
 
-DEF BATTLERESULT_CAUGHT_CELEBI EQU 6
+; Kanto hack (SN1): vanilla's BATTLERESULT_CAUGHT_CELEBI, now set on EVERY
+; successful wild catch (engine/items/item_effects.asm) so a map script can tell
+; a catch from a KO -- Yellow's wBattleResult $2.  Read by CheckCaughtWildMon.
+DEF BATTLERESULT_CAUGHT EQU 6
 DEF BATTLERESULT_BOX_FULL EQU 7
-DEF BATTLERESULT_BITMASK EQU (1 << BATTLERESULT_CAUGHT_CELEBI) | (1 << BATTLERESULT_BOX_FULL)
+DEF BATTLERESULT_BITMASK EQU (1 << BATTLERESULT_CAUGHT) | (1 << BATTLERESULT_BOX_FULL)
 
 ; link_battle_record struct
 DEF LINK_BATTLE_RECORD_LENGTH EQU 2 + (NAME_LENGTH - 1) + 2 * 3

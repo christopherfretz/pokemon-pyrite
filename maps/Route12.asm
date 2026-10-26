@@ -53,10 +53,17 @@ Route12_MapScripts:
 ;
 ; Result handling, matching what Yellow's player actually sees:
 ;   - win  -> calmed-down text, flag set, SNORLAX gone.
-;   - run  -> same.  Gen 1 leaves wBattleResult at 0 when you flee a wild
-;             battle, so Route12SnorlaxPostBattleScript prints the calmed-down
-;             text and sets the flag exactly as for a win.  GSC reports a flee
-;             as DRAW, which is likewise "not LOSE", so the branch agrees.
+;   - catch -> flag set, SNORLAX gone, NO text: Route12SnorlaxPostBattleScript
+;             skips TEXT_ROUTE12_SNORLAX_CALMED_DOWN on wBattleResult $2.
+;             GSC ends a catch as WIN, so SN1 sets BATTLERESULT_CAUGHT (bit 6,
+;             vanilla's Celebi-only catch bit) on every wild catch and this
+;             script asks `special CheckCaughtWildMon` after the reload.
+;   - run  -> same as win.  Gen 1 leaves wBattleResult at 0 when you flee a
+;             wild battle, so Route12SnorlaxPostBattleScript prints the
+;             calmed-down text and sets the flag exactly as for a win.  GSC
+;             reports a flee as DRAW, which is likewise "not LOSE", so the
+;             branch agrees.  A POKe DOLL is a flee in both games (GSC's
+;             PokeDollEffect writes DRAW), so it prints the text too.
 ;   - lose -> no text, and the SNORLAX is still gone: Yellow ran `predef
 ;             HideObject` BEFORE the battle and HideObject writes the SAVED
 ;             wToggleableObjectFlags, so a whiteout leaves the object hidden
@@ -65,10 +72,6 @@ Route12_MapScripts:
 ;             so the faithful equivalent is to set the flag before
 ;             reloadmapafterbattle -- that command jp's to the whiteout on
 ;             LOSE, so anything after it would never run.
-; Known, accepted deviation: Yellow also skips the calmed-down text when the
-; SNORLAX is CAUGHT (wBattleResult $2).  GSC has no "caught" result -- a catch
-; ends the battle as WIN and the only catch bit in wBattleResult is the Celebi
-; event's -- so catching it prints the calmed-down line too.
 Route12Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	opentext
 	checkitem POKE_FLUTE
@@ -89,10 +92,13 @@ Route12Snorlax:: ; PE1: also queued by PokeFluteEffect (field use)
 	setevent EVENT_BEAT_ROUTE_12_SNORLAX ; = the object's hide flag
 	disappear ROUTE12_SNORLAX
 	reloadmapafterbattle
+	special CheckCaughtWildMon ; SN1: Yellow's wBattleResult $2 skip
+	iftrue .Caught
 	opentext
 	writetext Route12SnorlaxCalmedDownText
 	waitbutton
 	closetext
+.Caught:
 	end
 
 .Fainted:

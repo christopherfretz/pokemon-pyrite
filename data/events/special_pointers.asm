@@ -156,7 +156,7 @@ SpecialsPointers::
 	add_special HoOhChamber
 	add_special Function102142
 	add_special CelebiShrineEvent
-	add_special CheckCaughtCelebi
+	add_special CheckCaughtWildMon ; SN1: was CheckCaughtCelebi (same slot)
 	add_special PokeSeer
 	add_special BuenasPassword
 	add_special BuenaPrize

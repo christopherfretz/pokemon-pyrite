@@ -471,7 +471,7 @@ IlexForestShrineScript:
 	clearevent EVENT_ROUTE_34_ILEX_FOREST_GATE_LASS
 	reloadmapafterbattle
 	pause 20
-	special CheckCaughtCelebi
+	special CheckCaughtWildMon ; SN1: was CheckCaughtCelebi
 	iffalse .DidntCatchCelebi
 	appear ILEXFOREST_KURT
 	applymovement ILEXFOREST_KURT, IlexForestKurtStepsUpMovement

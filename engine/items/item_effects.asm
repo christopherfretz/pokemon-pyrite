@@ -606,11 +606,11 @@ PokeBallEffect:
 	ld a, [wBattleType]
 	cp BATTLETYPE_CONTEST
 	jp z, .catch_bug_contest_mon
-	cp BATTLETYPE_CELEBI
-	jr nz, .not_celebi
+; SN1: vanilla set this bit only for BATTLETYPE_CELEBI; every wild catch sets it
+; now, so scripts can skip Yellow's post-battle text on a catch (ROUTE 12/16
+; SNORLAX).  Nothing reads it except CheckCaughtWildMon (engine/events/celebi.asm).
 	ld hl, wBattleResult
-	set BATTLERESULT_CAUGHT_CELEBI, [hl]
-.not_celebi
+	set BATTLERESULT_CAUGHT, [hl]
 
 	ld a, [wPartyCount]
 	cp PARTY_LENGTH
